@@ -4,6 +4,7 @@ import my_code_functions_all as temul
 import os
 import atomap.api as am
 import hyperspy.api as hs
+
 # choose directory
 
 # directory = 'G:/Titan Images/08-10-19_MHEOC_SampleImaging stem/Cross Grating for STEM alignment/Au NP'
@@ -83,7 +84,7 @@ temul.simulate_with_prismatic(
     E0=60e3,
     integrationAngleMin=0.085,
     integrationAngleMax=0.186,
-    detectorAngleStep = 0.001,
+    detectorAngleStep=0.001,
     interpolationFactor=16,
     realspacePixelSize=0.0654,
     numFP=1,
