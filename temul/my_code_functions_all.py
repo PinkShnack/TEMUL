@@ -5008,7 +5008,7 @@ def plot_gaussian_fitting_all_elements(sub_ints_all,
                     pad_inches=None, dpi=900, labels=False)
 
 
-def convert_vesta_xyz_to_prismatic_xyz(vesta_xyz_file,
+def convert_vesta_xyz_to_prismatic_xyz(vesta_xyz_filename,
                                        prismatic_xyz_filename,
                                        delimiter='   |    |  ',
                                        header=None,
@@ -5026,7 +5026,7 @@ def convert_vesta_xyz_to_prismatic_xyz(vesta_xyz_file,
 
     Parameters
     ----------
-    vesta_xyz_file : string
+    vesta_xyz_filename : string
         name of the vesta outputted xyz file. See vesta > export > xyz
     prismatic_xyz_filename : string
         name to be given to the outputted prismatic xyz file
@@ -5052,7 +5052,7 @@ def convert_vesta_xyz_to_prismatic_xyz(vesta_xyz_file,
 
     See example_data for the vesta xyz file.
     >>> prismatic_xyz = convert_vesta_xyz_to_prismatic_xyz(
-                vesta_xyz_file='MoS2_hex_vesta_xyz.xyz',
+                vesta_xyz_filename='MoS2_hex_vesta_xyz.xyz',
                 prismatic_xyz_filename='MoS2_hex_prismatic.xyz',
                 delimiter='   |    |  ',
                 header=None,
@@ -5065,7 +5065,7 @@ def convert_vesta_xyz_to_prismatic_xyz(vesta_xyz_file,
 
     '''
 
-    file = pd.read_csv(vesta_xyz_file,
+    file = pd.read_csv(vesta_xyz_filename,
                        delimiter=delimiter,
                        header=header,
                        skiprows=skiprows,
