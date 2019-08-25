@@ -4524,11 +4524,6 @@ def simulate_and_calibrate_with_prismatic(
     return(simulation)
 
 
-'''
-os.chdir('C:/Users/Eoghan.OConnell/Documents/Documents/Eoghan UL/PHD/Python Files/scripts/Functions/private_development_git/private_development')
-print(os.getcwd())
-'''
-
 
 def simulate_with_prismatic(xyz_filename,
                             filename,
@@ -4537,6 +4532,7 @@ def simulate_with_prismatic(xyz_filename,
                             E0=60e3,
                             integrationAngleMin=0.085,
                             integrationAngleMax=0.186,
+                            detectorAngleStep = 0.001,
                             interpolationFactor=16,
                             realspacePixelSize=0.0654,
                             numFP=1,
@@ -4606,13 +4602,12 @@ def simulate_with_prismatic(xyz_filename,
             numThreads=2)
 
     '''
-    print("Simulating: " + simulation_filename)
 
     if '.xyz' not in xyz_filename:
         simulation_filename = xyz_filename + '.XYZ'
     else:
         simulation_filename = xyz_filename
-    print("Simulating: " + simulation_filename)
+
     file_exists = os.path.isfile(simulation_filename)
     if file_exists:
         pass
@@ -4622,7 +4617,7 @@ def simulate_with_prismatic(xyz_filename,
     # param inputs, feel free to add more!!
 
     pr_sim = pr.Metadata(filenameAtoms=simulation_filename)
-    print("Simulating: " + simulation_filename)
+
     # use the reference image to get the probe step if given
 
     if reference_image is None and probeStep is None:
@@ -4651,7 +4646,8 @@ def simulate_with_prismatic(xyz_filename,
 
     #    pr_sim.probeStepX = pr_sim.cellDimX/atom_lattice_data.shape[1]
     #    pr_sim.probeStepY = pr_sim.cellDimY/atom_lattice_data.shape[0]
-    pr_sim.detectorAngleStep = 0.001
+    pr_sim.detectorAngleStep = detectorAngleStep
+    pr_sim.save2DOutput = True
     pr_sim.save3DOutput = False
 
     pr_sim.E0 = E0
@@ -4667,7 +4663,6 @@ def simulate_with_prismatic(xyz_filename,
     pr_sim.algorithm = algorithm
     pr_sim.numThreads = numThreads
     pr_sim.filenameOutput = filename + '.mrc'
-    print("Simulating: " + simulation_filename)
     pr_sim.go()
 
 
