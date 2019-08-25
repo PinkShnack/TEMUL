@@ -18,7 +18,7 @@ def path_to_example_data_vesta_MoS2_vesta_xyz():
 #     global example_MoS2_vesta_xyz
     if example_MoS2_vesta_xyz is None:
         path = os.path.join(
-            my_path, 'example_data/prismatic', 'example_MoS2_vesta_xyz.xyz')
+            my_path, 'example_data', 'prismatic', 'example_MoS2_vesta_xyz.xyz')
         # example_MoS2_vesta_xyz = load(path)
 #     s = example_MoS2_vesta_xyz.deepcopy()
     return path

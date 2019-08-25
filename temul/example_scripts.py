@@ -1,4 +1,6 @@
 
+import temul.example_data as example_data
+import temul.my_code_functions_all
 import os
 import my_code_functions_all as temul
 import atomap.api as am
@@ -37,7 +39,7 @@ Simulate MoS2 with Prismatic Example
 '''
 Steps 
 
-1. set the directory to where your file be do
+1. get the path to the example data
 2. convert from a vesta xyz file to a prismatic xyz file 
 3. simulate the prismatic xyz file. This outputs a mrc file
 4. save the simulated file as a png and hyperspy file
@@ -50,21 +52,20 @@ and if the image is calibrated.
 
 '''
 
-import os
-import hyperspy.api as hs
-import my_code_functions_all as temul
-import example_data
-
 # Step 1
-# input the directory of your downloaded files here, pointing to the example_data!
-os.chdir('')
 
 vesta_xyz_filename = example_data.path_to_example_data_vesta_MoS2_vesta_xyz()
+# print(vesta_xyz_filename)
+
+# set the filenames for opening and closing...
+prismatic_xyz_filename = 'MoS2_hex_prismatic.xyz'
+mrc_filename = 'prismatic_simulation'
+simulated_filename = 'calibrated_data_2_electric_boogaloo'
 
 # Step 2
 prismatic_xyz = temul.convert_vesta_xyz_to_prismatic_xyz(
     vesta_xyz_filename=vesta_xyz_filename,
-    prismatic_xyz_filename='MoS2_hex_prismatic.xyz',
+    prismatic_xyz_filename=prismatic_xyz_filename,
     delimiter='   |    |  ',
     header=None,
     skiprows=[0, 1],
@@ -76,8 +77,8 @@ prismatic_xyz = temul.convert_vesta_xyz_to_prismatic_xyz(
 
 # Step 3
 temul.simulate_with_prismatic(
-    xyz_filename='MoS2_hex_prismatic.xyz',
-    filename='prismatic_simulation',
+    xyz_filename=prismatic_xyz_filename,
+    filename=mrc_filename,
     probeStep=0.01,
     reference_image=None,
     E0=60e3,
@@ -95,7 +96,7 @@ temul.simulate_with_prismatic(
 
 # Step 4
 simulation = temul.load_prismatic_mrc_with_hyperspy(
-    prismatic_mrc_filename='prism_2Doutput_prismatic_simulation.mrc',
-    save_name='calibrated_data_2_electric_boogaloo')
+    prismatic_mrc_filename='prism_2Doutput_' + mrc_filename + '.mrc',
+    save_name=simulated_filename)
 
 simulation.plot()
