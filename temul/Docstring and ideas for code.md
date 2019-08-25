@@ -1,3 +1,4 @@
+# Docstring Example
 
 '''
 Explanation of function
@@ -15,9 +16,7 @@ Examples
 
 '''
 
-'''
-
-## To Dos:
+# To Dos:
 
 1. sort unnecessary files into current correct files 
 2. make sure imports are linking each module
@@ -28,7 +27,7 @@ Examples
 
 
 
-Ideas for code development
+# Ideas for code development
 
 
 Absolutely Need to Develop:
@@ -112,13 +111,11 @@ create a new folder in which to place all of this refinement.
     otherwise those files would also be moved.
 move the xyz files in 
 
-'''
 
 
-'''
-Order to upload to atomap
+
+# Order to upload to atomap
 
 max min mean total with tests
 
 
-'''
