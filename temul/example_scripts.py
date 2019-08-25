@@ -8,6 +8,10 @@ import hyperspy.api as hs
 directory = 'G:/Titan Images/08-10-19_MHEOC_SampleImaging stem/Cross Grating for STEM alignment/Au NP'
 os.chdir(directory)
 
+
+'''
+Au NP example
+'''
 # open file
 s_raw, sampling = temul.load_data_and_sampling(
     'STEM 20190813 HAADF 1732.emd', save_image=False)
