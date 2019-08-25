@@ -1,5 +1,6 @@
 # Docstring Example
 
+```
 '''
 Explanation of function
 
@@ -13,8 +14,8 @@ Counter object
 
 Examples
 --------
-
 '''
+```
 
 # To Dos:
 
