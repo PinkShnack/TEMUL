@@ -1,6 +1,6 @@
 
 '''
-Perform image registraion with the rigid registration package
+Explanation of function
 
 Parameters
 ----------
@@ -16,33 +16,18 @@ Examples
 '''
 
 '''
-How to split up code functions into manageable chunks: 
-    look at overview
 
-1. Keep all prismatic stuff together
+## To Dos:
+
+1. sort unnecessary files into current correct files 
+2. make sure imports are linking each module
+3. create api file that imports everything, or two
+    3a. One for everything
+    3b. One for everything except prismatic
     
-    must
-
-2. Anything that just uses already included am packages in one file
-
-    
-
-A. Files based on packages needed
-.
 
 
 
-B. Files based on function use 
-..
-
-File > imports atomap
-        > imports functions from a separate file
-
-'''
-
-
-
-'''
 Ideas for code development
 
 
