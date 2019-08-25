@@ -4606,12 +4606,13 @@ def simulate_with_prismatic(xyz_filename,
             numThreads=2)
 
     '''
+    print("Simulating: " + simulation_filename)
 
     if '.xyz' not in xyz_filename:
         simulation_filename = xyz_filename + '.XYZ'
     else:
         simulation_filename = xyz_filename
-
+    print("Simulating: " + simulation_filename)
     file_exists = os.path.isfile(simulation_filename)
     if file_exists:
         pass
@@ -4621,11 +4622,10 @@ def simulate_with_prismatic(xyz_filename,
     # param inputs, feel free to add more!!
 
     pr_sim = pr.Metadata(filenameAtoms=simulation_filename)
-
+    print("Simulating: " + simulation_filename)
     # use the reference image to get the probe step if given
 
     if reference_image is None and probeStep is None:
-        os.chdir(dir_path)
         raise ValueError("Both reference_image and probeStep are None.\
             Either choose a reference image, from which a probe step can\
             be calculated, or choose a probeStep.")
@@ -4667,6 +4667,7 @@ def simulate_with_prismatic(xyz_filename,
     pr_sim.algorithm = algorithm
     pr_sim.numThreads = numThreads
     pr_sim.filenameOutput = filename + '.mrc'
+    print("Simulating: " + simulation_filename)
     pr_sim.go()
 
 

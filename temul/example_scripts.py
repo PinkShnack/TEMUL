@@ -1,8 +1,7 @@
 
 import temul.example_data as example_data
-import temul.my_code_functions_all
+import temul.my_code_functions_all as temul
 import os
-import my_code_functions_all as temul
 import atomap.api as am
 import hyperspy.api as hs
 # choose directory
@@ -58,8 +57,8 @@ vesta_xyz_filename = example_data.path_to_example_data_vesta_MoS2_vesta_xyz()
 # print(vesta_xyz_filename)
 
 # set the filenames for opening and closing...
-prismatic_xyz_filename = 'MoS2_hex_prismatic.xyz'
-mrc_filename = 'prismatic_simulation'
+prismatic_xyz_filename = 'MoS2_hex_prismatic_2.xyz'
+mrc_filename = 'prismatic_simulation_2'
 simulated_filename = 'calibrated_data_2_electric_boogaloo'
 
 # Step 2
@@ -79,12 +78,12 @@ prismatic_xyz = temul.convert_vesta_xyz_to_prismatic_xyz(
 temul.simulate_with_prismatic(
     xyz_filename=prismatic_xyz_filename,
     filename=mrc_filename,
-    probeStep=0.01,
+    probeStep=1.0,
     reference_image=None,
     E0=60e3,
     integrationAngleMin=0.085,
     integrationAngleMax=0.186,
-    interpolationFactor=4,
+    interpolationFactor=16,
     realspacePixelSize=0.0654,
     numFP=1,
     probeSemiangle=0.030,
