@@ -10,8 +10,6 @@ Parameters
 Returns
 -------
 
-Counter object
-
 Examples
 --------
 '''

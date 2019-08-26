@@ -1528,6 +1528,19 @@ def convert_numpy_z_coords_to_z_height_string(z_coords):
 def assign_z_height_to_sublattice(sublattice,
                                   material=None):
 
+    '''
+    Set the z_heights for each atom position in a sublattice.
+
+    Parameters
+    ----------
+    sublattice : Atomap Sublattice object
+
+    Examples
+    --------
+    See example_scripts : Model Creation Example
+
+    '''
+
     # if material == 'Au_NP_'
         # z_bond_length = function_to_get_material_info
     z_bond_length = 1.5
