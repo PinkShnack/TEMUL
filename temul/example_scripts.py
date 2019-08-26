@@ -3,9 +3,43 @@ import temul.example_data as example_data
 import temul.model_creation as model_creation
 import temul.io as temulio
 import temul.simulations as temulsim
+import temul.signal_processing as tsp
 import os
 import atomap.api as am
 import hyperspy.api as hs
+import numpy as np
+
+# Handy for VSCode plotting in Interactive window:
+%matplotlib qt
+%matplotlib qt
+
+# os.getcwd()
+
+######## Model Creation Example - Au NP ########
+
+s = example_data.load_example_Au_nanoparticle()
+s.plot()
+
+cropping_area = am.add_atoms_with_gui(s.data)
+
+s_crop = tsp.crop_image_hs(image=s, cropping_area=cropping_area,
+                           save_image=True, save_variables=True,
+                           scalebar_true=True)
+
+am.get_feature_separation(signal=s_crop,
+                          separation_range=(10, 15), pca=True).plot()
+
+atom_positions = am.get_atom_positions(s_crop, separation=12, pca=True)
+atom_positions = am.add_atoms_with_gui(image=s_crop, atom_list=atom_positions)
+# np.save("Au_NP_atom_positions", atom_positions)
+# atom_positions = np.load("Au_NP_atom_positions.npy")
+
+sub1 = am.Sublattice(atom_position_list=atom_positions, image=s_crop)
+sub1.plot()
+
+atom_lattice = am.Atom_Lattice(image=s_crop, name="Au_NP_1",
+                               sublattice_list=[sub1])
+atom_lattice.save(filename="Au_NP_Atom_Lattice.hdf5", overwrite=True)
 
 
 ######## Model Creation Example ########
