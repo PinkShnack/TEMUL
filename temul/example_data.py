@@ -6,20 +6,18 @@ my_path = os.path.dirname(__file__)
 example_MoS2_vesta_xyz = None
 
 
-def path_to_example_data_vesta_MoS2_vesta_xyz():
+def path_to_example_data_MoS2_vesta_xyz():
     """
     Get the path of the vesta xyz file for bilayer MoS2
 
     Example
     -------
-
+    >>> import temul.example_data as example_data
+    >>> path_vesta_file = example_data.path_to_example_data_MoS2_vesta_xyz()
     """
-#     global example_MoS2_vesta_xyz
     if example_MoS2_vesta_xyz is None:
         path = os.path.join(
             my_path, 'example_data', 'prismatic', 'example_MoS2_vesta_xyz.xyz')
-        # example_MoS2_vesta_xyz = load(path)
-#     s = example_MoS2_vesta_xyz.deepcopy()
     return path
 
 
@@ -28,13 +26,12 @@ example_Au_nanoparticle = None
 
 def load_example_Au_nanoparticle():
     """
-    Get an example signal of a STEM detector
     Get the emd STEM image of an example Au nanoparticle
 
     Example
     -------
-    >>> import atomap.api as am
-    >>> s = am.example_data.path_to_example_data_prismatic()
+    >>> import temul.example_data as example_data
+    >>> s = example_data.load_example_Au_nanoparticle()
 
     """
     global example_Au_nanoparticle

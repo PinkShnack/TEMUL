@@ -10,8 +10,8 @@ import hyperspy.api as hs
 import numpy as np
 
 # Handy for VSCode plotting in Interactive window:
-%matplotlib qt
-%matplotlib qt
+# %matplotlib qt
+# %matplotlib qt
 
 # os.getcwd()
 
