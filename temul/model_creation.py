@@ -1,4 +1,3 @@
-
 from atomap.atom_finding_refining import _make_circular_mask
 from matplotlib import gridspec
 import rigidregistration
@@ -1376,18 +1375,25 @@ def assign_z_height(sublattice, lattice_type, material):
 # MoS2 0.2429640475, 0.7570359525
 
 
-def print_sublattice_elements(sublattice):
-    elements_of_sublattice = []
-    for i in range(0, len(sublattice.atom_list)):
-        sublattice.atom_list[i].elements
-        sublattice.atom_list[i].z_height  # etc.
-        elements_of_sublattice.append([sublattice.atom_list[i].elements,
-                                       sublattice.atom_list[i].z_height,
-                                       sublattice.atom_amplitude_max_intensity[i],
-                                       sublattice.atom_amplitude_mean_intensity[i],
-                                       sublattice.atom_amplitude_min_intensity[i],
-                                       sublattice.atom_amplitude_total_intensity[i]
-                                       ])
+def print_sublattice_elements(sublattice, number_of_lines='all'):
+
+    if number_of_lines == 'all':
+        number_of_lines_end = len(sublattice.atom_list)
+    else:
+        number_of_lines_end = number_of_lines
+
+        elements_of_sublattice = []
+        for i in range(0, number_of_lines_end):
+            sublattice.atom_list[i].elements
+            sublattice.atom_list[i].z_height  # etc.
+            elements_of_sublattice.append([sublattice.atom_list[i].elements,
+                                           sublattice.atom_list[i].z_height,
+                                           sublattice.atom_amplitude_max_intensity[i],
+                                           sublattice.atom_amplitude_mean_intensity[i],
+                                           sublattice.atom_amplitude_min_intensity[i],
+                                           sublattice.atom_amplitude_total_intensity[i]
+                                           ])
+
     return elements_of_sublattice
 
 
@@ -1531,7 +1537,7 @@ def assign_z_height_to_sublattice(sublattice,
         # if i < 10:
         #     print(str(i) + ' ' + sublattice.atom_list + ' ' + str(i))
 
-        number_atoms_z = temul.split_and_sort_element(
+        number_atoms_z = split_and_sort_element(
             element=sublattice.atom_list[i].elements)[0][2]
 
         z_coords = return_z_coordinates(
@@ -1545,38 +1551,72 @@ def assign_z_height_to_sublattice(sublattice,
         sublattice.atom_list[i].z_height = z_height
 
 
-'''
-# Working Example
-
-sublattice = am.dummy_data.get_simple_cubic_sublattice()
-sublattice
-
-element_list = ['Au_5']
-elements_in_sublattice = temul.sort_sublattice_intensities(
-    sublattice, element_list=element_list)
-
-assign_z_height_to_sublattice(sublattice)
-
-temul.print_sublattice_elements(sublattice)
 
 
-Au_NP_df = temul.create_dataframe_for_cif(sublattice_list=[sublattice],
-                         element_list=element_list)
+def create_dataframe_for_cif(sublattice_list, element_list):
+    """
+    Parameters
+    ----------
 
-temul.write_cif_from_dataframe(dataframe=Au_NP_df,
-                         filename="Au_NP_test_01",
-                         chemical_name_common="Au_NP",
-                         cell_length_a=20,
-                         cell_length_b=20,
-                         cell_length_c=5,
-                         cell_angle_alpha=90,
-                         cell_angle_beta=90,
-                         cell_angle_gamma=90,
-                         space_group_name_H_M_alt='P 1',
-                         space_group_IT_number=1)
+    """
+    dfObj = pd.DataFrame(columns=['_atom_site_label',
+                                  '_atom_site_occupancy',
+                                  '_atom_site_fract_x',
+                                  '_atom_site_fract_y',
+                                  '_atom_site_fract_z',
+                                  '_atom_site_adp_type',
+                                  '_atom_site_B_iso_or_equiv',
+                                  '_atom_site_type_symbol'])
 
-Au_NP_z_height_string.split(",")
+    # Start with the first sublattice in the list of sublattices given
+    for sublattice in sublattice_list:
+            # Go through each atom_list index one by one
+        for i in range(0, len(sublattice.atom_list)):
+                # check if the element is in the given element list
+            if sublattice.atom_list[i].elements in element_list:
+                    # this loop cycles through the length of the split element eg, 2 for 'Se_1.S_1' and
+                    #   outputs an atom label and z_height for each
+                for k in range(0, len(split_and_sort_element(sublattice.atom_list[i].elements))):
+                    if split_and_sort_element(sublattice.atom_list[i].elements)[k][2] >= 1:
+                        atom_label = split_and_sort_element(
+                            sublattice.atom_list[i].elements)[k][1]
 
-for height in Au_NP_z_height_string.split(",")):
-    print(i)
-'''
+                        if "," in sublattice.atom_list[i].z_height:
+                            atom_z_height = float(
+                                sublattice.atom_list[i].z_height.split(",")[k])
+                        else:
+                            atom_z_height = float(
+                                sublattice.atom_list[i].z_height)
+
+                        # this loop checks the number of atoms that share
+                        # the same x and y coords.
+                        # len(sublattice.atom_list[i].z_height)):
+                        for p in range(0, split_and_sort_element(sublattice.atom_list[i].elements)[k][2]):
+
+                            if "," in sublattice.atom_list[i].z_height and split_and_sort_element(sublattice.atom_list[i].elements)[k][2] > 1:
+                                atom_z_height = float(
+                                    sublattice.atom_list[i].z_height.split(",")[p])
+                            else:
+                                pass
+
+                            dfObj = dfObj.append({'_atom_site_label': atom_label,
+                                                  '_atom_site_occupancy': 1.0,
+                                                  '_atom_site_fract_x': format(sublattice.atom_list[i].pixel_x/len(sublattice.image[0, :]), '.6f'),
+                                                  '_atom_site_fract_y': format((len(sublattice.image[:, 0])-sublattice.atom_list[i].pixel_y)/len(sublattice.image[:, 0]), '.6f'),
+                                                  # great touch
+                                                  '_atom_site_fract_z': format(atom_z_height, '.6f'),
+                                                  '_atom_site_adp_type': 'Biso',
+                                                  '_atom_site_B_iso_or_equiv': format(1.0, '.6f'),
+                                                  '_atom_site_type_symbol': atom_label},
+                                                 ignore_index=True)  # insert row
+
+                            #value += split_and_sort_element(sublattice.atom_list[i].elements)[k][2]
+    # need an option to save to the cuurent directory should be easy
+#        dfObj.to_pickle('atom_lattice_atom_position_table.pkl')
+#        dfObj.to_csv('atom_lattice_atom_position_table.csv', sep=',', index=False)
+    return dfObj
+
+#element_list = ['S_0', 'S_1', 'S_2', 'S_2.C_1', 'S_2.C_2', 'Mo_1', 'Mo_0']
+#example_df = create_dataframe_for_cif(atom_lattice, element_list)
+
+# '_atom_site_fract_z' : format( (sublattice.atom_list[i].z_height)[p+(k*k)], '.6f'), #great touch
