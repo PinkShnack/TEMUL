@@ -1,15 +1,9 @@
 
-import temul.example_data as example_data
-import temul.model_creation as model_creation
-import temul.io as temulio
-import temul.simulations as temulsim
-import temul.signal_processing as tsp
+import temul.api as tml
 import os
 import atomap.api as am
 import hyperspy.api as hs
 import numpy as np
-
-import temul.everything as tml
 
 # Handy for VSCode plotting in Interactive window:
 # %matplotlib qt
@@ -24,7 +18,7 @@ s.plot()
 
 cropping_area = am.add_atoms_with_gui(s.data)
 
-s_crop = tsp.crop_image_hs(image=s, cropping_area=cropping_area,
+s_crop = tml.crop_image_hs(image=s, cropping_area=cropping_area,
                            save_image=True, save_variables=True,
                            scalebar_true=True)
 
@@ -52,27 +46,27 @@ sublattice
 
 element_list = ['Au_5']
 
-elements_in_sublattice = model_creation.sort_sublattice_intensities(
+elements_in_sublattice = tml.sort_sublattice_intensities(
     sublattice, element_list=element_list)
 
-model_creation.assign_z_height_to_sublattice(sublattice)
+tml.assign_z_height_to_sublattice(sublattice)
 
-model_creation.print_sublattice_elements(sublattice, 10)
+tml.print_sublattice_elements(sublattice, 10)
 
-Au_NP_df = model_creation.create_dataframe_for_cif(sublattice_list=[sublattice],
-                                                   element_list=element_list)
+Au_NP_df = tml.create_dataframe_for_cif(sublattice_list=[sublattice],
+                                        element_list=element_list)
 
-temulio.write_cif_from_dataframe(dataframe=Au_NP_df,
-                                 filename="Au_NP_test_01",
-                                 chemical_name_common="Au_NP",
-                                 cell_length_a=20,
-                                 cell_length_b=20,
-                                 cell_length_c=5,
-                                 cell_angle_alpha=90,
-                                 cell_angle_beta=90,
-                                 cell_angle_gamma=90,
-                                 space_group_name_H_M_alt='P 1',
-                                 space_group_IT_number=1)
+tml.write_cif_from_dataframe(dataframe=Au_NP_df,
+                             filename="Au_NP_test_01",
+                             chemical_name_common="Au_NP",
+                             cell_length_a=20,
+                             cell_length_b=20,
+                             cell_length_c=5,
+                             cell_angle_alpha=90,
+                             cell_angle_beta=90,
+                             cell_angle_gamma=90,
+                             space_group_name_H_M_alt='P 1',
+                             space_group_IT_number=1)
 
 
 ######## Simulate MoS2 with Prismatic Example ########
@@ -96,7 +90,7 @@ and if the image is calibrated.
 
 # Step 1
 
-vesta_xyz_filename = example_data.path_to_example_data_MoS2_vesta_xyz()
+vesta_xyz_filename = tml.example_data.path_to_example_data_MoS2_vesta_xyz()
 # print(vesta_xyz_filename)
 
 # set the filenames for opening and closing...
@@ -105,7 +99,7 @@ mrc_filename = 'prismatic_simulation_2'
 simulated_filename = 'calibrated_data_2_electric_boogaloo'
 
 # Step 2
-prismatic_xyz = temulio.convert_vesta_xyz_to_prismatic_xyz(
+prismatic_xyz = tml.convert_vesta_xyz_to_prismatic_xyz(
     vesta_xyz_filename=vesta_xyz_filename,
     prismatic_xyz_filename=prismatic_xyz_filename,
     delimiter='   |    |  ',
@@ -118,7 +112,7 @@ prismatic_xyz = temulio.convert_vesta_xyz_to_prismatic_xyz(
     save=True)
 
 # Step 3
-temulsim.simulate_with_prismatic(
+tml.simulate_with_prismatic(
     xyz_filename=prismatic_xyz_filename,
     filename=mrc_filename,
     reference_image=None,
@@ -140,7 +134,7 @@ temulsim.simulate_with_prismatic(
     numThreads=2)
 
 # Step 4
-simulation = temulsim.load_prismatic_mrc_with_hyperspy(
+simulation = tml.load_prismatic_mrc_with_hyperspy(
     prismatic_mrc_filename='prism_2Doutput_' + mrc_filename + '.mrc',
     save_name=simulated_filename)
 

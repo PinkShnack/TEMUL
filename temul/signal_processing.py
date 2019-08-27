@@ -1,13 +1,12 @@
 
+
+
 from atomap.atom_finding_refining import _make_circular_mask
 from matplotlib import gridspec
 import rigidregistration
 from tifffile import imread, imwrite, TiffWriter
 from collections import Counter
-import warnings
 from time import time
-from pyprismatic.fileio import readMRC
-import pyprismatic as pr
 from glob import glob
 from atomap.atom_finding_refining import normalize_signal
 from atomap.tools import remove_atoms_from_image_using_2d_gaussian
@@ -29,7 +28,11 @@ import scipy
 import periodictable as pt
 import matplotlib
 # matplotlib.use('Agg')
-warnings.simplefilter("ignore", UserWarning)
+
+import warnings
+from scipy.optimize import OptimizeWarning
+# warnings.simplefilter("ignore", UserWarning)
+warnings.simplefilter("error", OptimizeWarning)
 
 
 # refine with and plot gaussian fitting
@@ -71,8 +74,9 @@ def get_xydata_from_list_of_intensities(
 
     return(x_array, y_array)
 
-
 # 1D single Gaussian
+
+
 def fit_1D_gaussian_to_data(xdata, amp, mu, sigma):
     '''
     Fitting function for a single 1D gaussian distribution
@@ -241,7 +245,7 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
 
     sub_residual_gauss_list = []
     for sublattice_array, fitting_tools_sub, cycler_sub, marker, in zip(sub_ints_all, fitting_tools_all_subs, cyclers_all, marker_list):
-        array = get_2d_distribution_from_sublattice_intensities(sublattice_array,
+        array = get_xydata_from_list_of_intensities(sublattice_array,
                                                                 hist_bins=hist_bins)
 
         x_array = array[:, 0]
@@ -265,12 +269,12 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
 
                 try:
                     popt_gauss, pcov_gauss = scipy.optimize.curve_fit(
-                        f=_1gaussian,
+                        f=fit_1D_gaussian_to_data,
                         xdata=x,
                         ydata=y,
                         p0=[fitting_tools[4], fitting_tools[5],
                             fitting_tools[6]])
-                    individual_gauss = _1gaussian(x, *popt_gauss)
+                    individual_gauss = fit_1D_gaussian_to_data(x, *popt_gauss)
                     sub_gauss = ax1.plot(x, individual_gauss, **kwargs)
                     sub_gauss_fill = ax1.fill_between(x,
                                                       individual_gauss.min(),
@@ -278,8 +282,9 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
                                                       facecolor=kwargs['c'],
                                                       alpha=0.5)
 
-                    sub_residual_gauss = abs(y - (_1gaussian(x, *popt_gauss)))
-                    sub_gauss_hl = ax1.plot(x, _1gaussian(x, *popt_gauss),
+                    sub_residual_gauss = abs(
+                        y - (fit_1D_gaussian_to_data(x, *popt_gauss)))
+                    sub_gauss_hl = ax1.plot(x, fit_1D_gaussian_to_data(x, *popt_gauss),
                                             label=r"$\bf{" + fitting_tools[0] + "}$" + ': ' +
                                             str(round(
                                                 sum(abs(sub_residual_gauss)), 1)),
@@ -657,7 +662,7 @@ def make_gaussian(size, fwhm, center):
     return(arr)
 
 
-def DG_filter(image, filename, d_inner, d_outer, delta, real_space_sampling, units='nm'):
+def double_gaussian_fft_filter(image, filename, d_inner, d_outer, delta, real_space_sampling, units='nm'):
     # Folder: G:/SuperStem visit/Feb 2019 data/2019_02_18_QMR_S1574_MoS2-Se-15eV
 
     # Accuracy of calculation. Smaller = more accurate.

@@ -1,13 +1,11 @@
 
 from atomap.atom_finding_refining import _make_circular_mask
 from matplotlib import gridspec
-import rigidregistration
+# import rigidregistration
 from tifffile import imread, imwrite, TiffWriter
 from collections import Counter
 import warnings
 from time import time
-from pyprismatic.fileio import readMRC
-import pyprismatic as pr
 from glob import glob
 from atomap.atom_finding_refining import normalize_signal
 from atomap.tools import remove_atoms_from_image_using_2d_gaussian
