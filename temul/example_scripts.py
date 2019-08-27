@@ -9,6 +9,8 @@ import atomap.api as am
 import hyperspy.api as hs
 import numpy as np
 
+import temul.everything as tml
+
 # Handy for VSCode plotting in Interactive window:
 # %matplotlib qt
 # %matplotlib qt
@@ -94,7 +96,7 @@ and if the image is calibrated.
 
 # Step 1
 
-vesta_xyz_filename = example_data.path_to_example_data_vesta_MoS2_vesta_xyz()
+vesta_xyz_filename = example_data.path_to_example_data_MoS2_vesta_xyz()
 # print(vesta_xyz_filename)
 
 # set the filenames for opening and closing...

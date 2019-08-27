@@ -1,4 +1,4 @@
-
+"""
 from atomap.atom_finding_refining import _make_circular_mask
 from matplotlib import gridspec
 import rigidregistration
@@ -109,3 +109,5 @@ def sum_spectra(s, xrange=[0, s.axes_manager[1].size-1], yrange=[0, s.axes_manag
                                            {'name': 'Energy Loss', 'size': sample_s.axes_manager[0].size, 'units':'eV', 'scale':sample_s.axes_manager[0].scale, 'offset':sample_s.axes_manager[0].offset}])
     spectrum_sum.original_metadata = s.original_metadata
     return spectrum_sum
+
+"""
