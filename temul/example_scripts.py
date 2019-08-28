@@ -6,10 +6,55 @@ import hyperspy.api as hs
 import numpy as np
 
 # Handy for VSCode plotting in Interactive window:
-# %matplotlib qt
-# %matplotlib qt
+%matplotlib qt
+%matplotlib qt
 
-# os.getcwd()
+######## Model Creation Example - Cubic Variation ########
+
+sublattice = tml.dummy_data.get_simple_cubic_sublattice(amplitude=[2, 10])
+
+# could have this happen automatically
+# when you choose "normalised" for the sort_sublattice_intensity
+# paramater scaler_method
+sublattice.image /= sublattice.image.max()
+
+sublattice.plot()
+
+element_list = tml.auto_generate_sublattice_element_list(material_type='single_element_column',
+                                                         elements='Au', max_number_atoms_z=10)
+
+middle_list, limit_list = tml.find_middle_and_edge_intensities(
+    sublattice, element_list=element_list,
+    standard_element=element_list[-1],
+    scaling_exponent=1.5)
+
+elements_in_sublattice = tml.sort_sublattice_intensities(
+    sublattice, intensity_type='max',
+    element_list=element_list, scalar_method=1,
+    middle_intensity_list=middle_list,
+    limit_intensity_list=limit_list)
+
+tml.assign_z_height_to_sublattice(sublattice,
+                                  centered_atoms=False)
+
+tml.print_sublattice_elements(sublattice, 10)
+
+df = tml.create_dataframe_for_cif(sublattice_list=[sublattice],
+                                  element_list=element_list)
+
+# need to work on assign_z_height_to_sublattice()
+# Need to give options for what type of z_output is wanted, centred about centre, strectched about center, starting at top, bot
+tml.write_cif_from_dataframe(dataframe=df,
+                             filename="sublattice_variation_amp",
+                             chemical_name_common="sublattice_variation_amp",
+                             cell_length_a=100,
+                             cell_length_b=100,
+                             cell_length_c=20,
+                             cell_angle_alpha=90,
+                             cell_angle_beta=90,
+                             cell_angle_gamma=90,
+                             space_group_name_H_M_alt='P 1',
+                             space_group_IT_number=1)
 
 ######## Model Creation Example - Au NP ########
 

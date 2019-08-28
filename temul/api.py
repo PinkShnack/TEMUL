@@ -55,5 +55,7 @@ from temul.io import (
 
 import temul.example_data as example_data
 
+import temul.dummy_data as dummy_data
+
 from atomap.dummy_data import (
     get_distorted_cubic_signal, get_distorted_cubic_sublattice)

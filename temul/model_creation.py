@@ -1008,7 +1008,7 @@ def auto_generate_sublattice_element_list(material_type,
         pass
     elif material_type == 'TMD_modified':
         pass
-    elif material_type == 'nanoparticle':
+    elif material_type == 'single_element_column':
         if isinstance(elements, str):
 
             for i in range(0, max_number_atoms_z+1):
@@ -1158,11 +1158,11 @@ def find_middle_and_edge_intensities_for_background(elements_from_sub1,
 # to the middle and limit points
 
 def sort_sublattice_intensities(sublattice,
-                                intensity_type=None,
-                                middle_intensity_list=None,
-                                limit_intensity_list=None,
+                                intensity_type='max',
                                 element_list=[],
                                 scalar_method='mode',
+                                middle_intensity_list=None,
+                                limit_intensity_list=None,
                                 remove_background_method=None,
                                 background_sublattice=None,
                                 num_points=3,
@@ -1528,7 +1528,8 @@ def convert_numpy_z_coords_to_z_height_string(z_coords):
 
 
 def assign_z_height_to_sublattice(sublattice,
-                                  material=None):
+                                  material=None,
+                                  centered_atoms=True):
 
     '''
     Set the z_heights for each atom position in a sublattice.
