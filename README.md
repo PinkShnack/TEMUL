@@ -1,2 +1,2 @@
 # TEMUL
-A place for data and code for everyone, written by members of the TEMUL group from the University of Limerick, Ireland (though we welcome all help, hints and contributions!)
+Functions for image and signal processing, based on the packages Hyperspy, Atomap, PyPrismatic, ASE etc. Written by members of the TEMUL group from the University of Limerick, Ireland (though we welcome all help, hints and contributions!)
