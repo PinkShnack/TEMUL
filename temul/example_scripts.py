@@ -1,13 +1,14 @@
 
+from temul.model_creation import get_max_number_atoms_z
 import temul.api as tml
 import os
 import atomap.api as am
 import hyperspy.api as hs
 import numpy as np
+from ase.io import read as ase_read
+from ase.visualize import view as ase_view
+%matplotlib qt
 
-# Handy for VSCode plotting in Interactive window:
-%matplotlib qt
-%matplotlib qt
 
 ######## Model Creation Example - Cubic Variation ########
 
@@ -18,6 +19,7 @@ sublattice = tml.dummy_data.get_simple_cubic_sublattice(amplitude=[2, 10])
 # paramater scaler_method
 sublattice.image /= sublattice.image.max()
 
+%matplotlib qt
 sublattice.plot()
 
 element_list = tml.auto_generate_sublattice_element_list(material_type='single_element_column',
@@ -35,30 +37,38 @@ elements_in_sublattice = tml.sort_sublattice_intensities(
     limit_intensity_list=limit_list)
 
 tml.assign_z_height_to_sublattice(sublattice,
-                                  centered_atoms=False)
+                                  z_bond_length=1.5,
+                                  atom_layout='top')
 
 tml.print_sublattice_elements(sublattice, 10)
 
 df = tml.create_dataframe_for_cif(sublattice_list=[sublattice],
                                   element_list=element_list)
 
-# need to work on assign_z_height_to_sublattice()
-# Need to give options for what type of z_output is wanted, centred about centre, strectched about center, starting at top, bot
+max_number_atoms_z = get_max_number_atoms_z(sublattice=sublattice)
+bond_length = 1.5
+z_thickness = max_number_atoms_z * bond_length
+
+cif_filename = "sublattice_variation_amp"
 tml.write_cif_from_dataframe(dataframe=df,
-                             filename="sublattice_variation_amp",
+                             filename=cif_filename,
                              chemical_name_common="sublattice_variation_amp",
-                             cell_length_a=100,
-                             cell_length_b=100,
-                             cell_length_c=20,
+                             cell_length_a=40,
+                             cell_length_b=40,
+                             cell_length_c=z_thickness,
                              cell_angle_alpha=90,
                              cell_angle_beta=90,
                              cell_angle_gamma=90,
                              space_group_name_H_M_alt='P 1',
                              space_group_IT_number=1)
 
+sublattice_structure = ase_read(cif_filename + '.cif')
+ase_view(sublattice_structure)
+
+
 ######## Model Creation Example - Au NP ########
 
-s = example_data.load_example_Au_nanoparticle()
+s = tml.example_data.load_example_Au_nanoparticle()
 s.plot()
 
 cropping_area = am.add_atoms_with_gui(s.data)
