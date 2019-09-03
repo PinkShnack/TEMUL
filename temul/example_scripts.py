@@ -128,6 +128,7 @@ atom_positions = am.get_atom_positions(s, separation=10, pca=True)
 # atom_positions = np.load("Au_NP_atom_positions.npy")
 
 sublattice = am.Sublattice(atom_position_list=atom_positions, image=s)
+sublattice.refine_atom_positions_using_center_of_mass()
 sublattice.plot()
 
 atom_lattice = am.Atom_Lattice(image=s, name="Cu_NP_sim",
