@@ -187,6 +187,7 @@ def convert_vesta_xyz_to_prismatic_xyz(vesta_xyz_filename,
                                        engine='python',
                                        occupancy=1.0,
                                        rms_thermal_vib=0.05,
+                                       edge_padding=None,
                                        header_comment="Let's make a file!",
                                        save=True):
     '''
@@ -236,6 +237,9 @@ def convert_vesta_xyz_to_prismatic_xyz(vesta_xyz_filename,
 
     '''
 
+    # delimiter='      |       |  ' # ase xyz
+    # delimiter='   |    |  ' # vesta xyz
+
     file = pd.read_csv(vesta_xyz_filename,
                        delimiter=delimiter,
                        header=header,
@@ -278,7 +282,27 @@ def convert_vesta_xyz_to_prismatic_xyz(vesta_xyz_filename,
         unit_cell_dimen_axis = max_axis-min_axis
         unit_cell_dimen_axis = format(unit_cell_dimen_axis, '.6f')
         unit_cell_dimen.append(unit_cell_dimen_axis)
+
+    print(unit_cell_dimen)
+    unit_cell_dimen = [float(unit_cell) for unit_cell in unit_cell_dimen]
     # should match the vesta values (or be slightly larger)
+
+    if edge_padding is not None:
+        if type(edge_padding) is tuple and len(edge_padding) == 3:
+            for i, padding in enumerate(edge_padding):
+                unit_cell_dimen[i] *= padding
+
+            # x, y, z translations
+            file.loc[:, '_atom_site_fract_x'] += unit_cell_dimen[0]/4
+            file.loc[:, '_atom_site_fract_y'] += unit_cell_dimen[1]/4
+            file.loc[:, '_atom_site_fract_z'] += unit_cell_dimen[2]/4
+
+        else:
+            raise ValueError(
+                "edge_padding must be a tuple of length 3."
+                "Example: (1, 1, 2) will double the _atom_site_fract_z, "
+                "adding 0.5 of _atom_site_fract_z to each side.")
+
     print(unit_cell_dimen)
 
     file.loc[-1] = ['', unit_cell_dimen[0],

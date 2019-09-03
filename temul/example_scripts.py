@@ -1,12 +1,16 @@
 
+import pandas as pd
+import ase
+from ase.cluster.cubic import FaceCenteredCubic
+from ase.io import read, write
+from ase.visualize import view
 from temul.model_creation import get_max_number_atoms_z
 import temul.api as tml
 import os
 import atomap.api as am
 import hyperspy.api as hs
 import numpy as np
-from ase.io import read as ase_read
-from ase.visualize import view as ase_view
+
 %matplotlib qt
 
 
@@ -62,9 +66,59 @@ tml.write_cif_from_dataframe(dataframe=df,
                              space_group_name_H_M_alt='P 1',
                              space_group_IT_number=1)
 
-sublattice_structure = ase_read(cif_filename + '.cif')
-ase_view(sublattice_structure)
+sublattice_structure = read(cif_filename + '.cif')
+view(sublattice_structure)
 
+
+######## Model Creation Example - Cu NP ########
+
+ase_xyz_filename = "Cu_NP_example.xyz"
+prismatic_xyz_filename = "Cu_NP_example_pris.xyz"
+
+surfaces = [(1, 0, 0), (1, 1, 0), (1, 1, 1)]
+layers = [6, 9, 5]
+lc = 3.61000
+Cu_NP = FaceCenteredCubic('Cu', surfaces, layers, latticeconstant=lc)
+
+view(Cu_NP)
+
+
+write(filename=ase_xyz_filename, images=Cu_NP)
+
+
+prismatic_xyz = tml.convert_vesta_xyz_to_prismatic_xyz(
+    vesta_xyz_filename=ase_xyz_filename,
+    prismatic_xyz_filename=prismatic_xyz_filename,
+    edge_padding=(2, 2, 1),
+    delimiter='      |       |  ')
+
+
+tml.simulate_with_prismatic(xyz_filename=prismatic_xyz_filename,
+                            filename=prismatic_xyz_filename,
+                            reference_image=None,
+                            probeStep=0.1,
+                            E0=60e3,
+                            integrationAngleMin=0.085,
+                            integrationAngleMax=0.186,
+                            detectorAngleStep=0.001,
+                            interpolationFactor=8,
+                            realspacePixelSize=0.0654,
+                            numFP=1,
+                            cellDimXYZ=None,
+                            tileXYZ=None,
+                            probeSemiangle=0.030,
+                            alphaBeamMax=0.032,
+                            scanWindowMin=0.0,
+                            scanWindowMax=1.0,
+                            algorithm="prism",
+                            numThreads=2)
+
+
+simulation = tml.load_prismatic_mrc_with_hyperspy(
+    prismatic_mrc_filename='prism_2Doutput_' + prismatic_xyz_filename + '.mrc',
+    save_name=prismatic_xyz_filename[:-4])
+
+simulation.plot()
 
 ######## Model Creation Example - Au NP ########
 
