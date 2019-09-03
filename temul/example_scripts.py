@@ -1,5 +1,4 @@
 
-import pandas as pd
 import ase
 from ase.cluster.cubic import FaceCenteredCubic
 from ase.io import read, write
@@ -23,7 +22,6 @@ sublattice = tml.dummy_data.get_simple_cubic_sublattice(amplitude=[2, 10])
 # paramater scaler_method
 sublattice.image /= sublattice.image.max()
 
-%matplotlib qt
 sublattice.plot()
 
 element_list = tml.auto_generate_sublattice_element_list(material_type='single_element_column',
@@ -70,7 +68,7 @@ sublattice_structure = read(cif_filename + '.cif')
 view(sublattice_structure)
 
 
-######## Model Creation Example - Cu NP ########
+######## Model Simulation Example - Cu NP ########
 
 ase_xyz_filename = "Cu_NP_example.xyz"
 prismatic_xyz_filename = "Cu_NP_example_pris.xyz"
@@ -82,9 +80,7 @@ Cu_NP = FaceCenteredCubic('Cu', surfaces, layers, latticeconstant=lc)
 
 view(Cu_NP)
 
-
 write(filename=ase_xyz_filename, images=Cu_NP)
-
 
 prismatic_xyz = tml.convert_vesta_xyz_to_prismatic_xyz(
     vesta_xyz_filename=ase_xyz_filename,
@@ -120,6 +116,108 @@ simulation = tml.load_prismatic_mrc_with_hyperspy(
 
 simulation.plot()
 
+
+######## Model Creation Example - simulated Cu NP ########
+
+s = tml.example_data.load_example_Cu_nanoparticle()
+s.plot()
+
+atom_positions = am.get_atom_positions(s, separation=10, pca=True)
+# atom_positions = am.add_atoms_with_gui(image=s, atom_list=atom_positions)
+# np.save("Au_NP_atom_positions", atom_positions)
+# atom_positions = np.load("Au_NP_atom_positions.npy")
+
+sublattice = am.Sublattice(atom_position_list=atom_positions, image=s)
+sublattice.plot()
+
+atom_lattice = am.Atom_Lattice(image=s, name="Cu_NP_sim",
+                               sublattice_list=[sublattice])
+atom_lattice.save(filename="Cu_NP_sim_Atom_Lattice.hdf5", overwrite=True)
+
+
+sublattice.image /= sublattice.image.max()
+
+element_list = tml.auto_generate_sublattice_element_list(
+    material_type='single_element_column',
+    elements='Cu', max_number_atoms_z=7)
+
+middle_list, limit_list = tml.find_middle_and_edge_intensities(
+    sublattice, element_list=element_list,
+    standard_element=element_list[-1],
+    scaling_exponent=1.5)
+
+elements_in_sublattice = tml.sort_sublattice_intensities(
+    sublattice, intensity_type='max',
+    element_list=element_list, scalar_method=1,
+    middle_intensity_list=middle_list,
+    limit_intensity_list=limit_list)
+
+z_bond_length = 3.61000
+tml.assign_z_height_to_sublattice(sublattice,
+                                  z_bond_length=z_bond_length,
+                                  atom_layout='center')
+
+tml.print_sublattice_elements(sublattice, 10)
+
+df = tml.create_dataframe_for_cif(sublattice_list=[sublattice],
+                                  element_list=element_list)
+
+max_number_atoms_z = get_max_number_atoms_z(sublattice=sublattice)
+z_thickness = max_number_atoms_z * z_bond_length
+
+cif_filename = "Create_Cu_NP"
+
+tml.write_cif_from_dataframe(dataframe=df,
+                             filename=cif_filename,
+                             chemical_name_common=cif_filename,
+                             cell_length_a=s.axes_manager['x'].size/10,
+                             cell_length_b=s.axes_manager['y'].size/10,
+                             cell_length_c=z_thickness)
+
+sublattice_structure = read(cif_filename + '.cif')
+view(sublattice_structure)
+
+# Simulate created NP
+tml.create_dataframe_for_xyz(sublattice_list=[sublattice],
+                             element_list=element_list,
+                             x_distance=s.axes_manager['x'].size/10,
+                             y_distance=s.axes_manager['y'].size/10,
+                             z_distance=z_thickness,
+                             filename=cif_filename,
+                             header_comment='top_level_comment')
+
+prismatic_xyz_filename = cif_filename
+tml.simulate_with_prismatic(xyz_filename=prismatic_xyz_filename,
+                            filename=prismatic_xyz_filename,
+                            reference_image=None,
+                            probeStep=0.1,
+                            E0=60e3,
+                            integrationAngleMin=0.085,
+                            integrationAngleMax=0.186,
+                            detectorAngleStep=0.001,
+                            interpolationFactor=4,
+                            realspacePixelSize=0.0654,
+                            numFP=1,
+                            cellDimXYZ=None,
+                            tileXYZ=None,
+                            probeSemiangle=0.030,
+                            alphaBeamMax=0.032,
+                            scanWindowMin=0.0,
+                            scanWindowMax=1.0,
+                            algorithm="prism",
+                            numThreads=2)
+
+
+simulation = tml.load_prismatic_mrc_with_hyperspy(
+    prismatic_mrc_filename='prism_2Doutput_' + prismatic_xyz_filename + '.mrc',
+    save_name=prismatic_xyz_filename[:-4])
+
+simulation.plot()
+
+# Refine created NP
+# ...
+
+
 ######## Model Creation Example - Au NP ########
 
 s = tml.example_data.load_example_Au_nanoparticle()
@@ -139,11 +237,11 @@ atom_positions = am.add_atoms_with_gui(image=s_crop, atom_list=atom_positions)
 # np.save("Au_NP_atom_positions", atom_positions)
 # atom_positions = np.load("Au_NP_atom_positions.npy")
 
-sub1 = am.Sublattice(atom_position_list=atom_positions, image=s_crop)
-sub1.plot()
+sublattice = am.Sublattice(atom_position_list=atom_positions, image=s_crop)
+sublattice.plot()
 
 atom_lattice = am.Atom_Lattice(image=s_crop, name="Au_NP_1",
-                               sublattice_list=[sub1])
+                               sublattice_list=[sublattice])
 atom_lattice.save(filename="Au_NP_Atom_Lattice.hdf5", overwrite=True)
 
 

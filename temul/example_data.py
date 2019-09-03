@@ -41,3 +41,26 @@ def load_example_Au_nanoparticle():
         example_Au_nanoparticle = load(path)
     s = example_Au_nanoparticle.deepcopy()
     return s
+
+
+example_Cu_nanoparticle_sim = None
+
+
+def load_example_Cu_nanoparticle():
+    """
+    Get the hspy simulated image of an example Cu nanoparticle
+
+    Example
+    -------
+    >>> import temul.example_data as example_data
+    >>> s = example_data.load_example_Cu_nanoparticle()
+
+    """
+    global example_Cu_nanoparticle_sim
+    if example_Cu_nanoparticle_sim is None:
+        path = os.path.join(
+            my_path, 'example_data',
+            'structures', 'example_Cu_nanoparticle_sim.hspy')
+        example_Cu_nanoparticle_sim = load(path)
+    s = example_Cu_nanoparticle_sim.deepcopy()
+    return s
