@@ -7,10 +7,63 @@ from temul.model_creation import get_max_number_atoms_z
 import temul.api as tml
 import os
 import atomap.api as am
+from atomap.testing_tools import MakeTestData
 import hyperspy.api as hs
 import numpy as np
-
+from temul.signal_processing import (get_xydata_from_list_of_intensities,
+                                     return_fitting_of_1D_gaussian,
+                                     fit_1D_gaussian_to_data,
+                                     plot_gaussian_fit)
+# perhaps put the below in a module itseld for vscode?
+import matplotlib.pyplot as plt
+plt.style.use('default')
 %matplotlib qt
+
+
+# example fitting of a gaussian to data
+amp, mu, sigma = 10, 10, 0.5
+sub1_inten = np.random.normal(mu, sigma, 1000)
+xdata, ydata = get_xydata_from_list_of_intensities(sub1_inten, hist_bins=50)
+popt_gauss, _ = return_fitting_of_1D_gaussian(
+    function=fit_1D_gaussian_to_data, xdata=xdata, ydata=ydata,
+    amp=amp, mu=mu, sigma=sigma)
+
+plot_gaussian_fit(xdata, ydata, function=fit_1D_gaussian_to_data,
+                  amp=popt_gauss[0], mu=popt_gauss[1], sigma=popt_gauss[2],
+                  gauss_art='r--', gauss_label='Gauss Fit',
+                  plot_data=True, data_art='ko', data_label='Data Points',
+                  plot_fill=True, facecolor='r', alpha=0.5)
+
+
+# fitting to test sample, single atom element.
+
+sublattice = tml.dummy_data.get_simple_cubic_sublattice(
+    image_noise=True,
+    amplitude=[20, 30])
+sublattice.plot()
+
+sub1_inten = tml.get_sublattice_intensity(sublattice, 'max')
+
+plt.figure()
+plt.hist(sub1_inten, bins=100)
+plt.show()
+
+# get p0 from the lists as done before in plot_gaussian_fitting_for_multiple_fits.
+# will need to go into old scripts to find out what "fitting_tools" were exactly...
+
+amp, mu, sigma = 10, 0.07, 0.0005
+xdata, ydata = get_xydata_from_list_of_intensities(
+    sub1_inten, hist_bins=50)
+popt_gauss, _ = return_fitting_of_1D_gaussian(
+    function=fit_1D_gaussian_to_data, xdata=xdata, ydata=ydata,
+    amp=amp, mu=mu, sigma=sigma)
+
+plot_gaussian_fit(xdata, ydata, function=fit_1D_gaussian_to_data,
+                  amp=popt_gauss[0], mu=popt_gauss[1], sigma=popt_gauss[2],
+                  gauss_art='r--', gauss_label='Gauss Fit',
+                  plot_data=True, data_art='ko', data_label='Data Points',
+                  plot_fill=True, facecolor='r', alpha=0.5)
+
 
 
 ######## Model Creation Example - Cubic Variation ########

@@ -60,7 +60,7 @@ def get_xydata_from_list_of_intensities(
 
     >>> amp, mu, sigma = 10, 10, 0.5
     >>> sub1_inten = np.random.normal(mu, sigma, 1000)
-    >>> xdata, ydatalist_of                        sub1_inten, hist_bins=50)
+    >>> xdata, ydata = get_xydata_from_list_of_intensities(sub1_inten, hist_bins=50)
     '''
 
     hist_bins = hist_bins
@@ -102,7 +102,7 @@ def fit_1D_gaussian_to_data(xdata, amp, mu, sigma):
 
     >>> amp, mu, sigma = 10, 10, 0.5
     >>> sub1_inten = np.random.normal(mu, sigma, 1000)
-    >>> xdata, ydatalist_of                        sub1_inten, hist_bins=50)
+    >>> xdata, ydata = get_xydata_from_list_of_intensities(sub1_inten, hist_bins=50)
     >>> gauss_fit_01 = _(xdata, amp, mu, sigma)    
     '''
 
@@ -123,7 +123,7 @@ def return_fitting_of_1D_gaussian(
     Parameters
     ----------
     xdata, ydata : see scipy.optimize.curve_fit
-    amp, mu, sigma : see _() for more details
+    amp, mu, sigma : see fit_1D_gaussian_to_data() for more details
 
     Returns
     -------
@@ -135,9 +135,9 @@ def return_fitting_of_1D_gaussian(
 
     >>> amp, mu, sigma = 10, 10, 0.5
     >>> sub1_inten = np.random.normal(mu, sigma, 1000)
-    >>> xdata, ydatalist_of                        sub1_inten, hist_bins=50)
-    >>> popt_gauss, _ = return_fitting_of_1DGaussian(
-                            function=_,
+    >>> xdata, ydata = get_xydata_from_list_of_intensities(sub1_inten, hist_bins=50)
+    >>> popt_gauss, _ = return_fitting_of_1D_gaussian(
+                            function=fit_1D_gaussian_to_data,
                             xdata=xdata,
                             ydata=ydata,
                             p0=[amp, mu, sigma])
@@ -168,9 +168,9 @@ def plot_gaussian_fit(xdata, ydata, function, amp, mu, sigma,
     '''
     >>> amp, mu, sigma = 10, 10, 0.5
     >>> sub1_inten = np.random.normal(mu, sigma, 1000)
-    >>> xdata, ydatalist_of                        sub1_inten, hist_bins=50)
-    >>> popt_gauss, _ = return_fitting_of_1DGaussian(
-                            function=_,
+    >>> xdata, ydata = get_xydata_from_list_of_intensities(sub1_inten, hist_bins=50)
+    >>> popt_gauss, _ = return_fitting_of_1D_gaussian(
+                            function=fit_1D_gaussian_to_data,
                             xdata=xdata,
                             ydata=ydata,
                             p0=[amp, mu, sigma])
