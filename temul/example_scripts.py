@@ -13,7 +13,9 @@ import numpy as np
 from temul.signal_processing import (get_xydata_from_list_of_intensities,
                                      return_fitting_of_1D_gaussian,
                                      fit_1D_gaussian_to_data,
-                                     plot_gaussian_fit)
+                                     plot_gaussian_fit,
+                                     get_fitting_tools_for_plotting_gaussians,
+                                     plot_gaussian_fitting_for_multiple_fits)
 # perhaps put the below in a module itseld for vscode?
 import matplotlib.pyplot as plt
 plt.style.use('default')
@@ -39,21 +41,20 @@ plot_gaussian_fit(xdata, ydata, function=fit_1D_gaussian_to_data,
 
 sublattice = tml.dummy_data.get_simple_cubic_sublattice(
     image_noise=True,
-    amplitude=[20, 30])
+    amplitude=[2, 8])
+
+sublattice.image /= sublattice.image.max()
 sublattice.plot()
 
 sub1_inten = tml.get_sublattice_intensity(sublattice, 'max')
-
 plt.figure()
-plt.hist(sub1_inten, bins=100)
+plt.hist(sub1_inten, bins=150)
 plt.show()
 
-# get p0 from the lists as done before in plot_gaussian_fitting_for_multiple_fits.
-# will need to go into old scripts to find out what "fitting_tools" were exactly...
-
-amp, mu, sigma = 10, 0.07, 0.0005
+# fit single plot
+amp, mu, sigma = 10, 0.27, 0.005
 xdata, ydata = get_xydata_from_list_of_intensities(
-    sub1_inten, hist_bins=50)
+    sub1_inten, hist_bins=150)
 popt_gauss, _ = return_fitting_of_1D_gaussian(
     function=fit_1D_gaussian_to_data, xdata=xdata, ydata=ydata,
     amp=amp, mu=mu, sigma=sigma)
@@ -64,6 +65,44 @@ plot_gaussian_fit(xdata, ydata, function=fit_1D_gaussian_to_data,
                   plot_data=True, data_art='ko', data_label='Data Points',
                   plot_fill=True, facecolor='r', alpha=0.5)
 
+# fit all elements in the sublattice.
+element_list = tml.auto_generate_sublattice_element_list(
+    material_type='single_element_column',
+    elements='Cu', max_number_atoms_z=7)
+
+middle_list, limit_list = tml.find_middle_and_edge_intensities(
+    sublattice, element_list=element_list,
+    standard_element=element_list[-1],
+    scaling_exponent=1.0,
+    largest_element_intensity=0.96)
+
+
+fitting_tools = get_fitting_tools_for_plotting_gaussians(
+    element_list,
+    scaled_middle_intensity_list=middle_list,
+    scaled_limit_intensity_list=limit_list,
+    gaussian_amp=5,
+    gauss_sigma_division=2)
+
+plot_gaussian_fitting_for_multiple_fits(sub_ints_all=[sub1_inten],
+                                        fitting_tools_all_subs=[fitting_tools],
+                                        element_list_all_subs=[element_list],
+                                        marker_list=[['Sub1', '.']],
+                                        hist_bins=150,
+                                        filename='Fit of Intensities')
+
+# plot a second fake sublattice
+sub2_inten = sub1_inten + 0.01
+plot_gaussian_fitting_for_multiple_fits(sub_ints_all=[sub1_inten, sub2_inten],
+                                        fitting_tools_all_subs=[
+                                            fitting_tools, fitting_tools],
+                                        element_list_all_subs=[
+                                            element_list, element_list],
+                                        marker_list=[
+                                            ['Sub1', '.'], ['Sub2', 'x']],
+                                        hist_bins=150,
+                                        filename='Fit of 2 Intensities',
+                                        mpl_cmaps_list=['viridis', 'cividis'])
 
 
 ######## Model Creation Example - Cubic Variation ########

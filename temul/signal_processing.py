@@ -1,6 +1,5 @@
 
 
-
 from atomap.atom_finding_refining import _make_circular_mask
 from matplotlib import gridspec
 import rigidregistration
@@ -17,6 +16,7 @@ from scipy.ndimage.filters import gaussian_filter
 import collections
 from atomap.atom_finding_refining import subtract_average_background
 from numpy import mean
+import matplotlib
 import matplotlib.pyplot as plt
 import hyperspy.api as hs
 import atomap.api as am
@@ -207,24 +207,134 @@ def plot_gaussian_fit(xdata, ydata, function, amp, mu, sigma,
 #     ax1.plot(x, f(x, *popt_gauss), 'k--', label='Fit')
 
 
+def get_scaled_middle_limit_intensity_list(sublattice,
+                                           middle_intensity_list,
+                                           limit_intensity_list,
+                                           sublattice_scalar):
+    '''
+    Returns the middle and limit lists scaled to the actual intensities in the
+    sublattice. Useful for get_fitting_tools_for_plotting_gaussians().
+    '''
+    middle_intensity_list_real = []
+    limit_intensity_list_real = []
+
+    for middle in middle_intensity_list:
+        middle_real = middle*sublattice_scalar
+        middle_intensity_list_real.append(middle_real)
+    for limit in limit_intensity_list:
+        limit_real = limit*sublattice_scalar
+        limit_intensity_list_real.append(limit_real)
+
+    return(middle_intensity_list_real, limit_intensity_list_real)
+
+
+def get_fitting_tools_for_plotting_gaussians(element_list,
+                                             scaled_middle_intensity_list,
+                                             scaled_limit_intensity_list,
+                                             gaussian_amp=5,
+                                             gauss_sigma_division=100):
+    '''
+    Creates a list of parameters and details for fitting the intensities of a 
+    sublattice with multiple Gaussians.
+    '''
+
+    if len(scaled_middle_intensity_list)+1 != len(scaled_limit_intensity_list):
+        raise ValueError(
+            "limit list must have a length one greater than middle list")
+
+    if len(element_list) != len(scaled_middle_intensity_list):
+        raise ValueError(
+            "element list must be the same length as middle list")
+
+    fitting_tools = []
+    for i, (element, middle) in enumerate(zip(element_list, scaled_middle_intensity_list)):
+        element_name = element
+        middle_int = middle
+        lower_int = scaled_limit_intensity_list[i]
+        upper_int = scaled_limit_intensity_list[i+1]
+        gauss_amp = gaussian_amp
+        gauss_mu = middle
+        gauss_sigma = (upper_int - lower_int)/gauss_sigma_division
+        fitting_tools.append([element_name, middle_int, lower_int, upper_int,
+                              gauss_amp, gauss_mu, gauss_sigma])
+
+    return(fitting_tools)
+
+
 def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
                                             fitting_tools_all_subs,
                                             element_list_all_subs,
                                             marker_list,
-                                            hist_bins,
-                                            filename):
+                                            hist_bins=150,
+                                            filename='Fit of Intensities',
+                                            mpl_cmaps_list=['viridis']):
+    '''
+    plots Gaussian distributions for intensities of a sublattice, over the
+    given parameters (fitting tools).
 
+    Example
+    -------
+
+    sub_ints_all = [sub1_ints, sub2_ints]
+    marker_list = [['Sub1', '.'],['Sub2', 'x']]
+
+    middle_intensity_list_real_sub1, limit_intensity_list_real_sub1 = make_middle_limit_intensity_list_real(
+                                        sublattice=sub1,
+                                        middle_intensity_list=middle_intensity_list_sub1, 
+                                        limit_intensity_list=limit_intensity_list_sub1,
+                                        method=method,
+                                        sublattice_scalar=sub1_mode)
+
+    middle_intensity_list_real_sub2, limit_intensity_list_real_sub2 = make_middle_limit_intensity_list_real(
+                                        sublattice=sub2,
+                                        middle_intensity_list=middle_intensity_list_sub2, 
+                                        limit_intensity_list=limit_intensity_list_sub2,
+                                        method=method,
+                                        sublattice_scalar=sub2_mode)
+
+
+    element_list_all_subs = [element_list_sub1, element_list_sub2]
+
+    fitting_tools_all_subs = [get_fitting_tools_for_plotting_gaussians(element_list_sub1, 
+                                                middle_intensity_list_real_sub1,
+                                                limit_intensity_list_real_sub1),
+                            get_fitting_tools_for_plotting_gaussians(element_list_sub2, 
+                                                middle_intensity_list_real_sub2,
+                                                limit_intensity_list_real_sub2)]
+
+
+    plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
+                                    fitting_tools_all_subs,
+                                    element_list_all_subs,
+                                    marker_list,
+                                    hist_bins=500,
+                                    filename='Fit of Intensities900')
+
+    '''
     # set up cyclers for plotting gaussian fits
-    cycler_sub1 = plt.cycler(c=['lightblue', 'blue', 'darkviolet', 'violet', 'navy', 'darkslateblue'],
-                             linestyle=[':', '--', '-.', '-', ':', '--'])
-    cycler_sub2 = plt.cycler(c=['wheat', 'gold', 'forestgreen', 'greenyellow', 'darkgreen', 'darkolivegreen', 'y'],
-                             linestyle=[':', '--', '-.', '-', ':', '--', '-.'])
 
-    cyclers_all = [cycler_sub1, cycler_sub2]
+    # need to set up a loop here to create as many cyclers as sublattices
+    # can be done by appending all to an empty cyclers_all list
+    cyclers_all = []
+    for i, _ in enumerate(sub_ints_all):
+        mpl_cmap = matplotlib.cm.get_cmap(mpl_cmaps_list[i])
+        colormap_list = []
+        linestyle_list = []
+        for j in np.arange(0,1,1/len(element_list_all_subs[0])):
+            colormap_list.append(mpl_cmap(j))
+            linestyle_list.append('-')
+
+        cycler_sub = plt.cycler(c=colormap_list,
+                        linestyle=linestyle_list)
+
+        cyclers_all.append(cycler_sub)
 
     if len(cyclers_all) != len(element_list_all_subs) != len(fitting_tools_all_subs):
         raise ValueError(
-            "len(cyclers_all) != len(element_list_all) != len(fitting_tools_all_subs)")
+            "len(cyclers_all) != len(element_list_all) != len(fitting_tools_all_subs), "
+            + str(len(cyclers_all)) + ', ' +
+            str(len(element_list_all_subs)) + ', '
+            + str(len(fitting_tools_all_subs)))
 
     for cycler, element, fitting in zip(cyclers_all, element_list_all_subs, fitting_tools_all_subs):
         if len(cycler) != len(element) != len(fitting):
@@ -234,7 +344,7 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
                          'ytick.labelsize': 'x-large'})
     plt.rc('font', family='Arial')
 
-    fig, (ax1, ax2) = plt.subplots(figsize=(16, 9), nrows=2, sharex=True,
+    _, (ax1, ax2) = plt.subplots(figsize=(16, 9), nrows=2, sharex=True,
                                    gridspec_kw={'height_ratios': [2, 0.5]})
     plt.subplots_adjust(hspace=0)
 
@@ -245,17 +355,15 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
 
     sub_residual_gauss_list = []
     for sublattice_array, fitting_tools_sub, cycler_sub, marker, in zip(sub_ints_all, fitting_tools_all_subs, cyclers_all, marker_list):
-        array = get_xydata_from_list_of_intensities(sublattice_array,
-                                                                hist_bins=hist_bins)
+        x_array, y_array = get_xydata_from_list_of_intensities(sublattice_array,
+                                                               hist_bins=hist_bins)
 
-        x_array = array[:, 0]
-        y_array = array[:, 1]
-        sub_data = ax1.plot(x_array, y_array, color='grey',
-                            label=marker[0] + ' Data',
-                            marker=marker[1],
-                            linestyle='',
-                            markersize=4,
-                            alpha=0.75)
+        ax1.plot(x_array, y_array, color='grey',
+                 label=marker[0] + ' Data',
+                 marker=marker[1],
+                 linestyle='',
+                 markersize=4,
+                 alpha=0.75)
 
         for fitting_tools, kwargs in zip(fitting_tools_sub, cycler_sub):
             sliced_array = []
@@ -268,7 +376,7 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
                 y = sliced_array[:, 1]
 
                 try:
-                    popt_gauss, pcov_gauss = scipy.optimize.curve_fit(
+                    popt_gauss, _ = scipy.optimize.curve_fit(
                         f=fit_1D_gaussian_to_data,
                         xdata=x,
                         ydata=y,

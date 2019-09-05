@@ -60,6 +60,11 @@ def get_simple_cubic_sublattice(image_noise=False, amplitude=1):
     >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
     >>> sublattice.plot()
 
+    # If the amplitude list is:
+    sublattice = tml.dummy_data.get_simple_cubic_sublattice(
+        amplitude=[2, 3])
+    # then only amplitudes of 2 will be used, see numpy.random.randint
+
     """
     test_data = _make_simple_cubic_testdata(image_noise=image_noise,
                                             amplitude=amplitude)

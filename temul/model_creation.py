@@ -1034,6 +1034,7 @@ def find_middle_and_edge_intensities(sublattice,
                                      element_list,
                                      standard_element,
                                      scaling_exponent,
+                                     largest_element_intensity=None,
                                      split_symbol=['_', '.']):
     """
     Create a list which represents the peak points of the
@@ -1041,6 +1042,12 @@ def find_middle_and_edge_intensities(sublattice,
 
     works for nanoparticles as well, doesn't matter what 
     scaling_exponent you use for nanoparticle. Figure this out!
+
+    If the max_element_intensity is set, then the program assumes 
+    that the standard element is the largest available element 
+    combination, and scales the middle and limit intensity lists 
+    so that the middle_intensity_list[-1] == max_element_intensity
+
     """
 
     middle_intensity_list = []
@@ -1078,6 +1085,11 @@ def find_middle_and_edge_intensities(sublattice,
         limit_intensity_list.append(max_limit)
     else:
         pass
+
+    if largest_element_intensity is not None:
+        ratio = sublattice.image.max() / largest_element_intensity
+        middle_intensity_list = [middle/ratio for middle in middle_intensity_list]
+        limit_intensity_list = [limit/ratio for limit in limit_intensity_list]
 
     return middle_intensity_list, limit_intensity_list
 
@@ -1204,7 +1216,7 @@ def sort_sublattice_intensities(sublattice,
 
             if len(element_list) != len(middle_intensity_list):
                 raise ValueError(
-                    'elements_list length does not equal middle_intensity_list length')
+                    'element_list length does not equal middle_intensity_list length')
             else:
                 pass
 
@@ -1219,7 +1231,7 @@ def sort_sublattice_intensities(sublattice,
         elif intensity_list_real == True:
             if len(element_list) != len(middle_intensity_list):
                 raise ValueError(
-                    'elements_list length does not equal middle_intensity_list length')
+                    'element_list length does not equal middle_intensity_list length')
             else:
                 pass
 
@@ -1478,7 +1490,7 @@ def return_xyz_coordintes(x, y,
                           z_thickness, z_bond_length,
                           number_atoms_z=None,
                           fractional_coordinates=True,
-                          centered_atoms=True):
+                          atom_layout='bot'):
     '''
     Produce xyz coordinates for an xy coordinate given the z-dimension
     information. 
@@ -1508,8 +1520,8 @@ def return_xyz_coordintes(x, y,
     z_coords = return_z_coordinates(number_atoms_z=number_atoms_z,
                                     z_thickness=z_thickness,
                                     z_bond_length=z_bond_length,
-                                    fractional_coordinates=True,
-                                    centered_atoms=True)
+                                    fractional_coordinates=fractional_coordinates,
+                                    atom_layout=atom_layout)
 
     # One z for each atom in number_atoms for each xy pair
     atom_coords = []
