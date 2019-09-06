@@ -30,6 +30,7 @@ popt_gauss, _ = return_fitting_of_1D_gaussian(
     function=fit_1D_gaussian_to_data, xdata=xdata, ydata=ydata,
     amp=amp, mu=mu, sigma=sigma)
 
+# choice of hist or scatter data plot!
 plot_gaussian_fit(xdata, ydata, function=fit_1D_gaussian_to_data,
                   amp=popt_gauss[0], mu=popt_gauss[1], sigma=popt_gauss[2],
                   gauss_art='r--', gauss_label='Gauss Fit',
@@ -38,10 +39,9 @@ plot_gaussian_fit(xdata, ydata, function=fit_1D_gaussian_to_data,
 
 
 # fitting to test sample, single atom element.
-
 sublattice = tml.dummy_data.get_simple_cubic_sublattice(
     image_noise=True,
-    amplitude=[2, 8])
+    amplitude=[50, 70])
 
 sublattice.image /= sublattice.image.max()
 sublattice.plot()
@@ -49,6 +49,10 @@ sublattice.plot()
 sub1_inten = tml.get_sublattice_intensity(sublattice, 'max')
 plt.figure()
 plt.hist(sub1_inten, bins=150)
+plt.show()
+
+plt.figure()
+plt.imshow(sublattice.image)
 plt.show()
 
 # fit single plot
@@ -84,6 +88,7 @@ fitting_tools = get_fitting_tools_for_plotting_gaussians(
     gaussian_amp=5,
     gauss_sigma_division=2)
 
+# allow choice of kwargs for displaying, no fill, etc
 plot_gaussian_fitting_for_multiple_fits(sub_ints_all=[sub1_inten],
                                         fitting_tools_all_subs=[fitting_tools],
                                         element_list_all_subs=[element_list],
