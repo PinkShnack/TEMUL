@@ -28,6 +28,8 @@ import scipy
 import periodictable as pt
 import matplotlib
 # matplotlib.use('Agg')
+import temul.model_creation as model_creation
+
 
 import warnings
 from scipy.optimize import OptimizeWarning
@@ -259,8 +261,8 @@ def get_fitting_tools_for_plotting_gaussians(element_list,
         fitting_tools.append([element_name, middle_int, lower_int, upper_int,
                               gauss_amp, gauss_mu, gauss_sigma])
 
-        if fit_bright_first:
-            fitting_tools.sort(reverse=True)
+    if fit_bright_first:
+        fitting_tools.sort(reverse=True)
     return(fitting_tools)
 
 
@@ -324,12 +326,12 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
         mpl_cmap = matplotlib.cm.get_cmap(mpl_cmaps_list[i])
         colormap_list = []
         linestyle_list = []
-        for j in np.arange(0,1,1/len(element_list_all_subs[0])):
+        for j in np.arange(0, 1, 1/len(element_list_all_subs[0])):
             colormap_list.append(mpl_cmap(j))
             linestyle_list.append('-')
 
         cycler_sub = plt.cycler(c=colormap_list,
-                        linestyle=linestyle_list)
+                                linestyle=linestyle_list)
 
         cyclers_all.append(cycler_sub)
 
@@ -349,7 +351,7 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
     plt.rc('font', family='Arial')
 
     _, (ax1, ax2) = plt.subplots(figsize=(16, 9), nrows=2, sharex=True,
-                                   gridspec_kw={'height_ratios': [2, 0.5]})
+                                 gridspec_kw={'height_ratios': [2, 0.5]})
     plt.subplots_adjust(hspace=0)
 
     #fig.suptitle("Fit of all Elements with Residuals", family="serif", fontsize=20)
@@ -364,19 +366,24 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
 
         if plotting_style == 'scatter':
             ax1.plot(x_array, y_array, color='grey',
-                 label=marker[0] + ' Data',
-                 marker=marker[1],
-                 linestyle='',
-                 markersize=4,
-                 alpha=0.75)
+                     label=marker[0] + ' Data',
+                     marker=marker[1],
+                     linestyle='',
+                     markersize=4,
+                     alpha=0.75)
         elif plotting_style == 'hist':
             ax1.hist(sublattice_array,
-                bins=hist_bins,
-                color='grey',
-                label=marker[0] + 'Data',
-                alpha=0.75)
+                     bins=hist_bins,
+                     color='grey',
+                     label=marker[0] + 'Data',
+                     alpha=0.75)
 
         for fitting_tools, kwargs in zip(fitting_tools_sub, cycler_sub):
+            # label for plotting            
+            label_info = model_creation.split_and_sort_element(
+                fitting_tools[0])
+            label_name = '$' + label_info[0][1] + '_{' + str(label_info[0][2]) + '}$'
+
             sliced_array = []
             for atom_int, atom_count in zip(x_array, y_array):
                 if fitting_tools[2] < atom_int < fitting_tools[3]:
@@ -404,7 +411,7 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
                     sub_residual_gauss = abs(
                         y - (fit_1D_gaussian_to_data(x, *popt_gauss)))
                     sub_gauss_hl = ax1.plot(x, fit_1D_gaussian_to_data(x, *popt_gauss),
-                                            label=r"$\bf{" + fitting_tools[0] + "}$" + ': ' +
+                                            label= r"$\bf{%s}$ : " %label_name +
                                             str(round(
                                                 sum(abs(sub_residual_gauss)), 1)),
                                             linewidth=1.5,
@@ -427,7 +434,7 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
                     print("Error - curve_fit failed for " +
                           fitting_tools[0] + ", skipping...")
                 except TypeError:
-                    print("Error (see leastsq in scipy/optimize/minpack) - " + 
+                    print("Error (see leastsq in scipy/optimize/minpack) - " +
                           "Not enough data for fitting of " +
                           fitting_tools[0] + ", skipping...")
                     # https://stackoverflow.com/questions/48637960/improper-input-n-3-must-not-exceed-m-1-error-trying-to-fit-a-gaussian-function?rq=1
