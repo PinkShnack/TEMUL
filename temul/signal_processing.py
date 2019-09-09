@@ -231,6 +231,7 @@ def get_scaled_middle_limit_intensity_list(sublattice,
 def get_fitting_tools_for_plotting_gaussians(element_list,
                                              scaled_middle_intensity_list,
                                              scaled_limit_intensity_list,
+                                             fit_bright_first=True,
                                              gaussian_amp=5,
                                              gauss_sigma_division=100):
     '''
@@ -258,6 +259,8 @@ def get_fitting_tools_for_plotting_gaussians(element_list,
         fitting_tools.append([element_name, middle_int, lower_int, upper_int,
                               gauss_amp, gauss_mu, gauss_sigma])
 
+        if fit_bright_first:
+            fitting_tools.sort(reverse=True)
     return(fitting_tools)
 
 
@@ -266,6 +269,7 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
                                             element_list_all_subs,
                                             marker_list,
                                             hist_bins=150,
+                                            plotting_style='hist',
                                             filename='Fit of Intensities',
                                             mpl_cmaps_list=['viridis']):
     '''
@@ -358,12 +362,19 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
         x_array, y_array = get_xydata_from_list_of_intensities(sublattice_array,
                                                                hist_bins=hist_bins)
 
-        ax1.plot(x_array, y_array, color='grey',
+        if plotting_style == 'scatter':
+            ax1.plot(x_array, y_array, color='grey',
                  label=marker[0] + ' Data',
                  marker=marker[1],
                  linestyle='',
                  markersize=4,
                  alpha=0.75)
+        elif plotting_style == 'hist':
+            ax1.hist(sublattice_array,
+                bins=hist_bins,
+                color='grey',
+                label=marker[0] + 'Data',
+                alpha=0.75)
 
         for fitting_tools, kwargs in zip(fitting_tools_sub, cycler_sub):
             sliced_array = []
@@ -415,6 +426,11 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
                 except RuntimeError:
                     print("Error - curve_fit failed for " +
                           fitting_tools[0] + ", skipping...")
+                except TypeError:
+                    print("Error (see leastsq in scipy/optimize/minpack) - " + 
+                          "Not enough data for fitting of " +
+                          fitting_tools[0] + ", skipping...")
+                    # https://stackoverflow.com/questions/48637960/improper-input-n-3-must-not-exceed-m-1-error-trying-to-fit-a-gaussian-function?rq=1
 
     legend1 = ax1.legend(
         loc="best", prop={'size': 10}, ncol=2, edgecolor='grey')

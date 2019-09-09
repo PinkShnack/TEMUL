@@ -41,12 +41,14 @@ plot_gaussian_fit(xdata, ydata, function=fit_1D_gaussian_to_data,
 # fitting to test sample, single atom element.
 sublattice = tml.dummy_data.get_simple_cubic_sublattice(
     image_noise=True,
-    amplitude=[50, 70])
+    amplitude=[5, 10])
 
 sublattice.image /= sublattice.image.max()
-sublattice.plot()
+# sublattice.plot()
 
 sub1_inten = tml.get_sublattice_intensity(sublattice, 'max')
+# sub1_inten = np.concatenate((sub1_inten, sub1_inten+0.001, sub1_inten-0.001))
+
 plt.figure()
 plt.hist(sub1_inten, bins=150)
 plt.show()
@@ -69,17 +71,17 @@ plot_gaussian_fit(xdata, ydata, function=fit_1D_gaussian_to_data,
                   plot_data=True, data_art='ko', data_label='Data Points',
                   plot_fill=True, facecolor='r', alpha=0.5)
 
+
 # fit all elements in the sublattice.
 element_list = tml.auto_generate_sublattice_element_list(
     material_type='single_element_column',
-    elements='Cu', max_number_atoms_z=7)
+    elements='Cu', max_number_atoms_z=10)
 
 middle_list, limit_list = tml.find_middle_and_edge_intensities(
     sublattice, element_list=element_list,
     standard_element=element_list[-1],
     scaling_exponent=1.0,
     largest_element_intensity=0.96)
-
 
 fitting_tools = get_fitting_tools_for_plotting_gaussians(
     element_list,
@@ -93,7 +95,7 @@ plot_gaussian_fitting_for_multiple_fits(sub_ints_all=[sub1_inten],
                                         fitting_tools_all_subs=[fitting_tools],
                                         element_list_all_subs=[element_list],
                                         marker_list=[['Sub1', '.']],
-                                        hist_bins=150,
+                                        hist_bins=100,
                                         filename='Fit of Intensities')
 
 # plot a second fake sublattice
