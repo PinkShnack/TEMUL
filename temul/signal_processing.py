@@ -382,7 +382,7 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
             # label for plotting            
             label_info = model_creation.split_and_sort_element(
                 fitting_tools[0])
-            label_name = '$' + label_info[0][1] + '_{' + str(label_info[0][2]) + '}$'
+            label_name = label_info[0][1] + '_{' + str(label_info[0][2]) + '}'
 
             sliced_array = []
             for atom_int, atom_count in zip(x_array, y_array):

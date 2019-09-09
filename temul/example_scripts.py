@@ -97,38 +97,6 @@ plot_gaussian_fitting_for_multiple_fits(sub_ints_all=[sub1_inten],
                                         hist_bins=100,
                                         filename='Fit of Intensities')
 
-#
-r"$\bf{" + label_name + "}$" + ': '
-
-label_name = 'Cu_{098}'
-plt.figure()
-plt.plot([6,7,5,4], label=r"$\bf{%s}$ : " %label_name + 'hgfhd')
-plt.legend()
-plt.show()
-
-from temul.model_creation import split_and_sort_element
-
-
-for fitting_tools_sub in fitting_tools_all_subs:
-
-    for fitting_tools in fitting_tools_sub:
-
-        # print(fitting_tools[0])
-
-        # label for plotting            
-        label_info = split_and_sort_element(
-            fitting_tools[0])
-        print(label_info)
-        label_name = label_info[0][1] + '_{' + str(label_info[0][2]) + '}'
-
-        fig, ax = plt.subplots()
-        ax.plot([9,9,9,9,0,8,7], label=label_name)
-        ax.legend(edgecolor='grey')
-        plt.show()
-
-
-######
-
 # plot a second fake sublattice
 sub2_inten = sub1_inten + 0.01
 plot_gaussian_fitting_for_multiple_fits(sub_ints_all=[sub1_inten, sub2_inten],
