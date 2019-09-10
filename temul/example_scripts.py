@@ -21,7 +21,6 @@ import matplotlib.pyplot as plt
 plt.style.use('default')
 %matplotlib qt
 
-
 # example fitting of a gaussian to data
 amp, mu, sigma = 10, 10, 0.5
 sub1_inten = np.random.normal(mu, sigma, 1000)
