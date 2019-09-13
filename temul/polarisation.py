@@ -4,6 +4,7 @@ import atomap.api as am
 
 def delete_atom_planes_from_sublattice(sublattice,
                                        zone_axis_index=0,
+                                       atom_plane_tolerance=0.5,
                                        divisible_by=3,
                                        offset_from_zero=0,
                                        opposite=False):
@@ -17,6 +18,9 @@ def delete_atom_planes_from_sublattice(sublattice,
     zone_axis_index : int, default 0
         The zone axis you wish to specify. You are indexing
         sublattice.zones_axis_average_distances[zone_axis_index]
+    atom_plane_tolerance : float, default 0.5
+        float between 0.0 and 1.0. Closer to 1 means it will find more zones.
+        See sublattice.construct_zone_axes() for more information. 
     divisible_by : int, default 3
         If divisible_by is 2, every second atom_plane is deleted,
         If divisible_by is 4, every fourth atom_plane is deleted, etc.
@@ -40,7 +44,7 @@ delete_atom_planes_from_sublattice(sublattice=sublatticeA,
 sublatticeA.plot_planes()
 
     '''
-    sublattice.construct_zone_axes()
+    sublattice.construct_zone_axes(atom_plane_tolerance=atom_plane_tolerance)
 
     zone_vec_needed = sublattice.zones_axis_average_distances[zone_axis_index]
 
