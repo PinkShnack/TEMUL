@@ -111,6 +111,9 @@ create a new folder in which to place all of this refinement.
 move the xyz files in 
 
 
+Add functions to polarisation.py for domain wall mapping.
+> centre_colormap for the LNO domain and any diverging, see if it's useful.
+
 
 
 # Order to upload to atomap
