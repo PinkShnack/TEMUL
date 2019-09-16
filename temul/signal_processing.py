@@ -77,6 +77,7 @@ def get_xydata_from_list_of_intensities(
     return(x_array, y_array)
 
 # 1D single Gaussian
+# test
 
 
 def fit_1D_gaussian_to_data(xdata, amp, mu, sigma):
@@ -379,7 +380,7 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
                      alpha=0.75)
 
         for fitting_tools, kwargs in zip(fitting_tools_sub, cycler_sub):
-            # label for plotting            
+            # label for plotting
             label_info = model_creation.split_and_sort_element(
                 fitting_tools[0])
             label_name = label_info[0][1] + '_{' + str(label_info[0][2]) + '}'
@@ -411,7 +412,7 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
                     sub_residual_gauss = abs(
                         y - (fit_1D_gaussian_to_data(x, *popt_gauss)))
                     sub_gauss_hl = ax1.plot(x, fit_1D_gaussian_to_data(x, *popt_gauss),
-                                            label= r"$\bf{%s}$ : " %label_name +
+                                            label=r"$\bf{%s}$ : " % label_name +
                                             str(round(
                                                 sum(abs(sub_residual_gauss)), 1)),
                                             linewidth=1.5,
