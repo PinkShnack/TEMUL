@@ -2044,3 +2044,148 @@ def remove_local_background(sublattice, background_sublattice, intensity_type,
     else:
         raise ValueError(
             "You must choose a valid intensity_type. Try max, mean or total")
+
+
+
+def remove_image_intensity_in_data_slice(atom,
+                                         image_data,
+                                         percent_to_nn=0.50):
+    """
+    Remove intensity from the area around an atom in a
+    sublattice
+    """
+    closest_neighbor = atom.get_closest_neighbor()
+
+    slice_size = closest_neighbor * percent_to_nn * 2
+    _remove_image_slice_around_atom(atom,
+                                    image_data, slice_size)
+
+
+def _remove_image_slice_around_atom(
+        self,
+        image_data,
+        slice_size):
+    """
+    Return a square slice of the image data.
+
+    The atom is in the center of this slice.
+
+    Parameters
+    ----------
+    image_data : Numpy 2D array
+    slice_size : int
+        Width and height of the square slice
+
+    Returns
+    -------
+    2D numpy array
+
+    """
+    x0 = self.pixel_x - slice_size/2
+    x1 = self.pixel_x + slice_size/2
+    y0 = self.pixel_y - slice_size/2
+    y1 = self.pixel_y + slice_size/2
+
+    if x0 < 0.0:
+        x0 = 0
+    if y0 < 0.0:
+        y0 = 0
+    if x1 > image_data.shape[1]:
+        x1 = image_data.shape[1]
+    if y1 > image_data.shape[0]:
+        y1 = image_data.shape[0]
+    x0, x1, y0, y1 = int(x0), int(x1), int(y0), int(y1)
+    data_slice = copy.deepcopy(image_data[y0:y1, x0:x1])
+
+    data_slice_max = data_slice.max()
+
+    image_data[y0:y1, x0:x1] = image_data[y0:y1, x0:x1] - \
+        data_slice_max
+
+
+def get_cell_image(s, points_x, points_y, method='Voronoi', max_radius='Auto',
+                   reduce_func=np.min,
+                   show_progressbar=True):
+    '''
+    The same as atomap's integrate, except instead of summing the
+    region around an atom, it removes the value from all pixels in
+    that region. 
+    For example, with this you can remove the local background intensity
+    by setting reduce_func=np.min.
+
+    Parameters
+    ----------
+    See atomap's integrate function.
+
+    reduce_func : ufunc, default np.min
+        function used to reduce the pixel values around each atom
+        to a float.
+    
+    Examples
+    --------
+    #### add PTO example from paper 
+    
+    Returns
+    -------
+
+    Numpy array with the same shape as s
+    '''
+    image = s.__array__()
+    if len(image.shape) < 2:
+        raise ValueError("s must have at least 2 dimensions")
+    intensity_record = np.zeros_like(image, dtype=float)
+    currentFeature = np.zeros_like(image.T, dtype=float)
+    point_record = np.zeros(image.shape[0:2][::-1], dtype=int)
+    integrated_intensity = np.zeros_like(sum(sum(currentFeature.T)))
+    integrated_intensity = np.dstack(
+        integrated_intensity for i in range(len(points_x)))
+    integrated_intensity = np.squeeze(integrated_intensity.T)
+    points = np.array((points_y, points_x))
+    # Setting max_radius to the width of the image, if none is set.
+    if method == 'Voronoi':
+        if max_radius == 'Auto':
+            max_radius = max(point_record.shape)
+        elif max_radius <= 0:
+            raise ValueError("max_radius must be higher than 0.")
+        distance_log = np.zeros_like(points[0])
+
+        for i in range(image.shape[0]):
+            for j in range(image.shape[1]):
+
+                # For every pixel the distance to all points must be
+                # calculated.
+                distance_log = ((points[0] - float(i))**2 +
+                                (points[1] - float(j))**2)**0.5
+
+                # Next for that pixel the minimum distance to and point should
+                # be checked and discarded if too large:
+                distMin = np.min(distance_log)
+                minIndex = np.argmin(distance_log)
+
+                if distMin >= max_radius:
+                    point_record[j][i] = 0
+                else:
+                    point_record[j][i] = minIndex + 1
+
+    else:
+        raise NotImplementedError(
+            "Oops! You have asked for an unimplemented method.")
+    point_record -= 1
+
+    for point in trange(points[0].shape[0], desc='Integrating',
+                        disable=not show_progressbar):
+        currentMask = (point_record == point)
+        currentFeature = currentMask * image.T
+        #integrated_intensity[point] = sum(sum(currentFeature.T)).T
+        # my shite
+        # remove zeros from array (needed for np.mean, np.min)
+        integrated_intensity[point] = reduce_func(
+            currentFeature[currentFeature != 0])
+
+        for i in range(image.shape[0]):
+            for j in range(image.shape[1]):
+                if currentMask.T[i][j]:
+                    intensity_record[i][j] = integrated_intensity[point]
+
+    # return (integrated_intensity, s_intensity_record, point_record.T)
+    return(intensity_record)
