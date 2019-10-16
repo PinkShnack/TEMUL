@@ -14,9 +14,40 @@ def compare_images_line_profile_one_image(image,
                                           arrow=None,
                                           linetrace=None):
     '''
-    See skimage PR PinkShnack for details on implementing this in skimage
+    Plots two line profiles on one image with the line profile intensities
+    in a subfigure.
+    See skimage PR PinkShnack for details on implementing profile_line
+    in skimage
 
-    image : Hyperspy signal
+    Parameters
+    ----------
+
+    image : 2D Hyperspy signal
+    line_profile_positions : list of lists
+        two line profile coordinates. Use atomap's am.add_atoms_with_gui()
+        function to get these. The first two dots will trace the first line
+        profile etc.
+        Could be extended to n positions with a basic loop.
+    linewidth : int, default 1
+        see profile_line for parameter details.
+    image_sampling :  float, default 'Auto'
+        if set to 'Auto' the function will attempt to find the sampling of
+        image from image.axes_manager[0].scale.
+     arrow : string, default None
+        If set, arrows will be plotting on the image. Options are 'h' and
+        'v' for horizontal and vertical arrows, respectively. 
+    linetrace : int, default None
+        If set, the line profile will be plotted on the image. 
+        The thickness of the linetrace will be linewidth*linetrace.
+        Name could be improved maybe.
+
+    Returns
+    -------
+
+    Examples
+    --------
+
+    Include PTO example from paper
     '''
 
     if image_sampling == 'Auto':
@@ -128,7 +159,31 @@ def compare_images_line_profile_two_images(imageA,
                                            linewidth=1,
                                            image_sampling='Auto'):
     '''
-    See skimage PR PinkShnack for details on implementing this in skimage
+    Plots two line profiles on two images separately with the line
+    profile intensities in a subfigure.
+    See skimage PR PinkShnack for details on implementing profile_line
+    in skimage
+
+    Parameters
+    ----------
+
+    imageAm, imageB : 2D Hyperspy signal
+    line_profile_positions : list of lists
+        one line profile coordinate. Use atomap's am.add_atoms_with_gui()
+        function to get these. The two dots will trace the line profile.
+    linewidth : int, default 1
+        see profile_line for parameter details.
+    image_sampling :  float, default 'Auto'
+        if set to 'Auto' the function will attempt to find the sampling of
+        image from image.axes_manager[0].scale.
+
+    Returns
+    -------
+
+    Examples
+    --------
+
+    Include PTO example from paper
     '''
 
     # if image_sampling == 'Auto':
