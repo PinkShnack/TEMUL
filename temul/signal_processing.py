@@ -794,7 +794,8 @@ def make_gaussian(size, fwhm, center):
     return(arr)
 
 
-def double_gaussian_fft_filter(image, filename, d_inner, d_outer, delta, real_space_sampling, units='nm'):
+def double_gaussian_fft_filter(image, filename, 
+        d_inner, d_outer, real_space_sampling, delta=0.05, units='nm'):
     # Folder: G:/SuperStem visit/Feb 2019 data/2019_02_18_QMR_S1574_MoS2-Se-15eV
 
     # Accuracy of calculation. Smaller = more accurate.
@@ -811,6 +812,11 @@ def double_gaussian_fft_filter(image, filename, d_inner, d_outer, delta, real_sp
     # image.plot()
     #    image.save('Original Image Data', overwrite=True)
     #    image_name = image.metadata.General.original_filename
+
+    '''
+    Example d_inner, d_outer:
+    MoS2: d_1 = 7.7, d_2 = 14
+    '''
 
     physical_image_size = real_space_sampling * len(image.data)
     reciprocal_sampling = 1/physical_image_size
