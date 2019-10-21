@@ -1,5 +1,5 @@
 
-# test 
+# test shelly's comp
 
 import ase
 from ase.cluster.cubic import FaceCenteredCubic
