@@ -1,13 +1,11 @@
 
+
 from atomap.atom_finding_refining import _make_circular_mask
 from matplotlib import gridspec
 import rigidregistration
 from tifffile import imread, imwrite, TiffWriter
 from collections import Counter
-import warnings
 from time import time
-from pyprismatic.fileio import readMRC
-import pyprismatic as pr
 from glob import glob
 from atomap.atom_finding_refining import normalize_signal
 from atomap.tools import remove_atoms_from_image_using_2d_gaussian
@@ -18,6 +16,7 @@ from scipy.ndimage.filters import gaussian_filter
 import collections
 from atomap.atom_finding_refining import subtract_average_background
 from numpy import mean
+import matplotlib
 import matplotlib.pyplot as plt
 import hyperspy.api as hs
 import atomap.api as am
@@ -29,7 +28,13 @@ import scipy
 import periodictable as pt
 import matplotlib
 # matplotlib.use('Agg')
-warnings.simplefilter("ignore", UserWarning)
+import temul.model_creation as model_creation
+
+
+import warnings
+from scipy.optimize import OptimizeWarning
+# warnings.simplefilter("ignore", UserWarning)
+warnings.simplefilter("error", OptimizeWarning)
 
 
 # refine with and plot gaussian fitting
@@ -57,7 +62,7 @@ def get_xydata_from_list_of_intensities(
 
     >>> amp, mu, sigma = 10, 10, 0.5
     >>> sub1_inten = np.random.normal(mu, sigma, 1000)
-    >>> xdata, ydatalist_of                        sub1_inten, hist_bins=50)
+    >>> xdata, ydata = get_xydata_from_list_of_intensities(sub1_inten, hist_bins=50)
     '''
 
     hist_bins = hist_bins
@@ -71,8 +76,10 @@ def get_xydata_from_list_of_intensities(
 
     return(x_array, y_array)
 
-
 # 1D single Gaussian
+# test
+
+
 def fit_1D_gaussian_to_data(xdata, amp, mu, sigma):
     '''
     Fitting function for a single 1D gaussian distribution
@@ -98,7 +105,7 @@ def fit_1D_gaussian_to_data(xdata, amp, mu, sigma):
 
     >>> amp, mu, sigma = 10, 10, 0.5
     >>> sub1_inten = np.random.normal(mu, sigma, 1000)
-    >>> xdata, ydatalist_of                        sub1_inten, hist_bins=50)
+    >>> xdata, ydata = get_xydata_from_list_of_intensities(sub1_inten, hist_bins=50)
     >>> gauss_fit_01 = _(xdata, amp, mu, sigma)    
     '''
 
@@ -119,7 +126,7 @@ def return_fitting_of_1D_gaussian(
     Parameters
     ----------
     xdata, ydata : see scipy.optimize.curve_fit
-    amp, mu, sigma : see _() for more details
+    amp, mu, sigma : see fit_1D_gaussian_to_data() for more details
 
     Returns
     -------
@@ -131,9 +138,9 @@ def return_fitting_of_1D_gaussian(
 
     >>> amp, mu, sigma = 10, 10, 0.5
     >>> sub1_inten = np.random.normal(mu, sigma, 1000)
-    >>> xdata, ydatalist_of                        sub1_inten, hist_bins=50)
-    >>> popt_gauss, _ = return_fitting_of_1DGaussian(
-                            function=_,
+    >>> xdata, ydata = get_xydata_from_list_of_intensities(sub1_inten, hist_bins=50)
+    >>> popt_gauss, _ = return_fitting_of_1D_gaussian(
+                            function=fit_1D_gaussian_to_data,
                             xdata=xdata,
                             ydata=ydata,
                             p0=[amp, mu, sigma])
@@ -164,9 +171,9 @@ def plot_gaussian_fit(xdata, ydata, function, amp, mu, sigma,
     '''
     >>> amp, mu, sigma = 10, 10, 0.5
     >>> sub1_inten = np.random.normal(mu, sigma, 1000)
-    >>> xdata, ydatalist_of                        sub1_inten, hist_bins=50)
-    >>> popt_gauss, _ = return_fitting_of_1DGaussian(
-                            function=_,
+    >>> xdata, ydata = get_xydata_from_list_of_intensities(sub1_inten, hist_bins=50)
+    >>> popt_gauss, _ = return_fitting_of_1D_gaussian(
+                            function=fit_1D_gaussian_to_data,
                             xdata=xdata,
                             ydata=ydata,
                             p0=[amp, mu, sigma])
@@ -203,24 +210,138 @@ def plot_gaussian_fit(xdata, ydata, function, amp, mu, sigma,
 #     ax1.plot(x, f(x, *popt_gauss), 'k--', label='Fit')
 
 
+def get_scaled_middle_limit_intensity_list(sublattice,
+                                           middle_intensity_list,
+                                           limit_intensity_list,
+                                           sublattice_scalar):
+    '''
+    Returns the middle and limit lists scaled to the actual intensities in the
+    sublattice. Useful for get_fitting_tools_for_plotting_gaussians().
+    '''
+    middle_intensity_list_real = []
+    limit_intensity_list_real = []
+
+    for middle in middle_intensity_list:
+        middle_real = middle*sublattice_scalar
+        middle_intensity_list_real.append(middle_real)
+    for limit in limit_intensity_list:
+        limit_real = limit*sublattice_scalar
+        limit_intensity_list_real.append(limit_real)
+
+    return(middle_intensity_list_real, limit_intensity_list_real)
+
+
+def get_fitting_tools_for_plotting_gaussians(element_list,
+                                             scaled_middle_intensity_list,
+                                             scaled_limit_intensity_list,
+                                             fit_bright_first=True,
+                                             gaussian_amp=5,
+                                             gauss_sigma_division=100):
+    '''
+    Creates a list of parameters and details for fitting the intensities of a 
+    sublattice with multiple Gaussians.
+    '''
+
+    if len(scaled_middle_intensity_list)+1 != len(scaled_limit_intensity_list):
+        raise ValueError(
+            "limit list must have a length one greater than middle list")
+
+    if len(element_list) != len(scaled_middle_intensity_list):
+        raise ValueError(
+            "element list must be the same length as middle list")
+
+    fitting_tools = []
+    for i, (element, middle) in enumerate(zip(element_list, scaled_middle_intensity_list)):
+        element_name = element
+        middle_int = middle
+        lower_int = scaled_limit_intensity_list[i]
+        upper_int = scaled_limit_intensity_list[i+1]
+        gauss_amp = gaussian_amp
+        gauss_mu = middle
+        gauss_sigma = (upper_int - lower_int)/gauss_sigma_division
+        fitting_tools.append([element_name, middle_int, lower_int, upper_int,
+                              gauss_amp, gauss_mu, gauss_sigma])
+
+    if fit_bright_first:
+        fitting_tools.sort(reverse=True)
+    return(fitting_tools)
+
+
 def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
                                             fitting_tools_all_subs,
                                             element_list_all_subs,
                                             marker_list,
-                                            hist_bins,
-                                            filename):
+                                            hist_bins=150,
+                                            plotting_style='hist',
+                                            filename='Fit of Intensities',
+                                            mpl_cmaps_list=['viridis']):
+    '''
+    plots Gaussian distributions for intensities of a sublattice, over the
+    given parameters (fitting tools).
 
+    Example
+    -------
+
+    sub_ints_all = [sub1_ints, sub2_ints]
+    marker_list = [['Sub1', '.'],['Sub2', 'x']]
+
+    middle_intensity_list_real_sub1, limit_intensity_list_real_sub1 = make_middle_limit_intensity_list_real(
+                                        sublattice=sub1,
+                                        middle_intensity_list=middle_intensity_list_sub1, 
+                                        limit_intensity_list=limit_intensity_list_sub1,
+                                        method=method,
+                                        sublattice_scalar=sub1_mode)
+
+    middle_intensity_list_real_sub2, limit_intensity_list_real_sub2 = make_middle_limit_intensity_list_real(
+                                        sublattice=sub2,
+                                        middle_intensity_list=middle_intensity_list_sub2, 
+                                        limit_intensity_list=limit_intensity_list_sub2,
+                                        method=method,
+                                        sublattice_scalar=sub2_mode)
+
+
+    element_list_all_subs = [element_list_sub1, element_list_sub2]
+
+    fitting_tools_all_subs = [get_fitting_tools_for_plotting_gaussians(element_list_sub1, 
+                                                middle_intensity_list_real_sub1,
+                                                limit_intensity_list_real_sub1),
+                            get_fitting_tools_for_plotting_gaussians(element_list_sub2, 
+                                                middle_intensity_list_real_sub2,
+                                                limit_intensity_list_real_sub2)]
+
+
+    plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
+                                    fitting_tools_all_subs,
+                                    element_list_all_subs,
+                                    marker_list,
+                                    hist_bins=500,
+                                    filename='Fit of Intensities900')
+
+    '''
     # set up cyclers for plotting gaussian fits
-    cycler_sub1 = plt.cycler(c=['lightblue', 'blue', 'darkviolet', 'violet', 'navy', 'darkslateblue'],
-                             linestyle=[':', '--', '-.', '-', ':', '--'])
-    cycler_sub2 = plt.cycler(c=['wheat', 'gold', 'forestgreen', 'greenyellow', 'darkgreen', 'darkolivegreen', 'y'],
-                             linestyle=[':', '--', '-.', '-', ':', '--', '-.'])
 
-    cyclers_all = [cycler_sub1, cycler_sub2]
+    # need to set up a loop here to create as many cyclers as sublattices
+    # can be done by appending all to an empty cyclers_all list
+    cyclers_all = []
+    for i, _ in enumerate(sub_ints_all):
+        mpl_cmap = matplotlib.cm.get_cmap(mpl_cmaps_list[i])
+        colormap_list = []
+        linestyle_list = []
+        for j in np.arange(0, 1, 1/len(element_list_all_subs[0])):
+            colormap_list.append(mpl_cmap(j))
+            linestyle_list.append('-')
+
+        cycler_sub = plt.cycler(c=colormap_list,
+                                linestyle=linestyle_list)
+
+        cyclers_all.append(cycler_sub)
 
     if len(cyclers_all) != len(element_list_all_subs) != len(fitting_tools_all_subs):
         raise ValueError(
-            "len(cyclers_all) != len(element_list_all) != len(fitting_tools_all_subs)")
+            "len(cyclers_all) != len(element_list_all) != len(fitting_tools_all_subs), "
+            + str(len(cyclers_all)) + ', ' +
+            str(len(element_list_all_subs)) + ', '
+            + str(len(fitting_tools_all_subs)))
 
     for cycler, element, fitting in zip(cyclers_all, element_list_all_subs, fitting_tools_all_subs):
         if len(cycler) != len(element) != len(fitting):
@@ -230,8 +351,8 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
                          'ytick.labelsize': 'x-large'})
     plt.rc('font', family='Arial')
 
-    fig, (ax1, ax2) = plt.subplots(figsize=(16, 9), nrows=2, sharex=True,
-                                   gridspec_kw={'height_ratios': [2, 0.5]})
+    _, (ax1, ax2) = plt.subplots(figsize=(16, 9), nrows=2, sharex=True,
+                                 gridspec_kw={'height_ratios': [2, 0.5]})
     plt.subplots_adjust(hspace=0)
 
     #fig.suptitle("Fit of all Elements with Residuals", family="serif", fontsize=20)
@@ -241,19 +362,29 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
 
     sub_residual_gauss_list = []
     for sublattice_array, fitting_tools_sub, cycler_sub, marker, in zip(sub_ints_all, fitting_tools_all_subs, cyclers_all, marker_list):
-        array = get_2d_distribution_from_sublattice_intensities(sublattice_array,
-                                                                hist_bins=hist_bins)
+        x_array, y_array = get_xydata_from_list_of_intensities(sublattice_array,
+                                                               hist_bins=hist_bins)
 
-        x_array = array[:, 0]
-        y_array = array[:, 1]
-        sub_data = ax1.plot(x_array, y_array, color='grey',
-                            label=marker[0] + ' Data',
-                            marker=marker[1],
-                            linestyle='',
-                            markersize=4,
-                            alpha=0.75)
+        if plotting_style == 'scatter':
+            ax1.plot(x_array, y_array, color='grey',
+                     label=marker[0] + ' Data',
+                     marker=marker[1],
+                     linestyle='',
+                     markersize=4,
+                     alpha=0.75)
+        elif plotting_style == 'hist':
+            ax1.hist(sublattice_array,
+                     bins=hist_bins,
+                     color='grey',
+                     label=marker[0] + 'Data',
+                     alpha=0.75)
 
         for fitting_tools, kwargs in zip(fitting_tools_sub, cycler_sub):
+            # label for plotting
+            label_info = model_creation.split_and_sort_element(
+                fitting_tools[0])
+            label_name = label_info[0][1] + '_{' + str(label_info[0][2]) + '}'
+
             sliced_array = []
             for atom_int, atom_count in zip(x_array, y_array):
                 if fitting_tools[2] < atom_int < fitting_tools[3]:
@@ -264,13 +395,13 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
                 y = sliced_array[:, 1]
 
                 try:
-                    popt_gauss, pcov_gauss = scipy.optimize.curve_fit(
-                        f=_1gaussian,
+                    popt_gauss, _ = scipy.optimize.curve_fit(
+                        f=fit_1D_gaussian_to_data,
                         xdata=x,
                         ydata=y,
                         p0=[fitting_tools[4], fitting_tools[5],
                             fitting_tools[6]])
-                    individual_gauss = _1gaussian(x, *popt_gauss)
+                    individual_gauss = fit_1D_gaussian_to_data(x, *popt_gauss)
                     sub_gauss = ax1.plot(x, individual_gauss, **kwargs)
                     sub_gauss_fill = ax1.fill_between(x,
                                                       individual_gauss.min(),
@@ -278,9 +409,10 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
                                                       facecolor=kwargs['c'],
                                                       alpha=0.5)
 
-                    sub_residual_gauss = abs(y - (_1gaussian(x, *popt_gauss)))
-                    sub_gauss_hl = ax1.plot(x, _1gaussian(x, *popt_gauss),
-                                            label=r"$\bf{" + fitting_tools[0] + "}$" + ': ' +
+                    sub_residual_gauss = abs(
+                        y - (fit_1D_gaussian_to_data(x, *popt_gauss)))
+                    sub_gauss_hl = ax1.plot(x, fit_1D_gaussian_to_data(x, *popt_gauss),
+                                            label=r"$\bf{%s}$ : " % label_name +
                                             str(round(
                                                 sum(abs(sub_residual_gauss)), 1)),
                                             linewidth=1.5,
@@ -302,6 +434,11 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
                 except RuntimeError:
                     print("Error - curve_fit failed for " +
                           fitting_tools[0] + ", skipping...")
+                except TypeError:
+                    print("Error (see leastsq in scipy/optimize/minpack) - " +
+                          "Not enough data for fitting of " +
+                          fitting_tools[0] + ", skipping...")
+                    # https://stackoverflow.com/questions/48637960/improper-input-n-3-must-not-exceed-m-1-error-trying-to-fit-a-gaussian-function?rq=1
 
     legend1 = ax1.legend(
         loc="best", prop={'size': 10}, ncol=2, edgecolor='grey')
@@ -657,7 +794,8 @@ def make_gaussian(size, fwhm, center):
     return(arr)
 
 
-def DG_filter(image, filename, d_inner, d_outer, delta, real_space_sampling, units='nm'):
+def double_gaussian_fft_filter(image, filename, 
+        d_inner, d_outer, real_space_sampling, delta=0.05, units='nm'):
     # Folder: G:/SuperStem visit/Feb 2019 data/2019_02_18_QMR_S1574_MoS2-Se-15eV
 
     # Accuracy of calculation. Smaller = more accurate.
@@ -674,6 +812,11 @@ def DG_filter(image, filename, d_inner, d_outer, delta, real_space_sampling, uni
     # image.plot()
     #    image.save('Original Image Data', overwrite=True)
     #    image_name = image.metadata.General.original_filename
+
+    '''
+    Example d_inner, d_outer:
+    MoS2: d_1 = 7.7, d_2 = 14
+    '''
 
     physical_image_size = real_space_sampling * len(image.data)
     reciprocal_sampling = 1/physical_image_size
@@ -1907,3 +2050,148 @@ def remove_local_background(sublattice, background_sublattice, intensity_type,
     else:
         raise ValueError(
             "You must choose a valid intensity_type. Try max, mean or total")
+
+
+
+def remove_image_intensity_in_data_slice(atom,
+                                         image_data,
+                                         percent_to_nn=0.50):
+    """
+    Remove intensity from the area around an atom in a
+    sublattice
+    """
+    closest_neighbor = atom.get_closest_neighbor()
+
+    slice_size = closest_neighbor * percent_to_nn * 2
+    _remove_image_slice_around_atom(atom,
+                                    image_data, slice_size)
+
+
+def _remove_image_slice_around_atom(
+        self,
+        image_data,
+        slice_size):
+    """
+    Return a square slice of the image data.
+
+    The atom is in the center of this slice.
+
+    Parameters
+    ----------
+    image_data : Numpy 2D array
+    slice_size : int
+        Width and height of the square slice
+
+    Returns
+    -------
+    2D numpy array
+
+    """
+    x0 = self.pixel_x - slice_size/2
+    x1 = self.pixel_x + slice_size/2
+    y0 = self.pixel_y - slice_size/2
+    y1 = self.pixel_y + slice_size/2
+
+    if x0 < 0.0:
+        x0 = 0
+    if y0 < 0.0:
+        y0 = 0
+    if x1 > image_data.shape[1]:
+        x1 = image_data.shape[1]
+    if y1 > image_data.shape[0]:
+        y1 = image_data.shape[0]
+    x0, x1, y0, y1 = int(x0), int(x1), int(y0), int(y1)
+    data_slice = copy.deepcopy(image_data[y0:y1, x0:x1])
+
+    data_slice_max = data_slice.max()
+
+    image_data[y0:y1, x0:x1] = image_data[y0:y1, x0:x1] - \
+        data_slice_max
+
+
+def get_cell_image(s, points_x, points_y, method='Voronoi', max_radius='Auto',
+                   reduce_func=np.min,
+                   show_progressbar=True):
+    '''
+    The same as atomap's integrate, except instead of summing the
+    region around an atom, it removes the value from all pixels in
+    that region. 
+    For example, with this you can remove the local background intensity
+    by setting reduce_func=np.min.
+
+    Parameters
+    ----------
+    See atomap's integrate function.
+
+    reduce_func : ufunc, default np.min
+        function used to reduce the pixel values around each atom
+        to a float.
+    
+    Examples
+    --------
+    #### add PTO example from paper 
+    
+    Returns
+    -------
+
+    Numpy array with the same shape as s
+    '''
+    image = s.__array__()
+    if len(image.shape) < 2:
+        raise ValueError("s must have at least 2 dimensions")
+    intensity_record = np.zeros_like(image, dtype=float)
+    currentFeature = np.zeros_like(image.T, dtype=float)
+    point_record = np.zeros(image.shape[0:2][::-1], dtype=int)
+    integrated_intensity = np.zeros_like(sum(sum(currentFeature.T)))
+    integrated_intensity = np.dstack(
+        integrated_intensity for i in range(len(points_x)))
+    integrated_intensity = np.squeeze(integrated_intensity.T)
+    points = np.array((points_y, points_x))
+    # Setting max_radius to the width of the image, if none is set.
+    if method == 'Voronoi':
+        if max_radius == 'Auto':
+            max_radius = max(point_record.shape)
+        elif max_radius <= 0:
+            raise ValueError("max_radius must be higher than 0.")
+        distance_log = np.zeros_like(points[0])
+
+        for i in range(image.shape[0]):
+            for j in range(image.shape[1]):
+
+                # For every pixel the distance to all points must be
+                # calculated.
+                distance_log = ((points[0] - float(i))**2 +
+                                (points[1] - float(j))**2)**0.5
+
+                # Next for that pixel the minimum distance to and point should
+                # be checked and discarded if too large:
+                distMin = np.min(distance_log)
+                minIndex = np.argmin(distance_log)
+
+                if distMin >= max_radius:
+                    point_record[j][i] = 0
+                else:
+                    point_record[j][i] = minIndex + 1
+
+    else:
+        raise NotImplementedError(
+            "Oops! You have asked for an unimplemented method.")
+    point_record -= 1
+
+    for point in trange(points[0].shape[0], desc='Integrating',
+                        disable=not show_progressbar):
+        currentMask = (point_record == point)
+        currentFeature = currentMask * image.T
+        #integrated_intensity[point] = sum(sum(currentFeature.T)).T
+        # my shite
+        # remove zeros from array (needed for np.mean, np.min)
+        integrated_intensity[point] = reduce_func(
+            currentFeature[currentFeature != 0])
+
+        for i in range(image.shape[0]):
+            for j in range(image.shape[1]):
+                if currentMask.T[i][j]:
+                    intensity_record[i][j] = integrated_intensity[point]
+
+    # return (integrated_intensity, s_intensity_record, point_record.T)
+    return(intensity_record)

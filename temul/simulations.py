@@ -1,13 +1,13 @@
 
+import pyprismatic as pr
+
 from atomap.atom_finding_refining import _make_circular_mask
 from matplotlib import gridspec
 import rigidregistration
 from tifffile import imread, imwrite, TiffWriter
 from collections import Counter
-import warnings
 from time import time
-from pyprismatic.fileio import readMRC
-import pyprismatic as pr
+# from pyprismatic.fileio import readMRC
 from glob import glob
 from atomap.atom_finding_refining import normalize_signal
 from atomap.tools import remove_atoms_from_image_using_2d_gaussian
@@ -29,6 +29,9 @@ import scipy
 import periodictable as pt
 import matplotlib
 # matplotlib.use('Agg')
+
+import warnings
+warnings.simplefilter("ignore", UserWarning)
 
 
 def simulate_and_calibrate_with_prismatic(
@@ -143,7 +146,6 @@ def simulate_and_calibrate_with_prismatic(
     return(simulation)
 
 
-
 def simulate_with_prismatic(xyz_filename,
                             filename,
                             reference_image=None,
@@ -151,7 +153,7 @@ def simulate_with_prismatic(xyz_filename,
                             E0=60e3,
                             integrationAngleMin=0.085,
                             integrationAngleMax=0.186,
-                            detectorAngleStep = 0.001,
+                            detectorAngleStep=0.001,
                             interpolationFactor=16,
                             realspacePixelSize=0.0654,
                             numFP=1,
@@ -335,17 +337,12 @@ def load_prismatic_mrc_with_hyperspy(
     return simulation
 
 
-
-
-
 # -*- coding: utf-8 -*-
 """
 Created on Wed Mar 13 13:12:44 2019
 
 @author: eoghan.oconnell
 """
-
-warnings.simplefilter("ignore", UserWarning)
 
 
 '''
@@ -710,7 +707,6 @@ Created on Fri Apr 26 17:33:48 2019
 @author: Eoghan.OConnell
 """
 
-warnings.simplefilter("ignore", UserWarning)
 
 '''
 directory = 'G:/SuperStem visit/Feb 2019 data/2019_02_18_QMR_S1262_MoS2-Se-10eV/005_rigid_reg/Try_5/32bit/images_aligned_0' 
@@ -925,4 +921,3 @@ def image_refine_via_position_loop(image,
     for position_refine_file in position_refine_filenames:
         os.rename(position_refine_file, folder_name +
                   '/' + position_refine_file)
-

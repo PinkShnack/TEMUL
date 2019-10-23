@@ -1,3 +1,7 @@
+
+from temul.signal_processing import get_sublattice_intensity
+import atomap
+
 from atomap.atom_finding_refining import _make_circular_mask
 from matplotlib import gridspec
 import rigidregistration
@@ -5,8 +9,6 @@ from tifffile import imread, imwrite, TiffWriter
 from collections import Counter
 import warnings
 from time import time
-from pyprismatic.fileio import readMRC
-import pyprismatic as pr
 from glob import glob
 from atomap.atom_finding_refining import normalize_signal
 from atomap.tools import remove_atoms_from_image_using_2d_gaussian
@@ -1006,7 +1008,7 @@ def auto_generate_sublattice_element_list(material_type,
         pass
     elif material_type == 'TMD_modified':
         pass
-    elif material_type == 'nanoparticle':
+    elif material_type == 'single_element_column':
         if isinstance(elements, str):
 
             for i in range(0, max_number_atoms_z+1):
@@ -1032,6 +1034,7 @@ def find_middle_and_edge_intensities(sublattice,
                                      element_list,
                                      standard_element,
                                      scaling_exponent,
+                                     largest_element_intensity=None,
                                      split_symbol=['_', '.']):
     """
     Create a list which represents the peak points of the
@@ -1039,6 +1042,12 @@ def find_middle_and_edge_intensities(sublattice,
 
     works for nanoparticles as well, doesn't matter what 
     scaling_exponent you use for nanoparticle. Figure this out!
+
+    If the max_element_intensity is set, then the program assumes 
+    that the standard element is the largest available element 
+    combination, and scales the middle and limit intensity lists 
+    so that the middle_intensity_list[-1] == max_element_intensity
+
     """
 
     middle_intensity_list = []
@@ -1076,6 +1085,11 @@ def find_middle_and_edge_intensities(sublattice,
         limit_intensity_list.append(max_limit)
     else:
         pass
+
+    if largest_element_intensity is not None:
+        ratio = sublattice.image.max() / largest_element_intensity
+        middle_intensity_list = [middle/ratio for middle in middle_intensity_list]
+        limit_intensity_list = [limit/ratio for limit in limit_intensity_list]
 
     return middle_intensity_list, limit_intensity_list
 
@@ -1156,11 +1170,11 @@ def find_middle_and_edge_intensities_for_background(elements_from_sub1,
 # to the middle and limit points
 
 def sort_sublattice_intensities(sublattice,
-                                intensity_type=None,
-                                middle_intensity_list=None,
-                                limit_intensity_list=None,
+                                intensity_type='max',
                                 element_list=[],
                                 scalar_method='mode',
+                                middle_intensity_list=None,
+                                limit_intensity_list=None,
                                 remove_background_method=None,
                                 background_sublattice=None,
                                 num_points=3,
@@ -1202,7 +1216,7 @@ def sort_sublattice_intensities(sublattice,
 
             if len(element_list) != len(middle_intensity_list):
                 raise ValueError(
-                    'elements_list length does not equal middle_intensity_list length')
+                    'element_list length does not equal middle_intensity_list length')
             else:
                 pass
 
@@ -1213,11 +1227,11 @@ def sort_sublattice_intensities(sublattice,
                         sublattice.atom_list[i].elements = element_list[p]
                         elements_of_sublattice.append(
                             sublattice.atom_list[i].elements)
-
+ 
         elif intensity_list_real == True:
             if len(element_list) != len(middle_intensity_list):
                 raise ValueError(
-                    'elements_list length does not equal middle_intensity_list length')
+                    'element_list length does not equal middle_intensity_list length')
             else:
                 pass
 
@@ -1400,8 +1414,9 @@ def print_sublattice_elements(sublattice, number_of_lines='all'):
 def return_z_coordinates(z_thickness,
                          z_bond_length,
                          number_atoms_z=None,
+                         max_number_atoms_z=None,
                          fractional_coordinates=True,
-                         centered_atoms=True):
+                         atom_layout='bot'):
     '''
     Produce fractional z-dimension coordinates for a given thickness and bond
     length.
@@ -1430,23 +1445,39 @@ def return_z_coordinates(z_thickness,
 
     '''
 
-    if number_atoms_z is not None:
+    if max_number_atoms_z is not None:
         # print("number_atoms_z has been specified, using number_atoms_z instead\
         #     of z_thickness")
-        z_thickness = number_atoms_z * z_bond_length
+        z_thickness = max_number_atoms_z * z_bond_length
 
-    z_coords = np.arange(start=0,
+    z_coords_all = np.arange(start=0,
                          stop=z_thickness,
                          step=z_bond_length)
+
+    if number_atoms_z > max_number_atoms_z:
+        raise ValueError("number_atoms_z is greater than max_number_atoms_z."
+                        "Not allowed.")
+    elif number_atoms_z == max_number_atoms_z:
+        z_coords = z_coords_all
+    elif number_atoms_z < max_number_atoms_z:
+        if atom_layout in ('bot', 'center'):
+            z_coords = z_coords_all[:number_atoms_z]
+        elif atom_layout == 'top':
+            z_coords = z_coords_all[-1*number_atoms_z:]
+        else:
+            raise ValueError("Only 'bot', 'center' and 'top' are allowed.")
 
     if fractional_coordinates:
         z_coords = z_coords/z_thickness
 
     # for centered particles (atoms centered around 0.5 in z)
-    if centered_atoms:
+    if atom_layout == 'center':
+        # adds half the distance from the top atom to the top of the unit cell
+        # to each atom coordinate.
         z_coords = z_coords + (1-z_coords.max())/2
 
     return(z_coords)
+
 
 
 '''
@@ -1459,7 +1490,7 @@ def return_xyz_coordintes(x, y,
                           z_thickness, z_bond_length,
                           number_atoms_z=None,
                           fractional_coordinates=True,
-                          centered_atoms=True):
+                          atom_layout='bot'):
     '''
     Produce xyz coordinates for an xy coordinate given the z-dimension
     information. 
@@ -1489,8 +1520,8 @@ def return_xyz_coordintes(x, y,
     z_coords = return_z_coordinates(number_atoms_z=number_atoms_z,
                                     z_thickness=z_thickness,
                                     z_bond_length=z_bond_length,
-                                    fractional_coordinates=True,
-                                    centered_atoms=True)
+                                    fractional_coordinates=fractional_coordinates,
+                                    atom_layout=atom_layout)
 
     # One z for each atom in number_atoms for each xy pair
     atom_coords = []
@@ -1525,8 +1556,24 @@ def convert_numpy_z_coords_to_z_height_string(z_coords):
     return(z_string)
 
 
+def get_max_number_atoms_z(sublattice):
+
+    max_number_atoms_z_list = []
+
+    for i in range(0, len(sublattice.atom_list)):
+
+        max_number_atoms_z_list.append(split_and_sort_element(
+            element=sublattice.atom_list[i].elements)[0][2])
+        
+    max_number_atoms_z = max(max_number_atoms_z_list)
+
+    return(max_number_atoms_z)
+
 def assign_z_height_to_sublattice(sublattice,
-                                  material=None):
+                                  z_bond_length,
+                                  material=None,
+                                  fractional_coordinates=True,
+                                  atom_layout='bot'):
 
     '''
     Set the z_heights for each atom position in a sublattice.
@@ -1543,8 +1590,11 @@ def assign_z_height_to_sublattice(sublattice,
 
     # if material == 'Au_NP_'
         # z_bond_length = function_to_get_material_info
-    z_bond_length = 1.5
+
     z_thickness = 1
+
+    max_number_atoms_z = get_max_number_atoms_z(
+                            sublattice=sublattice)
 
     for i in range(0, len(sublattice.atom_list)):
         # if i < 10:
@@ -1555,10 +1605,11 @@ def assign_z_height_to_sublattice(sublattice,
 
         z_coords = return_z_coordinates(
             number_atoms_z=number_atoms_z,
+            max_number_atoms_z=max_number_atoms_z,
             z_thickness=z_thickness,
             z_bond_length=z_bond_length,
-            fractional_coordinates=True,
-            centered_atoms=True)
+            fractional_coordinates=fractional_coordinates,
+            atom_layout=atom_layout)
 
         z_height = convert_numpy_z_coords_to_z_height_string(z_coords)
         sublattice.atom_list[i].z_height = z_height

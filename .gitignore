@@ -1,3 +1,7 @@
+
+# My files
+example_scripts.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -102,3 +106,4 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+.vscode/launch.json
