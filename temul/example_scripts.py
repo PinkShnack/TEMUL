@@ -1,27 +1,28 @@
 
-# test shelly's comp
-
-import ase
-from ase.cluster.cubic import FaceCenteredCubic
-from ase.io import read, write
-from ase.visualize import view
-from temul.model_creation import get_max_number_atoms_z
 import temul.api as tml
-import os
-import atomap.api as am
-from atomap.testing_tools import MakeTestData
-import hyperspy.api as hs
-import numpy as np
+from temul.model_creation import get_max_number_atoms_z
 from temul.signal_processing import (get_xydata_from_list_of_intensities,
                                      return_fitting_of_1D_gaussian,
                                      fit_1D_gaussian_to_data,
                                      plot_gaussian_fit,
                                      get_fitting_tools_for_plotting_gaussians,
                                      plot_gaussian_fitting_for_multiple_fits)
-# perhaps put the below in a module itseld for vscode?
+
+import atomap.api as am
+import hyperspy.api as hs
+import numpy as np
+
+from ase.visualize import view
+from ase.io import read, write
+from ase.cluster.cubic import FaceCenteredCubic
+import ase
+
+import os
+
 import matplotlib.pyplot as plt
 plt.style.use('default')
-%matplotlib qt
+# %matplotlib qt
+
 
 # example fitting of a gaussian to data
 amp, mu, sigma = 10, 10, 0.5
@@ -357,7 +358,7 @@ element_list = ['Au_5']
 elements_in_sublattice = tml.sort_sublattice_intensities(
     sublattice, element_list=element_list)
 
-tml.assign_z_height_to_sublattice(sublattice)
+tml.assign_z_height_to_sublattice(sublattice, z_bond_length=0.5)
 
 tml.print_sublattice_elements(sublattice, 10)
 

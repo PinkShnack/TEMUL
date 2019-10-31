@@ -1,8 +1,10 @@
-from skimage.measure import profile_line
-import matplotlib.pyplot as plt
-from matplotlib.pyplot import subplots_adjust
+
 import numpy as np
 import hyperspy.api as hs
+from skimage.measure import profile_line
+
+import matplotlib.pyplot as plt
+from matplotlib.pyplot import subplots_adjust
 
 # line_profile_positions = am.add_atoms_with_gui(s)
 
@@ -89,7 +91,7 @@ def compare_images_line_profile_one_image(image,
     profile_x_2 = profile_x_2*image_sampling
 
     # -- Plot the line profile comparisons
-    fig, (ax1, ax2) = plt.subplots(nrows=2)  # figsize=(12, 4)
+    _, (ax1, ax2) = plt.subplots(nrows=2)  # figsize=(12, 4)
     subplots_adjust(wspace=0.3)
 
     ax1.imshow(image.data)
@@ -246,7 +248,7 @@ def compare_images_line_profile_two_images(imageA,
                                         top=crop_top, bottom=crop_bot)(imageB)
 
     # -- Plot the line profile comparisons
-    fig, (ax1, ax2, ax3) = plt.subplots(ncols=3)  # figsize=(12, 4)
+    _, (ax1, ax2, ax3) = plt.subplots(ncols=3)  # figsize=(12, 4)
     subplots_adjust(wspace=0.3)
     ax1.imshow(imageA_crop)
     #ax1.plot([x0, x1], [y0, y1], color='r', marker='v', markersize=10, alpha=0.5)

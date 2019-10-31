@@ -1,34 +1,15 @@
 
-from temul.model_creation import get_and_return_element
-from temul.model_creation import split_and_sort_element
-from atomap.atom_finding_refining import _make_circular_mask
-from matplotlib import gridspec
-import rigidregistration
-from tifffile import imread, imwrite, TiffWriter
-from collections import Counter
-import warnings
-from time import time
-from glob import glob
-from atomap.atom_finding_refining import normalize_signal
-from atomap.tools import remove_atoms_from_image_using_2d_gaussian
-import os
-from skimage.measure import compare_ssim as ssm
-# from atomap.atom_finding_refining import get_atom_positions_in_difference_image
-from scipy.ndimage.filters import gaussian_filter
-import collections
-from atomap.atom_finding_refining import subtract_average_background
-from numpy import mean
+from temul.model_creation import (
+    get_and_return_element, split_and_sort_element)
+
 import matplotlib.pyplot as plt
-import hyperspy.api as hs
-import atomap.api as am
+from tifffile import imwrite
 import numpy as np
-from numpy import log
+import hyperspy.api as hs
 import CifFile
 import pandas as pd
-import scipy
-import periodictable as pt
-import matplotlib
-# matplotlib.use('Agg')
+from glob import glob
+import os
 
 
 def create_new_folder(new_folder_name):
@@ -438,6 +419,7 @@ def create_dataframe_for_xyz(sublattice_list,
     Example
     -------
 
+    >>> import atomap.api as am
     >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
     >>> for i in range(0, len(sublattice.atom_list)):
             sublattice.atom_list[i].elements = 'Mo_1'

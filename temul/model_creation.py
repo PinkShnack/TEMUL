@@ -1,35 +1,17 @@
 
 from temul.signal_processing import get_sublattice_intensity
-import atomap
 
-from atomap.atom_finding_refining import _make_circular_mask
-from matplotlib import gridspec
-import rigidregistration
-from tifffile import imread, imwrite, TiffWriter
-from collections import Counter
-import warnings
-from time import time
-from glob import glob
-from atomap.atom_finding_refining import normalize_signal
-from atomap.tools import remove_atoms_from_image_using_2d_gaussian
-import os
-from skimage.measure import compare_ssim as ssm
-# from atomap.atom_finding_refining import get_atom_positions_in_difference_image
-from scipy.ndimage.filters import gaussian_filter
-import collections
-from atomap.atom_finding_refining import subtract_average_background
-from numpy import mean
-import matplotlib.pyplot as plt
-import hyperspy.api as hs
 import atomap.api as am
+from atomap.atom_finding_refining import get_atom_positions_in_difference_image
+
+import matplotlib.pyplot as plt
+import scipy
 import numpy as np
 from numpy import log
-import CifFile
+import hyperspy.api as hs
 import pandas as pd
-import scipy
 import periodictable as pt
-import matplotlib
-# matplotlib.use('Agg')
+from collections import Counter
 
 
 def count_element_in_pandas_df(element, dataframe):
@@ -645,9 +627,9 @@ def image_difference_position(sublattice_list,
 
     # below function edit of get_atom_positions. Just allows num_peaks from
     # sklearn>find_local_maximum
-    atom_positions_diff_image = atomap.atom_finding_refining.get_atom_positions_in_difference_image(
+    atom_positions_diff_image = get_atom_positions_in_difference_image(
         diff_image, num_peaks=num_peaks)
-    atom_positions_diff_image_inverse = atomap.atom_finding_refining.get_atom_positions_in_difference_image(
+    atom_positions_diff_image_inverse = get_atom_positions_in_difference_image(
         diff_image_inverse, num_peaks=num_peaks)
 
     diff_image_sub = am.Sublattice(atom_positions_diff_image, diff_image)
@@ -1088,7 +1070,8 @@ def find_middle_and_edge_intensities(sublattice,
 
     if largest_element_intensity is not None:
         ratio = sublattice.image.max() / largest_element_intensity
-        middle_intensity_list = [middle/ratio for middle in middle_intensity_list]
+        middle_intensity_list = [
+            middle/ratio for middle in middle_intensity_list]
         limit_intensity_list = [limit/ratio for limit in limit_intensity_list]
 
     return middle_intensity_list, limit_intensity_list
@@ -1227,7 +1210,7 @@ def sort_sublattice_intensities(sublattice,
                         sublattice.atom_list[i].elements = element_list[p]
                         elements_of_sublattice.append(
                             sublattice.atom_list[i].elements)
- 
+
         elif intensity_list_real == True:
             if len(element_list) != len(middle_intensity_list):
                 raise ValueError(
@@ -1451,12 +1434,12 @@ def return_z_coordinates(z_thickness,
         z_thickness = max_number_atoms_z * z_bond_length
 
     z_coords_all = np.arange(start=0,
-                         stop=z_thickness,
-                         step=z_bond_length)
+                             stop=z_thickness,
+                             step=z_bond_length)
 
     if number_atoms_z > max_number_atoms_z:
         raise ValueError("number_atoms_z is greater than max_number_atoms_z."
-                        "Not allowed.")
+                         "Not allowed.")
     elif number_atoms_z == max_number_atoms_z:
         z_coords = z_coords_all
     elif number_atoms_z < max_number_atoms_z:
@@ -1477,7 +1460,6 @@ def return_z_coordinates(z_thickness,
         z_coords = z_coords + (1-z_coords.max())/2
 
     return(z_coords)
-
 
 
 '''
@@ -1564,17 +1546,17 @@ def get_max_number_atoms_z(sublattice):
 
         max_number_atoms_z_list.append(split_and_sort_element(
             element=sublattice.atom_list[i].elements)[0][2])
-        
+
     max_number_atoms_z = max(max_number_atoms_z_list)
 
     return(max_number_atoms_z)
+
 
 def assign_z_height_to_sublattice(sublattice,
                                   z_bond_length,
                                   material=None,
                                   fractional_coordinates=True,
                                   atom_layout='bot'):
-
     '''
     Set the z_heights for each atom position in a sublattice.
 
@@ -1589,12 +1571,12 @@ def assign_z_height_to_sublattice(sublattice,
     '''
 
     # if material == 'Au_NP_'
-        # z_bond_length = function_to_get_material_info
+    # z_bond_length = function_to_get_material_info
 
     z_thickness = 1
 
     max_number_atoms_z = get_max_number_atoms_z(
-                            sublattice=sublattice)
+        sublattice=sublattice)
 
     for i in range(0, len(sublattice.atom_list)):
         # if i < 10:
@@ -1613,8 +1595,6 @@ def assign_z_height_to_sublattice(sublattice,
 
         z_height = convert_numpy_z_coords_to_z_height_string(z_coords)
         sublattice.atom_list[i].z_height = z_height
-
-
 
 
 def create_dataframe_for_cif(sublattice_list, element_list):

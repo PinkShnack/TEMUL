@@ -1,37 +1,24 @@
 
-import pyprismatic as pr
+from temul.signal_processing import (calibrate_intensity_distance_with_sublattice_roi,
+                                     compare_two_image_and_create_filtered_image)
+from temul.model_creation import (count_atoms_in_sublattice_list,
+                                  compare_count_atoms_in_sublattice_list,
+                                  image_difference_intensity,
+                                  create_dataframe_for_cif,
+                                  image_difference_position,
+                                  sort_sublattice_intensities,
+                                  assign_z_height)
+from temul.io import (create_dataframe_for_xyz,
+                      write_cif_from_dataframe,
+                      create_new_folder)
 
-from atomap.atom_finding_refining import _make_circular_mask
-from matplotlib import gridspec
-import rigidregistration
-from tifffile import imread, imwrite, TiffWriter
-from collections import Counter
-from time import time
-# from pyprismatic.fileio import readMRC
-from glob import glob
-from atomap.atom_finding_refining import normalize_signal
-from atomap.tools import remove_atoms_from_image_using_2d_gaussian
-import os
-from skimage.measure import compare_ssim as ssm
-# from atomap.atom_finding_refining import get_atom_positions_in_difference_image
-from scipy.ndimage.filters import gaussian_filter
-import collections
-from atomap.atom_finding_refining import subtract_average_background
-from numpy import mean
+import pyprismatic as pr
+import atomap.api as am
 import matplotlib.pyplot as plt
 import hyperspy.api as hs
-import atomap.api as am
-import numpy as np
-from numpy import log
-import CifFile
 import pandas as pd
-import scipy
-import periodictable as pt
-import matplotlib
-# matplotlib.use('Agg')
-
-import warnings
-warnings.simplefilter("ignore", UserWarning)
+import os
+from glob import glob
 
 
 def simulate_and_calibrate_with_prismatic(
@@ -368,6 +355,9 @@ def image_refine_via_intensity_loop(atom_lattice,
                                     image_sampling,
                                     iterations,
                                     delta_image_filter,
+                                    image_size_x_nm,
+                                    image_size_y_nm,
+                                    image_size_z_nm,
                                     simulation_filename,
                                     filename,
                                     intensity_type,
@@ -385,14 +375,14 @@ def image_refine_via_intensity_loop(atom_lattice,
             pass
 
     if len(atom_lattice.image) == 1:
-        image_pixel_x = len(atom_lattice.image.data[0, :])
-        image_pixel_y = len(atom_lattice.image.data[:, 0])
-        atom_lattice_data = atom_lattice.image.data
+        # image_pixel_x = len(atom_lattice.image.data[0, :])
+        # image_pixel_y = len(atom_lattice.image.data[:, 0])
+        # atom_lattice_data = atom_lattice.image.data
         atom_lattice_signal = atom_lattice.image
     elif len(atom_lattice.image) > 1:
-        image_pixel_x = len(atom_lattice.image[0, :])
-        image_pixel_y = len(atom_lattice.image[:, 0])
-        atom_lattice_data = atom_lattice.image
+        # image_pixel_x = len(atom_lattice.image[0, :])
+        # image_pixel_y = len(atom_lattice.image[:, 0])
+        # atom_lattice_data = atom_lattice.image
         atom_lattice_signal = atom_lattice.signal
 
     '''
@@ -410,8 +400,6 @@ def image_refine_via_intensity_loop(atom_lattice,
         real_sampling_sim_angs = real_sampling_exp_angs + 0.000005
     else:
         pass
-
-    t0 = time()
 
     for suffix in range(1, iterations):
 
@@ -472,7 +460,7 @@ def image_refine_via_intensity_loop(atom_lattice,
         # simulation.plot()
 
         # Filter the image with Gaussian noise to get better match with experiment
-        simulation_new = compare_image_to_filtered_image(
+        simulation_new = compare_two_image_and_create_filtered_image(
             image_to_filter=simulation,
             reference_image=atom_lattice_signal,
             delta_image_filter=delta_image_filter,
@@ -572,28 +560,29 @@ def image_refine_via_intensity_loop(atom_lattice,
         ''' Remake XYZ file for further refinement'''
         # loading_suffix is now saving_suffix
 
-        dataframe = create_dataframe_for_xyz(sublattice_list=atom_lattice.sublattice_list,
-                                             element_list=element_list,
-                                             x_distance=image_size_x_nm*10,
-                                             y_distance=image_size_y_nm*10,
-                                             z_distance=image_size_z_nm*10,
-                                             filename=image_name + saving_suffix,
-                                             header_comment='Something Something Something Dark Side')
+        create_dataframe_for_xyz(
+            sublattice_list=atom_lattice.sublattice_list,
+            element_list=element_list,
+            x_distance=image_size_x_nm*10,
+            y_distance=image_size_y_nm*10,
+            z_distance=image_size_z_nm*10,
+            filename=filename + saving_suffix,
+            header_comment='Something Something Something Dark Side')
 
-        dataframe_intensity = create_dataframe_for_xyz(sublattice_list=atom_lattice.sublattice_list,
-                                                       element_list=element_list,
-                                                       x_distance=image_size_x_nm*10,
-                                                       y_distance=image_size_y_nm*10,
-                                                       z_distance=image_size_z_nm*10,
-                                                       filename=intensity_refine_name + image_name + saving_suffix,
-                                                       header_comment='Something Something Something Dark Side')
+        # dataframe_intensity = create_dataframe_for_xyz(sublattice_list=atom_lattice.sublattice_list,
+        #                                                element_list=element_list,
+        #                                                x_distance=image_size_x_nm*10,
+        #                                                y_distance=image_size_y_nm*10,
+        #                                                z_distance=image_size_z_nm*10,
+        #                                                filename=intensity_refine_name + image_name + saving_suffix,
+        #                                                header_comment='Something Something Something Dark Side')
 
         # when ready:
         example_df_cif = create_dataframe_for_cif(
             sublattice_list=atom_lattice.sublattice_list, element_list=element_list)
 
         write_cif_from_dataframe(dataframe=example_df_cif,
-                                 filename=intensity_refine_name + image_name + saving_suffix,
+                                 filename=intensity_refine_name + filename + saving_suffix,
                                  chemical_name_common='MoSx-1Sex',
                                  cell_length_a=image_size_x_nm*10,
                                  cell_length_b=image_size_y_nm*10,
@@ -690,8 +679,6 @@ def image_refine_via_intensity_loop(atom_lattice,
                 pad_inches=None, dpi=300, labels=False)
     plt.close()
 
-    t = time()-t0
-
     create_new_folder('./' + folder_name + '/')
     intensity_refine_filenames = glob('*' + intensity_refine_name + '*')
     for intensity_refine_file in intensity_refine_filenames:
@@ -739,7 +726,7 @@ def image_refine_via_position_loop(image,
                                    limit_intensity_list,
                                    delta_image_filter=0.5,
                                    intensity_type='max',
-                                   method='mode',
+                                   scalar_method='mode',
                                    remove_background_method=None,
                                    background_sublattice=None,
                                    num_points=3,
@@ -780,28 +767,29 @@ def image_refine_via_position_loop(image,
         saving_suffix = '_' + str(suffix+1).zfill(2)
         simulation_filename = xyz_filename + loading_suffix + '.XYZ'
 
-        simulate_and_calibrate_with_prismatic(reference_image=image,
-                                              xyz_filename=simulation_filename,
-                                              calibration_area=calibration_area,
-                                              calibration_separation=calibration_separation,
-                                              filename=filename,
-                                              percent_to_nn=percent_to_nn,
-                                              mask_radius=mask_radius,
-                                              E0=E0,
-                                              integrationAngleMin=integrationAngleMin,
-                                              integrationAngleMax=integrationAngleMax,
-                                              interpolationFactor=interpolationFactor,
-                                              realspacePixelSize=realspacePixelSize,
-                                              numFP=numFP,
-                                              probeSemiangle=probeSemiangle,
-                                              alphaBeamMax=alphaBeamMax,
-                                              scanWindowMin=scanWindowMin,
-                                              scanWindowMax=scanWindowMax,
-                                              algorithm=algorithm,
-                                              numThreads=numThreads)
+        simulation = simulate_and_calibrate_with_prismatic(
+            reference_image=image,
+            xyz_filename=simulation_filename,
+            calibration_area=calibration_area,
+            calibration_separation=calibration_separation,
+            filename=filename,
+            percent_to_nn=percent_to_nn,
+            mask_radius=mask_radius,
+            E0=E0,
+            integrationAngleMin=integrationAngleMin,
+            integrationAngleMax=integrationAngleMax,
+            interpolationFactor=interpolationFactor,
+            realspacePixelSize=realspacePixelSize,
+            numFP=numFP,
+            probeSemiangle=probeSemiangle,
+            alphaBeamMax=alphaBeamMax,
+            scanWindowMin=scanWindowMin,
+            scanWindowMax=scanWindowMax,
+            algorithm=algorithm,
+            numThreads=numThreads)
 
         # Filter the image with Gaussian noise to get better match with experiment
-        simulation_new = compare_image_to_filtered_image(
+        simulation_new = compare_two_image_and_create_filtered_image(
             image_to_filter=simulation,
             reference_image=image,
             filename=filename + loading_suffix,
@@ -867,7 +855,7 @@ def image_refine_via_position_loop(image,
                                         middle_intensity_list=middle_intensity_list,
                                         limit_intensity_list=limit_intensity_list,
                                         element_list=element_list_new_sub,
-                                        method=method,
+                                        scalar_method=scalar_method,
                                         remove_background_method=remove_background_method,
                                         background_sublattice=background_sublattice,
                                         num_points=num_points,

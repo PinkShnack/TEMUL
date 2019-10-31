@@ -1,43 +1,32 @@
 
+import temul.model_creation as model_creation
+from temul.io import save_individual_images_from_image_stack
 
+import atomap.api as am
 from atomap.atom_finding_refining import _make_circular_mask
-from matplotlib import gridspec
-import rigidregistration
-from tifffile import imread, imwrite, TiffWriter
-from collections import Counter
-from time import time
-from glob import glob
-from atomap.atom_finding_refining import normalize_signal
-from atomap.tools import remove_atoms_from_image_using_2d_gaussian
-import os
-from skimage.measure import compare_ssim as ssm
-# from atomap.atom_finding_refining import get_atom_positions_in_difference_image
-from scipy.ndimage.filters import gaussian_filter
-import collections
-from atomap.atom_finding_refining import subtract_average_background
-from numpy import mean
+
 import matplotlib
 import matplotlib.pyplot as plt
-import hyperspy.api as hs
-import atomap.api as am
-import numpy as np
-from numpy import log
-import CifFile
-import pandas as pd
-import scipy
-import periodictable as pt
-import matplotlib
-# matplotlib.use('Agg')
-import temul.model_creation as model_creation
-from math import sqrt, pow
+from matplotlib import gridspec
 
-import warnings
+import rigidregistration
+from tifffile import imread
+from skimage.measure import compare_ssim as ssm
+import scipy
+from scipy.ndimage.filters import gaussian_filter
 from scipy.optimize import OptimizeWarning
-# warnings.simplefilter("ignore", UserWarning)
+from math import sqrt
+import numpy as np
+from numpy import mean
+import hyperspy.api as hs
+import pandas as pd
+import copy
+from tqdm import trange
+import collections
+import warnings
 warnings.simplefilter("error", OptimizeWarning)
 
 
-# refine with and plot gaussian fitting
 def get_xydata_from_list_of_intensities(
         sublattice_intensity_list,
         hist_bins=100):
@@ -542,7 +531,7 @@ def rigid_registration(file, masktype='hann', n=4, findMaxima='gf'):
     s.save("average_image_no_crop.tif", crop=False)
 
     # creates a folder and put all the individual images in there
-    save_individual_images(image_stack=s.stack_registered)
+    save_individual_images_from_image_stack(image_stack=s.stack_registered)
 
 
 ######## Image Comparison ########
