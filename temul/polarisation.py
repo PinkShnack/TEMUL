@@ -1,5 +1,48 @@
 
 import atomap.api as am
+import numpy as np
+
+
+def get_vector_magnitudes(u, v, sampling=None):
+    '''
+    Calculate the magnitude of a vector given the uv components.
+
+    Parameters
+    ----------
+    u,v  : list or 1D NumPy array
+    sampling : float, default None
+        If sampling is set, the vector magnitudes (in pix) will be scaled
+        by sampling (nm/pix).
+
+    Returns
+    -------
+    1D NumPy array
+
+    Examples
+    --------
+    >>> from temul.polarisation import get_vector_magnitudes
+    >>> u, v = [4,3,2,5,6], [8,5,2,1,1] # list input
+    >>> vector_mags = get_vector_magnitudes(u,v)
+    >>> u, v = np.array(u), np.array(v) # np input
+    >>> vector_mags = get_vector_magnitudes(u,v)
+    >>> sampling = 0.0321
+    >>> vector_mags = get_vector_magnitudes(u,v, sampling=sampling)
+
+    '''
+
+    # uv_vector_comp_list = [list(uv) for uv in uv_vector_comp]
+    # u = [row[0] for row in uv_vector_comp_list]
+    # v = [row[1] for row in uv_vector_comp_list]
+
+    u_comp = np.array(u)
+    v_comp = np.array(v).T
+
+    vector_mags = (u_comp ** 2 + v_comp ** 2) ** 0.5
+
+    if sampling is not None:
+        vector_mags = vector_mags * sampling
+
+    return(vector_mags)
 
 
 def delete_atom_planes_from_sublattice(sublattice,
@@ -34,14 +77,14 @@ def delete_atom_planes_from_sublattice(sublattice,
 
     Examples
     --------
-import atomap.api as am
-atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
-sublatticeA = atom_lattice.sublattice_list[0]
-delete_atom_planes_from_sublattice(sublattice=sublatticeA,
-                            zone_axis_index=0,
-                            divisible_by=3,
-                            offset_from_zero=1)
-sublatticeA.plot_planes()
+    import atomap.api as am
+    atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
+    sublatticeA = atom_lattice.sublattice_list[0]
+    delete_atom_planes_from_sublattice(sublattice=sublatticeA,
+                                zone_axis_index=0,
+                                divisible_by=3,
+                                offset_from_zero=1)
+    sublatticeA.plot_planes()
 
     '''
     sublattice.construct_zone_axes(atom_plane_tolerance=atom_plane_tolerance)
@@ -77,11 +120,11 @@ sublatticeA.plot_planes()
         del sublattice.atom_planes_by_zone_vector[zone_vec_needed][i]
 
 
-atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
-sublatticeA = atom_lattice.sublattice_list[0]
-delete_atom_planes_from_sublattice(sublattice=sublatticeA,
-                                   zone_axis_index=0,
-                                   divisible_by=3,
-                                   offset_from_zero=0,
-                                   opposite=True)
-sublatticeA.plot_planes()
+# atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
+# sublatticeA = atom_lattice.sublattice_list[0]
+# delete_atom_planes_from_sublattice(sublattice=sublatticeA,
+#                                    zone_axis_index=0,
+#                                    divisible_by=3,
+#                                    offset_from_zero=0,
+#                                    opposite=True)
+# sublatticeA.plot_planes()
