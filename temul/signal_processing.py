@@ -29,7 +29,7 @@ import periodictable as pt
 import matplotlib
 # matplotlib.use('Agg')
 import temul.model_creation as model_creation
-
+from math import sqrt, pow
 
 import warnings
 from scipy.optimize import OptimizeWarning
@@ -794,8 +794,8 @@ def make_gaussian(size, fwhm, center):
     return(arr)
 
 
-def double_gaussian_fft_filter(image, filename, 
-        d_inner, d_outer, real_space_sampling, delta=0.05, units='nm'):
+def double_gaussian_fft_filter(image, filename,
+                               d_inner, d_outer, real_space_sampling, delta=0.05, units='nm'):
     # Folder: G:/SuperStem visit/Feb 2019 data/2019_02_18_QMR_S1574_MoS2-Se-15eV
 
     # Accuracy of calculation. Smaller = more accurate.
@@ -812,7 +812,6 @@ def double_gaussian_fft_filter(image, filename,
     # image.plot()
     #    image.save('Original Image Data', overwrite=True)
     #    image_name = image.metadata.General.original_filename
-
     '''
     Example d_inner, d_outer:
     MoS2: d_1 = 7.7, d_2 = 14
@@ -2052,7 +2051,6 @@ def remove_local_background(sublattice, background_sublattice, intensity_type,
             "You must choose a valid intensity_type. Try max, mean or total")
 
 
-
 def remove_image_intensity_in_data_slice(atom,
                                          image_data,
                                          percent_to_nn=0.50):
@@ -2126,11 +2124,11 @@ def get_cell_image(s, points_x, points_y, method='Voronoi', max_radius='Auto',
     reduce_func : ufunc, default np.min
         function used to reduce the pixel values around each atom
         to a float.
-    
+
     Examples
     --------
     #### add PTO example from paper 
-    
+
     Returns
     -------
 
@@ -2195,3 +2193,72 @@ def get_cell_image(s, points_x, points_y, method='Voronoi', max_radius='Auto',
 
     # return (integrated_intensity, s_intensity_record, point_record.T)
     return(intensity_record)
+
+
+def distance_vector(x1, y1, x2, y2):
+    distance_vector = sqrt(pow(x2-x1, 2) + pow(y2-y1, 2))
+    return(distance_vector)
+
+
+def mean_and_std_nearest_neighbour_distances(sublattice,
+                                             nearest_neighbours=5,
+                                             sampling=None):
+    '''
+    Calculates mean and standard deviation of the distance from each atom to
+    its nearest neighbours.
+
+    Parameters
+    ----------
+    sublattice : Atomap Sublattice object
+    nearest_neighbours : int, default 5
+        The number of nearest neighbours used to calculate the mean distance
+        from an atom. As in atomap, choosing 5 gets the 4 nearest
+        neighbours.
+
+    Returns
+    -------
+    2 lists: list of mean distances, list of standard deviations.
+
+    Examples
+    --------
+    >>> from temul.dummy_data import get_simple_cubic_sublattice
+    >>> import temul.signal_processing as tmlsp
+    >>> sub1 = get_simple_cubic_sublattice()
+    >>> mean, std = tmlsp.mean_and_std_nearest_neighbour_distances(sub1)
+    >>> mean_scaled,_ = tmlsp.mean_and_std_nearest_neighbour_distances(sub1,
+    ...     nearest_neighbours=5,
+    ...     sampling=0.0123)
+
+    '''
+    # 5 will get the nearest 4 atoms
+    sublattice.find_nearest_neighbors(
+        nearest_neighbors=nearest_neighbours)
+
+    atom_nn_list = []
+    mean_list = []
+    std_dev_list = []
+    variance_list = []
+    for atom in sublattice.atom_list:
+        atom_nns = atom.nearest_neighbor_list
+        x1 = atom.pixel_x
+        y1 = atom.pixel_y
+
+        distance_list = []
+        for i in range(0, len(atom_nns)):
+            x2 = atom_nns[i].pixel_x
+            y2 = atom_nns[i].pixel_y
+            distance = distance_vector(x1, y1, x2, y2)
+            distance_list.append(distance)
+
+        mean_distance = sum(distance_list)/len(distance_list)
+        mean_list.append(mean_distance)
+        std_dev = np.std(distance_list, dtype=np.float64)
+        std_dev_list.append(std_dev)
+        # variance = np.var(distance_list, dtype=np.float64)
+        # variance_list.append(variance)
+
+    if sampling is not None:
+        mean_list = [k*sampling for k in mean_list]
+        std_dev_list = [k*sampling for k in std_dev_list]
+
+    return(mean_list, std_dev_list)
