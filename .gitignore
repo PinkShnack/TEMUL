@@ -107,3 +107,13 @@ venv.bak/
 # mypy
 .mypy_cache/
 .vscode/launch.json
+
+# datatypes
+.xyz
+.cif
+.hdf5
+.hspy
+.mrc
+.pkl
+.csv
+.png
