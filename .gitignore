@@ -109,11 +109,11 @@ venv.bak/
 .vscode/launch.json
 
 # datatypes
-.xyz
-.cif
-.hdf5
-.hspy
-.mrc
-.pkl
-.csv
-.png
+*.xyz
+*.cif
+*.hdf5
+*.hspy
+*.mrc
+*.pkl
+*.csv
+*.png
