@@ -17,12 +17,19 @@ Examples
 
 # To Dos:
 
-1. sort unnecessary files into current correct files 
+1. sort unnecessary files into current correct files - done
 2. make sure imports are linking each module
 3. create api file that imports everything, or two
-    3a. One for everything
-    3b. One for everything except prismatic
-    
+    3a. One for everything - done
+    3b. One for everything except prismatic -done
+4. verify api files import what you want
+    4a. just import the no_prismatic api into api with *
+5. make checklist for pull requests.
+    5a. should you add the function to the api/api_no_prismatic?
+    5b. docstring with examples?
+    5c. works in site-packages?
+6. add fft masking code
+    6a. PR on atomap for log plotting of add_atoms_with_gui()    
 
 
 
