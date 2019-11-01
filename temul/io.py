@@ -1,6 +1,6 @@
 
-from temul.model_creation import (
-    get_and_return_element, split_and_sort_element)
+# from temul.model_creation import (
+#     get_and_return_element, split_and_sort_element)
 
 import matplotlib.pyplot as plt
 from tifffile import imwrite

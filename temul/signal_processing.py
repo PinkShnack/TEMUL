@@ -1,6 +1,7 @@
 
 import temul.model_creation as model_creation
 from temul.io import save_individual_images_from_image_stack
+from temul.atomap_devel_temp import add_atoms_with_gui
 
 import atomap.api as am
 from atomap.atom_finding_refining import _make_circular_mask
@@ -2251,3 +2252,142 @@ def mean_and_std_nearest_neighbour_distances(sublattice,
         std_dev_list = [k*sampling for k in std_dev_list]
 
     return(mean_list, std_dev_list)
+
+
+
+def choose_mask_coordinates(image, norm='log'):
+    '''
+    RELIES ON MY VERSION OF ATOMAP:
+    See initial_position_refining.
+    ####
+    #added to line 179: allow imshow here to have lognorm
+    ####
+    class AtomAdderRemover:
+
+        def __init__(self, image, atom_list=None, distance_threshold=4, norm='linear'):
+            self.image = image
+            self.distance_threshold = distance_threshold
+            self.fig, self.ax = plt.subplots()
+            if norm == 'linear':
+                self.cax = self.ax.imshow(self.image)
+            elif norm == 'log':
+                self.cax = self.ax.imshow(self.image,
+                            norm=LogNorm(vmin=np.min(image),
+                                        vmax=np.max(image)))
+
+    def add_atoms_with_gui(image, atom_list=None, distance_threshold=4, norm='linear'):
+        global atom_adder_remover
+        atom_adder_remover = AtomAdderRemover(
+        image, atom_list, distance_threshold=distance_threshold, norm=norm)
+
+
+
+    Calculates mean and standard deviation of the distance from each atom to
+    its nearest neighbours.
+
+    Parameters
+    ----------
+    sublattice : Atomap Sublattice object
+    nearest_neighbours : int, default 5
+        The number of nearest neighbours used to calculate the mean distance
+        from an atom. As in atomap, choosing 5 gets the 4 nearest
+        neighbours.
+
+    Returns
+    -------
+    2 lists: list of mean distances, list of standard deviations.
+
+    Examples
+    --------
+    >>> from temul.dummy_data import get_simple_cubic_sublattice
+    >>> import temul.signal_processing as tmlsp
+    >>> sub1 = get_simple_cubic_sublattice()
+    >>> mean, std = tmlsp.mean_and_std_nearest_neighbour_distances(sub1)
+    >>> mean_scaled,_ = tmlsp.mean_and_std_nearest_neighbour_distances(sub1,
+    ...     nearest_neighbours=5,
+    ...     sampling=0.0123)
+
+    '''
+
+    fft = image.fft(shift=True)
+    fft_amp = fft.amplitude
+
+    # mask_coords = am.add_atoms_with_gui(
+    #     fft_amp.data, norm='log')
+
+    mask_coords = add_atoms_with_gui(
+        fft_amp.data, norm='log')
+
+    return(mask_coords)
+
+
+def get_masked_ifft(image, mask_coords, mask_radius=10):
+    '''
+    loop through each mask_coords and mask the fft. Then return
+    an ifft of the image.
+    To Do: calibration of units automatically.
+
+    Masks a fast Fourier transform (FFT) and returns the inverse FFT.
+    Use choose_mask_coordinates() to manually choose mask coordinates in the
+    FFT.
+
+    Parameters
+    ----------
+    image : Hyperspy 2D Signal
+    mask_coords : list of lists
+        Pixel coordinates of the masking locations. See the example below for
+        two simple coordinates.
+    mask_radius : int, default 10
+        Radius in pixels of the mask.
+
+    Returns
+    -------
+    Inverse FFT as a Hyperspy 2D Signal
+
+    Examples
+    --------
+    >>> from temul.dummy_data import get_simple_cubic_signal
+    >>> import temul.signal_processing as tmlsp
+    >>> image = get_simple_cubic_signal()
+    >>> mask_coords = [[170.2, 170.8],[129.8, 130]]
+    >>> # mask_coords = choose_mask_coordinates(image=image, norm='log')
+    >>> image_ifft = get_masked_ifft(
+    ...     image=image,
+    ...     mask_coords=mask_coords)
+
+    '''
+
+    for mask_coord in mask_coords:
+
+        x_pix = mask_coord[0]
+        y_pix = mask_coord[1]
+
+        # Create a mask over that location and transpose the axes
+        mask = _make_circular_mask(centerX=x_pix, centerY=y_pix,
+                                   imageSizeX=image.data.shape[0],
+                                   imageSizeY=image.data.shape[1],
+                                   radius=mask_radius).T
+
+        # the tilda ~ inverses the mask
+        # fill in nothings with 0
+        fft = image.fft(shift=True)
+        masked_fft = np.ma.array(fft.data, mask=~mask).filled(0)
+
+        # check if the combined masked_fft exists
+        try:
+            masked_fft_combined
+        except NameError:
+            masked_fft_combined = masked_fft
+        else:
+            masked_fft_combined += masked_fft
+
+    masked_fft_image = hs.signals.ComplexSignal2D(masked_fft_combined)
+    # sort out units here
+    image_ifft = masked_fft_image.ifft()
+    image_ifft = np.absolute(image_ifft)
+
+    return(image_ifft)
+
+
+
+
