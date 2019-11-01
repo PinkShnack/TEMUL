@@ -53,28 +53,28 @@ def get_sublattice_intensity(sublattice, intensity_type='max',
     >>> sublattice = dummy_data.get_simple_cubic_sublattice()
     >>> sublattice.find_nearest_neighbors()
     >>> intensities_all = get_sublattice_intensity(
-            sublattice=sublattice,
-            intensity_type='all',
-            remove_background_method=None,
-            background_sub=None)
+    ...     sublattice=sublattice,
+    ...     intensity_type='all',
+    ...     remove_background_method=None,
+    ...     background_sub=None)
 
     >>> intensities_total = get_sublattice_intensity(
-            sublattice=sublattice,
-            intensity_type='total',
-            remove_background_method=None,
-            background_sub=None)
+    ...     sublattice=sublattice,
+    ...     intensity_type='total',
+    ...     remove_background_method=None,
+    ...     background_sub=None)
 
     >>> intensities_total_local = get_sublattice_intensity(
-            sublattice=sublattice,
-            intensity_type='total',
-            remove_background_method='local',
-            background_sub=sublattice)
+    ...     sublattice=sublattice,
+    ...     intensity_type='total',
+    ...     remove_background_method='local',
+    ...     background_sub=sublattice)
 
     >>> intensities_max_average = get_sublattice_intensity(
-            sublattice=sublattice,
-            intensity_type='max',
-            remove_background_method='average',
-            background_sub=sublattice)
+    ...     sublattice=sublattice,
+    ...     intensity_type='max',
+    ...     remove_background_method='average',
+    ...     background_sub=sublattice)
 
     '''
     if percent_to_nn is not None:
@@ -239,11 +239,11 @@ def remove_average_background(sublattice, intensity_type,
     >>> sublattice = dummy_data.get_simple_cubic_sublattice()
     >>> sublattice.find_nearest_neighbors()
     >>> intensities_all = remove_average_background(
-            sublattice, intensity_type='all',
-            background_sub=sublattice)
+    ...     sublattice, intensity_type='all',
+    ...     background_sub=sublattice)
     >>> intensities_max = remove_average_background(
-            sublattice, intensity_type='max',
-            background_sub=sublattice)
+    ...     sublattice, intensity_type='max',
+    ...     background_sub=sublattice)
 
     '''
     background_sub.find_nearest_neighbors()
@@ -399,11 +399,11 @@ def remove_local_background(sublattice, background_sub, intensity_type,
     >>> sublattice = dummy_data.get_simple_cubic_sublattice()
     >>> sublattice.find_nearest_neighbors()
     >>> intensities_total = remove_local_background(
-            sublattice, intensity_type='total',
-            background_sub=sublattice)
+    ...     sublattice, intensity_type='total',
+    ...     background_sub=sublattice)
     >>> intensities_max = remove_local_background(
-            sublattice, intensity_type='max',
-            background_sub=sublattice)
+    ...     sublattice, intensity_type='max',
+    ...     background_sub=sublattice)
 
     '''
     # get background_sub intensity list
@@ -699,7 +699,7 @@ def get_pixel_count_from_image_slice(
     >>> sublattice = dummy_data.get_simple_cubic_sublattice()
     >>> sublattice.find_nearest_neighbors()
     >>> atom0 = sublattice.atom_list[0]
-    >>> pixel_count = atom0.get_pixel_count_from_image_slice(sublattice.image)
+    >>> pixel_count = get_pixel_count_from_image_slice(atom0, sublattice.image)
 
     """
     closest_neighbor = self.get_closest_neighbor()

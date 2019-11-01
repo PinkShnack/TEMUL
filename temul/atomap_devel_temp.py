@@ -106,6 +106,7 @@ def add_atoms_with_gui(image, atom_list=None, distance_threshold=4,
 
     Examples
     --------
+    >>> import atomap.api as am
     >>> s = am.dummy_data.get_simple_cubic_signal()
     >>> peaks = am.get_atom_positions(s, separation=9)
     >>> peaks_new = am.add_atoms_with_gui(peaks, s)

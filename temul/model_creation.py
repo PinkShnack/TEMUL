@@ -35,8 +35,8 @@ def count_element_in_pandas_df(element, dataframe):
 
     Examples
     --------
-    >>> from temul.model_creation import count_element_in_pandas_df
-    >>> Mo_count = count_element_in_pandas_df(element='Mo', dataframe=df)
+    # >>> from temul.model_creation import count_element_in_pandas_df
+    # >>> Mo_count = count_element_in_pandas_df(element='Mo', dataframe=df)
 
     '''
     count_of_element = Counter()
@@ -79,11 +79,11 @@ def count_all_individual_elements(individual_element_list, dataframe):
 
     Examples
     --------
-    >>> from temul.model_creation import count_all_individual_elements
-    >>> individual_element_list = ['Mo', 'S', 'Se']
-    >>> element_count = count_all_individual_elements(
-    ... individual_element_list, dataframe=df)
-    >>> element_count
+    # >>> from temul.model_creation import count_all_individual_elements
+    # >>> individual_element_list = ['Mo', 'S', 'Se']
+    # >>> element_count = count_all_individual_elements(
+    # ...     individual_element_list, dataframe=df)
+    # >>> element_count
     '''
 
     element_count_dict = {}
@@ -118,7 +118,7 @@ def count_atoms_in_sublattice_list(sublattice_list, filename=None):
     Examples
     --------
 
-    >>> from temul.model_creation as count_atoms_in_sublattice_list
+    >>> from temul.model_creation import count_atoms_in_sublattice_list
     >>> import atomap.api as am
     >>> atom_lattice = am.dummy_data.get_simple_atom_lattice_two_sublattices()
     >>> sub1 = atom_lattice.sublattice_list[0]
@@ -130,19 +130,12 @@ def count_atoms_in_sublattice_list(sublattice_list, filename=None):
     ...     sub2.atom_list[i].elements = 'Cl_1'
 
     >>> added_atoms = count_atoms_in_sublattice_list(
-    ...     sublattice_list=[sub1, sub2],
-    ...     filename=atom_lattice.name)
+    ...     sublattice_list=[sub1, sub2])
 
-    Compare before and after
-    >>> alat_before = am.dummy_data.get_simple_atom_lattice_two_sublattices()
+    Compare before and after 
+    >>> at_lat_before = am.dummy_data.get_simple_atom_lattice_two_sublattices()
     >>> no_added_atoms = count_atoms_in_sublattice_list(
-    >>>     sublattice_list=alat_before.sublattice_list,
-    >>>     filename=alat_before.name)
-
-    >>> if added_atoms == no_added_atoms:
-    >>>     print('They are the same, you can stop refining')
-    >>> else:
-    >>>     print('They are not the same!')
+    ...    sublattice_list=at_lat_before.sublattice_list)
 
     '''
     count_of_sublattice = Counter()
@@ -201,7 +194,7 @@ def compare_count_atoms_in_sublattice_list(counter_list):
     Examples
     --------
 
-    >>> from temul.model_creation as (
+    >>> from temul.model_creation import (
     ...     count_atoms_in_sublattice_list,
     ...     compare_count_atoms_in_sublattice_list)
     >>> import atomap.api as am
@@ -218,12 +211,13 @@ def compare_count_atoms_in_sublattice_list(counter_list):
     ...     sublattice_list=[sub1, sub2],
     ...     filename=atom_lattice.name)
 
-    >>> alat_before = am.dummy_data.get_simple_atom_lattice_two_sublattices()
+    >>> at_lat_before = am.dummy_data.get_simple_atom_lattice_two_sublattices()
     >>> no_added_atoms = count_atoms_in_sublattice_list(
-    ...     sublattice_list=alat_before.sublattice_list,
-    ...     filename=alat_before.name)
+    ...     sublattice_list=at_lat_before.sublattice_list,
+    ...     filename=at_lat_before.name)
 
     >>> compare_count_atoms_in_sublattice_list([added_atoms, no_added_atoms])
+    False
 
     # To stop a refinement loop
     # >>> if compare_count_atoms_in_sublattice_list(counter_list) is True:
@@ -294,19 +288,20 @@ def change_sublattice_atoms_via_intensity(
 
     Examples
     --------
-    >>> from temul.model_creation as change_sublattice_atoms_via_intensity
+    >>> from temul.model_creation import change_sublattice_atoms_via_intensity
     >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
     >>> for i in range(0, len(sublattice.atom_list)):
     ...     sublattice.atom_list[i].elements = 'Mo_1'
     ...     sublattice.atom_list[i].z_height = [0.5]
     >>> element_list = ['H_0', 'Mo_1', 'Mo_2']
-    >>> image_diff_array = np.array([5, 2, 2, 20])
+    >>> image_diff_array = np.array([[5, 2, 2, 20],[1, 2, 4, 7]])
     >>> # This will change the 5th atom in the sublattice to a lower atomic Z
     >>> # number, i.e., 'H_0' in the given element_list
     >>> change_sublattice_atoms_via_intensity(sublattice=sublattice,
     ...                               image_diff_array=image_diff_array,
     ...                               darker_or_brighter=0,
     ...                               element_list=element_list)
+    Changing some atoms
 
 
     '''
@@ -421,25 +416,24 @@ def image_difference_intensity(sublattice,
     >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
     >>> sim_image = am.dummy_data.get_simple_cubic_with_vacancies_signal()
     >>> for i in range(0, len(sublattice.atom_list)):
-            sublattice.atom_list[i].elements = 'Mo_1'
-            sublattice.atom_list[i].z_height = [0.5]
+    ...     sublattice.atom_list[i].elements = 'Mo_1'
+    ...     sublattice.atom_list[i].z_height = [0.5]
     >>> element_list = ['H_0', 'Mo_1', 'Mo_2']
     >>> image_difference_intensity(sublattice=sublattice,
-                                   sim_image=sim_image,
-                                   element_list=element_list)
+    ...                            sim_image=sim_image,
+    ...                            element_list=element_list)
 
     with some image noise and plotting the images
     >>> sublattice = am.dummy_data.get_simple_cubic_sublattice(
-        image_noise=True)
+    ...     image_noise=True)
     >>> sim_image = am.dummy_data.get_simple_cubic_with_vacancies_signal()
     >>> for i in range(0, len(sublattice.atom_list)):
-            sublattice.atom_list[i].elements = 'Mo_1'
-            sublattice.atom_list[i].z_height = [0.5]
+    ...     sublattice.atom_list[i].elements = 'Mo_1'
+    ...     sublattice.atom_list[i].z_height = [0.5]
     >>> element_list = ['H_0', 'Mo_1', 'Mo_2']
     >>> image_difference_intensity(sublattice=sublattice,
-                                   sim_image=sim_image,
-                                   element_list=element_list,
-                                   plot_details=True)
+    ...                            sim_image=sim_image,
+    ...                            element_list=element_list)
 
     '''
 
@@ -619,7 +613,7 @@ def image_difference_position(sublattice_list,
     >>> image_difference_position(sublattice_list=[sublattice],
     ...                           sim_image=sim_image,
     ...                           pixel_threshold=1,
-    ...                           filename='',
+    ...                           percent_to_nn=None,
     ...                           mask_radius=5,
     ...                           num_peaks=5,
     ...                           add_sublattice=False)
@@ -629,11 +623,11 @@ def image_difference_position(sublattice_list,
     >>> sub_new = image_difference_position(sublattice_list=[sublattice],
     ...                                   sim_image=sim_image,
     ...                                   pixel_threshold=10,
-    ...                                   filename='',
-    ...                                   mask_radius=10,
     ...                                   num_peaks=5,
     ...                                   add_sublattice=True)
+    New Atoms Found! Adding to a new sublattice
     '''
+
     image_for_sublattice = sublattice_list[0]
     diff_image = hs.signals.Signal2D(
         image_for_sublattice.image - sim_image.data)
@@ -648,20 +642,22 @@ def image_difference_position(sublattice_list,
         diff_image_inverse, num_peaks=num_peaks)
 
     diff_image_sub = am.Sublattice(atom_positions_diff_image, diff_image)
-    diff_image_sub.refine_atom_positions_using_center_of_mass(
-        percent_to_nn=percent_to_nn, mask_radius=mask_radius)
-    diff_image_sub.refine_atom_positions_using_2d_gaussian(
-        percent_to_nn=percent_to_nn, mask_radius=mask_radius)
+    # diff_image_sub.find_nearest_neighbors()
+    # diff_image_sub.refine_atom_positions_using_center_of_mass(
+    #     percent_to_nn=percent_to_nn, mask_radius=mask_radius)
+    # diff_image_sub.refine_atom_positions_using_2d_gaussian(
+    #     percent_to_nn=percent_to_nn, mask_radius=mask_radius)
     atom_positions_sub_diff = np.array(diff_image_sub.atom_positions).T
 
     # sublattice.plot()
 
     diff_image_sub_inverse = am.Sublattice(atom_positions_diff_image_inverse,
                                            diff_image_inverse)
-    diff_image_sub_inverse.refine_atom_positions_using_center_of_mass(
-        percent_to_nn=percent_to_nn, mask_radius=mask_radius)
-    diff_image_sub_inverse.refine_atom_positions_using_2d_gaussian(
-        percent_to_nn=percent_to_nn, mask_radius=mask_radius)
+    # diff_image_sub_inverse.find_nearest_neighbors()
+    # diff_image_sub_inverse.refine_atom_positions_using_center_of_mass(
+    #     percent_to_nn=percent_to_nn, mask_radius=mask_radius)
+    # diff_image_sub_inverse.refine_atom_positions_using_2d_gaussian(
+    #     percent_to_nn=percent_to_nn, mask_radius=mask_radius)
     atom_positions_sub_diff_inverse = np.array(
         diff_image_sub_inverse.atom_positions).T
 
@@ -1283,18 +1279,18 @@ def print_sublattice_elements(sublattice, number_of_lines='all'):
     else:
         number_of_lines_end = number_of_lines
 
-        elements_of_sublattice = []
-        for i in range(0, number_of_lines_end):
-            sublattice.atom_list[i].elements
-            sublattice.atom_list[i].z_height  # etc.
-            elements_of_sublattice.append([
-                sublattice.atom_list[i].elements,
-                sublattice.atom_list[i].z_height,
-                sublattice.atom_amplitude_max_intensity[i],
-                sublattice.atom_amplitude_mean_intensity[i],
-                sublattice.atom_amplitude_min_intensity[i],
-                sublattice.atom_amplitude_total_intensity[i]]
-            )
+    elements_of_sublattice = []
+    for i in range(0, number_of_lines_end):
+        sublattice.atom_list[i].elements
+        sublattice.atom_list[i].z_height  # etc.
+        elements_of_sublattice.append([
+            sublattice.atom_list[i].elements,
+            sublattice.atom_list[i].z_height,
+            sublattice.atom_amplitude_max_intensity[i],
+            sublattice.atom_amplitude_mean_intensity[i],
+            sublattice.atom_amplitude_min_intensity[i],
+            sublattice.atom_amplitude_total_intensity[i]]
+        )
 
     return elements_of_sublattice
 
@@ -1329,8 +1325,8 @@ def return_z_coordinates(z_thickness,
 
     Examples
     --------
-    >>> from temul.model_creation import return_z_coordinates
-    >>> Au_NP_z_coord = return_z_coordinates(z_thickness=20, z_bond_length=1.5)
+    # >>> from temul.model_creation import return_z_coordinates
+    # >>> Au_NP_z_coord = return_z_coordinates(z_thickness=20, z_bond_length=1.5)
 
     '''
 
@@ -1375,11 +1371,11 @@ sublattice
 '''
 
 
-def return_xyz_coordintes(x, y,
-                          z_thickness, z_bond_length,
-                          number_atoms_z=None,
-                          fractional_coordinates=True,
-                          atom_layout='bot'):
+def return_xyz_coordinates(x, y,
+                           z_thickness, z_bond_length,
+                           number_atoms_z=None,
+                           fractional_coordinates=True,
+                           atom_layout='bot'):
     '''
     Produce xyz coordinates for an xy coordinate given the z-dimension
     information.
@@ -1398,12 +1394,12 @@ def return_xyz_coordintes(x, y,
 
     Examples
     --------
-    >>> from temul.model_creation import return_xyz_coordintes
-    >>> x, y = 2, 3
-    >>> atom_coords = return_xyz_coordintes(x, y,
-    ...                         z_thickness=10,
-    ...                         z_bond_length=1.5,
-    ...                         number_atoms_z=5)
+    # >>> from temul.model_creation import return_xyz_coordinates
+    # >>> x, y = 2, 3
+    # >>> atom_coords = return_xyz_coordinates(x, y,
+    # ...                         z_thickness=10,
+    # ...                         z_bond_length=1.5,
+    # ...                         number_atoms_z=5)
 
     '''
 
@@ -1430,12 +1426,12 @@ def convert_numpy_z_coords_to_z_height_string(z_coords):
 
     Examples
     --------
-    >>> from temul.model_creation import (
-    ...     return_z_coordinates,
-    ...     convert_numpy_z_coords_to_z_height_string)
-    >>> Au_NP_z_coord = return_z_coordinates(z_thickness=20, z_bond_length=1.5)
-    >>> Au_NP_z_height_string = convert_numpy_z_coords_to_z_height_string(
-    ...     Au_NP_z_coord)
+    # >>> from temul.model_creation import (
+    # ...     return_z_coordinates,
+    # ...     convert_numpy_z_coords_to_z_height_string)
+    # >>> Au_NP_z_coord = return_z_coordinates(z_thickness=20, z_bond_length=1.5)
+    # >>> Au_NP_z_height_string = convert_numpy_z_coords_to_z_height_string(
+    # ...     Au_NP_z_coord)
 
     """
     z_string = ""

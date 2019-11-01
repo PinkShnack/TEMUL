@@ -12,7 +12,7 @@ from matplotlib import gridspec
 
 import rigidregistration
 from tifffile import imread
-from skimage.measure import compare_ssim as ssm
+from skimage.metrics import structural_similarity as ssm
 import scipy
 from scipy.ndimage.filters import gaussian_filter
 from scipy.optimize import OptimizeWarning
@@ -136,18 +136,19 @@ def return_fitting_of_1D_gaussian(
 
     >>> from temul.signal_processing import (
     ...     get_xydata_from_list_of_intensities,
-    ...     return_fitting_of_1D_gaussian)
+    ...     return_fitting_of_1D_gaussian,
+    ...     fit_1D_gaussian_to_data)
     >>> amp, mu, sigma = 10, 10, 0.5
     >>> sub1_inten = np.random.normal(mu, sigma, 1000)
     >>> xdata, ydata = get_xydata_from_list_of_intensities(sub1_inten,
     ...     hist_bins=50)
     >>> popt_gauss, _ = return_fitting_of_1D_gaussian(
-    ...                     function=fit_1D_gaussian_to_data,
-    ...                     xdata=xdata, ydata=ydata,
-    ...                     p0=[amp, mu, sigma])
-    >>> print("calculated mean: " + str(round(np.mean(xdata),3)) + "\n"
-    ...       + "fitted mean: " + str(round(popt_gauss[1],3)))
+    ...                     fit_1D_gaussian_to_data,
+    ...                     xdata, ydata,
+    ...                     amp, mu, sigma)
 
+    # print("Calculated Mean: " + str(round(np.mean(xdata),3))
+    # + "\n Fitted Mean: " + str(round(popt_gauss[1],3)))
     '''
 
     popt_gauss, pcov_gauss = scipy.optimize.curve_fit(
@@ -170,20 +171,21 @@ def plot_gaussian_fit(xdata, ydata, function, amp, mu, sigma,
                       facecolor='r', alpha=0.5):
     # save_image/filename maybe?
     '''
+    >>> from temul.signal_processing import (fit_1D_gaussian_to_data,
+    ...                                 plot_gaussian_fit,
+    ...                                 return_fitting_of_1D_gaussian)
     >>> amp, mu, sigma = 10, 10, 0.5
     >>> sub1_inten = np.random.normal(mu, sigma, 1000)
     >>> xdata, ydata = get_xydata_from_list_of_intensities(sub1_inten,
     ...     hist_bins=50)
     >>> popt_gauss, _ = return_fitting_of_1D_gaussian(
-                            function=fit_1D_gaussian_to_data,
-                            xdata=xdata,
-                            ydata=ydata,
-                            p0=[amp, mu, sigma])
-    >>> plot_gaussian_fit(xdata, ydata, function=_,
-                  amp=popt_gauss[0], mu=popt_gauss[1], sigma=popt_gauss[2],
-                  gauss_art='r--', gauss_label='Gauss Fit',
-                  plot_data=True, data_art='ko', data_label='Data Points',
-                  plot_fill=True, facecolor='r', alpha=0.5)
+    ...                     fit_1D_gaussian_to_data,
+    ...                     xdata, ydata, amp, mu, sigma)
+    >>> plot_gaussian_fit(xdata, ydata, function=fit_1D_gaussian_to_data,
+    ...           amp=popt_gauss[0], mu=popt_gauss[1], sigma=popt_gauss[2],
+    ...           gauss_art='r--', gauss_label='Gauss Fit',
+    ...           plot_data=True, data_art='ko', data_label='Data Points',
+    ...           plot_fill=True, facecolor='r', alpha=0.5)
     '''
 
     _gaussian_fit = function(xdata=xdata, amp=amp, mu=mu, sigma=sigma)
@@ -578,7 +580,7 @@ def mse(imageA, imageB):
     return err
 
 
-def measure_image_errors(imageA, imageB, filename):
+def measure_image_errors(imageA, imageB, filename=None):
     '''
     Measure the Mean Squared Error (mse) and Structural Similarity Index (ssm)
     between two images.
@@ -603,13 +605,13 @@ def measure_image_errors(imageA, imageB, filename):
     >>> imageA = am.dummy_data.get_simple_cubic_signal().data
     >>> imageB = am.dummy_data.get_simple_cubic_with_vacancies_signal().data
     >>> mse_number, ssm_number = measure_image_errors(imageA, imageB,
-                                                      plot_details=True)
+    ...                                               filename=None)
 
     Showing the ideal case of both images being exactly equal
     >>> imageA = am.dummy_data.get_simple_cubic_signal().data
     >>> imageB = am.dummy_data.get_simple_cubic_signal().data
     >>> mse_number, ssm_number = measure_image_errors(imageA, imageA,
-                                                      plot_details=True)
+    ...                                               filename=None)
 
     '''
 
@@ -676,16 +678,19 @@ def load_and_compare_images(imageA, imageB, filename=None):
 
     Examples
     --------
-
-    >>> imageA = am.dummy_data.get_simple_cubic_signal(image_noise=True)
-    >>> imageB = am.dummy_data.get_simple_cubic_signal()
-    >>> load_and_compare_images(imageA, imageB, filename=None)
+    # >>> # has to be a name for hyperspy to open with hs.load!!!
+    # >>> imageA = am.dummy_data.get_simple_cubic_signal(image_noise=True)
+    # >>> imageB = am.dummy_data.get_simple_cubic_signal()
+    # >>> load_and_compare_images(imageA, imageB, filename=None)
 
     '''
     imageA = hs.load(imageA)
     imageB = hs.load(imageB)
 
-    mse_number, ssm_number = measure_image_errors(imageA, imageB, filename)
+    mse_number, ssm_number = measure_image_errors(
+        imageA,
+        imageB,
+        filename=filename)
 
     return(mse_number, ssm_number)
 
@@ -693,10 +698,10 @@ def load_and_compare_images(imageA, imageB, filename=None):
 def compare_two_image_and_create_filtered_image(
         image_to_filter,
         reference_image,
-        filename,
         delta_image_filter,
         cropping_area,
         separation,
+        filename=None,
         max_sigma=6,
         percent_to_nn=0.4,
         mask_radius=None,
@@ -707,9 +712,11 @@ def compare_two_image_and_create_filtered_image(
     comparing to an experimental image.
     See measure_image_errors() and load_and_compare_images()
 
-    >>> new_sim_data = compare_two_image(
-                                    image_to_filter=simulation,
-                                    reference_image=atom_lattice_max)
+    # >>> from temul.signal_processing import (
+    # ...     compare_two_image_and_create_filtered_image)
+    # >>> new_sim_data = compare_two_image_and_create_filtered_image(
+    # ...                             image_to_filter=simulation,
+    # ...                             reference_image=atom_lattice_max)
 
 
     '''
@@ -737,7 +744,7 @@ def compare_two_image_and_create_filtered_image(
         mse_number, ssm_number = measure_image_errors(
             imageA=reference_image_data,
             imageB=temp_image_filtered.data,
-            filename=None)
+            filename=filename)
 
         mse_number_list.append([mse_number, i])
         ssm_number_list.append([ssm_number, i])
@@ -1247,10 +1254,12 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
     -------
 
     >>> image = am.dummy_data.get_simple_cubic_with_vacancies_signal()
-    >>> image.plot()
-    >>> cropping_area = am.add_atoms_with_gui(image.data) # choose two points
-    >>> calibrate_intensity_distance_with_sublattice_roi(image, cropping_area)
-    >>> image.plot()
+    >>> # image.plot()
+    >>> cropping_area = [[10,10],[100,100]]
+    >>> # cropping_area = am.add_atoms_with_gui(image.data) # manually
+    >>> calibrate_intensity_distance_with_sublattice_roi(image,
+    ...             cropping_area, separation=10)
+    >>> # image.plot()
 
     '''
     llim, tlim = cropping_area[0]
@@ -1312,9 +1321,9 @@ Atomap extensions
 
 
 def toggle_atom_refine_position_automatically(sublattice,
-                                              filename,
                                               min_cut_off_percent,
                                               max_cut_off_percent,
+                                              filename=None,
                                               range_type='internal',
                                               method='mode',
                                               percent_to_nn=0.05,
@@ -1364,13 +1373,12 @@ def toggle_atom_refine_position_automatically(sublattice,
     >>> sublattice.find_nearest_neighbors()
     >>> sublattice.plot()
     >>> false_list_sublattice =  toggle_atom_refine_position_automatically(
-                                    sublattice=sublattice,
-                                    min_cut_off_percent=min_cut_off_percent,
-                                    max_cut_off_percent=max_cut_off_percent,
-                                    range_type='internal',
-                                    method='mode',
-                                    save_image=False,
-                                    percent_to_nn=0.05)
+    ...                             sublattice=sublattice,
+    ...                             min_cut_off_percent=min_cut_off_percent,
+    ...                             max_cut_off_percent=max_cut_off_percent,
+    ...                             range_type='internal',
+    ...                             method='mode',
+    ...                             percent_to_nn=0.05)
 
     >>> # Check which atoms will not be refined (red dots)
     >>> sublattice.toggle_atom_refine_position_with_gui()

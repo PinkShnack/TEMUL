@@ -25,9 +25,9 @@ def get_and_return_element(element_symbol):
     --------
     >>> from temul.element_tools import get_and_return_element
     >>> Moly = get_and_return_element(element_symbol='Mo')
-    >>> print(Moly.covalent_radius)
-    >>> print(Moly.symbol)
-    >>> print(Moly.number)
+    >>> #print(Moly.covalent_radius)
+    >>> #print(Moly.symbol)
+    >>> #print(Moly.number)
 
     '''
 

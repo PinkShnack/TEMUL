@@ -34,8 +34,17 @@ Examples
 8. Update docstrings
     8a. image stack function example/dummy data
     8b. dummy data for simulate_and_calibrate_with_prismatic()
+    8c. Fix docstring for count_element_in_pandas_df()
+    8d. Fix docstring for return_xyz_coordinates()
+    8e. Fix docstring for count_all_individual_elements()
+    8f. Fix docstring for convert_numpy_z_coords_to_z_height_string
+    8g. Fix docstring for return_z_coordinates()
+    8h. Fix docstring for convert_numpy_z_coords_to_z_height_string()
+    8i. compare_two_image_and_create_filtered_image()
+    8j. load_and_compare_images()
 9. Add correct warning to load_data_and_sampling()
-
+10. Fix image_difference_position() refinements
+11. add "atomap extensions" in sig_pro to the atomap_devel module.
 
 # Ideas for code development
 

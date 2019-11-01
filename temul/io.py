@@ -269,7 +269,7 @@ def convert_vesta_xyz_to_prismatic_xyz(vesta_xyz_filename,
         unit_cell_dimen_axis = format(unit_cell_dimen_axis, '.6f')
         unit_cell_dimen.append(unit_cell_dimen_axis)
 
-    print(unit_cell_dimen)
+    # print(unit_cell_dimen)
     unit_cell_dimen = [float(unit_cell) for unit_cell in unit_cell_dimen]
     # should match the vesta values (or be slightly larger)
 
@@ -289,7 +289,7 @@ def convert_vesta_xyz_to_prismatic_xyz(vesta_xyz_filename,
                 "Example: (1, 1, 2) will double the _atom_site_fract_z, "
                 "adding 0.5 of _atom_site_fract_z to each side.")
 
-    print(unit_cell_dimen)
+    # print(unit_cell_dimen)
 
     file.loc[-1] = ['', unit_cell_dimen[0],
                     unit_cell_dimen[1],
@@ -427,15 +427,15 @@ def create_dataframe_for_xyz(sublattice_list,
     >>> import atomap.api as am
     >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
     >>> for i in range(0, len(sublattice.atom_list)):
-            sublattice.atom_list[i].elements = 'Mo_1'
-            sublattice.atom_list[i].z_height = '0.5'
+    ...     sublattice.atom_list[i].elements = 'Mo_1'
+    ...     sublattice.atom_list[i].z_height = '0.5'
     >>> element_list = ['Mo_0', 'Mo_1', 'Mo_2']
     >>> x_distance, y_distance = 50, 50
     >>> z_distance = 5
     >>> dataframe = create_dataframe_for_xyz([sublattice], element_list,
-                                 x_distance, y_distance, z_distance,
-                                 save='dataframe',
-                                 header_comment='Here is an Example')
+    ...                          x_distance, y_distance, z_distance,
+    ...                          filename='dataframe',
+    ...                          header_comment='Here is an Example')
 
     """
     df_xyz = pd.DataFrame(columns=['_atom_site_Z_number',
