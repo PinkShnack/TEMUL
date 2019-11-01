@@ -88,7 +88,7 @@ def simulate_and_calibrate_with_prismatic(
     Examples
     --------
 
-    >>> simulate_and_calibrate_with_prismatic()
+    # >>> simulate_and_calibrate_with_prismatic()
     ######## need to include an example reference_image here
 
     '''
@@ -191,23 +191,18 @@ def simulate_with_prismatic(xyz_filename,
     Examples
     --------
 
+    >>> from temul.simulations import simulate_with_prismatic
     >>> simulate_with_prismatic(
-            xyz_filename='MoS2_hex_prismatic.xyz',
-            filename='prismatic_simulation',
-            probeStep=1.0,
-            reference_image=None,
-            E0=60e3,
-            integrationAngleMin=0.085,
-            integrationAngleMax=0.186,
-            interpolationFactor=16,
-            realspacePixelSize=0.0654,
-            numFP=1,
-            probeSemiangle=0.030,
-            alphaBeamMax=0.032,
-            scanWindowMin=0.0,
-            scanWindowMax=1.0,
-            algorithm="prism",
-            numThreads=2)
+    ...     xyz_filename='MoS2_hex_prismatic.xyz',
+    ...     filename='prismatic_simulation',
+    ...     probeStep=1.0, reference_image=None, E0=60e3,
+    ...     integrationAngleMin=0.085,
+    ...     integrationAngleMax=0.186,
+    ...     interpolationFactor=16,
+    ...     realspacePixelSize=0.0654,
+    ...     numFP=1, probeSemiangle=0.030, alphaBeamMax=0.032,
+    ...     scanWindowMin=0.0, scanWindowMax=1.0, 
+    ...     algorithm="prism", numThreads=2)
 
     '''
 
@@ -294,9 +289,10 @@ def load_prismatic_mrc_with_hyperspy(
     Examples
     --------
 
+    >>> from temul.simulations import load_prismatic_mrc_with_hyperspy
     >>> load_prismatic_mrc_with_hyperspy(
-                prismatic_mrc_filename='prism_2Doutput_prismatic_simulation.mrc',
-                save_name='calibrated_data_')
+    ...         prismatic_mrc_filename='prism_2Doutput_prismatic_simulation.mrc',
+    ...         save_name='calibrated_data_')
 
     '''
 

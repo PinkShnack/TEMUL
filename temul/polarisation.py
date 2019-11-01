@@ -188,14 +188,14 @@ def delete_atom_planes_from_sublattice(sublattice,
 
     Examples
     --------
-    import atomap.api as am
-    atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
-    sublatticeA = atom_lattice.sublattice_list[0]
-    delete_atom_planes_from_sublattice(sublattice=sublatticeA,
-                                zone_axis_index=0,
-                                divisible_by=3,
-                                offset_from_zero=1)
-    sublatticeA.plot_planes()
+    >>> import atomap.api as am
+    >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
+    >>> sublatticeA = atom_lattice.sublattice_list[0]
+    >>> delete_atom_planes_from_sublattice(sublattice=sublatticeA,
+    ...                        zone_axis_index=0,
+    ...                         divisible_by=3,
+    ...                         offset_from_zero=1)
+    >>> sublatticeA.plot_planes()
 
     '''
     sublattice.construct_zone_axes(atom_plane_tolerance=atom_plane_tolerance)

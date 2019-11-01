@@ -36,7 +36,7 @@ def count_element_in_pandas_df(element, dataframe):
 
     Examples
     --------
-
+    >>> from temul.model_creation import count_element_in_pandas_df
     >>> Mo_count = count_element_in_pandas_df(element='Mo', dataframe=df)
 
     '''
@@ -79,7 +79,7 @@ def count_all_individual_elements(individual_element_list, dataframe):
 
     Examples
     --------
-
+    >>> from temul.model_creation import count_all_individual_elements
     >>> individual_element_list = ['Mo', 'S', 'Se']
     >>> element_count = count_all_individual_elements(individual_element_list, dataframe=df)
     >>> element_count
@@ -117,21 +117,20 @@ def count_atoms_in_sublattice_list(sublattice_list, filename=None):
     Examples
     --------
 
-    >>> from collections import Counter
+    >>> from temul.model_creation as count_atoms_in_sublattice_list
     >>> import atomap.api as am
-    >>> import matplotlib.pyplot as plt
     >>> atom_lattice = am.dummy_data.get_simple_atom_lattice_two_sublattices()
     >>> sub1 = atom_lattice.sublattice_list[0]
     >>> sub2 = atom_lattice.sublattice_list[1]
 
     >>> for i in range(0, len(sub1.atom_list)):
-    >>>     sub1.atom_list[i].elements = 'Ti_2'
+    ...     sub1.atom_list[i].elements = 'Ti_2'
     >>> for i in range(0, len(sub2.atom_list)):
-    >>>     sub2.atom_list[i].elements = 'Cl_1'
+    ...     sub2.atom_list[i].elements = 'Cl_1'
 
     >>> added_atoms = count_atoms_in_sublattice_list(
-    >>>     sublattice_list=[sub1, sub2],
-    >>>     filename=atom_lattice.name)
+    ...     sublattice_list=[sub1, sub2],
+    ...     filename=atom_lattice.name)
 
     Compare before and after
     >>> atom_lattice_before = am.dummy_data.get_simple_atom_lattice_two_sublattices()
@@ -200,26 +199,27 @@ def compare_count_atoms_in_sublattice_list(counter_list):
     Examples
     --------
 
-    >>> from collections import Counter
+    >>> from temul.model_creation as (
+    ...     count_atoms_in_sublattice_list,
+    ...     compare_count_atoms_in_sublattice_list)
     >>> import atomap.api as am
-    >>> import matplotlib.pyplot as plt
     >>> atom_lattice = am.dummy_data.get_simple_atom_lattice_two_sublattices()
     >>> sub1 = atom_lattice.sublattice_list[0]
     >>> sub2 = atom_lattice.sublattice_list[1]
 
     >>> for i in range(0, len(sub1.atom_list)):
-    >>>     sub1.atom_list[i].elements = 'Ti_2'
+    ...     sub1.atom_list[i].elements = 'Ti_2'
     >>> for i in range(0, len(sub2.atom_list)):
-    >>>     sub2.atom_list[i].elements = 'Cl_1'
+    ...     sub2.atom_list[i].elements = 'Cl_1'
 
     >>> added_atoms = count_atoms_in_sublattice_list(
-    >>>     sublattice_list=[sub1, sub2],
-    >>>     filename=atom_lattice.name)
+    ...     sublattice_list=[sub1, sub2],
+    ...     filename=atom_lattice.name)
 
     >>> atom_lattice_before = am.dummy_data.get_simple_atom_lattice_two_sublattices()
     >>> no_added_atoms = count_atoms_in_sublattice_list(
-    >>>     sublattice_list=atom_lattice_before.sublattice_list,
-    >>>     filename=atom_lattice_before.name)
+    ...     sublattice_list=atom_lattice_before.sublattice_list,
+    ...     filename=atom_lattice_before.name)
 
     >>> compare_count_atoms_in_sublattice_list([added_atoms, no_added_atoms])
 
@@ -289,19 +289,19 @@ def change_sublattice_atoms_via_intensity(sublattice, image_diff_array, darker_o
 
     Examples
     --------
-
+    >>> from temul.model_creation as change_sublattice_atoms_via_intensity
     >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
     >>> for i in range(0, len(sublattice.atom_list)):
-            sublattice.atom_list[i].elements = 'Mo_1'
-            sublattice.atom_list[i].z_height = [0.5]
+    ...     sublattice.atom_list[i].elements = 'Mo_1'
+    ...     sublattice.atom_list[i].z_height = [0.5]
     >>> element_list = ['H_0', 'Mo_1', 'Mo_2']
     >>> image_diff_array = np.array([5, 2, 2, 20])
-    >>> # This will change the 5th atom in the sublattice to a lower atomic Z 
+    >>> # This will change the 5th atom in the sublattice to a lower atomic Z
     >>> # number, i.e., 'H_0' in the given element_list
-    >>> change_sublattice_atoms_via_intensity(sublattice=sublattice, 
-                                      image_diff_array=image_diff_array, 
-                                      darker_or_brighter=0,
-                                      element_list=element_list)
+    >>> change_sublattice_atoms_via_intensity(sublattice=sublattice,
+    ...                               image_diff_array=image_diff_array,
+    ...                               darker_or_brighter=0,
+    ...                               element_list=element_list)
 
 
     '''
@@ -595,30 +595,32 @@ def image_difference_position(sublattice_list,
     Examples
     --------
 
+    >>> from temul.model_creation import image_difference_position
+    >>> import atomap.api as am
     >>> sublattice = am.dummy_data.get_simple_cubic_with_vacancies_sublattice(
-                                                    image_noise=True)
+    ...                                             image_noise=True)
     >>> simulation_image = am.dummy_data.get_simple_cubic_signal()
     >>> for i in range(0, len(sublattice.atom_list)):
-                sublattice.atom_list[i].elements = 'Mo_1'
-                sublattice.atom_list[i].z_height = '0.5'
+    ...         sublattice.atom_list[i].elements = 'Mo_1'
+    ...         sublattice.atom_list[i].z_height = '0.5'
     >>> # Check without adding a new sublattice
     >>> image_difference_position(sublattice_list=[sublattice],
-                                  simulation_image=simulation_image,
-                                  pixel_threshold=1,
-                                  filename='',
-                                  mask_radius=5,
-                                  num_peaks=5,
-                                  add_sublattice=False)
+    ...                           simulation_image=simulation_image,
+    ...                           pixel_threshold=1,
+    ...                           filename='',
+    ...                           mask_radius=5,
+    ...                           num_peaks=5,
+    ...                           add_sublattice=False)
     >>> # Add a new sublattice
     >>> # if you have problems with mask_radius, increase it!
     >>> # Just a gaussian fitting issue, could turn it off!
     >>> sub_new = image_difference_position(sublattice_list=[sublattice],
-                                          simulation_image=simulation_image,
-                                          pixel_threshold=10,
-                                          filename='',
-                                          mask_radius=10,
-                                          num_peaks=5,
-                                          add_sublattice=True)
+    ...                                   simulation_image=simulation_image,
+    ...                                   pixel_threshold=10,
+    ...                                   filename='',
+    ...                                   mask_radius=10,
+    ...                                   num_peaks=5,
+    ...                                   add_sublattice=True)
     '''
     image_for_sublattice = sublattice_list[0]
     diff_image = hs.signals.Signal2D(
@@ -1280,6 +1282,7 @@ def return_z_coordinates(z_thickness,
 
     Examples
     --------
+    >>> from temul.model_creation import return_z_coordinates
     >>> Au_NP_z_coord = return_z_coordinates(z_thickness=20, z_bond_length=1.5)
 
     '''
@@ -1347,6 +1350,7 @@ def return_xyz_coordintes(x, y,
 
     Examples
     --------
+    >>> from temul.model_creation import return_xyz_coordintes
     >>> x, y = 2, 3
     >>> atom_coords = return_xyz_coordintes(x, y,
     ...                         z_thickness=10, 
@@ -1377,7 +1381,9 @@ def convert_numpy_z_coords_to_z_height_string(z_coords):
 
     Examples
     --------
-
+    >>> from temul.model_creation import (
+    ...     return_z_coordinates,
+    ...     convert_numpy_z_coords_to_z_height_string)
     >>> Au_NP_z_coord = return_z_coordinates(z_thickness=20, z_bond_length=1.5)
     >>> Au_NP_z_height_string = convert_numpy_z_coords_to_z_height_string(Au_NP_z_coord)
 

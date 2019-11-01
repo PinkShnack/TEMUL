@@ -50,6 +50,7 @@ def get_xydata_from_list_of_intensities(
     Examples
     --------
 
+    >>> from temul.signal_processing import get_xydata_from_list_of_intensities
     >>> amp, mu, sigma = 10, 10, 0.5
     >>> sub1_inten = np.random.normal(mu, sigma, 1000)
     >>> xdata, ydata = get_xydata_from_list_of_intensities(sub1_inten, hist_bins=50)
@@ -93,10 +94,13 @@ def fit_1D_gaussian_to_data(xdata, amp, mu, sigma):
     Examples
     --------
 
+    >>> from temul.signal_processing import (
+    ...     get_xydata_from_list_of_intensities,
+    ...     fit_1D_gaussian_to_data)
     >>> amp, mu, sigma = 10, 10, 0.5
     >>> sub1_inten = np.random.normal(mu, sigma, 1000)
     >>> xdata, ydata = get_xydata_from_list_of_intensities(sub1_inten, hist_bins=50)
-    >>> gauss_fit_01 = _(xdata, amp, mu, sigma)    
+    >>> gauss_fit_01 = fit_1D_gaussian_to_data(xdata, amp, mu, sigma)    
     '''
 
     return amp*(1/(sigma*(np.sqrt(2*np.pi))))*(np.exp(-((xdata-mu)**2)/((2*sigma)**2)))
@@ -126,16 +130,18 @@ def return_fitting_of_1D_gaussian(
     Examples
     --------
 
+    >>> from temul.signal_processing import (
+    ...     get_xydata_from_list_of_intensities,
+    ...     return_fitting_of_1D_gaussian)
     >>> amp, mu, sigma = 10, 10, 0.5
     >>> sub1_inten = np.random.normal(mu, sigma, 1000)
     >>> xdata, ydata = get_xydata_from_list_of_intensities(sub1_inten, hist_bins=50)
     >>> popt_gauss, _ = return_fitting_of_1D_gaussian(
-                            function=fit_1D_gaussian_to_data,
-                            xdata=xdata,
-                            ydata=ydata,
-                            p0=[amp, mu, sigma])
+    ...                     function=fit_1D_gaussian_to_data,
+    ...                     xdata=xdata, ydata=ydata,
+    ...                     p0=[amp, mu, sigma])
     >>> print("calculated mean: " + str(round(np.mean(xdata),3)) + "\n"
-              + "fitted mean: " + str(round(popt_gauss[1],3)))
+    ...       + "fitted mean: " + str(round(popt_gauss[1],3)))
 
     '''
 

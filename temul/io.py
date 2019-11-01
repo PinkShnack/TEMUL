@@ -29,6 +29,7 @@ def create_new_folder(new_folder_name):
     Examples
     --------
 
+    >>> from temul.io import create_new_folder
     >>> create_new_folder('test_folder')
 
     '''
@@ -204,17 +205,13 @@ def convert_vesta_xyz_to_prismatic_xyz(vesta_xyz_filename,
     --------
 
     See example_data for the vesta xyz file.
+    >>> from temul.io import convert_vesta_xyz_to_prismatic_xyz
     >>> prismatic_xyz = convert_vesta_xyz_to_prismatic_xyz(
-                vesta_xyz_filename='MoS2_hex_vesta_xyz.xyz',
-                prismatic_xyz_filename='MoS2_hex_prismatic.xyz',
-                delimiter='   |    |  ',
-                header=None,
-                skiprows=[0, 1],
-                engine='python',
-                occupancy=1.0,
-                rms_thermal_vib=0.05,
-                header_comment="Let's make a file!",
-                save=True)
+    ...     vesta_xyz_filename='example_data/prismatic/example_MoS2_vesta_xyz.xyz',
+    ...     prismatic_xyz_filename='example_data/prismatic/MoS2_hex_prismatic.xyz',
+    ...     delimiter='   |    |  ', header=None, skiprows=[0, 1],
+    ...     engine='python', occupancy=1.0, rms_thermal_vib=0.05,
+    ...     header_comment="Let's do this!", save=True)
 
     '''
 
@@ -556,9 +553,9 @@ def dm3_stack_to_tiff_stack(loading_file,
     Examples
     --------
 
-    >>> directory = os.chdir('C:/Users/Eoghan.OConnell/Documents/Documents/Eoghan UL/PHD/Experimental/Ion implantation experiments/Feb 2019 SStem data')
-    >>> filename = '003_HAADF_movie_300_4nm_MC'
-    >>> dm3_stack_to_tiff_stack(filename=filename, crop=True, crop_start=20.0, crop_end=30.0)
+    # >>> directory = os.chdir('C:/Users/Eoghan.OConnell/Documents/Documents/Eoghan UL/PHD/Experimental/Ion implantation experiments/Feb 2019 SStem data')
+    # >>> filename = '003_HAADF_movie_300_4nm_MC'
+    # >>> dm3_stack_to_tiff_stack(filename=filename, crop=True, crop_start=20.0, crop_end=30.0)
 
 
     '''
