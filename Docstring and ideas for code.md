@@ -29,7 +29,8 @@ Examples
     5b. docstring with examples?
     5c. works in site-packages?
 6. add fft masking code
-    6a. PR on atomap for log plotting of add_atoms_with_gui()    
+    6a. PR on atomap for log plotting of add_atoms_with_gui()
+7. For get_masked_ifft(), calibration of units automatically.   
 
 
 
