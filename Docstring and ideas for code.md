@@ -31,7 +31,9 @@ Examples
 6. add fft masking code
     6a. PR on atomap for log plotting of add_atoms_with_gui()
 7. For get_masked_ifft(), calibration of units automatically.   
-
+8. Update docstrings
+    8a. image stack function example/dummy data
+    8b. dummy data for simulate_and_calibrate_with_prismatic()
 
 
 # Ideas for code development
