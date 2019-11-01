@@ -21,6 +21,7 @@ def get_and_return_element(element_symbol):
 
     Examples
     --------
+    >>> from temul.element_tools import get_and_return_element
     >>> Moly = get_and_return_element(element_symbol='Mo')
     >>> print(Moly.covalent_radius)
     >>> print(Moly.symbol)
@@ -54,6 +55,7 @@ def atomic_radii_in_pixels(sampling, element_symbol):
     --------
 
     >>> import atomap.api as am
+    >>> from temul.element_tools import atomic_radii_in_pixels
     >>> image = am.dummy_data.get_simple_cubic_signal()
     >>> # pretend it is a 5x5 nm image
     >>> image_sampling = 5/len(image.data) # units nm/pix
@@ -107,7 +109,7 @@ def split_and_sort_element(element, split_symbol=['_', '.']):
 
     Examples
     --------
-    >>> import periodictable as pt
+    >>> from temul.element_tools import split_and_sort_element
     >>> single_element = split_and_sort_element(element='S_1')
     >>> complex_element = split_and_sort_element(element='O_6.Mo_3.Ti_5')
 

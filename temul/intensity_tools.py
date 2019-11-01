@@ -46,9 +46,9 @@ def get_sublattice_intensity(sublattice, intensity_type='max', remove_background
     Examples
     --------
 
-    >>> import numpy as np
-    >>> import atomap.api as am
-    >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
+    >>> from temul.intensity_tools import get_sublattice_intensity
+    >>> import atomap.dummy_data as dummy_data
+    >>> sublattice = dummy_data.get_simple_cubic_sublattice()
     >>> sublattice.find_nearest_neighbors()
     >>> intensities_all = get_sublattice_intensity(sublattice=sublattice, 
                                                    intensity_type='all', 
@@ -219,9 +219,9 @@ def remove_average_background(sublattice, intensity_type,
     Examples
     --------
 
-    >>> import numpy as np
-    >>> import atomap.api as am
-    >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
+    >>> from temul.intensity_tools import remove_average_background
+    >>> import atomap.dummy_data as dummy_data
+    >>> sublattice = dummy_data.get_simple_cubic_sublattice()
     >>> sublattice.find_nearest_neighbors()
     >>> intensities_all = remove_average_background(sublattice, intensity_type='all',
                                                     background_sublattice=sublattice)
@@ -327,7 +327,7 @@ def remove_average_background(sublattice, intensity_type,
 
 
 #
-#sublattice0 = am.dummy_data.get_simple_cubic_sublattice()
+#sublattice0 = dummy_data.get_simple_cubic_sublattice()
 #
 # inten = get_sublattice_intensity(sublattice=sublattice0, intensity_type='max', remove_background_method='local',
 #                         background_sublattice=sublattice0, num_points=3, percent_to_nn=0.3)
@@ -367,9 +367,9 @@ def remove_local_background(sublattice, background_sublattice, intensity_type,
     Examples
     --------
 
-    >>> import numpy as np
-    >>> import atomap.api as am
-    >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
+    >>> from temul.intensity_tools import remove_local_background
+    >>> import atomap.dummy_data as dummy_data
+    >>> sublattice = dummy_data.get_simple_cubic_sublattice()
     >>> sublattice.find_nearest_neighbors()
     >>> intensities_total = remove_local_background(sublattice, intensity_type='total',
                                                     background_sublattice=sublattice)
@@ -641,8 +641,9 @@ def get_pixel_count_from_image_slice(
     Examples
     --------
 
-    >>> import atomap.api as am
-    >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
+    >>> from temul.intensity_tools import get_pixel_count_from_image_slice
+    >>> import atomap.dummy_data as dummy_data
+    >>> sublattice = dummy_data.get_simple_cubic_sublattice()
     >>> sublattice.find_nearest_neighbors()
     >>> atom0 = sublattice.atom_list[0]
     >>> pixel_count = atom0.get_pixel_count_from_image_slice(sublattice.image)
