@@ -34,6 +34,7 @@ Examples
 8. Update docstrings
     8a. image stack function example/dummy data
     8b. dummy data for simulate_and_calibrate_with_prismatic()
+9. Add correct warning to load_data_and_sampling()
 
 
 # Ideas for code development
