@@ -53,7 +53,8 @@ def get_xydata_from_list_of_intensities(
     >>> from temul.signal_processing import get_xydata_from_list_of_intensities
     >>> amp, mu, sigma = 10, 10, 0.5
     >>> sub1_inten = np.random.normal(mu, sigma, 1000)
-    >>> xdata, ydata = get_xydata_from_list_of_intensities(sub1_inten, hist_bins=50)
+    >>> xdata, ydata = get_xydata_from_list_of_intensities(sub1_inten,
+    ...     hist_bins=50)
     '''
 
     hist_bins = hist_bins
@@ -82,7 +83,7 @@ def fit_1D_gaussian_to_data(xdata, amp, mu, sigma):
     amp : float
         amplitude of the gaussian in y-axis
     mu : float
-        mean value of the gaussianin x-axis, corresponding to y-axis 
+        mean value of the gaussianin x-axis, corresponding to y-axis
         amplitude.
     sigma : float
         standard deviation of the gaussian distribution
@@ -99,11 +100,14 @@ def fit_1D_gaussian_to_data(xdata, amp, mu, sigma):
     ...     fit_1D_gaussian_to_data)
     >>> amp, mu, sigma = 10, 10, 0.5
     >>> sub1_inten = np.random.normal(mu, sigma, 1000)
-    >>> xdata, ydata = get_xydata_from_list_of_intensities(sub1_inten, hist_bins=50)
-    >>> gauss_fit_01 = fit_1D_gaussian_to_data(xdata, amp, mu, sigma)    
+    >>> xdata, ydata = get_xydata_from_list_of_intensities(sub1_inten,
+    ...     hist_bins=50)
+    >>> gauss_fit_01 = fit_1D_gaussian_to_data(xdata, amp, mu, sigma)
     '''
 
-    return amp*(1/(sigma*(np.sqrt(2*np.pi))))*(np.exp(-((xdata-mu)**2)/((2*sigma)**2)))
+    return(amp*(1/(sigma*(np.sqrt(2*np.pi))))*(np.exp(-((xdata-mu)**2) /
+                                                      ((2*sigma)**2)))
+           )
 
 
 # Fit gaussian to element
@@ -114,8 +118,8 @@ def return_fitting_of_1D_gaussian(
         amp, mu, sigma):
     '''
     Use the initially found centre (mean/mode) value of a sublattice
-    histogram (e.g., Mo_1 in an Mo sublattice) as an input mean for a 
-    gaussian fit of the data. 
+    histogram (e.g., Mo_1 in an Mo sublattice) as an input mean for a
+    gaussian fit of the data.
 
     Parameters
     ----------
@@ -124,7 +128,7 @@ def return_fitting_of_1D_gaussian(
 
     Returns
     -------
-    optimised parameters (popt) and estimated covariance (pcov) of the 
+    optimised parameters (popt) and estimated covariance (pcov) of the
     fitted gaussian function.
 
     Examples
@@ -135,7 +139,8 @@ def return_fitting_of_1D_gaussian(
     ...     return_fitting_of_1D_gaussian)
     >>> amp, mu, sigma = 10, 10, 0.5
     >>> sub1_inten = np.random.normal(mu, sigma, 1000)
-    >>> xdata, ydata = get_xydata_from_list_of_intensities(sub1_inten, hist_bins=50)
+    >>> xdata, ydata = get_xydata_from_list_of_intensities(sub1_inten,
+    ...     hist_bins=50)
     >>> popt_gauss, _ = return_fitting_of_1D_gaussian(
     ...                     function=fit_1D_gaussian_to_data,
     ...                     xdata=xdata, ydata=ydata,
@@ -167,13 +172,14 @@ def plot_gaussian_fit(xdata, ydata, function, amp, mu, sigma,
     '''
     >>> amp, mu, sigma = 10, 10, 0.5
     >>> sub1_inten = np.random.normal(mu, sigma, 1000)
-    >>> xdata, ydata = get_xydata_from_list_of_intensities(sub1_inten, hist_bins=50)
+    >>> xdata, ydata = get_xydata_from_list_of_intensities(sub1_inten,
+    ...     hist_bins=50)
     >>> popt_gauss, _ = return_fitting_of_1D_gaussian(
                             function=fit_1D_gaussian_to_data,
                             xdata=xdata,
                             ydata=ydata,
                             p0=[amp, mu, sigma])
-    >>> plot_gaussian_fit(xdata, ydata, function=_, 
+    >>> plot_gaussian_fit(xdata, ydata, function=_,
                   amp=popt_gauss[0], mu=popt_gauss[1], sigma=popt_gauss[2],
                   gauss_art='r--', gauss_label='Gauss Fit',
                   plot_data=True, data_art='ko', data_label='Data Points',
@@ -234,7 +240,7 @@ def get_fitting_tools_for_plotting_gaussians(element_list,
                                              gaussian_amp=5,
                                              gauss_sigma_division=100):
     '''
-    Creates a list of parameters and details for fitting the intensities of a 
+    Creates a list of parameters and details for fitting the intensities of a
     sublattice with multiple Gaussians.
     '''
 
@@ -247,7 +253,8 @@ def get_fitting_tools_for_plotting_gaussians(element_list,
             "element list must be the same length as middle list")
 
     fitting_tools = []
-    for i, (element, middle) in enumerate(zip(element_list, scaled_middle_intensity_list)):
+    for i, (element, middle) in enumerate(zip(
+            element_list, scaled_middle_intensity_list)):
         element_name = element
         middle_int = middle
         lower_int = scaled_limit_intensity_list[i]
@@ -283,14 +290,14 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
 
     middle_intensity_list_real_sub1, limit_intensity_list_real_sub1 = make_middle_limit_intensity_list_real(
                                         sublattice=sub1,
-                                        middle_intensity_list=middle_intensity_list_sub1, 
+                                        middle_intensity_list=middle_intensity_list_sub1,
                                         limit_intensity_list=limit_intensity_list_sub1,
                                         method=method,
                                         sublattice_scalar=sub1_mode)
 
     middle_intensity_list_real_sub2, limit_intensity_list_real_sub2 = make_middle_limit_intensity_list_real(
                                         sublattice=sub2,
-                                        middle_intensity_list=middle_intensity_list_sub2, 
+                                        middle_intensity_list=middle_intensity_list_sub2,
                                         limit_intensity_list=limit_intensity_list_sub2,
                                         method=method,
                                         sublattice_scalar=sub2_mode)
@@ -298,12 +305,16 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
 
     element_list_all_subs = [element_list_sub1, element_list_sub2]
 
-    fitting_tools_all_subs = [get_fitting_tools_for_plotting_gaussians(element_list_sub1, 
-                                                middle_intensity_list_real_sub1,
-                                                limit_intensity_list_real_sub1),
-                            get_fitting_tools_for_plotting_gaussians(element_list_sub2, 
-                                                middle_intensity_list_real_sub2,
-                                                limit_intensity_list_real_sub2)]
+    fitting_tools_all_subs = [
+        get_fitting_tools_for_plotting_gaussians(
+            element_list_sub1,
+            middle_intensity_list_real_sub1,
+            limit_intensity_list_real_sub1),
+        get_fitting_tools_for_plotting_gaussians(
+            element_list_sub2,
+            middle_intensity_list_real_sub2,
+            limit_intensity_list_real_sub2)
+            ]
 
 
     plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
@@ -332,14 +343,17 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
 
         cyclers_all.append(cycler_sub)
 
-    if len(cyclers_all) != len(element_list_all_subs) != len(fitting_tools_all_subs):
+    if len(cyclers_all) != len(element_list_all_subs) != len(
+            fitting_tools_all_subs):
         raise ValueError(
-            "len(cyclers_all) != len(element_list_all) != len(fitting_tools_all_subs), "
+            "len(cyclers_all) != len(element_list_all) != "
+            "len(fitting_tools_all_subs), "
             + str(len(cyclers_all)) + ', ' +
             str(len(element_list_all_subs)) + ', '
             + str(len(fitting_tools_all_subs)))
 
-    for cycler, element, fitting in zip(cyclers_all, element_list_all_subs, fitting_tools_all_subs):
+    for cycler, element, fitting in zip(
+            cyclers_all, element_list_all_subs, fitting_tools_all_subs):
         if len(cycler) != len(element) != len(fitting):
             raise ValueError("len(cycler) != len(element) != len(fitting)")
 
@@ -351,15 +365,18 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
                                  gridspec_kw={'height_ratios': [2, 0.5]})
     plt.subplots_adjust(hspace=0)
 
-    #fig.suptitle("Fit of all Elements with Residuals", family="serif", fontsize=20)
+    # fig.suptitle("Fit of all Elements with Residuals", family="serif",
+    # fontsize=20)
     ax2.set_xlabel("Intensity (a.u.)", family="serif",  fontsize=20)
     ax1.set_ylabel("Counts", family="serif",  fontsize=20)
     ax2.set_ylabel("Res.", family="serif",  fontsize=20)
 
     sub_residual_gauss_list = []
-    for sublattice_array, fitting_tools_sub, cycler_sub, marker, in zip(sub_ints_all, fitting_tools_all_subs, cyclers_all, marker_list):
-        x_array, y_array = get_xydata_from_list_of_intensities(sublattice_array,
-                                                               hist_bins=hist_bins)
+    for sublattice_array, fitting_tools_sub, cycler_sub, marker, in zip(
+            sub_ints_all, fitting_tools_all_subs, cyclers_all, marker_list):
+        x_array, y_array = get_xydata_from_list_of_intensities(
+            sublattice_array,
+            hist_bins=hist_bins)
 
         if plotting_style == 'scatter':
             ax1.plot(x_array, y_array, color='grey',
@@ -407,22 +424,24 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
 
                     sub_residual_gauss = abs(
                         y - (fit_1D_gaussian_to_data(x, *popt_gauss)))
-                    sub_gauss_hl = ax1.plot(x, fit_1D_gaussian_to_data(x, *popt_gauss),
-                                            label=r"$\bf{%s}$ : " % label_name +
-                                            str(round(
-                                                sum(abs(sub_residual_gauss)), 1)),
-                                            linewidth=1.5,
-                                            **kwargs)
+                    sub_gauss_hl = ax1.plot(
+                        x, fit_1D_gaussian_to_data(x, *popt_gauss),
+                        label=r"$\bf{%s}$ : " % label_name +
+                        str(round(
+                            sum(abs(sub_residual_gauss)), 1)),
+                        linewidth=1.5,
+                        **kwargs)
 
                     sub_residual_gauss_list.append([fitting_tools[0],
                                                     sub_residual_gauss])
-                    sub_resid = ax2.plot(x, sub_residual_gauss, marker=marker[1],
-                                         color='grey',
-                                         linestyle='',
-                                         markersize=4,
-                                         alpha=0.75,
-                                         label=fitting_tools[0] + ': ' +
-                                         str(round(sum(abs(sub_residual_gauss)), 1)))
+                    sub_resid = ax2.plot(
+                        x, sub_residual_gauss, marker=marker[1],
+                        color='grey',
+                        linestyle='',
+                        markersize=4,
+                        alpha=0.75,
+                        label=fitting_tools[0] + ': ' +
+                        str(round(sum(abs(sub_residual_gauss)), 1)))
 
                 except OptimizeWarning:
                     print("Warning - Covariance could not be estimated for " +
@@ -434,26 +453,29 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
                     print("Error (see leastsq in scipy/optimize/minpack) - " +
                           "Not enough data for fitting of " +
                           fitting_tools[0] + ", skipping...")
-                    # https://stackoverflow.com/questions/48637960/improper-input-n-3-must-not-exceed-m-1-error-trying-to-fit-a-gaussian-function?rq=1
+    # https://stackoverflow.com/questions/48637960/improper-input-n-3-must-
+    #   not-exceed-m-1-error-trying-to-fit-a-gaussian-function?rq=1
 
     legend1 = ax1.legend(
         loc="best", prop={'size': 10}, ncol=2, edgecolor='grey')
     for line in legend1.get_lines():
         line.set_linewidth(1.5)
 
-    #ax1.hist(sub1_ints, bins=500)
-    #ax1.hist(sub2_ints, bins=500)
+    # ax1.hist(sub1_ints, bins=500)
+    # ax1.hist(sub2_ints, bins=500)
     if filename is not None:
         plt.savefig(fname=filename + '.png',
                     transparent=True, frameon=False, bbox_inches='tight',
                     pad_inches=None, dpi=900, labels=False)
 
 
-######## Image Registration ########
+'''
+Image Registration
+'''
 
 
 def rigid_registration(file, masktype='hann', n=4, findMaxima='gf'):
-    ''' 
+    '''
     Perform image registraion with the rigid registration package
 
     Parameters
@@ -462,17 +484,17 @@ def rigid_registration(file, masktype='hann', n=4, findMaxima='gf'):
     file : stack of tiff images
 
     masktype : filtering method, default 'hann'
-        See https://github.com/bsavitzky/rigidRegistration for 
+        See https://github.com/bsavitzky/rigidRegistration for
         more information
 
     n : width of filter, default 4
         larger numbers mean smaller filter width
-        See https://github.com/bsavitzky/rigidRegistration for 
+        See https://github.com/bsavitzky/rigidRegistration for
         more information
 
     findMaxima : image matching method, default 'gf'
-        'pixel' and 'gf' options, See 
-        https://github.com/bsavitzky/rigidRegistration for 
+        'pixel' and 'gf' options, See
+        https://github.com/bsavitzky/rigidRegistration for
         more information
 
     Returns
@@ -514,11 +536,13 @@ def rigid_registration(file, masktype='hann', n=4, findMaxima='gf'):
     s.get_outliers_NN(max_shift=8)
     # s.show_Rij(mask=True)
 
-    s.make_corrected_Rij()    # Correct outliers using the transitivity relations
-    # s.show_Rij_c()            # Display the corrected shift matrix
-
+    s.make_corrected_Rij()
+    # Correct outliers using the transitivity relations
+    # s.show_Rij_c()
+    # Display the corrected shift matrix
     # Create registered image stack and average
-    # To skip calculation of image shifts, or correcting the shift matrix, pass the function
+    # To skip calculation of image shifts, or correcting the shift matrix, pass
+    # the function
     s.get_averaged_image()
     # get_shifts=False, or correct_Rij=False
 
@@ -534,16 +558,19 @@ def rigid_registration(file, masktype='hann', n=4, findMaxima='gf'):
     # Save the average image
     s.save("average_image.tif")
 
-    # Save the average image, including outer areas. Be careful when analysis outer regions of this file
+    # Save the average image, including outer areas. Be careful when analysis
+    # outer regions of this file
     s.save("average_image_no_crop.tif", crop=False)
 
     # creates a folder and put all the individual images in there
     save_individual_images_from_image_stack(image_stack=s.stack_registered)
 
 
-######## Image Comparison ########
-
+'''
+Image Comparison
 # https://www.pyimagesearch.com/2014/09/15/python-compare-two-images/
+'''
+
 
 def mse(imageA, imageB):
     err = np.sum((imageA.astype("float") - imageB.astype("float")) ** 2)
@@ -552,7 +579,7 @@ def mse(imageA, imageB):
 
 
 def measure_image_errors(imageA, imageB, filename):
-    ''' 
+    '''
     Measure the Mean Squared Error (mse) and Structural Similarity Index (ssm)
     between two images.
 
@@ -578,7 +605,7 @@ def measure_image_errors(imageA, imageB, filename):
     >>> mse_number, ssm_number = measure_image_errors(imageA, imageB,
                                                       plot_details=True)
 
-    Showing the ideal case of both images being exactly equal   
+    Showing the ideal case of both images being exactly equal
     >>> imageA = am.dummy_data.get_simple_cubic_signal().data
     >>> imageB = am.dummy_data.get_simple_cubic_signal().data
     >>> mse_number, ssm_number = measure_image_errors(imageA, imageA,
@@ -625,8 +652,8 @@ def measure_image_errors(imageA, imageB, filename):
     return(mse_number, ssm_number)
 
 
-#imageA = am.dummy_data.get_simple_cubic_signal().data
-#imageB = am.dummy_data.get_simple_cubic_with_vacancies_signal().data
+# imageA = am.dummy_data.get_simple_cubic_signal().data
+# imageB = am.dummy_data.get_simple_cubic_with_vacancies_signal().data
 # mse_number, ssm_number = measure_image_errors(imageA, imageB,
 
 
@@ -675,13 +702,13 @@ def compare_two_image_and_create_filtered_image(
         mask_radius=None,
         refine=False):
     '''
-    Gaussian blur an image for comparison with a reference image. 
-    Good for finding the best gaussian blur for a simulation by 
+    Gaussian blur an image for comparison with a reference image.
+    Good for finding the best gaussian blur for a simulation by
     comparing to an experimental image.
     See measure_image_errors() and load_and_compare_images()
 
     >>> new_sim_data = compare_two_image(
-                                    image_to_filter=simulation, 
+                                    image_to_filter=simulation,
                                     reference_image=atom_lattice_max)
 
 
@@ -699,12 +726,13 @@ def compare_two_image_and_create_filtered_image(
         temp_image_filtered = hs.signals.Signal2D(
             image_to_filter_data_filtered)
 #        temp_image_filtered.plot()
-        calibrate_intensity_distance_with_sublattice_roi(image=temp_image_filtered,
-                                                         cropping_area=cropping_area,
-                                                         separation=separation,
-                                                         percent_to_nn=percent_to_nn,
-                                                         mask_radius=mask_radius,
-                                                         refine=refine)
+        calibrate_intensity_distance_with_sublattice_roi(
+            image=temp_image_filtered,
+            cropping_area=cropping_area,
+            separation=separation,
+            percent_to_nn=percent_to_nn,
+            mask_radius=mask_radius,
+            refine=refine)
 
         mse_number, ssm_number = measure_image_errors(
             imageA=reference_image_data,
@@ -736,12 +764,13 @@ def compare_two_image_and_create_filtered_image(
 
     image_filtered = hs.signals.Signal2D(image_to_filter_filtered)
 
-    calibrate_intensity_distance_with_sublattice_roi(image=image_filtered,
-                                                     cropping_area=cropping_area,
-                                                     separation=separation,
-                                                     percent_to_nn=percent_to_nn,
-                                                     mask_radius=mask_radius,
-                                                     refine=refine)
+    calibrate_intensity_distance_with_sublattice_roi(
+        image=image_filtered,
+        cropping_area=cropping_area,
+        separation=separation,
+        percent_to_nn=percent_to_nn,
+        mask_radius=mask_radius,
+        refine=refine)
 
     if filename is not None:
 
@@ -764,7 +793,9 @@ def compare_two_image_and_create_filtered_image(
     return(image_filtered)
 
 
-######## Image Filtering ########
+'''
+Image Filtering
+'''
 
 
 def make_gaussian(size, fwhm, center):
@@ -791,7 +822,8 @@ def make_gaussian(size, fwhm, center):
 
 
 def double_gaussian_fft_filter(image, filename,
-                               d_inner, d_outer, real_space_sampling, delta=0.05, units='nm'):
+                               d_inner, d_outer, real_space_sampling,
+                               delta=0.05, units='nm'):
     # Folder: G:/SuperStem visit/Feb 2019 data/2019_02_18_QMR_S1574_MoS2-Se-15eV
 
     # Accuracy of calculation. Smaller = more accurate.
@@ -800,7 +832,8 @@ def double_gaussian_fft_filter(image, filename,
     #    delta=0.01
 
     # Find the FWHM for both positive (outer) and negative (inner) gaussians
-    # d_1 is the inner reflection diameter in units of 1/nm (or whatever unit you're working with)
+    # d_1 is the inner reflection diameter in units of 1/nm (or whatever unit
+    # you're working with)
     # I find these in gatan, should be a way of doing automatically.
     #    d_1 = 7.48
     #    d_outer = 14.96
@@ -825,22 +858,22 @@ def double_gaussian_fft_filter(image, filename,
     fwhm_neg_gaus = reciprocal_d_inner_pix
     fwhm_pos_gaus = reciprocal_d_outer_pix
 
-    #s = normalize_signal(subtract_average_background(s))
+    # s = normalize_signal(subtract_average_background(s))
     image.axes_manager[0].scale = real_space_sampling
     image.axes_manager[1].scale = real_space_sampling
     image.axes_manager[0].units = units
     image.axes_manager[1].units = units
-    #image.save('Calibrated Image Data', overwrite=True)
+    # image.save('Calibrated Image Data', overwrite=True)
 
-#    image.plot()
-#    plt.title('Calibrated Image', fontsize = 20)
-#    plt.gca().axes.get_xaxis().set_visible(False)
-#    plt.gca().axes.get_yaxis().set_visible(False)
-#    plt.tight_layout()
-#    plt.savefig(fname='Calibrated Image.png',
-#                transparent=True, frameon=False, bbox_inches='tight',
-#                pad_inches=None, dpi=300, labels=False)
-#    plt.close()
+    #    image.plot()
+    #    plt.title('Calibrated Image', fontsize = 20)
+    #    plt.gca().axes.get_xaxis().set_visible(False)
+    #    plt.gca().axes.get_yaxis().set_visible(False)
+    #    plt.tight_layout()
+    #    plt.savefig(fname='Calibrated Image.png',
+    #                transparent=True, frameon=False, bbox_inches='tight',
+    #                pad_inches=None, dpi=300, labels=False)
+    #    plt.close()
 
     # Get FFT of the image
     image_fft = image.fft(shift=True)
@@ -866,8 +899,9 @@ def double_gaussian_fft_filter(image, filename,
                             fwhm=fwhm_neg_gaus, center=None)
     # Note that this step isn't actually neccessary for the computation,
     #   we could just subtract when making the double gaussian below.
-    #   However, we do it this way so that we can save a plot of the negative gaussian!
-    #np_arr_neg = np_arr_neg
+    #   However, we do it this way so that we can save a plot of the negative
+    # gaussian!
+    # np_arr_neg = np_arr_neg
     nD_Gaussian_neg = hs.signals.Signal2D(np.array(arr_neg))
     # nD_Gaussian_neg.plot()
 
@@ -892,10 +926,11 @@ def double_gaussian_fft_filter(image, filename,
         DGFilter = normalize_signal(subtract_average_background(DGFilter))
         DGFilter.plot()
         '''
-        # Multiply the 2-D Gaussian with the FFT. This low pass filters the FFT.
+        # Multiply the 2-D Gaussian with the FFT. This low pass filters the
+        # FFT.
         convolution = image_fft*DGFilter
         # convolution.plot(norm='log')
-        #convolution_amp = convolution.amplitude
+        # convolution_amp = convolution.amplitude
         # convolution_amp.plot(norm='log')
 
         # Create the inverse FFT, which is your filtered image!
@@ -907,7 +942,7 @@ def double_gaussian_fft_filter(image, filename,
         int_and_gauss_array.append(
             [neg_gauss_amplitude, minimum_intensity, maximum_intensity])
 
-        #neg_gauss_amplitude = neg_gauss_amplitude + delta
+        # neg_gauss_amplitude = neg_gauss_amplitude + delta
 
     np_arr_2 = np.array(int_and_gauss_array)
     x_axis = np_arr_2[:, 0]
@@ -949,7 +984,7 @@ def double_gaussian_fft_filter(image, filename,
 
     # Create the inverse FFT, which is your filtered image!
     image_filtered = convolution.ifft()
-    #s = normalize_signal(subtract_average_background(convolution_ifft))
+    # s = normalize_signal(subtract_average_background(convolution_ifft))
 
     image_filtered.axes_manager[0].scale = real_space_sampling
     image_filtered.axes_manager[1].scale = real_space_sampling
@@ -1067,17 +1102,19 @@ def double_gaussian_fft_filter(image, filename,
         Filtering_Variables_Table
         Filtering_Variables_Table.to_pickle(
             'filtering_variables_table_' + filename + '.pkl')
-        #Filtering_Variables_Table.to_csv('Filtering_Variables_Table.csv', sep=',', index=False)
+        # Filtering_Variables_Table.to_csv('Filtering_Variables_Table.csv',
+        # sep=',', index=False)
 
     return(image_filtered)
 
 
-######## Cropping and Calibrating ########
-
+'''
+Cropping and Calibrating
+'''
 
 # cropping done in the scale, so nm, pixel, or whatever you have
+# cropping_area = am.add_atoms_with_gui(image.data)
 
-#cropping_area = am.add_atoms_with_gui(image.data)
 
 def crop_image_hs(image, cropping_area, save_image=True, save_variables=True,
                   scalebar_true=True):
@@ -1099,7 +1136,7 @@ def crop_image_hs(image, cropping_area, save_image=True, save_variables=True,
     if image.axes_manager[0].scale != image.axes_manager[1].scale:
         raise ValueError("x & y scales don't match!")
 
-    if scalebar_true == True:
+    if scalebar_true is True:
         llim *= image.axes_manager[0].scale
         tlim *= image.axes_manager[0].scale
         rlim *= image.axes_manager[0].scale
@@ -1111,7 +1148,7 @@ def crop_image_hs(image, cropping_area, save_image=True, save_variables=True,
     image.plot()
     image_crop = roi.interactive(image)
 
-    if save_image == True:
+    if save_image is True:
         plt.title('Cropped region highlighted', fontsize=20)
         plt.gca().axes.get_xaxis().set_visible(False)
         plt.gca().axes.get_yaxis().set_visible(False)
@@ -1131,7 +1168,7 @@ def crop_image_hs(image, cropping_area, save_image=True, save_variables=True,
     physical_image_crop_size_y = image_crop.axes_manager[1].scale * \
         image_crop.axes_manager[1].size
 
-    if save_image == True:
+    if save_image is True:
         image_crop.save('Cropped Image.hspy')
         image_crop.plot()
         plt.title('Cropped Image', fontsize=20)
@@ -1145,7 +1182,7 @@ def crop_image_hs(image, cropping_area, save_image=True, save_variables=True,
     else:
         plt.close()
 
-    if save_variables == True:
+    if save_variables is True:
         ''' Saving the Variables for the image and filtered Image '''
         Cropping_Variables = collections.OrderedDict()
 #        Cropping_Variables['Image Name'] = [image_name]
@@ -1170,7 +1207,7 @@ def crop_image_hs(image, cropping_area, save_image=True, save_variables=True,
     return image_crop
 
 
-#cropping_area = am.add_atoms_with_gui(image.data)
+# cropping_area = am.add_atoms_with_gui(image.data)
 
 
 def calibrate_intensity_distance_with_sublattice_roi(image,
@@ -1181,8 +1218,9 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
                                                      percent_to_nn=0.2,
                                                      mask_radius=None,
                                                      refine=True,
-                                                     scalebar_true=False):  # add max mean min etc.
-    ''' 
+                                                     scalebar_true=False):
+    # add max mean min etc.
+    '''
     Calibrates the intensity of an image by using a sublattice, found with some
     atomap functions. The mean intensity of that sublattice is set to 1
 
@@ -1193,10 +1231,10 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
         scalebar_true=True
     cropping_area : list of 2 floats, default None
         The best method of choosing the area is by using the atomap
-        function "add_atoms_with_gui(image.data)". Choose two points on the 
+        function "add_atoms_with_gui(image.data)". Choose two points on the
         image. First point is top left of area, second point is bottom right.
     percent_to_nn : float, default 0.40
-        Determines the boundary of the area surrounding each atomic 
+        Determines the boundary of the area surrounding each atomic
         column, as fraction of the distance to the nearest neighbour.
     scalebar_true : Bool, default False
         Set to True if the scale of the image is calibrated to a distance unit.
@@ -1221,7 +1259,7 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
     if image.axes_manager[0].scale != image.axes_manager[1].scale:
         raise ValueError("x & y scales don't match!")
 
-    if scalebar_true == True:
+    if scalebar_true is True:
         llim *= image.axes_manager[0].scale
         tlim *= image.axes_manager[0].scale
         rlim *= image.axes_manager[0].scale
@@ -1233,10 +1271,10 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
         left=llim, right=rlim, top=tlim, bottom=blim)(image)
     atom_positions = am.get_atom_positions(
         cal_area, separation=separation, pca=True)
-    #atom_positions = am.add_atoms_with_gui(cal_area, atom_positions)
+    # atom_positions = am.add_atoms_with_gui(cal_area, atom_positions)
     calib_sub = am.Sublattice(atom_positions, cal_area, color='r')
-#    calib_sub.plot()
-    if refine == True:
+    # calib_sub.plot()
+    if refine is True:
         calib_sub.find_nearest_neighbors()
         calib_sub.refine_atom_positions_using_center_of_mass(
             percent_to_nn=percent_to_nn, mask_radius=mask_radius)
@@ -1268,7 +1306,10 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
         # plt.close()
 
 
-######## Atomap extensions ########
+'''
+Atomap extensions
+'''
+
 
 def toggle_atom_refine_position_automatically(sublattice,
                                               filename,
@@ -1279,7 +1320,7 @@ def toggle_atom_refine_position_automatically(sublattice,
                                               percent_to_nn=0.05,
                                               mask_radius=None):
     '''
-    Sets the 'refine_position' attribute of each Atom Position in a 
+    Sets the 'refine_position' attribute of each Atom Position in a
     sublattice using a range of intensities.
 
     Parameters
@@ -1307,7 +1348,7 @@ def toggle_atom_refine_position_automatically(sublattice,
         Save the 'sublattice.toggle_atom_refine_position_with_gui()'
         image.
     percent_to_nn : float, default 0.40
-        Determines the boundary of the area surrounding each atomic 
+        Determines the boundary of the area surrounding each atomic
         column, as fraction of the distance to the nearest neighbour.
 
     Returns
@@ -1318,13 +1359,14 @@ def toggle_atom_refine_position_automatically(sublattice,
 
     >>> min_cut_off_percent = 0.75
     >>> max_cut_off_percent = 1.25
-    >>> sublattice = am.dummy_data.get_simple_cubic_with_vacancies_sublattice(image_noise=True)
+    >>> sublattice = am.dummy_data.get_simple_cubic_with_vacancies_sublattice(
+    ...     image_noise=True)
     >>> sublattice.find_nearest_neighbors()
     >>> sublattice.plot()
     >>> false_list_sublattice =  toggle_atom_refine_position_automatically(
                                     sublattice=sublattice,
                                     min_cut_off_percent=min_cut_off_percent,
-                                    max_cut_off_percent=max_cut_off_percent, 
+                                    max_cut_off_percent=max_cut_off_percent,
                                     range_type='internal',
                                     method='mode',
                                     save_image=False,
@@ -1369,7 +1411,7 @@ def toggle_atom_refine_position_automatically(sublattice,
     # checking we have some falses
     false_list_sublattice = []
     for i in range(0, len(sublattice.atom_list)):
-        if sublattice.atom_list[i].refine_position == False:
+        if sublattice.atom_list[i].refine_position is False:
             false_list_sublattice.append(
                 sublattice.atom_list[i].refine_position)
 
@@ -1383,14 +1425,14 @@ def toggle_atom_refine_position_automatically(sublattice,
         plt.gca().axes.get_xaxis().set_visible(False)
         plt.gca().axes.get_yaxis().set_visible(False)
         plt.tight_layout()
-        plt.savefig(fname='toggle_atom_refine_' + sublattice.name + '_' + filename + '.png',
-                    transparent=True, frameon=False, bbox_inches='tight',
-                    pad_inches=None, dpi=300, labels=False)
+        plt.savefig(
+            fname='toggle_atom_refine_' + sublattice.name + '_' + filename +
+                  '.png',
+            transparent=True, frameon=False, bbox_inches='tight',
+            pad_inches=None, dpi=300, labels=False)
         plt.close()
 
     return(false_list_sublattice)
-
-
 
 
 def remove_image_intensity_in_data_slice(atom,
@@ -1455,7 +1497,7 @@ def get_cell_image(s, points_x, points_y, method='Voronoi', max_radius='Auto',
     '''
     The same as atomap's integrate, except instead of summing the
     region around an atom, it removes the value from all pixels in
-    that region. 
+    that region.
     For example, with this you can remove the local background intensity
     by setting reduce_func=np.min.
 
@@ -1469,7 +1511,7 @@ def get_cell_image(s, points_x, points_y, method='Voronoi', max_radius='Auto',
 
     Examples
     --------
-    #### add PTO example from paper 
+    #### add PTO example from paper
 
     Returns
     -------
@@ -1522,7 +1564,7 @@ def get_cell_image(s, points_x, points_y, method='Voronoi', max_radius='Auto',
                         disable=not show_progressbar):
         currentMask = (point_record == point)
         currentFeature = currentMask * image.T
-        #integrated_intensity[point] = sum(sum(currentFeature.T)).T
+        # integrated_intensity[point] = sum(sum(currentFeature.T)).T
         # my shite
         # remove zeros from array (needed for np.mean, np.min)
         integrated_intensity[point] = reduce_func(
@@ -1576,10 +1618,10 @@ def mean_and_std_nearest_neighbour_distances(sublattice,
     sublattice.find_nearest_neighbors(
         nearest_neighbors=nearest_neighbours)
 
-    atom_nn_list = []
+    # atom_nn_list = []
     mean_list = []
     std_dev_list = []
-    variance_list = []
+    # variance_list = []
     for atom in sublattice.atom_list:
         atom_nns = atom.nearest_neighbor_list
         x1 = atom.pixel_x
@@ -1606,7 +1648,6 @@ def mean_and_std_nearest_neighbour_distances(sublattice,
     return(mean_list, std_dev_list)
 
 
-
 def choose_mask_coordinates(image, norm='log'):
     '''
     RELIES ON MY VERSION OF ATOMAP:
@@ -1616,7 +1657,8 @@ def choose_mask_coordinates(image, norm='log'):
     ####
     class AtomAdderRemover:
 
-        def __init__(self, image, atom_list=None, distance_threshold=4, norm='linear'):
+        def __init__(self, image, atom_list=None, distance_threshold=4,
+                norm='linear'):
             self.image = image
             self.distance_threshold = distance_threshold
             self.fig, self.ax = plt.subplots()
@@ -1627,7 +1669,8 @@ def choose_mask_coordinates(image, norm='log'):
                             norm=LogNorm(vmin=np.min(image),
                                         vmax=np.max(image)))
 
-    def add_atoms_with_gui(image, atom_list=None, distance_threshold=4, norm='linear'):
+    def add_atoms_with_gui(image, atom_list=None, distance_threshold=4,
+            norm='linear'):
         global atom_adder_remover
         atom_adder_remover = AtomAdderRemover(
         image, atom_list, distance_threshold=distance_threshold, norm=norm)
@@ -1739,7 +1782,3 @@ def get_masked_ifft(image, mask_coords, mask_radius=10):
     image_ifft = np.absolute(image_ifft)
 
     return(image_ifft)
-
-
-
-

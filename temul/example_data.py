@@ -37,7 +37,8 @@ def load_example_Au_nanoparticle():
     global example_Au_nanoparticle
     if example_Au_nanoparticle is None:
         path = os.path.join(
-            my_path, 'example_data', 'experimental', 'example_Au_nanoparticle.emd')
+            my_path, 'example_data',
+            'experimental', 'example_Au_nanoparticle.emd')
         example_Au_nanoparticle = load(path)
     s = example_Au_nanoparticle.deepcopy()
     return s

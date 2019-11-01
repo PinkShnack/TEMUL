@@ -1,5 +1,4 @@
 
-import atomap.api as am
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -163,7 +162,7 @@ def delete_atom_planes_from_sublattice(sublattice,
                                        offset_from_zero=0,
                                        opposite=False):
     '''
-    delete atom_planes from a zone axis. Can choose whether to delete 
+    delete atom_planes from a zone axis. Can choose whether to delete
     every second, third etc., and the offset from the zero index.
 
     Parameters
@@ -174,13 +173,13 @@ def delete_atom_planes_from_sublattice(sublattice,
         sublattice.zones_axis_average_distances[zone_axis_index]
     atom_plane_tolerance : float, default 0.5
         float between 0.0 and 1.0. Closer to 1 means it will find more zones.
-        See sublattice.construct_zone_axes() for more information. 
+        See sublattice.construct_zone_axes() for more information.
     divisible_by : int, default 3
         If divisible_by is 2, every second atom_plane is deleted,
         If divisible_by is 4, every fourth atom_plane is deleted, etc.
     offset_from_zero : int, default 0
-        The atom_plane from which you start deleting. 
-        If offset_from_zero is 4, the fourth atom_plane will be 
+        The atom_plane from which you start deleting.
+        If offset_from_zero is 4, the fourth atom_plane will be
         the first deleted.
     opposite : Bool, default False
         If this is set to True, the atom_plane specified by divisible_by
@@ -204,7 +203,8 @@ def delete_atom_planes_from_sublattice(sublattice,
 
     atom_plane_index_delete = []
     opposite_list = []
-    for i, _ in enumerate(sublattice.atom_planes_by_zone_vector[zone_vec_needed]):
+    for i, _ in enumerate(
+            sublattice.atom_planes_by_zone_vector[zone_vec_needed]):
         if i % divisible_by == 0:
             atom_plane_index_delete.append(i)
         if opposite:

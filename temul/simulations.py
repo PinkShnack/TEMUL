@@ -1,6 +1,8 @@
 
-from temul.signal_processing import (calibrate_intensity_distance_with_sublattice_roi,
-                                     compare_two_image_and_create_filtered_image)
+from temul.signal_processing import (
+    calibrate_intensity_distance_with_sublattice_roi,
+    compare_two_image_and_create_filtered_image
+)
 from temul.model_creation import (count_atoms_in_sublattice_list,
                                   compare_count_atoms_in_sublattice_list,
                                   image_difference_intensity,
@@ -44,7 +46,7 @@ def simulate_and_calibrate_with_prismatic(
         scanWindowMax=1.0,
         algorithm="prism",
         numThreads=2):
-    ''' 
+    '''
     Simulate an xyz coordinate model with pyprismatic
     fast simulation software.
 
@@ -60,14 +62,14 @@ def simulate_and_calibrate_with_prismatic(
         image from which calibration information is taken, such
         as sampling, pixel height and pixel width
     calibration_area : list
-        xy pixel coordinates of the image area to be used to calibrate 
+        xy pixel coordinates of the image area to be used to calibrate
         the intensity. In the form [[0,0], [512,512]]
         See calibrate_intensity_distance_with_sublattice_roi()
     calibration_separation : int
-        pixel separation used for the intensity calibration. 
+        pixel separation used for the intensity calibration.
         See calibrate_intensity_distance_with_sublattice_roi()
     percent_to_nn : float, default 0.40
-        Determines the boundary of the area surrounding each atomic 
+        Determines the boundary of the area surrounding each atomic
         column, as fraction of the distance to the nearest neighbour.
     mask_radius : float, default None
             Radius of the mask around each atom. If this is not set,
@@ -152,7 +154,7 @@ def simulate_with_prismatic(xyz_filename,
                             scanWindowMax=1.0,
                             algorithm="prism",
                             numThreads=2):
-    ''' 
+    '''
     Simulate an xyz coordinate model with pyprismatic
     fast simulation software.
 
@@ -176,11 +178,11 @@ def simulate_with_prismatic(xyz_filename,
         See http://prism-em.com/docs-params/
     cellDimXYZ : tuple, default None
         A tuple of length 3. Example (2.3, 4.5, 5.6).
-        If this is set to None, the cell dimension values from the .xyz file 
-        will be used (default). If it is specified, it will overwrite the .xyz 
+        If this is set to None, the cell dimension values from the .xyz file
+        will be used (default). If it is specified, it will overwrite the .xyz
         file values.
     tileXYZ : tuple, deault None
-        A tuple of length 3. Example (5, 5, 2) would multiply the model in x 
+        A tuple of length 3. Example (5, 5, 2) would multiply the model in x
         and y by 5, and z by 2.
         Default of None is just set to (1, 1, 1)
 
@@ -201,7 +203,7 @@ def simulate_with_prismatic(xyz_filename,
     ...     interpolationFactor=16,
     ...     realspacePixelSize=0.0654,
     ...     numFP=1, probeSemiangle=0.030, alphaBeamMax=0.032,
-    ...     scanWindowMin=0.0, scanWindowMax=1.0, 
+    ...     scanWindowMin=0.0, scanWindowMax=1.0,
     ...     algorithm="prism", numThreads=2)
 
     '''
@@ -256,8 +258,10 @@ def simulate_with_prismatic(xyz_filename,
     pr_sim.E0 = E0
     pr_sim.integrationAngleMin = integrationAngleMin
     pr_sim.integrationAngleMax = integrationAngleMax
-    pr_sim.interpolationFactorX = pr_sim.interpolationFactorY = interpolationFactor
-    pr_sim.realspacePixelSizeX = pr_sim.realspacePixelSizeY = realspacePixelSize
+    pr_sim.interpolationFactorX = pr_sim.interpolationFactorY = \
+        interpolationFactor
+    pr_sim.realspacePixelSizeX = pr_sim.realspacePixelSizeY = \
+        realspacePixelSize
     pr_sim.numFP = numFP
     pr_sim.probeSemiangle = probeSemiangle
     pr_sim.alphaBeamMax = alphaBeamMax  # in rads
@@ -272,7 +276,7 @@ def simulate_with_prismatic(xyz_filename,
 def load_prismatic_mrc_with_hyperspy(
         prismatic_mrc_filename,
         save_name='calibrated_data_'):
-    ''' 
+    '''
     Open a prismatic .mrc file and save as a hyperspy object.
     Also plots save saves a png.
 
@@ -291,8 +295,8 @@ def load_prismatic_mrc_with_hyperspy(
 
     >>> from temul.simulations import load_prismatic_mrc_with_hyperspy
     >>> load_prismatic_mrc_with_hyperspy(
-    ...         prismatic_mrc_filename='prism_2Doutput_prismatic_simulation.mrc',
-    ...         save_name='calibrated_data_')
+    ...     prismatic_mrc_filename='prism_2Doutput_prismatic_simulation.mrc',
+    ...     save_name='calibrated_data_')
 
     '''
 
@@ -329,7 +333,8 @@ Created on Wed Mar 13 13:12:44 2019
 
 
 '''
-directory = 'G:/SuperStem visit/Feb 2019 data/2019_02_18_QMR_S1262_MoS2-Se-10eV/005_rigid_reg/Try_5/32bit/images_aligned_0' 
+directory = 'G:/SuperStem visit/Feb 2019 data/2019_02_18_QMR_S1262_MoS2-Se-10eV
+/005_rigid_reg/Try_5/32bit/images_aligned_0'
 os.chdir(directory)
 
 image_refine_via_intensity_loop(atom_lattice_name='Atom_Lattice_total.hdf5',
@@ -445,17 +450,19 @@ def image_refine_via_intensity_loop(atom_lattice,
         simulation.axes_manager[0].scale = image_sampling
         simulation.axes_manager[1].scale = image_sampling
 
-        calibrate_intensity_distance_with_sublattice_roi(image=simulation,
-                                                         cropping_area=calibration_area,
-                                                         separation=calibration_separation,
-                                                         filename=intensity_refine_name + "Simulation" + loading_suffix,
-                                                         percent_to_nn=percent_to_nn,
-                                                         mask_radius=mask_radius,
-                                                         scalebar_true=True)
+        calibrate_intensity_distance_with_sublattice_roi(
+            image=simulation,
+            cropping_area=calibration_area,
+            separation=calibration_separation,
+            filename=intensity_refine_name + "Simulation" + loading_suffix,
+            percent_to_nn=percent_to_nn,
+            mask_radius=mask_radius,
+            scalebar_true=True)
 
         # simulation.plot()
 
-        # Filter the image with Gaussian noise to get better match with experiment
+        # Filter the image with Gaussian noise to get better match with
+        # experiment
         simulation_new = compare_two_image_and_create_filtered_image(
             image_to_filter=simulation,
             reference_image=atom_lattice_signal,
@@ -477,13 +484,16 @@ def image_refine_via_intensity_loop(atom_lattice,
         plt.gca().axes.get_xaxis().set_visible(False)
         plt.gca().axes.get_yaxis().set_visible(False)
         plt.tight_layout()
-        plt.savefig(fname=intensity_refine_name + 'Filt_Simulation' + loading_suffix + '.png',
-                    transparent=True, frameon=False, bbox_inches='tight',
-                    pad_inches=None, dpi=300, labels=False)
+        plt.savefig(
+            fname=intensity_refine_name + 'Filt_Simulation' +
+            loading_suffix + '.png',
+            transparent=True, frameon=False, bbox_inches='tight',
+            pad_inches=None, dpi=300, labels=False)
         plt.close()
 
         '''
-        Need to add the intensity type to the image_difference_intensity algorithm!
+        Need to add the intensity type to the image_difference_intensity
+        algorithm!
         '''
 
         counter_before_refinement = count_atoms_in_sublattice_list(
@@ -505,7 +515,7 @@ def image_refine_via_intensity_loop(atom_lattice,
                                    change_sublattice=change_sublattice,
                                    filename=filename)
 
-        #sub1_info_refined = print_sublattice_elements(sub1)
+        # sub1_info_refined = print_sublattice_elements(sub1)
 
         ''' Sub2 '''
         image_difference_intensity(sublattice=sub2,
@@ -516,7 +526,7 @@ def image_refine_via_intensity_loop(atom_lattice,
                                    change_sublattice=change_sublattice,
                                    filename=filename)
 
-        #sub2_info_refined = print_sublattice_elements(sub2)
+        # sub2_info_refined = print_sublattice_elements(sub2)
 
         ''' Sub3 '''
         image_difference_intensity(sublattice=sub3,
@@ -527,7 +537,7 @@ def image_refine_via_intensity_loop(atom_lattice,
                                    change_sublattice=change_sublattice,
                                    filename=filename)
 
-        #sub3_info_refined = print_sublattice_elements(sub3)
+        # sub3_info_refined = print_sublattice_elements(sub3)
         counter_after_refinement = count_atoms_in_sublattice_list(
             sublattice_list=atom_lattice.sublattice_list,
             filename=intensity_refine_name + 'Elements' + saving_suffix)
@@ -543,13 +553,15 @@ def image_refine_via_intensity_loop(atom_lattice,
             break
 
         if suffix > 4:
-            if df_inten_refine.diff(periods=2)[-4:].all(axis=1).all() == False:
+            if df_inten_refine.diff(periods=2)[-4:].all(axis=1).all() is False:
                 # if statement steps above:
-                # .diff(periods=2) gets the difference between each row, and the row two above it
-                # [-4:] slices this new difference df to get the final four rows
-                # .all(axis=1) checks if all row elements are zero or NaN and returns False
+                # .diff(periods=2) gets the difference between each row,
+                # and the row two above it [-4:] slices this new difference
+                # df to get the final four rows # .all(axis=1) checks if
+                # all row elements are zero or NaN and returns False
                 # .all() check if all four of these results are False
-                # Basically checking that the intensity refinement is repeating every second iteration
+                # Basically checking that the intensity refinement is
+                # repeating every second iteration
                 print('Finished Refinement! Repeating every second iteration.')
                 break
 
@@ -565,31 +577,35 @@ def image_refine_via_intensity_loop(atom_lattice,
             filename=filename + saving_suffix,
             header_comment='Something Something Something Dark Side')
 
-        # dataframe_intensity = create_dataframe_for_xyz(sublattice_list=atom_lattice.sublattice_list,
-        #                                                element_list=element_list,
-        #                                                x_distance=image_size_x_nm*10,
-        #                                                y_distance=image_size_y_nm*10,
-        #                                                z_distance=image_size_z_nm*10,
-        #                                                filename=intensity_refine_name + image_name + saving_suffix,
-        #                                                header_comment='Something Something Something Dark Side')
+        # dataframe_intensity = create_dataframe_for_xyz(
+        #   sublattice_list=atom_lattice.sublattice_list,
+        #   element_list=element_list,
+        #   x_distance=image_size_x_nm*10,
+        #   y_distance=image_size_y_nm*10,
+        #   z_distance=image_size_z_nm*10,
+        #   filename=intensity_refine_name + image_name + saving_suffix,
+        #   header_comment='Something Something Something Dark Side')
 
         # when ready:
         example_df_cif = create_dataframe_for_cif(
-            sublattice_list=atom_lattice.sublattice_list, element_list=element_list)
+            sublattice_list=atom_lattice.sublattice_list,
+            element_list=element_list)
 
-        write_cif_from_dataframe(dataframe=example_df_cif,
-                                 filename=intensity_refine_name + filename + saving_suffix,
-                                 chemical_name_common='MoSx-1Sex',
-                                 cell_length_a=image_size_x_nm*10,
-                                 cell_length_b=image_size_y_nm*10,
-                                 cell_length_c=image_size_z_nm*10)
+        write_cif_from_dataframe(
+            dataframe=example_df_cif,
+            filename=intensity_refine_name + filename + saving_suffix,
+            chemical_name_common='MoSx-1Sex',
+            cell_length_a=image_size_x_nm*10,
+            cell_length_b=image_size_y_nm*10,
+            cell_length_c=image_size_z_nm*10)
 
     df_inten_refine.to_pickle(intensity_refine_name + 'df_inten_refine.pkl')
     df_inten_refine.to_csv(intensity_refine_name +
                            'df_inten_refine.csv', sep=',', index=False)
 
     # https://python-graph-gallery.com/124-spaghetti-plot/
-    # https://stackoverflow.com/questions/8931268/using-colormaps-to-set-color-of-line-in-matplotlib
+    # https://stackoverflow.com/questions/8931268/using-colormaps-
+    # to-set-color-of-line-in-matplotlib
     plt.figure()
     palette = plt.get_cmap('tab20')
     # plt.style.use('seaborn-darkgrid')
@@ -626,7 +642,8 @@ def image_refine_via_intensity_loop(atom_lattice,
                  marker='', color='grey', linewidth=1, alpha=0.4)
 
     plt.plot(df_inten_refine.index,
-             df_inten_refine[atom_of_interest], marker='', color='orange', linewidth=4, alpha=0.7)
+             df_inten_refine[atom_of_interest], marker='', color='orange',
+             linewidth=4, alpha=0.7)
 
     plt.xlim(0, len(df_inten_refine.index)+1)
 
@@ -657,11 +674,13 @@ def image_refine_via_intensity_loop(atom_lattice,
     atom_lattice_int_ref_name = 'Atom_Lattice_' + \
         intensity_type + '_refined' + saving_suffix
 
-    atom_lattice_int_ref = am.Atom_Lattice(image=atom_lattice_signal,
-                                           name=atom_lattice_int_ref_name,
-                                           sublattice_list=atom_lattice.sublattice_list)
-    atom_lattice_int_ref.save(filename=intensity_refine_name +
-                              atom_lattice_int_ref_name + ".hdf5", overwrite=True)
+    atom_lattice_int_ref = am.Atom_Lattice(
+        image=atom_lattice_signal,
+        name=atom_lattice_int_ref_name,
+        sublattice_list=atom_lattice.sublattice_list)
+    atom_lattice_int_ref.save(
+        filename=intensity_refine_name +
+        atom_lattice_int_ref_name + ".hdf5", overwrite=True)
     atom_lattice_int_ref.save(
         filename=atom_lattice_int_ref_name + "_intensity.hdf5", overwrite=True)
 
@@ -670,15 +689,17 @@ def image_refine_via_intensity_loop(atom_lattice,
     plt.gca().axes.get_xaxis().set_visible(False)
     plt.gca().axes.get_yaxis().set_visible(False)
     plt.tight_layout()
-    plt.savefig(fname=intensity_refine_name + atom_lattice_int_ref_name + '.png',
-                transparent=True, frameon=False, bbox_inches='tight',
-                pad_inches=None, dpi=300, labels=False)
+    plt.savefig(
+        fname=intensity_refine_name + atom_lattice_int_ref_name + '.png',
+        transparent=True, frameon=False, bbox_inches='tight',
+        pad_inches=None, dpi=300, labels=False)
     plt.close()
 
     create_new_folder('./' + folder_name + '/')
     intensity_refine_filenames = glob('*' + intensity_refine_name + '*')
     for intensity_refine_file in intensity_refine_filenames:
-        #    print(position_refine_file, position_refine_name + '/' + position_refine_file)
+        # print(position_refine_file, position_refine_name + '/' +
+        # position_refine_file)
         os.rename(intensity_refine_file, folder_name +
                   '/' + intensity_refine_file)
 
@@ -692,7 +713,8 @@ Created on Fri Apr 26 17:33:48 2019
 
 
 '''
-directory = 'G:/SuperStem visit/Feb 2019 data/2019_02_18_QMR_S1262_MoS2-Se-10eV/005_rigid_reg/Try_5/32bit/images_aligned_0' 
+directory = 'G:/SuperStem visit/Feb 2019 data/2019_02_18_QMR_S1262_MoS2-Se-10eV
+/005_rigid_reg/Try_5/32bit/images_aligned_0'
 os.chdir(directory)
 image_refine_via_position_loop(atom_lattice_name='Atom_Lattice_total.hdf5',
                                add_sublattice=True,
@@ -784,7 +806,8 @@ def image_refine_via_position_loop(image,
             algorithm=algorithm,
             numThreads=numThreads)
 
-        # Filter the image with Gaussian noise to get better match with experiment
+        # Filter the image with Gaussian noise to get better match with
+        # experiment
         simulation_new = compare_two_image_and_create_filtered_image(
             image_to_filter=simulation,
             reference_image=image,
@@ -822,16 +845,17 @@ def image_refine_via_position_loop(image,
         else:
             pass
 
-        sub_new = image_difference_position(sublattice_list=sublattice_list,
-                                            simulation_image=simulation,
-                                            pixel_threshold=pixel_threshold,
-                                            filename=None,
-                                            mask_radius=mask_radius,
-                                            num_peaks=num_peaks,
-                                            add_sublattice=add_sublattice,
-                                            sublattice_name='sub_new' + loading_suffix)
+        sub_new = image_difference_position(
+            sublattice_list=sublattice_list,
+            simulation_image=simulation,
+            pixel_threshold=pixel_threshold,
+            filename=None,
+            mask_radius=mask_radius,
+            num_peaks=num_peaks,
+            add_sublattice=add_sublattice,
+            sublattice_name='sub_new' + loading_suffix)
 
-        if type(sub_new) == type(sublattice_list[0]):
+        if isinstance(sub_new, sublattice_list[0]):
 
             new_subs.append(sub_new)
             sublattice_list += [new_subs[-1]]
@@ -846,17 +870,18 @@ def image_refine_via_position_loop(image,
                         pad_inches=None, dpi=300, labels=False)
             plt.close()
 
-            sort_sublattice_intensities(sublattice=sub_new,
-                                        intensity_type=intensity_type,
-                                        middle_intensity_list=middle_intensity_list,
-                                        limit_intensity_list=limit_intensity_list,
-                                        element_list=element_list_new_sub,
-                                        scalar_method=scalar_method,
-                                        remove_background_method=remove_background_method,
-                                        background_sublattice=background_sublattice,
-                                        num_points=num_points,
-                                        percent_to_nn=percent_to_nn,
-                                        mask_radius=mask_radius)
+            sort_sublattice_intensities(
+                sublattice=sub_new,
+                intensity_type=intensity_type,
+                middle_intensity_list=middle_intensity_list,
+                limit_intensity_list=limit_intensity_list,
+                element_list=element_list_new_sub,
+                scalar_method=scalar_method,
+                remove_background_method=remove_background_method,
+                background_sublattice=background_sublattice,
+                num_points=num_points,
+                percent_to_nn=percent_to_nn,
+                mask_radius=mask_radius)
             '''
             need to make mask_radius for this too, for the new sublattice
             '''

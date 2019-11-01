@@ -11,7 +11,6 @@ import numpy as np
 from numpy import log
 import hyperspy.api as hs
 import pandas as pd
-import periodictable as pt
 from collections import Counter
 
 
@@ -22,11 +21,11 @@ def count_element_in_pandas_df(element, dataframe):
     Parameters
     ----------
 
-    element : string 
+    element : string
         element symbol
 
     dataframe : pandas dataframe
-        The dataframe must have column headers as elements or element 
+        The dataframe must have column headers as elements or element
         configurations
 
     Returns
@@ -50,7 +49,8 @@ def count_element_in_pandas_df(element, dataframe):
             for split in split_element:
                 # split=split_element[1]
                 if element in split[1]:
-                    #                    print(element + ":" + str(split[2]*dataframe.loc[:, element_config]))
+                    # print(element + ":" + str(split[2]*dataframe.loc[
+                    # :, element_config]))
                     count_of_element += split[2] * \
                         dataframe.loc[:, element_config]
 
@@ -68,20 +68,21 @@ def count_all_individual_elements(individual_element_list, dataframe):
     individual_element_list : list
 
     dataframe : pandas dataframe
-        The dataframe must have column headers as elements or element 
+        The dataframe must have column headers as elements or element
         configurations
 
     Returns
     -------
 
-    dict object with each individual element as dict.key and their 
+    dict object with each individual element as dict.key and their
     count as dict.value
 
     Examples
     --------
     >>> from temul.model_creation import count_all_individual_elements
     >>> individual_element_list = ['Mo', 'S', 'Se']
-    >>> element_count = count_all_individual_elements(individual_element_list, dataframe=df)
+    >>> element_count = count_all_individual_elements(
+    ... individual_element_list, dataframe=df)
     >>> element_count
     '''
 
@@ -133,10 +134,10 @@ def count_atoms_in_sublattice_list(sublattice_list, filename=None):
     ...     filename=atom_lattice.name)
 
     Compare before and after
-    >>> atom_lattice_before = am.dummy_data.get_simple_atom_lattice_two_sublattices()
+    >>> alat_before = am.dummy_data.get_simple_atom_lattice_two_sublattices()
     >>> no_added_atoms = count_atoms_in_sublattice_list(
-    >>>     sublattice_list=atom_lattice_before.sublattice_list,
-    >>>     filename=atom_lattice_before.name)
+    >>>     sublattice_list=alat_before.sublattice_list,
+    >>>     filename=alat_before.name)
 
     >>> if added_atoms == no_added_atoms:
     >>>     print('They are the same, you can stop refining')
@@ -149,7 +150,8 @@ def count_atoms_in_sublattice_list(sublattice_list, filename=None):
 
         sublattice_info = print_sublattice_elements(sublattice)
         elements_in_sublattice = [atoms[0:1]
-                                  for atoms in sublattice_info]  # get just chemical info
+                                  for atoms in sublattice_info]
+        # get just chemical info
         elements_in_sublattice = [
             y for x in elements_in_sublattice for y in x]  # flatten to a list
         # count each element
@@ -216,10 +218,10 @@ def compare_count_atoms_in_sublattice_list(counter_list):
     ...     sublattice_list=[sub1, sub2],
     ...     filename=atom_lattice.name)
 
-    >>> atom_lattice_before = am.dummy_data.get_simple_atom_lattice_two_sublattices()
+    >>> alat_before = am.dummy_data.get_simple_atom_lattice_two_sublattices()
     >>> no_added_atoms = count_atoms_in_sublattice_list(
-    ...     sublattice_list=atom_lattice_before.sublattice_list,
-    ...     filename=atom_lattice_before.name)
+    ...     sublattice_list=alat_before.sublattice_list,
+    ...     filename=alat_before.name)
 
     >>> compare_count_atoms_in_sublattice_list([added_atoms, no_added_atoms])
 
@@ -247,8 +249,11 @@ changing the atom_position location. Using intensity of current positions only
 #   make the simulation agree more with the experiment
 
 
-def change_sublattice_atoms_via_intensity(sublattice, image_diff_array, darker_or_brighter,
-                                          element_list):
+def change_sublattice_atoms_via_intensity(
+        sublattice,
+        image_diff_array,
+        darker_or_brighter,
+        element_list):
     # get the index in sublattice from the image_difference_intensity() output,
     #   which is the image_diff_array input here.
     # then, depending on whether the image_diff_array is for atoms that should
@@ -276,7 +281,7 @@ def change_sublattice_atoms_via_intensity(sublattice, image_diff_array, darker_o
         darker_or_brighter = 0.
         if the element should have a higher combined atomic Z number,
         darker_or_brighter = 1
-        In other words, the image_diff_array will change the given 
+        In other words, the image_diff_array will change the given
         sublattice elements to darker or brighter spots by choosing 0 and 1,
         respectively.
     element_list : list
@@ -310,7 +315,8 @@ def change_sublattice_atoms_via_intensity(sublattice, image_diff_array, darker_o
     else:
         print('Changing some atoms')
         for p in image_diff_array[:, 0]:
-            # could be a better way to do this within image_difference_intensity()
+            # could be a better way to do this within
+            # image_difference_intensity()
             p = int(p)
 
             elem = sublattice.atom_list[p].elements
@@ -348,8 +354,9 @@ def change_sublattice_atoms_via_intensity(sublattice, image_diff_array, darker_o
 #                new_atom = element_list[new_atom_index]
 
             elif elem == '':
-                raise ValueError("No element assigned for atom %s. Note that this \
-                                 error only picks up first instance of fail" % p)
+                raise ValueError("No element assigned for atom %s. Note that "
+                                 "this error only picks up first instance of "
+                                 "fail" % p)
             elif elem not in element_list:
                 raise ValueError("This element isn't in the element_list")
 
@@ -364,14 +371,14 @@ def change_sublattice_atoms_via_intensity(sublattice, image_diff_array, darker_o
 
 
 def image_difference_intensity(sublattice,
-                               simulation_image,
+                               sim_image,
                                element_list,
                                filename=None,
                                percent_to_nn=0.40,
                                mask_radius=None,
                                change_sublattice=False):
-    ''' 
-    Find the differences in a sublattice's atom_position intensities. 
+    '''
+    Find the differences in a sublattice's atom_position intensities.
     Change the elements of these atom_positions depending on this difference of
     intensities.
 
@@ -383,7 +390,7 @@ def image_difference_intensity(sublattice,
 
     sublattice : Atomap Sublattice object
         Elements of this sublattice will be refined
-    simulation_image : HyperSpy 2D signal
+    sim_image : HyperSpy 2D signal
         The image you wish to refine with, usually an image simulation of the
         sublattice.image
     element_list : list
@@ -391,7 +398,7 @@ def image_difference_intensity(sublattice,
     filename : string, default None
         name with which the image will be saved
     percent_to_nn : float, default 0.40
-        Determines the boundary of the area surrounding each atomic 
+        Determines the boundary of the area surrounding each atomic
         column, as fraction of the distance to the nearest neighbour.
     mask_radius : float, default None
         Radius of the mask around each atom. If this is not set,
@@ -412,24 +419,25 @@ def image_difference_intensity(sublattice,
     -------
 
     >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
-    >>> simulation_image = am.dummy_data.get_simple_cubic_with_vacancies_signal()
+    >>> sim_image = am.dummy_data.get_simple_cubic_with_vacancies_signal()
     >>> for i in range(0, len(sublattice.atom_list)):
             sublattice.atom_list[i].elements = 'Mo_1'
             sublattice.atom_list[i].z_height = [0.5]
     >>> element_list = ['H_0', 'Mo_1', 'Mo_2']
     >>> image_difference_intensity(sublattice=sublattice,
-                                   simulation_image=simulation_image,
+                                   sim_image=sim_image,
                                    element_list=element_list)
 
     with some image noise and plotting the images
-    >>> sublattice = am.dummy_data.get_simple_cubic_sublattice(image_noise=True)
-    >>> simulation_image = am.dummy_data.get_simple_cubic_with_vacancies_signal()
+    >>> sublattice = am.dummy_data.get_simple_cubic_sublattice(
+        image_noise=True)
+    >>> sim_image = am.dummy_data.get_simple_cubic_with_vacancies_signal()
     >>> for i in range(0, len(sublattice.atom_list)):
             sublattice.atom_list[i].elements = 'Mo_1'
             sublattice.atom_list[i].z_height = [0.5]
     >>> element_list = ['H_0', 'Mo_1', 'Mo_2']
     >>> image_difference_intensity(sublattice=sublattice,
-                                   simulation_image=simulation_image,
+                                   sim_image=sim_image,
                                    element_list=element_list,
                                    plot_details=True)
 
@@ -438,7 +446,7 @@ def image_difference_intensity(sublattice,
     # np.array().T needs to be taken away for newer atomap versions
     sublattice_atom_positions = np.array(sublattice.atom_positions).T
 
-    diff_image = hs.signals.Signal2D(sublattice.image - simulation_image.data)
+    diff_image = hs.signals.Signal2D(sublattice.image - sim_image.data)
 
     # create sublattice for the 'difference' data
     diff_sub = am.Sublattice(
@@ -455,7 +463,7 @@ def image_difference_intensity(sublattice,
         percent_to_nn=percent_to_nn, mask_radius=mask_radius)
     diff_mean_ints = np.array(
         diff_sub.atom_amplitude_mean_intensity, ndmin=2).T
-    #diff_mean_ints = np.array(diff_mean_ints, ndmin=2).T
+    # diff_mean_ints = np.array(diff_mean_ints, ndmin=2).T
 
     # combine the sublattice_atom_positions and the intensities for
     # future indexing
@@ -495,8 +503,9 @@ def image_difference_intensity(sublattice,
     outliers_bright = np.array(outliers_bright)
     outliers_dark = np.array(outliers_dark)
 
-    if change_sublattice == True:
-        # Now make the changes to the sublattice for both bright and dark arrays
+    if change_sublattice is True:
+        # Now make the changes to the sublattice for both bright
+        # and dark arrays
         change_sublattice_atoms_via_intensity(sublattice=sublattice,
                                               image_diff_array=outliers_bright,
                                               darker_or_brighter=1,
@@ -511,38 +520,41 @@ def image_difference_intensity(sublattice,
 
     if filename is not None:
         #        sublattice.plot()
-        #        simulation_image.plot()
+        #        sim_image.plot()
         #        diff_image.plot()
         diff_sub.plot()
         plt.gca().axes.get_xaxis().set_visible(False)
         plt.gca().axes.get_yaxis().set_visible(False)
         plt.title("Image Differences with " +
                   sublattice.name + " Overlay", fontsize=16)
-        plt.savefig(fname="Image Differences with " + sublattice.name + "Overlay.png",
-                    transparent=True, frameon=False, bbox_inches='tight',
-                    pad_inches=None, dpi=300, labels=False)
+        plt.savefig(
+            fname="Image Differences with " + sublattice.name + "Overlay.png",
+            transparent=True, frameon=False, bbox_inches='tight',
+            pad_inches=None, dpi=300, labels=False)
 
         plt.figure()
         plt.hist(diff_mean_ints, bins=50, color='b', zorder=-1)
         plt.scatter(mean_ints, len(diff_mean_ints)/50, c='red', zorder=1)
         plt.scatter(
-            std_from_mean_array[:, 0], std_from_mean_array[:, 1], c='green', zorder=1)
+            std_from_mean_array[:, 0], std_from_mean_array[:, 1], c='green',
+            zorder=1)
         plt.title("Histogram of " + sublattice.name +
                   " Intensities", fontsize=16)
         plt.xlabel("Intensity (a.u.)", fontsize=16)
         plt.ylabel("Count", fontsize=16)
         plt.tight_layout()
         plt.show()
-        plt.savefig(fname="Histogram of " + sublattice.name + " Intensities.png",
-                    transparent=True, frameon=False, bbox_inches='tight',
-                    pad_inches=None, dpi=300, labels=False)
+        plt.savefig(
+            fname="Histogram of " + sublattice.name + " Intensities.png",
+            transparent=True, frameon=False, bbox_inches='tight',
+            pad_inches=None, dpi=300, labels=False)
 
     else:
         pass
 
 
 def image_difference_position(sublattice_list,
-                              simulation_image,
+                              sim_image,
                               pixel_threshold,
                               filename=None,
                               percent_to_nn=0.40,
@@ -551,7 +563,7 @@ def image_difference_position(sublattice_list,
                               add_sublattice=False,
                               sublattice_name='sub_new'):
     '''
-    Find new atomic coordinates by comparing experimental to simulated image. 
+    Find new atomic coordinates by comparing experimental to simulated image.
     Create a new sublattice to store the new atomic coordinates.
 
     The aim is to change the sublattice elements so that the experimental image
@@ -561,7 +573,7 @@ def image_difference_position(sublattice_list,
     ----------
 
     sublattice_list : list of atomap sublattice objects
-    simulation_image : simulated image used for comparison with sublattice image
+    sim_image : simulated image used for comparison with sublattice image
     pixel_threshold : int
         minimum pixel distance from current sublattice atoms. If the new atomic
         coordinates are greater than this distance, they will be created.
@@ -570,7 +582,7 @@ def image_difference_position(sublattice_list,
     filename : string, default None
         name with which the image will be saved
     percent_to_nn : float, default 0.40
-        Determines the boundary of the area surrounding each atomic 
+        Determines the boundary of the area surrounding each atomic
         column, as fraction of the distance to the nearest neighbour.
     mask_radius : float, default None
         Radius of the mask around each atom. If this is not set,
@@ -585,7 +597,7 @@ def image_difference_position(sublattice_list,
         The reason it is set to False is so that one can check if new atoms
         would be added with the given parameters.
     sublattice_name : string, default 'sub_new'
-        the outputted sublattice object name and sublattice.name the new 
+        the outputted sublattice object name and sublattice.name the new
         sublattice will be given
 
     Returns
@@ -599,13 +611,13 @@ def image_difference_position(sublattice_list,
     >>> import atomap.api as am
     >>> sublattice = am.dummy_data.get_simple_cubic_with_vacancies_sublattice(
     ...                                             image_noise=True)
-    >>> simulation_image = am.dummy_data.get_simple_cubic_signal()
+    >>> sim_image = am.dummy_data.get_simple_cubic_signal()
     >>> for i in range(0, len(sublattice.atom_list)):
     ...         sublattice.atom_list[i].elements = 'Mo_1'
     ...         sublattice.atom_list[i].z_height = '0.5'
     >>> # Check without adding a new sublattice
     >>> image_difference_position(sublattice_list=[sublattice],
-    ...                           simulation_image=simulation_image,
+    ...                           sim_image=sim_image,
     ...                           pixel_threshold=1,
     ...                           filename='',
     ...                           mask_radius=5,
@@ -615,7 +627,7 @@ def image_difference_position(sublattice_list,
     >>> # if you have problems with mask_radius, increase it!
     >>> # Just a gaussian fitting issue, could turn it off!
     >>> sub_new = image_difference_position(sublattice_list=[sublattice],
-    ...                                   simulation_image=simulation_image,
+    ...                                   sim_image=sim_image,
     ...                                   pixel_threshold=10,
     ...                                   filename='',
     ...                                   mask_radius=10,
@@ -624,9 +636,9 @@ def image_difference_position(sublattice_list,
     '''
     image_for_sublattice = sublattice_list[0]
     diff_image = hs.signals.Signal2D(
-        image_for_sublattice.image - simulation_image.data)
+        image_for_sublattice.image - sim_image.data)
     diff_image_inverse = hs.signals.Signal2D(
-        simulation_image.data - image_for_sublattice.image)
+        sim_image.data - image_for_sublattice.image)
 
     # below function edit of get_atom_positions. Just allows num_peaks from
     # sklearn>find_local_maximum
@@ -705,11 +717,12 @@ def image_difference_position(sublattice_list,
 
     if len(atom_positions_sub_new) == 0:
         print("No New Atoms")
-    elif len(atom_positions_sub_new) != 0 and add_sublattice == True:
+    elif len(atom_positions_sub_new) != 0 and add_sublattice is True:
         print("New Atoms Found! Adding to a new sublattice")
 
-        sub_new = am.Sublattice(atom_positions_sub_new, sublattice_list[0].image,
-                                name=sublattice_name, color='cyan')
+        sub_new = am.Sublattice(
+            atom_positions_sub_new, sublattice_list[0].image,
+            name=sublattice_name, color='cyan')
 #        sub_new.refine_atom_positions_using_center_of_mass(
 #           percent_to_nn=percent_to_nn, mask_radius=mask_radius)
 #        sub_new.refine_atom_positions_using_2d_gaussian(
@@ -751,7 +764,7 @@ def image_difference_position(sublattice_list,
                     transparent=True, frameon=False, bbox_inches='tight',
                     pad_inches=None, dpi=300, labels=False)
 
-        if sub_new_exists == True:
+        if sub_new_exists is True:
             sub_new.plot()
             plt.title(sub_new.name + filename, fontsize=20)
             plt.gca().axes.get_xaxis().set_visible(False)
@@ -761,11 +774,12 @@ def image_difference_position(sublattice_list,
                         transparent=True, frameon=False, bbox_inches='tight',
                         pad_inches=None, dpi=300, labels=False)
 
-    return sub_new if sub_new_exists == True else None
+    return sub_new if sub_new_exists is True else None
 
 
 # scaling method
-# Limited to single elements at the moment. Need to figure out maths to expand it to more.
+# Limited to single elements at the moment. Need to figure out maths to expand
+# it to more.
 def scaling_z_contrast(numerator_sublattice, numerator_element,
                        denominator_sublattice, denominator_element,
                        intensity_type, method, remove_background_method,
@@ -783,24 +797,33 @@ def scaling_z_contrast(numerator_sublattice, numerator_element,
     sublattice0 = numerator_sublattice
     sublattice1 = denominator_sublattice
 
-    # use the get_sublattice_intensity() function to get the mean/mode intensities of
+    # use the get_sublattice_intensity() function to get the mean/mode
+    # intensities of
     #   each sublattice
     if type(mask_radius) is list:
         sublattice0_intensity = get_sublattice_intensity(
-            sublattice0, intensity_type, remove_background_method, background_sublattice,
-            num_points, percent_to_nn=percent_to_nn, mask_radius=mask_radius[0])
+            sublattice0, intensity_type, remove_background_method,
+            background_sublattice,
+            num_points, percent_to_nn=percent_to_nn,
+            mask_radius=mask_radius[0])
 
         sublattice1_intensity = get_sublattice_intensity(
-            sublattice1, intensity_type, remove_background_method, background_sublattice,
-            num_points, percent_to_nn=percent_to_nn, mask_radius=mask_radius[1])
+            sublattice1, intensity_type, remove_background_method,
+            background_sublattice,
+            num_points, percent_to_nn=percent_to_nn,
+            mask_radius=mask_radius[1])
     else:
         sublattice0_intensity = get_sublattice_intensity(
-            sublattice0, intensity_type, remove_background_method, background_sublattice,
-            num_points, percent_to_nn=percent_to_nn, mask_radius=mask_radius)
+            sublattice0, intensity_type, remove_background_method,
+            background_sublattice,
+            num_points, percent_to_nn=percent_to_nn,
+            mask_radius=mask_radius)
 
         sublattice1_intensity = get_sublattice_intensity(
-            sublattice1, intensity_type, remove_background_method, background_sublattice,
-            num_points, percent_to_nn=percent_to_nn, mask_radius=mask_radius)
+            sublattice1, intensity_type, remove_background_method,
+            background_sublattice,
+            num_points, percent_to_nn=percent_to_nn,
+            mask_radius=mask_radius)
 
     if method == 'mean':
         sublattice0_intensity_method = np.mean(sublattice0_intensity)
@@ -820,12 +843,17 @@ def scaling_z_contrast(numerator_sublattice, numerator_element,
         element=denominator_element, split_symbol=split_symbol)
 
     if len(numerator_element_split) == 1:
-        scaling_exponent = log(denominator_element_split[0][2]*scaling_ratio) / (
-            log(numerator_element_split[0][3]) - log(denominator_element_split[0][3]))
+        scaling_exponent = log(
+            denominator_element_split[0][2]*scaling_ratio) / (
+            log(numerator_element_split[0][3]) -
+            log(denominator_element_split[0][3]))
     else:
-        pass  # need to include more complicated equation to deal with multiple elements as the e.g., numerator
+        pass
+    # need to include more complicated equation to deal with
+    # multiple elements as the e.g., numerator
 
-    return scaling_ratio, scaling_exponent, sublattice0_intensity_method, sublattice1_intensity_method
+    return(scaling_ratio, scaling_exponent, sublattice0_intensity_method,
+           sublattice1_intensity_method)
 
 
 def auto_generate_sublattice_element_list(material_type,
@@ -865,7 +893,8 @@ def auto_generate_sublattice_element_list(material_type,
 # #  vacancies, Se_1 and Mo_1, then we'd just get more Se_1.
 # #  need to find a way of "locking in" those limits..
 
-# Calculate the middle point and limits of the distribution for a given element_list.
+# Calculate the middle point and limits of the distribution for a
+# given element_list.
 # Need to add Mike's histogram display
 '''
 
@@ -880,12 +909,12 @@ def find_middle_and_edge_intensities(sublattice,
     Create a list which represents the peak points of the
     intensity distribution for each atom.
 
-    works for nanoparticles as well, doesn't matter what 
+    works for nanoparticles as well, doesn't matter what
     scaling_exponent you use for nanoparticle. Figure this out!
 
-    If the max_element_intensity is set, then the program assumes 
-    that the standard element is the largest available element 
-    combination, and scales the middle and limit intensity lists 
+    If the max_element_intensity is set, then the program assumes
+    that the standard element is the largest available element
+    combination, and scales the middle and limit intensity lists
     so that the middle_intensity_list[-1] == max_element_intensity
 
     """
@@ -893,7 +922,7 @@ def find_middle_and_edge_intensities(sublattice,
     middle_intensity_list = []
     limit_intensity_list = [0.0]
 
-    if isinstance(standard_element, str) == True:
+    if isinstance(standard_element, str) is True:
         standard_split = split_and_sort_element(
             element=standard_element, split_symbol=split_symbol)
         standard_element_value = 0.0
@@ -936,19 +965,22 @@ def find_middle_and_edge_intensities(sublattice,
 
 
 # choosing the percent_to_nn for this seems dodgy atm...
-def find_middle_and_edge_intensities_for_background(elements_from_sub1,
-                                                    elements_from_sub2,
-                                                    sub1_mode,
-                                                    sub2_mode,
-                                                    element_list_sub1,
-                                                    element_list_sub2,
-                                                    middle_intensity_list_sub1,
-                                                    middle_intensity_list_sub2):
+def find_middle_and_edge_intensities_for_background(
+        elements_from_sub1,
+        elements_from_sub2,
+        sub1_mode,
+        sub2_mode,
+        element_list_sub1,
+        element_list_sub2,
+        middle_intensity_list_sub1,
+        middle_intensity_list_sub2):
 
     middle_intensity_list_background = [0.0]
 
-    # it is neccessary to scale the background_sublattice intensities here already because otherwise
-    #   the background_sublattice has no reference atom to base its mode intensity on. eg. in MoS2, first sub has Mo
+    # it is neccessary to scale the background_sublattice intensities here
+    # already because otherwise
+    #   the background_sublattice has no reference atom to base its mode
+    # intensity on. eg. in MoS2, first sub has Mo
     #   as a standard atom, second sub has S2 as a standard reference.
 
     for i in elements_from_sub1:
@@ -966,12 +998,15 @@ def find_middle_and_edge_intensities_for_background(elements_from_sub1,
     limit_intensity_list_background = [0.0]
     for i in range(0, len(middle_intensity_list_background)-1):
         limit = (
-            middle_intensity_list_background[i] + middle_intensity_list_background[i+1])/2
+            middle_intensity_list_background[i] +
+            middle_intensity_list_background[i+1])/2
         limit_intensity_list_background.append(limit)
 
-    if len(limit_intensity_list_background) <= len(middle_intensity_list_background):
+    if len(limit_intensity_list_background) <= len(
+            middle_intensity_list_background):
         max_limit = middle_intensity_list_background[-1] + (
-            middle_intensity_list_background[-1]-limit_intensity_list_background[-1])
+            middle_intensity_list_background[-1] -
+            limit_intensity_list_background[-1])
         limit_intensity_list_background.append(max_limit)
     else:
         pass
@@ -981,24 +1016,26 @@ def find_middle_and_edge_intensities_for_background(elements_from_sub1,
 
 #
 #
-#sub2_ints = get_sublattice_intensity(sub2, intensity_type='max', remove_background_method=None)
+# sub2_ints = get_sublattice_intensity(sub2, intensity_type='max',
+# remove_background_method=None)
 #
 # min(sub2_ints)
 # sub2_ints.sort()
 #
-#sub2_mode = scipy.stats.mode(np.round(sub2_ints, decimals=2))[0][0]
+# sub2_mode = scipy.stats.mode(np.round(sub2_ints, decimals=2))[0][0]
 #
-#limit_numbers = []
+# limit_numbers = []
 # for i in limit_intensity_list_sub2:
 #    limit_numbers.append(i*sub2_mode)
 #
 #
-# elements_of_sub2 = sort_sublattice_intensities(sub2, 'max', middle_intensity_list_sub2,
-#                                               limit_intensity_list_sub2, element_list_sub2,
-#                                               method='mode', remove_background_method=None,
-#                                               percent_to_nn=0.2)
+# elements_of_sub2 = sort_sublattice_intensities(
+#   sub2, 'max', middle_intensity_list_sub2,
+#   limit_intensity_list_sub2, element_list_sub2,
+#   method='mode', remove_background_method=None,
+#   percent_to_nn=0.2)
 #
-#sublattice = sub2
+# sublattice = sub2
 # intensity_type='max'
 # middle_intensity_list=middle_intensity_list_sub2
 # limit_intensity_list=limit_intensity_list_sub2
@@ -1022,10 +1059,14 @@ def sort_sublattice_intensities(sublattice,
                                 intensity_list_real=False,
                                 percent_to_nn=0.40, mask_radius=None):
 
-    # intensity_list_real is asking whether the intensity values in your intensity_list for the current sublattice
-    #   are scaled. Scaled meaning already multiplied by the mean or mode of said sublattice.
-    #   Set to Tru for background sublattices. For more details see "find_middle_and_edge_intensities_for_background()"
-    #   You can see that the outputted lists are scaled by the mean or mode, whereas in
+    # intensity_list_real is asking whether the intensity values in your
+    # intensity_list for the current sublattice
+    #   are scaled. Scaled meaning already multiplied by the mean or mode
+    # of said sublattice.
+    #   Set to Tru for background sublattices. For more details see
+    # "find_middle_and_edge_intensities_for_background()"
+    #   You can see that the outputted lists are scaled by the mean or mode,
+    # whereas in
     #   "find_middle_and_edge_intensities()", they are not.
 
     # For testing and quickly assigning a sublattice some elements.
@@ -1037,15 +1078,17 @@ def sort_sublattice_intensities(sublattice,
 
     else:
         sublattice_intensity = get_sublattice_intensity(
-            sublattice, intensity_type, remove_background_method, background_sublattice,
-            num_points, percent_to_nn=percent_to_nn, mask_radius=mask_radius)
+            sublattice, intensity_type, remove_background_method,
+            background_sublattice,
+            num_points, percent_to_nn=percent_to_nn,
+            mask_radius=mask_radius)
 
         for i in sublattice_intensity:
             if i < 0:
                 i = 0.0000000001
-                #raise ValueError("You have negative intensity. Bad Vibes")
+                # raise ValueError("You have negative intensity. Bad Vibes")
 
-        if intensity_list_real == False:
+        if intensity_list_real is False:
 
             if scalar_method == 'mean':
                 scalar = np.mean(sublattice_intensity)
@@ -1057,7 +1100,8 @@ def sort_sublattice_intensities(sublattice,
 
             if len(element_list) != len(middle_intensity_list):
                 raise ValueError(
-                    'element_list length does not equal middle_intensity_list length')
+                    "element_list length does not equal "
+                    "middle_intensity_list length")
             else:
                 pass
 
@@ -1069,10 +1113,11 @@ def sort_sublattice_intensities(sublattice,
                         elements_of_sublattice.append(
                             sublattice.atom_list[i].elements)
 
-        elif intensity_list_real == True:
+        elif intensity_list_real is True:
             if len(element_list) != len(middle_intensity_list):
                 raise ValueError(
-                    'element_list length does not equal middle_intensity_list length')
+                    "element_list length does not equal middle_intensity_list "
+                    "length")
             else:
                 pass
 
@@ -1099,11 +1144,12 @@ def sort_sublattice_intensities(sublattice,
 #    if sublattice.atom_list[i].elements == 'S_0':
 #        print(i)
 #
-#sublattice.atom_list[36].elements = 'S_1'
+# sublattice.atom_list[36].elements = 'S_1'
 # i=36
 #
 
-#whatareyou = split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2]
+# whatareyou = split_and_sort_element(
+#   element=sublattice.atom_list[i].elements)[0][2]
 #
 # if whatareyou == 0:
 #    print('arg')
@@ -1112,7 +1158,7 @@ def sort_sublattice_intensities(sublattice,
 
 
 # if chalcogen = True, give positions as...
-   #   currently "chalcogen" is relevant to our TMDC work
+# currently "chalcogen" is relevant to our TMDC work
 
 def assign_z_height(sublattice, lattice_type, material):
     for i in range(0, len(sublattice.atom_list)):
@@ -1130,7 +1176,7 @@ def assign_z_height(sublattice, lattice_type, material):
                     sublattice.atom_list[i].z_height = '0.242, 0.758, 0.9'
                 else:
                     sublattice.atom_list[i].z_height = '0.758'
-                    #raise ValueError("z_height is limited to only a handful of positions")
+                    # raise ValueError("z_height is limited to only a handful of positions")
             elif lattice_type == 'transition_metal':
                 if len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] == 1:
                     sublattice.atom_list[i].z_height = '0.5'
@@ -1144,7 +1190,7 @@ def assign_z_height(sublattice, lattice_type, material):
                     sublattice.atom_list[i].z_height = '0.5, 0.95, 1'
                 else:
                     sublattice.atom_list[i].z_height = '0.5'
-                    #raise ValueError("z_height is limited to only a handful of positions")
+                    # raise ValueError("z_height is limited to only a handful of positions")
             elif lattice_type == 'background':
                 # if sublattice.atom_list[i].elements == 'H_0' or sublattice.atom_list[i].elements == 'vacancy':
                 sublattice.atom_list[i].z_height = '0.95'
@@ -1172,7 +1218,7 @@ def assign_z_height(sublattice, lattice_type, material):
                     sublattice.atom_list[i].z_height = '0.242, 0.757, 0.95'
                 else:
                     sublattice.atom_list[i].z_height = '0.757'
-                    #raise ValueError("z_height is limited to only a handful of positions")
+                # raise ValueError("z_height is limited to only a handful of positions")
             elif lattice_type == 'transition_metal':
                 if len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] == 1:
                     sublattice.atom_list[i].z_height = '0.5'
@@ -1186,7 +1232,7 @@ def assign_z_height(sublattice, lattice_type, material):
                     sublattice.atom_list[i].z_height = '0.5, 0.95, 1'
                 else:
                     sublattice.atom_list[i].z_height = '0.5'
-                    #raise ValueError("z_height is limited to only a handful of positions")
+                # raise ValueError("z_height is limited to only a handful of positions")
             elif lattice_type == 'background':
                 # if sublattice.atom_list[i].elements == 'H_0' or sublattice.atom_list[i].elements == 'vacancy':
                 sublattice.atom_list[i].z_height = '0.95'
@@ -1207,7 +1253,7 @@ def assign_z_height(sublattice, lattice_type, material):
                     sublattice.atom_list[i].z_height = '0.1275, 0.3725, 0.75'
                 else:
                     sublattice.atom_list[i].z_height = '0.95'
-                    #raise ValueError("z_height is limited to only a handful of positions")
+                    # raise ValueError("z_height is limited to only a handful of positions")
             elif lattice_type == 'TM_bot':
                 if len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 3:
                     sublattice.atom_list[i].z_height = '0.25, 0.6275, 0.8725'
@@ -1215,7 +1261,7 @@ def assign_z_height(sublattice, lattice_type, material):
                     sublattice.atom_list[i].z_height = '0.25, 0.6275, 0.8725'
                 else:
                     sublattice.atom_list[i].z_height = '0.95'
-                    #raise ValueError("z_height is limited to only a handful of positions")
+                # raise ValueError("z_height is limited to only a handful of positions")
             elif lattice_type == 'background':
                 # if sublattice.atom_list[i].elements == 'H_0' or sublattice.atom_list[i].elements == 'vacancy':
                 sublattice.atom_list[i].z_height = '0.95'
@@ -1241,13 +1287,14 @@ def print_sublattice_elements(sublattice, number_of_lines='all'):
         for i in range(0, number_of_lines_end):
             sublattice.atom_list[i].elements
             sublattice.atom_list[i].z_height  # etc.
-            elements_of_sublattice.append([sublattice.atom_list[i].elements,
-                                           sublattice.atom_list[i].z_height,
-                                           sublattice.atom_amplitude_max_intensity[i],
-                                           sublattice.atom_amplitude_mean_intensity[i],
-                                           sublattice.atom_amplitude_min_intensity[i],
-                                           sublattice.atom_amplitude_total_intensity[i]
-                                           ])
+            elements_of_sublattice.append([
+                sublattice.atom_list[i].elements,
+                sublattice.atom_list[i].z_height,
+                sublattice.atom_amplitude_max_intensity[i],
+                sublattice.atom_amplitude_mean_intensity[i],
+                sublattice.atom_amplitude_min_intensity[i],
+                sublattice.atom_amplitude_total_intensity[i]]
+            )
 
     return elements_of_sublattice
 
@@ -1288,7 +1335,8 @@ def return_z_coordinates(z_thickness,
     '''
 
     if max_number_atoms_z is not None:
-        # print("number_atoms_z has been specified, using number_atoms_z instead\
+        # print("number_atoms_z has been specified, using
+        # number_atoms_z instead\
         #     of z_thickness")
         z_thickness = max_number_atoms_z * z_bond_length
 
@@ -1322,7 +1370,7 @@ def return_z_coordinates(z_thickness,
 
 
 '''
-add intensity used for getting number, and index for later reference with 
+add intensity used for getting number, and index for later reference with
 sublattice
 '''
 
@@ -1334,7 +1382,7 @@ def return_xyz_coordintes(x, y,
                           atom_layout='bot'):
     '''
     Produce xyz coordinates for an xy coordinate given the z-dimension
-    information. 
+    information.
 
     Parameters
     ----------
@@ -1353,17 +1401,18 @@ def return_xyz_coordintes(x, y,
     >>> from temul.model_creation import return_xyz_coordintes
     >>> x, y = 2, 3
     >>> atom_coords = return_xyz_coordintes(x, y,
-    ...                         z_thickness=10, 
+    ...                         z_thickness=10,
     ...                         z_bond_length=1.5,
     ...                         number_atoms_z=5)
 
     '''
 
-    z_coords = return_z_coordinates(number_atoms_z=number_atoms_z,
-                                    z_thickness=z_thickness,
-                                    z_bond_length=z_bond_length,
-                                    fractional_coordinates=fractional_coordinates,
-                                    atom_layout=atom_layout)
+    z_coords = return_z_coordinates(
+        number_atoms_z=number_atoms_z,
+        z_thickness=z_thickness,
+        z_bond_length=z_bond_length,
+        fractional_coordinates=fractional_coordinates,
+        atom_layout=atom_layout)
 
     # One z for each atom in number_atoms for each xy pair
     atom_coords = []
@@ -1376,7 +1425,7 @@ def return_xyz_coordintes(x, y,
 def convert_numpy_z_coords_to_z_height_string(z_coords):
     """
     Convert from the output of return_z_coordinates(), which is a 1D numpy
-    array, to a long string, with which I have set up 
+    array, to a long string, with which I have set up
     sublattice.atom_list[i].z_height.
 
     Examples
@@ -1385,7 +1434,8 @@ def convert_numpy_z_coords_to_z_height_string(z_coords):
     ...     return_z_coordinates,
     ...     convert_numpy_z_coords_to_z_height_string)
     >>> Au_NP_z_coord = return_z_coordinates(z_thickness=20, z_bond_length=1.5)
-    >>> Au_NP_z_height_string = convert_numpy_z_coords_to_z_height_string(Au_NP_z_coord)
+    >>> Au_NP_z_height_string = convert_numpy_z_coords_to_z_height_string(
+    ...     Au_NP_z_coord)
 
     """
     z_string = ""
@@ -1476,12 +1526,12 @@ def create_dataframe_for_cif(sublattice_list, element_list):
 
     # Start with the first sublattice in the list of sublattices given
     for sublattice in sublattice_list:
-            # Go through each atom_list index one by one
+        # Go through each atom_list index one by one
         for i in range(0, len(sublattice.atom_list)):
-                # check if the element is in the given element list
+            # check if the element is in the given element list
             if sublattice.atom_list[i].elements in element_list:
-                    # this loop cycles through the length of the split element eg, 2 for 'Se_1.S_1' and
-                    #   outputs an atom label and z_height for each
+                # this loop cycles through the length of the split element eg, 2 for 'Se_1.S_1' and
+                #   outputs an atom label and z_height for each
                 for k in range(0, len(split_and_sort_element(sublattice.atom_list[i].elements))):
                     if split_and_sort_element(sublattice.atom_list[i].elements)[k][2] >= 1:
                         atom_label = split_and_sort_element(
@@ -1516,13 +1566,13 @@ def create_dataframe_for_cif(sublattice_list, element_list):
                                                   '_atom_site_type_symbol': atom_label},
                                                  ignore_index=True)  # insert row
 
-                            #value += split_and_sort_element(sublattice.atom_list[i].elements)[k][2]
+    # value += split_and_sort_element(sublattice.atom_list[i].elements)[k][2]
     # need an option to save to the cuurent directory should be easy
-#        dfObj.to_pickle('atom_lattice_atom_position_table.pkl')
-#        dfObj.to_csv('atom_lattice_atom_position_table.csv', sep=',', index=False)
+    #        dfObj.to_pickle('atom_lattice_atom_position_table.pkl')
+    #        dfObj.to_csv('atom_lattice_atom_position_table.csv', sep=',', index=False)
     return dfObj
 
-#element_list = ['S_0', 'S_1', 'S_2', 'S_2.C_1', 'S_2.C_2', 'Mo_1', 'Mo_0']
-#example_df = create_dataframe_for_cif(atom_lattice, element_list)
+    # element_list = ['S_0', 'S_1', 'S_2', 'S_2.C_1', 'S_2.C_2', 'Mo_1', 'Mo_0']
+    # example_df = create_dataframe_for_cif(atom_lattice, element_list)
 
-# '_atom_site_fract_z' : format( (sublattice.atom_list[i].z_height)[p+(k*k)], '.6f'), #great touch
+    # '_atom_site_fract_z' : format( (sublattice.atom_list[i].z_height)[p+(k*k)], '.6f'), #great touch

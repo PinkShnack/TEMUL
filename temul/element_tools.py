@@ -1,7 +1,9 @@
 
 import periodictable as pt
 
-######## Element and radius calibration ########
+'''
+Element and radius calibration
+'''
 
 
 def get_and_return_element(element_symbol):
@@ -75,15 +77,18 @@ def atomic_radii_in_pixels(sampling, element_symbol):
     return(radius_pix)
 
 
-######## Assigning Elements and Z height ########
+'''
+Assigning Elements and Z height
 
-# split_symbol must be a list
-# splitting an element
+split_symbol must be a list
+splitting an element
+'''
+
 
 def split_and_sort_element(element, split_symbol=['_', '.']):
     '''
     Extracts info from input atomic column element configuration
-    Split an element and its count, then sort the element for 
+    Split an element and its count, then sort the element for
     use with other functions.
 
     Parameters
@@ -92,12 +97,12 @@ def split_and_sort_element(element, split_symbol=['_', '.']):
     element : string, default None
         element species and count must be separated by the
         first string in the split_symbol list.
-        separate elements must be separated by the second 
+        separate elements must be separated by the second
         string in the split_symbol list.
     split_symbol : list of strings, default ['_', '.']
         The symbols used to split the element into its name
         and count.
-        The first string '_' is used to split the name and count 
+        The first string '_' is used to split the name and count
         of the element.
         The second string is used to split different elements in
         an atomic column configuration.
@@ -126,9 +131,11 @@ def split_and_sort_element(element, split_symbol=['_', '.']):
                 element_split = stacking_element[i].split(split_symbol[0])
                 element_name = element_split[0]
                 element_count = int(element_split[1])
-                element_atomic_number = pt.elements.symbol(element_name).number
+                element_atomic_number = pt.elements.symbol(
+                    element_name).number
                 splitting_info.append(
-                    [element_split, element_name, element_count, element_atomic_number])
+                    [element_split, element_name, element_count,
+                     element_atomic_number])
         else:
             raise ValueError(
                 "To split a stacked element use: split_symbol=['_', '.']")
@@ -140,10 +147,12 @@ def split_and_sort_element(element, split_symbol=['_', '.']):
         element_count = int(element_split[1])
         element_atomic_number = pt.elements.symbol(element_name).number
         splitting_info.append(
-            [element_split, element_name, element_count, element_atomic_number])
+            [element_split, element_name, element_count,
+             element_atomic_number])
 
     else:
         raise ValueError(
-            "You must include a split_symbol. Use '_' to separate element and count. Use '.' to separate elements in the same xy position")
+            "You must include a split_symbol. Use '_' to separate element "
+            "and count. Use '.' to separate elements in the same xy position")
 
     return(splitting_info)

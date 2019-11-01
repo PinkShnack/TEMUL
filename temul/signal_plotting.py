@@ -37,9 +37,9 @@ def compare_images_line_profile_one_image(image,
         image from image.axes_manager[0].scale.
      arrow : string, default None
         If set, arrows will be plotting on the image. Options are 'h' and
-        'v' for horizontal and vertical arrows, respectively. 
+        'v' for horizontal and vertical arrows, respectively.
     linetrace : int, default None
-        If set, the line profile will be plotted on the image. 
+        If set, the line profile will be plotted on the image.
         The thickness of the linetrace will be linewidth*linetrace.
         Name could be improved maybe.
 
@@ -95,7 +95,8 @@ def compare_images_line_profile_one_image(image,
     subplots_adjust(wspace=0.3)
 
     ax1.imshow(image.data)
-    #ax1.plot([x0, x1], [y0, y1], color='r', marker='v', markersize=10, alpha=0.5)
+    # ax1.plot([x0, x1], [y0, y1], color='r', marker='v', markersize=10,
+    # alpha=0.5)
 
     alpha = 0.5
     color_1 = 'r'
@@ -251,7 +252,8 @@ def compare_images_line_profile_two_images(imageA,
     _, (ax1, ax2, ax3) = plt.subplots(ncols=3)  # figsize=(12, 4)
     subplots_adjust(wspace=0.3)
     ax1.imshow(imageA_crop)
-    #ax1.plot([x0, x1], [y0, y1], color='r', marker='v', markersize=10, alpha=0.5)
+    # ax1.plot([x0, x1], [y0, y1], color='r', marker='v', markersize=10,
+    # alpha=0.5)
     ax1.plot(crop_x0, crop_y0, color='r', marker=plot_arrow_down,
              markersize=arrow_markersize, alpha=1)
     ax1.plot(crop_x1, crop_y1, color='r', marker=plot_arrow_up,
