@@ -45,6 +45,8 @@ Examples
 9. Add correct warning to load_data_and_sampling()
 10. Fix image_difference_position() refinements
 11. add "atomap extensions" in sig_pro to the atomap_devel module.
+12. Change save_variables (e.g., crop_image_hs) to np array.
+13. Change save_image to string
 
 # Ideas for code development
 
