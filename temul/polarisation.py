@@ -74,8 +74,8 @@ def plot_polarisation_vectors(u, v, sublattice, image=None,
             pivot=pivot,
             color=color)
         ax.set(aspect='equal')
-        ax.set_xlim(0, len(image[:, 0]))
-        ax.set_ylim(len(image[0, :]), 0)
+        ax.set_xlim(0, image.data[1])
+        ax.set_ylim(image.data[0], 0)
         plt.title(title)
         plt.tight_layout()
         if save is not None:
@@ -100,8 +100,8 @@ def plot_polarisation_vectors(u, v, sublattice, image=None,
             pivot=pivot,
             color=color)
         ax.set(aspect='equal')
-        ax.set_xlim(0, len(image[:, 0]))
-        ax.set_ylim(len(image[0, :]), 0)
+        ax.set_xlim(0, image.data[1])
+        ax.set_ylim(image.data[0], 0)
         plt.imshow(sublattice.image)
         plt.gca().axes.get_xaxis().set_visible(False)
         plt.gca().axes.get_yaxis().set_visible(False)
