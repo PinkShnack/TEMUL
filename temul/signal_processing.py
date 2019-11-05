@@ -1767,8 +1767,8 @@ def get_masked_ifft(image, mask_coords, mask_radius=10):
 
         # Create a mask over that location and transpose the axes
         mask = _make_circular_mask(centerX=x_pix, centerY=y_pix,
-                                   imageSizeX=image.data.shape[0],
-                                   imageSizeY=image.data.shape[1],
+                                   imageSizeX=image.data.shape[1],
+                                   imageSizeY=image.data.shape[0],
                                    radius=mask_radius).T
 
         # the tilda ~ inverses the mask
