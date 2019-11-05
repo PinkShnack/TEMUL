@@ -472,3 +472,50 @@ simulation.plot()
 # s_raw.plot()
 # s_crop = roi.interactive(s_raw)
 # s_crop.plot()
+
+
+
+'''
+How to delets atoms via zone axes.
+Also, getting rid of duplicates etc.
+'''
+
+# '''
+# deleting zone axes to get the correct sub1 coords
+# '''
+# delete_atom_planes_from_sublattice(sublattice=sub1_overfull,
+#                                    zone_axis_index=0,
+#                                    divisible_by=2,
+#                                    offset_from_zero=0)
+
+# delete_atom_planes_from_sublattice(sublattice=sub1_overfull,
+#                                    zone_axis_index=1,
+#                                    divisible_by=2,
+#                                    offset_from_zero=0)
+# '''
+# first zone
+# '''
+# zone_vec_needed = sub1_overfull.zones_axis_average_distances[0]
+# # sub1_overfull.atom_planes_by_zone_vector[zone_vec_needed][0].atom_list
+
+# # loop through new atom_plane_lists to get the "correct" atomic coordinates
+# correct_atom_coords_A = []
+# for atom_plane in sub1_overfull.atom_planes_by_zone_vector[zone_vec_needed]:
+#     for atom in atom_plane.atom_list:
+#         correct_atom_coords_A.append([atom.pixel_x, atom.pixel_y])
+
+# '''
+# second zone
+# '''
+# zone_vec_needed = sub1_overfull.zones_axis_average_distances[1]
+# # sub1_overfull.atom_planes_by_zone_vector[zone_vec_needed][0].atom_list
+
+# # loop through new atom_plane_lists to get the "correct" atomic coordinates
+# correct_atom_coords_B = []
+# for atom_plane in sub1_overfull.atom_planes_by_zone_vector[zone_vec_needed]:
+#     for atom in atom_plane.atom_list:
+#         correct_atom_coords_B.append([atom.pixel_x, atom.pixel_y])
+
+
+# correct_atom_coords = [i for i in correct_atom_coords_A
+#                        if i in correct_atom_coords_B]
