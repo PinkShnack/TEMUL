@@ -1,6 +1,8 @@
 
 import numpy as np
+import scipy
 import matplotlib.pyplot as plt
+import matplotlib.colors as colors
 
 
 def find_polarisation_vectors(atom_positions_A, atom_positions_B,
@@ -241,3 +243,181 @@ def delete_atom_planes_from_sublattice(sublattice,
 #                                    offset_from_zero=0,
 #                                    opposite=True)
 # sublatticeA.plot_planes()
+
+
+def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
+    new_cmap = colors.LinearSegmentedColormap.from_list(
+        'trunc({n},{a:.2f},{b:.2f})'.format(n=cmap.name, a=minval, b=maxval),
+        cmap(np.linspace(minval, maxval, n)))
+    return new_cmap
+
+
+def atom_deviation_from_straight_line_fit(sublattice, save_name='example'):
+
+    for axis_number in range(len(sublattice.zones_axis_average_distances)):
+
+        zon_vec_needed = sublattice.zones_axis_average_distances[axis_number]
+        original_atom_pos_list = []
+        new_atom_pos_list = []
+        new_atom_diff_list = []
+
+        # this loop creates two arrays.
+        # the original array contains all the original atom positions
+        # the new array contains all the xy positions on the fitted straight
+        # lines the new array positions are the point at which the original
+        # position is perpendicular to the fitted line.
+        for i, atom_plane in enumerate(sublattice.atom_plane_list):
+
+            if sublattice.atom_plane_list[i].zone_vector == zon_vec_needed:
+                original_atoms_list = []
+                for atom_pos in sublattice.atom_plane_list[i].atom_list:
+                    original_atoms_list.append(
+                        [atom_pos.pixel_x, atom_pos.pixel_y])
+
+                original_atoms_array = np.array(original_atoms_list)
+
+                slope, intercept = scipy.polyfit(
+                    original_atoms_array[:, 0], original_atoms_array[:, 1], 1)
+
+                slope_neg_inv = -(1/slope)
+                angle = np.arctan(slope_neg_inv)  # * (180/np.pi)
+
+                x1 = atom_plane.start_atom.pixel_x
+                y1 = slope*x1 + intercept
+                x2 = atom_plane.end_atom.pixel_x
+                y2 = slope*x2 + intercept
+
+                p1 = np.array((x1, y1), ndmin=2)
+                # end xy coord for straight line fit
+                p2 = np.array((x2, y2), ndmin=2)
+
+                atoms_on_plane_list = []
+                atom_dist_diff_list = []
+                # original_atom position, point an arrow towards it by using
+                # original_atom_pos_array and new_atom_diff_array,
+                # or away using new_atom_pos_array and -new_atom_diff_array
+                for original_atom in original_atoms_array:
+
+                    distance = np.cross(p2-p1, original_atom -
+                                        p1) / np.linalg.norm(p2-p1)
+                    distance = float(distance)
+                    x_diff = distance*np.cos(angle)
+                    y_diff = distance*np.sin(angle)
+
+                    x_on_plane = original_atom[0] + x_diff
+                    y_on_plane = original_atom[1] + y_diff
+
+                    atoms_on_plane_list.append([x_on_plane, y_on_plane])
+                    atom_dist_diff_list.append([x_diff, y_diff])
+        #            atoms_not_on_plane_list.append([original_atom])
+
+                original_atom_pos_list.extend(original_atoms_list)
+                new_atom_pos_list.extend(atoms_on_plane_list)
+                new_atom_diff_list.extend(atom_dist_diff_list)
+
+        original_atom_pos_array = np.array(original_atom_pos_list)
+        # new_atom_pos_array = np.array(new_atom_pos_list)
+
+        # this is the difference between the original position and the point on
+        # the fitted atom plane line. To get the actual shift direction, just
+        # use -new_atom_diff_array. (negative of it!)
+        new_atom_diff_array = np.array(new_atom_diff_list)
+
+        '''
+        Divergent scale beautifying:
+        Below we divide the vectors (arrows) into the ones going upward and
+        downward. We then want to plot them on a divergent colorbar scale.
+
+        We create two separate color maps with the data from the vector arrows,
+        truncated so that the top (darkest) colors aren't included.
+
+        Then plot the downward arrows, with that colorbar,
+        plot the upward arrows, with that colorbar.
+        Put the colorbar in the right place.
+        '''
+        arrows_downward = []
+        arrows_upward = []
+        original_downward = []
+        original_upward = []
+        for i, component in enumerate(new_atom_diff_array):
+            # >0 because the y-axis is flipped in hyperspy data!
+            if component[1] > 0:
+                arrows_downward.append(component)
+                original_downward.append(original_atom_pos_array[i, :])
+            else:
+                arrows_upward.append(component)
+                original_upward.append(original_atom_pos_array[i, :])
+
+        arrows_downward = np.array(arrows_downward)
+        arrows_upward = np.array(arrows_upward)
+        original_downward = np.array(original_downward)
+        original_upward = np.array(original_upward)  # plot the results
+
+        # downward
+        color_chart_downward = np.hypot(
+            arrows_downward[:, 0], arrows_downward[:, 1])
+        color_cmap_downward = plt.get_cmap('Blues')
+        color_cmap_downward = truncate_colormap(color_cmap_downward, 0.0, 0.75)
+
+        # upward
+        color_chart_upward = np.hypot(arrows_upward[:, 0], arrows_upward[:, 1])
+        color_cmap_upward = plt.get_cmap('Reds')
+        color_cmap_upward = truncate_colormap(color_cmap_upward, 0.0, 0.75)
+
+        fig, ax = plt.subplots(figsize=(7, 5))
+        plt.title(save_name + '_%i' % axis_number)
+        downward = ax.quiver(
+            original_downward[:, 0],
+            original_downward[:, 1],
+            arrows_downward[:, 0],
+            arrows_downward[:, 1],
+            color_chart_downward,
+            cmap=color_cmap_downward,
+            angles='xy',
+            scale_units='xy',
+            scale=None,
+            headwidth=7.0,
+            headlength=5.0,
+            headaxislength=4.5,
+            pivot='middle')
+        ax.set(aspect='equal')
+
+        # plt.imshow(sublattice.image)
+        plt.gca().axes.get_xaxis().set_visible(False)
+        plt.gca().axes.get_yaxis().set_visible(False)
+
+        cbaxes = fig.add_axes([0.8, 0.1, 0.03, 0.4])
+        cbar_downward = plt.colorbar(downward, cax=cbaxes, extend='max',
+                                     use_gridspec=False, anchor=(0.0, 0.0),
+                                     ticks=[0.4, 0.8, 1.2, 1.6])
+        cbar_downward.ax.invert_yaxis()
+        cbar_downward.outline.set_visible(False)
+
+        upward = ax.quiver(
+            original_upward[:, 0],
+            original_upward[:, 1],
+            arrows_upward[:, 0],
+            arrows_upward[:, 1],
+            color_chart_upward,
+            cmap=color_cmap_upward,
+            angles='xy',
+            scale_units='xy',
+            scale=None,
+            headwidth=7.0,
+            headlength=5.0,
+            headaxislength=4.5,
+            pivot='middle')
+        ax.set(aspect='equal')
+
+        cbaxes_upward = fig.add_axes([0.8, 0.5, 0.03, 0.4])
+        cbar_upward = plt.colorbar(upward, cax=cbaxes_upward, extend='max',
+                                   use_gridspec=False, anchor=(0.0, 1.0),
+                                   ticks=[0.0, 0.4, 0.8, 1.2, 1.6])
+        cbar_upward.outline.set_visible(False)
+
+        ax.set_xlim(0, sublattice.image.shape[1])
+        ax.set_ylim(sublattice.image.shape[0], 0)
+
+        plt.savefig(fname=save_name + '_%i.png' % axis_number,
+                    transparent=True, frameon=False, bbox_inches='tight',
+                    pad_inches=None, dpi=300, labels=False)
