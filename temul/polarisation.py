@@ -8,8 +8,22 @@ import matplotlib.colors as colors
 def find_polarisation_vectors(atom_positions_A, atom_positions_B,
                               save='uv_vectors_array'):
     '''
+    Calculate the vectors from atom_positions_A to atom_positions_B.
 
-    other params: unit vectoring,
+    Parameters
+    ----------
+    atom_positions_A, atom_positions_B : list
+        Atom positions list in the form [[x1,y1], [x2,y2], [x3,y3]...].
+    save : string, default 'uv_vectors_array'
+        If set to `save=None`, the array will not be saved.
+
+    Returns
+    -------
+    two lists: u components and v components. 
+
+    Examples
+    --------
+
     '''
     if len(atom_positions_A) != len(atom_positions_B):
         raise ValueError("atom_positions_A and atom_positions_B must be the "
@@ -44,7 +58,7 @@ def find_polarisation_vectors(atom_positions_A, atom_positions_B,
     return(u, v)
 
 
-def plot_polarisation_vectors(u, v, sublattice, image=None,
+def plot_polarisation_vectors(u, v, x, y, image=None,
                               plot_style=['overlay'],
                               save='polarisation_image',
                               pivot='middle', color='yellow',
@@ -53,18 +67,42 @@ def plot_polarisation_vectors(u, v, sublattice, image=None,
                               headwidth=3.0,
                               headlength=5.0,
                               headaxislength=4.5, title=""):
+    '''
+    Must include colormap plot and contour plot
+        use get_vector_magnitudes() for the contour plot.
+    '''
 
-    if image is None:
-        image = sublattice.image
-    else:
-        image = image
+    '''
+    Plot the polarisation vectors.
+
+    Parameters
+    ----------
+    u, v : list or 1D NumPy array
+    x, y : list or 1D NumPy array
+    image : 2D NumPy array
+    plot_style : list of strings
+    save : string, default 'polarisation_image'
+        If set to `save=None`, the array will not be saved.
+    title : string
+        Title of the plot
+    See matplotlib's quiver function for the remaining parameters.
+
+    Examples
+    --------
+
+    '''
+
+    if image is None and "overlay" in plot_style:
+        raise ValueError("Both plot_style='overlay' and 'image=None' have "
+                         "been set. You must include an image if you want "
+                         "an overlay. Hint: Use 'sublattice.image'")
 
     if "vectors" in plot_style:
 
         _, ax = plt.subplots()
         ax.quiver(
-            sublattice.x_position,
-            sublattice.y_position,
+            x,
+            y,
             u,
             v,
             angles=angles,
@@ -81,15 +119,15 @@ def plot_polarisation_vectors(u, v, sublattice, image=None,
         plt.title(title)
         plt.tight_layout()
         if save is not None:
-            plt.savefig(fname=save + '.png',
+            plt.savefig(fname=save + '_vectors.png',
                         transparent=True, frameon=False, bbox_inches='tight',
                         pad_inches=None, dpi=300, labels=False)
 
     if "overlay" in plot_style:
         _, ax = plt.subplots()
         ax.quiver(
-            sublattice.x_position,
-            sublattice.y_position,
+            x,
+            y,
             u,
             v,
             angles=angles,
@@ -103,13 +141,13 @@ def plot_polarisation_vectors(u, v, sublattice, image=None,
         ax.set(aspect='equal')
         ax.set_xlim(0, image.shape[1])
         ax.set_ylim(image.shape[0], 0)
-        plt.imshow(sublattice.image)
+        plt.imshow(image)
         plt.gca().axes.get_xaxis().set_visible(False)
         plt.gca().axes.get_yaxis().set_visible(False)
         plt.title(title)
         plt.tight_layout()
         if save is not None:
-            plt.savefig(fname=save + '.png',
+            plt.savefig(fname=save + '_overlay.png',
                         transparent=True, frameon=False, bbox_inches='tight',
                         pad_inches=None, dpi=300, labels=False)
 
@@ -252,6 +290,7 @@ def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
     return new_cmap
 
 
+"""
 def atom_deviation_from_straight_line_fit(sublattice, save_name='example'):
 
     for axis_number in range(len(sublattice.zones_axis_average_distances)):
@@ -324,17 +363,17 @@ def atom_deviation_from_straight_line_fit(sublattice, save_name='example'):
         new_atom_diff_array = np.array(new_atom_diff_list)
 
         '''
-        Divergent scale beautifying:
-        Below we divide the vectors (arrows) into the ones going upward and
-        downward. We then want to plot them on a divergent colorbar scale.
+Divergent scale beautifying:
+    Below we divide the vectors(arrows) into the ones going upward and
+    downward. We then want to plot them on a divergent colorbar scale.
 
-        We create two separate color maps with the data from the vector arrows,
-        truncated so that the top (darkest) colors aren't included.
+    We create two separate color maps with the data from the vector arrows,
+    truncated so that the top(darkest) colors aren't included.
 
-        Then plot the downward arrows, with that colorbar,
-        plot the upward arrows, with that colorbar.
-        Put the colorbar in the right place.
-        '''
+    Then plot the downward arrows, with that colorbar,
+    plot the upward arrows, with that colorbar.
+    Put the colorbar in the right place.
+    '''
         arrows_downward = []
         arrows_upward = []
         original_downward = []
@@ -421,3 +460,168 @@ def atom_deviation_from_straight_line_fit(sublattice, save_name='example'):
         plt.savefig(fname=save_name + '_%i.png' % axis_number,
                     transparent=True, frameon=False, bbox_inches='tight',
                     pad_inches=None, dpi=300, labels=False)
+"""
+
+
+def atom_deviation_from_straight_line_fit(sublattice,
+                                          axis_number: int = 0,
+                                          save: str = ''):
+    '''
+    delete atom_planes from a zone axis. Can choose whether to delete
+    every second, third etc., and the offset from the zero index.
+
+    Parameters
+    ----------
+    sublattice : Atomap Sublattice object
+    axis_number : int, default 0
+        The index of the zone axis (translation symmetry) found by the Atomap
+        function `construct_zone_axes()`.
+    save : string, default ''
+        If set to `save=None`, the array will not be saved.
+
+    Returns
+    -------
+    Four lists: x, y, u, and v where x,y are the original atom position
+    coordinates (simply sublattice.x_position, sublattice.y_position) and
+    u,v are the polarisation vector components pointing to the new coordinate.
+    These can be input to `plot_polarisation_vectors()`.
+
+    Examples
+    --------
+    >>> import atomap.api as am
+    >>> from temul.polarisation import atom_deviation_from_straight_line_fit
+    >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
+    >>> sublatticeA = atom_lattice.sublattice_list[0]
+    >>> sublatticeA.find_nearest_neighbors()
+    >>> sublatticeA.refine_atom_positions_using_center_of_mass()
+    >>> sublatticeA.construct_zone_axes()
+    >>> x,y,u,v = atom_deviation_from_straight_line_fit(sublatticeA, save=None)
+
+    This polarisation can then be visualised in plot_polarisation_vectors()
+
+    '''
+    zon_vec_needed = sublattice.zones_axis_average_distances[axis_number]
+    original_atom_pos_list = []
+    new_atom_pos_list = []
+    new_atom_diff_list = []
+
+    # this loop creates two arrays.
+    # the original array contains all the original atom positions
+    # the new array contains all the xy positions on the fitted straight
+    # lines the new array positions are the point at which the original
+    # position is perpendicular to the fitted line.
+    for i, atom_plane in enumerate(sublattice.atom_plane_list):
+
+        if sublattice.atom_plane_list[i].zone_vector == zon_vec_needed:
+            original_atoms_list = []
+            for atom_pos in sublattice.atom_plane_list[i].atom_list:
+                original_atoms_list.append(
+                    [atom_pos.pixel_x, atom_pos.pixel_y])
+
+            original_atoms_array = np.array(original_atoms_list)
+
+            slope, intercept = scipy.polyfit(
+                original_atoms_array[:, 0], original_atoms_array[:, 1], 1)
+
+            slope_neg_inv = -(1/slope)
+            angle = np.arctan(slope_neg_inv)  # * (180/np.pi)
+
+            x1 = atom_plane.start_atom.pixel_x
+            y1 = slope*x1 + intercept
+            x2 = atom_plane.end_atom.pixel_x
+            y2 = slope*x2 + intercept
+
+            p1 = np.array((x1, y1), ndmin=2)
+            # end xy coord for straight line fit
+            p2 = np.array((x2, y2), ndmin=2)
+
+            atoms_on_plane_list = []
+            atom_dist_diff_list = []
+            # original_atom position, point an arrow towards it by using
+            # original_atom_pos_array and new_atom_diff_array,
+            # or away using new_atom_pos_array and -new_atom_diff_array
+            for original_atom in original_atoms_array:
+
+                distance = np.cross(p2-p1, original_atom -
+                                    p1) / np.linalg.norm(p2-p1)
+                distance = float(distance)
+                x_diff = distance*np.cos(angle)
+                y_diff = distance*np.sin(angle)
+
+                x_on_plane = original_atom[0] + x_diff
+                y_on_plane = original_atom[1] + y_diff
+
+                atoms_on_plane_list.append([x_on_plane, y_on_plane])
+                atom_dist_diff_list.append([x_diff, y_diff])
+    #            atoms_not_on_plane_list.append([original_atom])
+
+            original_atom_pos_list.extend(original_atoms_list)
+            new_atom_pos_list.extend(atoms_on_plane_list)
+            new_atom_diff_list.extend(atom_dist_diff_list)
+
+    original_atom_pos_array = np.array(original_atom_pos_list)
+    new_atom_pos_array = np.array(new_atom_pos_list)
+    distance_diff_array = np.array(new_atom_diff_list)
+
+    if save is not None:
+        np.save(save + '_original_atom_pos_array', original_atom_pos_array)
+        np.save(save + '_new_atom_pos_array', new_atom_pos_array)
+        np.save(save + '_distance_diff_array', distance_diff_array)
+
+    # this is the difference between the original position and the point on
+    # the fitted atom plane line. To get the actual shift direction, just
+    # use -new_atom_diff_array. (negative of it!)
+
+    x = [row[0] for row in original_atom_pos_list]
+    y = [row[1] for row in original_atom_pos_list]
+    u = [row[0] for row in new_atom_diff_list]
+    v = [row[1] for row in new_atom_diff_list]
+
+    return(x, y, u, v)
+
+
+def plot_atom_deviation_from_all_zone_axes(
+        sublattice, image=None, plot_style=['overlay'],
+        save='atom_deviation', pivot='middle', color='yellow',
+        angles='xy', scale_units='xy', scale=None, headwidth=3.0,
+        headlength=5.0, headaxislength=4.5, title=""):
+    '''
+    # need to add the truncated colormap version: divergent plot.
+
+    Plot the atom deviation from a straight line fit for all zone axes
+    constructed by an Atomap sublattice object.
+
+    Parameters
+    ----------
+    sublattice : Atomap Sublattice object
+    For all other parameters see plot_polarisation_vectors()
+
+    Examples
+    --------
+    >>> import atomap.api as am
+    >>> from temul.polarisation import plot_atom_deviation_from_all_zone_axes
+    >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
+    >>> sublatticeA = atom_lattice.sublattice_list[0]
+    >>> sublatticeA.find_nearest_neighbors()
+    >>> sublatticeA.refine_atom_positions_using_center_of_mass()
+    >>> sublatticeA.construct_zone_axes()
+    >>> plot_atom_deviation_from_all_zone_axes(sublatticeA,
+    ...     plot_style=['vectors'], save=None)
+
+    '''
+
+    if image is None:
+        image = sublattice.image
+
+    for axis_number in range(len(sublattice.zones_axis_average_distances)):
+
+        x, y, u, v = atom_deviation_from_straight_line_fit(
+            sublattice=sublattice, axis_number=axis_number,
+            save=save)
+
+        plot_polarisation_vectors(u=u, v=v, x=x, y=y, image=image,
+                                  plot_style=plot_style, save=save,
+                                  pivot=pivot, color=color, angles=angles,
+                                  scale_units=scale_units, scale=scale,
+                                  headwidth=headwidth, headlength=headlength,
+                                  headaxislength=headaxislength, title=title)
