@@ -70,6 +70,8 @@ def plot_polarisation_vectors(u, v, x, y, image=None,
     '''
     Must include colormap plot and contour plot
         use get_vector_magnitudes() for the contour plot.
+    must include sampling as paramater, and apply the beginning of the function
+
     '''
 
     '''
@@ -96,6 +98,9 @@ def plot_polarisation_vectors(u, v, x, y, image=None,
         raise ValueError("Both plot_style='overlay' and 'image=None' have "
                          "been set. You must include an image if you want "
                          "an overlay. Hint: Use 'sublattice.image'")
+
+    # scale by sampling by each
+    # u, v = np.asarray(u)*sampling, np.asarray(v)*sampling
 
     if "vectors" in plot_style:
 
@@ -150,6 +155,33 @@ def plot_polarisation_vectors(u, v, x, y, image=None,
             plt.savefig(fname=save + '_overlay.png',
                         transparent=True, frameon=False, bbox_inches='tight',
                         pad_inches=None, dpi=300, labels=False)
+
+    if 'contour' in plot_style:
+        '''
+
+        vector_mags = get_vector_magnitudes(u, v, sampling=)
+        plt.figure()
+        plt.contourf(x, y, contour_map)
+
+
+
+        '''
+        pass
+
+    if 'normalised' in plot_style:
+        '''
+        # Normalise the data for uniform arrow size
+        u_norm = u / np.sqrt(u ** 2.0 + v ** 2.0)
+        v_norm = v / np.sqrt(u ** 2.0 + v ** 2.0)
+        colormapping_arrows = np.hypot(u, v)
+        '''
+        pass
+
+    if 'colormap' in plot_style:
+        '''
+
+        '''
+        pass
 
 
 def get_vector_magnitudes(u, v, sampling=None):
@@ -288,6 +320,189 @@ def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
         'trunc({n},{a:.2f},{b:.2f})'.format(n=cmap.name, a=minval, b=maxval),
         cmap(np.linspace(minval, maxval, n)))
     return new_cmap
+
+
+def atom_deviation_from_straight_line_fit(sublattice,
+                                          axis_number: int = 0,
+                                          save: str = ''):
+    '''
+    delete atom_planes from a zone axis. Can choose whether to delete
+    every second, third etc., and the offset from the zero index.
+
+    Parameters
+    ----------
+    sublattice : Atomap Sublattice object
+    axis_number : int, default 0
+        The index of the zone axis (translation symmetry) found by the Atomap
+        function `construct_zone_axes()`.
+    save : string, default ''
+        If set to `save=None`, the array will not be saved.
+
+    Returns
+    -------
+    Four lists: x, y, u, and v where x,y are the original atom position
+    coordinates (simply sublattice.x_position, sublattice.y_position) and
+    u,v are the polarisation vector components pointing to the new coordinate.
+    These can be input to `plot_polarisation_vectors()`.
+
+    Examples
+    --------
+    >>> import atomap.api as am
+    >>> from temul.polarisation import atom_deviation_from_straight_line_fit
+    >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
+    >>> sublatticeA = atom_lattice.sublattice_list[0]
+    >>> sublatticeA.find_nearest_neighbors()
+    >>> sublatticeA.refine_atom_positions_using_center_of_mass()
+    >>> sublatticeA.construct_zone_axes()
+    >>> x,y,u,v = atom_deviation_from_straight_line_fit(sublatticeA, save=None)
+
+    This polarisation can then be visualised in plot_polarisation_vectors()
+
+    '''
+    zon_vec_needed = sublattice.zones_axis_average_distances[axis_number]
+    original_atom_pos_list = []
+    new_atom_pos_list = []
+    new_atom_diff_list = []
+
+    # this loop creates two arrays.
+    # the original array contains all the original atom positions
+    # the new array contains all the xy positions on the fitted straight
+    # lines the new array positions are the point at which the original
+    # position is perpendicular to the fitted line.
+    for i, atom_plane in enumerate(sublattice.atom_plane_list):
+
+        if sublattice.atom_plane_list[i].zone_vector == zon_vec_needed:
+            original_atoms_list = []
+            for atom_pos in sublattice.atom_plane_list[i].atom_list:
+                original_atoms_list.append(
+                    [atom_pos.pixel_x, atom_pos.pixel_y])
+
+            original_atoms_array = np.array(original_atoms_list)
+
+            slope, intercept = scipy.polyfit(
+                original_atoms_array[:, 0], original_atoms_array[:, 1], 1)
+
+            slope_neg_inv = -(1/slope)
+            angle = np.arctan(slope_neg_inv)  # * (180/np.pi)
+
+            x1 = atom_plane.start_atom.pixel_x
+            y1 = slope*x1 + intercept
+            x2 = atom_plane.end_atom.pixel_x
+            y2 = slope*x2 + intercept
+
+            p1 = np.array((x1, y1), ndmin=2)
+            # end xy coord for straight line fit
+            p2 = np.array((x2, y2), ndmin=2)
+
+            atoms_on_plane_list = []
+            atom_dist_diff_list = []
+            # original_atom position, point an arrow towards it by using
+            # original_atom_pos_array and new_atom_diff_array,
+            # or away using new_atom_pos_array and -new_atom_diff_array
+            for original_atom in original_atoms_array:
+
+                distance = np.cross(p2-p1, original_atom -
+                                    p1) / np.linalg.norm(p2-p1)
+                distance = float(distance)
+                x_diff = distance*np.cos(angle)
+                y_diff = distance*np.sin(angle)
+
+                x_on_plane = original_atom[0] + x_diff
+                y_on_plane = original_atom[1] + y_diff
+
+                atoms_on_plane_list.append([x_on_plane, y_on_plane])
+                atom_dist_diff_list.append([x_diff, y_diff])
+    #            atoms_not_on_plane_list.append([original_atom])
+
+            original_atom_pos_list.extend(original_atoms_list)
+            new_atom_pos_list.extend(atoms_on_plane_list)
+            new_atom_diff_list.extend(atom_dist_diff_list)
+
+    original_atom_pos_array = np.array(original_atom_pos_list)
+    new_atom_pos_array = np.array(new_atom_pos_list)
+    distance_diff_array = np.array(new_atom_diff_list)
+
+    if save is not None:
+        np.save(save + '_original_atom_pos_array', original_atom_pos_array)
+        np.save(save + '_new_atom_pos_array', new_atom_pos_array)
+        np.save(save + '_distance_diff_array', distance_diff_array)
+
+    # this is the difference between the original position and the point on
+    # the fitted atom plane line. To get the actual shift direction, just
+    # use -new_atom_diff_array. (negative of it!)
+
+    x = [row[0] for row in original_atom_pos_list]
+    y = [row[1] for row in original_atom_pos_list]
+    u = [row[0] for row in new_atom_diff_list]
+    v = [row[1] for row in new_atom_diff_list]
+
+    return(x, y, u, v)
+
+
+def plot_atom_deviation_from_all_zone_axes(
+        sublattice, image=None, plot_style=['overlay'],
+        save='atom_deviation', pivot='middle', color='yellow',
+        angles='xy', scale_units='xy', scale=None, headwidth=3.0,
+        headlength=5.0, headaxislength=4.5, title=""):
+    '''
+    # need to add the truncated colormap version: divergent plot.
+
+    Plot the atom deviation from a straight line fit for all zone axes
+    constructed by an Atomap sublattice object.
+
+    Parameters
+    ----------
+    sublattice : Atomap Sublattice object
+    For all other parameters see plot_polarisation_vectors()
+
+    Examples
+    --------
+    >>> import atomap.api as am
+    >>> from temul.polarisation import plot_atom_deviation_from_all_zone_axes
+    >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
+    >>> sublatticeA = atom_lattice.sublattice_list[0]
+    >>> sublatticeA.find_nearest_neighbors()
+    >>> sublatticeA.refine_atom_positions_using_center_of_mass()
+    >>> sublatticeA.construct_zone_axes()
+    >>> plot_atom_deviation_from_all_zone_axes(sublatticeA,
+    ...     plot_style=['vectors'], save=None)
+
+    '''
+
+    if image is None:
+        image = sublattice.image
+
+    for axis_number in range(len(sublattice.zones_axis_average_distances)):
+
+        x, y, u, v = atom_deviation_from_straight_line_fit(
+            sublattice=sublattice, axis_number=axis_number,
+            save=save)
+
+        plot_polarisation_vectors(u=u, v=v, x=x, y=y, image=image,
+                                  plot_style=plot_style, save=save,
+                                  pivot=pivot, color=color, angles=angles,
+                                  scale_units=scale_units, scale=scale,
+                                  headwidth=headwidth, headlength=headlength,
+                                  headaxislength=headaxislength, title=title)
+
+
+def combine_multiple_atom_deviations_from_zone_axes(sublattice):
+    '''
+    steps:
+    use atom_deviation_from_straight_line_fit() to get the xy and uv
+
+    check xy against the sublattice.atom_list. for a match, append it to a new array,
+    and add all the vectors for that atom position together.
+
+    should return the x, y, and combined u, combined v
+
+    then plot with plot_polarisation_vectors
+
+    check if i should have done the division here:
+    new_coordinate = sum(np.array(new_coordinates_all))/len(new_coordinates_all)
+    I think it just downscales things, but I dont think it is correct or neccessary
+    '''
+    pass
 
 
 """
@@ -461,167 +676,3 @@ Divergent scale beautifying:
                     transparent=True, frameon=False, bbox_inches='tight',
                     pad_inches=None, dpi=300, labels=False)
 """
-
-
-def atom_deviation_from_straight_line_fit(sublattice,
-                                          axis_number: int = 0,
-                                          save: str = ''):
-    '''
-    delete atom_planes from a zone axis. Can choose whether to delete
-    every second, third etc., and the offset from the zero index.
-
-    Parameters
-    ----------
-    sublattice : Atomap Sublattice object
-    axis_number : int, default 0
-        The index of the zone axis (translation symmetry) found by the Atomap
-        function `construct_zone_axes()`.
-    save : string, default ''
-        If set to `save=None`, the array will not be saved.
-
-    Returns
-    -------
-    Four lists: x, y, u, and v where x,y are the original atom position
-    coordinates (simply sublattice.x_position, sublattice.y_position) and
-    u,v are the polarisation vector components pointing to the new coordinate.
-    These can be input to `plot_polarisation_vectors()`.
-
-    Examples
-    --------
-    >>> import atomap.api as am
-    >>> from temul.polarisation import atom_deviation_from_straight_line_fit
-    >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
-    >>> sublatticeA = atom_lattice.sublattice_list[0]
-    >>> sublatticeA.find_nearest_neighbors()
-    >>> sublatticeA.refine_atom_positions_using_center_of_mass()
-    >>> sublatticeA.construct_zone_axes()
-    >>> x,y,u,v = atom_deviation_from_straight_line_fit(sublatticeA, save=None)
-
-    This polarisation can then be visualised in plot_polarisation_vectors()
-
-    '''
-    zon_vec_needed = sublattice.zones_axis_average_distances[axis_number]
-    original_atom_pos_list = []
-    new_atom_pos_list = []
-    new_atom_diff_list = []
-
-    # this loop creates two arrays.
-    # the original array contains all the original atom positions
-    # the new array contains all the xy positions on the fitted straight
-    # lines the new array positions are the point at which the original
-    # position is perpendicular to the fitted line.
-    for i, atom_plane in enumerate(sublattice.atom_plane_list):
-
-        if sublattice.atom_plane_list[i].zone_vector == zon_vec_needed:
-            original_atoms_list = []
-            for atom_pos in sublattice.atom_plane_list[i].atom_list:
-                original_atoms_list.append(
-                    [atom_pos.pixel_x, atom_pos.pixel_y])
-
-            original_atoms_array = np.array(original_atoms_list)
-
-            slope, intercept = scipy.polyfit(
-                original_atoms_array[:, 0], original_atoms_array[:, 1], 1)
-
-            slope_neg_inv = -(1/slope)
-            angle = np.arctan(slope_neg_inv)  # * (180/np.pi)
-
-            x1 = atom_plane.start_atom.pixel_x
-            y1 = slope*x1 + intercept
-            x2 = atom_plane.end_atom.pixel_x
-            y2 = slope*x2 + intercept
-
-            p1 = np.array((x1, y1), ndmin=2)
-            # end xy coord for straight line fit
-            p2 = np.array((x2, y2), ndmin=2)
-
-            atoms_on_plane_list = []
-            atom_dist_diff_list = []
-            # original_atom position, point an arrow towards it by using
-            # original_atom_pos_array and new_atom_diff_array,
-            # or away using new_atom_pos_array and -new_atom_diff_array
-            for original_atom in original_atoms_array:
-
-                distance = np.cross(p2-p1, original_atom -
-                                    p1) / np.linalg.norm(p2-p1)
-                distance = float(distance)
-                x_diff = distance*np.cos(angle)
-                y_diff = distance*np.sin(angle)
-
-                x_on_plane = original_atom[0] + x_diff
-                y_on_plane = original_atom[1] + y_diff
-
-                atoms_on_plane_list.append([x_on_plane, y_on_plane])
-                atom_dist_diff_list.append([x_diff, y_diff])
-    #            atoms_not_on_plane_list.append([original_atom])
-
-            original_atom_pos_list.extend(original_atoms_list)
-            new_atom_pos_list.extend(atoms_on_plane_list)
-            new_atom_diff_list.extend(atom_dist_diff_list)
-
-    original_atom_pos_array = np.array(original_atom_pos_list)
-    new_atom_pos_array = np.array(new_atom_pos_list)
-    distance_diff_array = np.array(new_atom_diff_list)
-
-    if save is not None:
-        np.save(save + '_original_atom_pos_array', original_atom_pos_array)
-        np.save(save + '_new_atom_pos_array', new_atom_pos_array)
-        np.save(save + '_distance_diff_array', distance_diff_array)
-
-    # this is the difference between the original position and the point on
-    # the fitted atom plane line. To get the actual shift direction, just
-    # use -new_atom_diff_array. (negative of it!)
-
-    x = [row[0] for row in original_atom_pos_list]
-    y = [row[1] for row in original_atom_pos_list]
-    u = [row[0] for row in new_atom_diff_list]
-    v = [row[1] for row in new_atom_diff_list]
-
-    return(x, y, u, v)
-
-
-def plot_atom_deviation_from_all_zone_axes(
-        sublattice, image=None, plot_style=['overlay'],
-        save='atom_deviation', pivot='middle', color='yellow',
-        angles='xy', scale_units='xy', scale=None, headwidth=3.0,
-        headlength=5.0, headaxislength=4.5, title=""):
-    '''
-    # need to add the truncated colormap version: divergent plot.
-
-    Plot the atom deviation from a straight line fit for all zone axes
-    constructed by an Atomap sublattice object.
-
-    Parameters
-    ----------
-    sublattice : Atomap Sublattice object
-    For all other parameters see plot_polarisation_vectors()
-
-    Examples
-    --------
-    >>> import atomap.api as am
-    >>> from temul.polarisation import plot_atom_deviation_from_all_zone_axes
-    >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
-    >>> sublatticeA = atom_lattice.sublattice_list[0]
-    >>> sublatticeA.find_nearest_neighbors()
-    >>> sublatticeA.refine_atom_positions_using_center_of_mass()
-    >>> sublatticeA.construct_zone_axes()
-    >>> plot_atom_deviation_from_all_zone_axes(sublatticeA,
-    ...     plot_style=['vectors'], save=None)
-
-    '''
-
-    if image is None:
-        image = sublattice.image
-
-    for axis_number in range(len(sublattice.zones_axis_average_distances)):
-
-        x, y, u, v = atom_deviation_from_straight_line_fit(
-            sublattice=sublattice, axis_number=axis_number,
-            save=save)
-
-        plot_polarisation_vectors(u=u, v=v, x=x, y=y, image=image,
-                                  plot_style=plot_style, save=save,
-                                  pivot=pivot, color=color, angles=angles,
-                                  scale_units=scale_units, scale=scale,
-                                  headwidth=headwidth, headlength=headlength,
-                                  headaxislength=headaxislength, title=title)
