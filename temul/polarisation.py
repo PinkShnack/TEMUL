@@ -58,7 +58,7 @@ def find_polarisation_vectors(atom_positions_A, atom_positions_B,
     return(u, v)
 
 
-def plot_polarisation_vectors(u, v, x, y, image=None,
+def plot_polarisation_vectors(u, v, x, y, image,
                               plot_style=['overlay'],
                               save='polarisation_image',
                               pivot='middle', color='yellow',
@@ -423,9 +423,9 @@ def atom_deviation_from_straight_line_fit(sublattice,
     distance_diff_array = np.array(new_atom_diff_list)
 
     if save is not None:
-        np.save(save + '_original_atom_pos_array', original_atom_pos_array)
-        np.save(save + '_new_atom_pos_array', new_atom_pos_array)
-        np.save(save + '_distance_diff_array', distance_diff_array)
+        np.save(save + '_sublattice_xy', original_atom_pos_array)
+        np.save(save + '_new_atom_positions_xy', new_atom_pos_array)
+        np.save(save + '_vector_uv', distance_diff_array)
 
     # this is the difference between the original position and the point on
     # the fitted atom plane line. To get the actual shift direction, just
@@ -476,7 +476,7 @@ def plot_atom_deviation_from_all_zone_axes(
 
         x, y, u, v = atom_deviation_from_straight_line_fit(
             sublattice=sublattice, axis_number=axis_number,
-            save=save)
+            save=None)
 
         plot_polarisation_vectors(u=u, v=v, x=x, y=y, image=image,
                                   plot_style=plot_style, save=save,
@@ -486,12 +486,21 @@ def plot_atom_deviation_from_all_zone_axes(
                                   headaxislength=headaxislength, title=title)
 
 
-def combine_multiple_atom_deviations_from_zone_axes(sublattice):
+def combine_atom_deviations_from_zone_axes(
+        sublattice, image=None, save='atom_deviation_all_zones',
+        plot_style=['overlay'], pivot='middle', color='yellow',
+        angles='xy', scale_units='xy', scale=None, headwidth=3.0,
+        headlength=5.0, headaxislength=4.5, title=""):
     '''
     steps:
     use atom_deviation_from_straight_line_fit() to get the xy and uv
+        append to two lists
 
-    check xy against the sublattice.atom_list. for a match, append it to a new array,
+    check xy against the sublattice.atom_list for a match,
+        append xy to a new list, should be ther same data and length as sub.atom_list
+        append the uv for that atom to a list, add them together,
+        append to a new uv list. should be same length as sub.atom_list
+
     and add all the vectors for that atom position together.
 
     should return the x, y, and combined u, combined v
@@ -501,8 +510,79 @@ def combine_multiple_atom_deviations_from_zone_axes(sublattice):
     check if i should have done the division here:
     new_coordinate = sum(np.array(new_coordinates_all))/len(new_coordinates_all)
     I think it just downscales things, but I dont think it is correct or neccessary
+
+    Examples
+    --------
+
+    >>> import atomap.api as am
+    >>> from temul.polarisation import combine_atom_deviations_from_zone_axes
+    >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
+    >>> sublatticeA = atom_lattice.sublattice_list[0]
+    >>> sublatticeA.find_nearest_neighbors()
+    >>> sublatticeA.refine_atom_positions_using_center_of_mass()
+    >>> sublatticeA.construct_zone_axes()
+    >>> x,y,u,v = combine_atom_deviations_from_zone_axes(
+            sublatticeA, save=None)
+
     '''
-    pass
+
+    all_atoms_in_planes_xy = []
+    all_atoms_in_planes_uv = []
+
+    for axis_number in range(len(sublattice.zones_axis_average_distances)):
+
+        x, y, u, v = atom_deviation_from_straight_line_fit(
+            sublattice=sublattice, axis_number=axis_number,
+            save=None)
+
+        xy_array = np.array([x, y]).T
+        atoms_in_plane_xy = [list(i) for i in xy_array]
+        uv_array = np.array([u, v]).T
+        atoms_in_plane_uv = [list(i) for i in uv_array]
+
+        all_atoms_in_planes_xy.extend(atoms_in_plane_xy)
+        all_atoms_in_planes_uv.extend(atoms_in_plane_uv)
+
+    sublattice_xy = []
+    for atom in sublattice.atom_list:
+        sublattice_xy.append([atom.pixel_x, atom.pixel_y])
+
+    combined_vectors = []
+    for atom_xy in sublattice_xy:
+        individual_vectors = []
+        for atom_along_plane_xy, atom_along_plane_uv in zip(
+                all_atoms_in_planes_xy, all_atoms_in_planes_uv):
+
+            if atom_xy == atom_along_plane_xy:
+                individual_vectors.append(atom_along_plane_uv)
+
+        if len(individual_vectors) != 0:
+            calc_combined_vectors = list(sum(np.array(individual_vectors)))
+            combined_vectors.append(calc_combined_vectors)
+
+    if len(sublattice_xy) != len(combined_vectors):
+        raise ValueError("len(sublattice_xy) != len(combined_vectors)")
+
+    x = [row[0] for row in sublattice_xy]
+    y = [row[1] for row in sublattice_xy]
+    u = [row[0] for row in combined_vectors]
+    v = [row[1] for row in combined_vectors]
+
+    if save is not None:
+        np.save(save + '_sublattice_xy', np.array(sublattice_xy))
+        np.save(save + '_vector_uv', np.array(combined_vectors))
+
+        if image is None:
+            image = sublattice.image
+
+        plot_polarisation_vectors(u=u, v=v, x=x, y=y, image=image,
+                                  plot_style=plot_style, save=save,
+                                  pivot=pivot, color=color, angles=angles,
+                                  scale_units=scale_units, scale=scale,
+                                  headwidth=headwidth, headlength=headlength,
+                                  headaxislength=headaxislength, title=title)
+
+    return(x, y, u, v)
 
 
 """
