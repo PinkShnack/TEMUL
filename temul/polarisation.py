@@ -19,7 +19,7 @@ def find_polarisation_vectors(atom_positions_A, atom_positions_B,
 
     Returns
     -------
-    two lists: u components and v components. 
+    two lists: u components and v components.
 
     Examples
     --------
@@ -343,7 +343,7 @@ def atom_deviation_from_straight_line_fit(sublattice,
     Four lists: x, y, u, and v where x,y are the original atom position
     coordinates (simply sublattice.x_position, sublattice.y_position) and
     u,v are the polarisation vector components pointing to the new coordinate.
-    These can be input to `plot_polarisation_vectors()`.
+    These can be input to `plot_polarisation_vectors()` for visualisation.
 
     Examples
     --------
@@ -492,24 +492,21 @@ def combine_atom_deviations_from_zone_axes(
         angles='xy', scale_units='xy', scale=None, headwidth=3.0,
         headlength=5.0, headaxislength=4.5, title=""):
     '''
-    steps:
-    use atom_deviation_from_straight_line_fit() to get the xy and uv
-        append to two lists
+    Combine the atom deviations of each atom for all zone axes.
+    Good for plotting vortexes and seeing the total deviation from a
+    perfect structure.
 
-    check xy against the sublattice.atom_list for a match,
-        append xy to a new list, should be ther same data and length as sub.atom_list
-        append the uv for that atom to a list, add them together,
-        append to a new uv list. should be same length as sub.atom_list
+    Parameters
+    ----------
+    sublattice : Atomap Sublattice object
+    For the remaining parameters see `plot_polarisation_vectors()`.
 
-    and add all the vectors for that atom position together.
-
-    should return the x, y, and combined u, combined v
-
-    then plot with plot_polarisation_vectors
-
-    check if i should have done the division here:
-    new_coordinate = sum(np.array(new_coordinates_all))/len(new_coordinates_all)
-    I think it just downscales things, but I dont think it is correct or neccessary
+    Returns
+    -------
+    Four lists: x, y, u, and v where x,y are the original atom position
+    coordinates (simply sublattice.x_position, sublattice.y_position) and
+    u,v are the polarisation vector components pointing to the new coordinate.
+    These can be input to `plot_polarisation_vectors()` for visualisation.
 
     Examples
     --------
@@ -522,7 +519,9 @@ def combine_atom_deviations_from_zone_axes(
     >>> sublatticeA.refine_atom_positions_using_center_of_mass()
     >>> sublatticeA.construct_zone_axes()
     >>> x,y,u,v = combine_atom_deviations_from_zone_axes(
-            sublatticeA, save=None)
+    ...     sublatticeA, save=None)
+    >>> plot_polarisation_vectors(u, v, x, y, save=None,
+    ...     image=sublatticeA.image)
 
     '''
 
