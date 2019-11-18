@@ -47,6 +47,7 @@ Examples
 11. add "atomap extensions" in sig_pro to the atomap_devel module.
 12. Change save_variables (e.g., crop_image_hs) to np array.
 13. Change save_image to string
+14. Add mask_reverse for get_masked_ifft() in signal_processing.
 
 # Ideas for code development
 

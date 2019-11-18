@@ -1658,67 +1658,31 @@ def mean_and_std_nearest_neighbour_distances(sublattice,
 
 def choose_mask_coordinates(image, norm='log'):
     '''
-    RELIES ON MY VERSION OF ATOMAP:
-    See initial_position_refining.
-    ####
-    #added to line 179: allow imshow here to have lognorm
-    ####
-    class AtomAdderRemover:
-
-        def __init__(self, image, atom_list=None, distance_threshold=4,
-                norm='linear'):
-            self.image = image
-            self.distance_threshold = distance_threshold
-            self.fig, self.ax = plt.subplots()
-            if norm == 'linear':
-                self.cax = self.ax.imshow(self.image)
-            elif norm == 'log':
-                self.cax = self.ax.imshow(self.image,
-                            norm=LogNorm(vmin=np.min(image),
-                                        vmax=np.max(image)))
-
-    def add_atoms_with_gui(image, atom_list=None, distance_threshold=4,
-            norm='linear'):
-        global atom_adder_remover
-        atom_adder_remover = AtomAdderRemover(
-        image, atom_list, distance_threshold=distance_threshold, norm=norm)
-
-
-
-    Calculates mean and standard deviation of the distance from each atom to
-    its nearest neighbours.
+    Pick the mask locations for an FFT.
+    See get_masked_ifft() and
+    atomap.initial_position_finding.add_atoms_with_gui() for more details.
+    Commit 5ba307b5af0b598bedc0284aa989d44e23fdde4d on Atomap
 
     Parameters
     ----------
-    sublattice : Atomap Sublattice object
-    nearest_neighbours : int, default 5
-        The number of nearest neighbours used to calculate the mean distance
-        from an atom. As in atomap, choosing 5 gets the 4 nearest
-        neighbours.
+    image : Hyperspy 2D Signal
+    norm : string, default 'log'
+        How to scale the intensity value for the displayed image.
+        Options are 'linear' and 'log'
 
     Returns
     -------
-    2 lists: list of mean distances, list of standard deviations.
+    mask_coords : list of pixel coordinates
 
     Examples
     --------
-    >>> from temul.dummy_data import get_simple_cubic_sublattice
-    >>> import temul.signal_processing as tmlsp
-    >>> sub1 = get_simple_cubic_sublattice()
-    >>> mean, std = tmlsp.mean_and_std_nearest_neighbour_distances(sub1)
-    >>> mean_scaled,_ = tmlsp.mean_and_std_nearest_neighbour_distances(sub1,
-    ...     nearest_neighbours=5,
-    ...     sampling=0.0123)
-
+    See get_masked_ifft() for example.
     '''
 
     fft = image.fft(shift=True)
     fft_amp = fft.amplitude
 
-    # mask_coords = am.add_atoms_with_gui(
-    #     fft_amp.data, norm='log')
-
-    mask_coords = add_atoms_with_gui(
+    mask_coords = am.add_atoms_with_gui(
         fft_amp.data, norm='log')
 
     return(mask_coords)
