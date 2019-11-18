@@ -3,6 +3,7 @@ import numpy as np
 import scipy
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
+from decimal import Decimal
 
 
 def find_polarisation_vectors(atom_positions_A, atom_positions_B,
@@ -58,130 +59,180 @@ def find_polarisation_vectors(atom_positions_A, atom_positions_B,
     return(u, v)
 
 
-def plot_polarisation_vectors(u, v, x, y, image,
-                              plot_style=['overlay'],
-                              save='polarisation_image',
-                              pivot='middle', color='yellow',
-                              angles='xy', scale_units='xy',
-                              scale=None,
-                              headwidth=3.0,
-                              headlength=5.0,
-                              headaxislength=4.5, title=""):
-    '''
-    Must include colormap plot and contour plot
-        use get_vector_magnitudes() for the contour plot.
-    must include sampling as paramater, and apply the beginning of the function
-
-    '''
-
+def plot_polarisation_vectors(x, y, u, v, image,
+                              sampling=None, units='pix',
+                              plot_style='vector',
+                              overlay=True, normalise=False,
+                              save='polarisation_image', title="",
+                              color='yellow', cmap=None,
+                              pivot='middle', angles='xy', scale_units='xy',
+                              scale=None, headwidth=3.0, headlength=5.0,
+                              headaxislength=4.5):
     '''
     Plot the polarisation vectors.
 
     Parameters
     ----------
-    u, v : list or 1D NumPy array
+    See matplotlib's quiver() function for more details.
+
     x, y : list or 1D NumPy array
+    u, v : list or 1D NumPy array
     image : 2D NumPy array
-    plot_style : list of strings
-    save : string, default 'polarisation_image'
+    sampling : float, default None
+        Pixel sampling of the image for calibration.
+    units : string, default "pix"
+        Units used to display the magnitude of the vectors.
+    plot_style : string, default "vector"
+        Options are "vector", "colormap", "contour"
+    overlay : Bool, default True
+        If set to True, the `image` will be plotting behind the arrows
+    normalise : Bool, default False
+        Normalise the vectors to unit vectors for plotting purposes.
+        Magnitude will still be displayed correctly.
+    save : string, default "polarisation_image"
         If set to `save=None`, the array will not be saved.
-    title : string
-        Title of the plot
+    title : string, default ""
+        Title of the plot.
+    color : string, default "r"
+        Color of the arrows when `plot_style="vector" or "contour".
+    cmap : matplotlib colormap, default "viridis"
+
     See matplotlib's quiver function for the remaining parameters.
 
     Examples
     --------
+    >>> import matplotlib.pyplot as plt
+    >>> import numpy as np
+    >>> import atomap.api as am
+    >>> from temul.polarisation import (
+    ...    combine_atom_deviations_from_zone_axes,
+    ...    plot_polarisation_vectors)
+    >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
+    >>> sublatticeA = atom_lattice.sublattice_list[0]
+    >>> sublatticeA.find_nearest_neighbors()
+    >>> sublatticeA.refine_atom_positions_using_center_of_mass()
+    >>> sublatticeA.construct_zone_axes()
+    >>> x, y, u, v = combine_atom_deviations_from_zone_axes(sublatticeA,
+    ...     save=None)
+
+    vector plot with red arrows:
+
+    >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    ...                           normalise=False, save=None,
+    ...                           plot_style='vector', color='r',
+    ...                           overlay=False, title='Vector Arrows')
+
+    vector plot with red arrows overlaid on the image:
+
+    >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    ...                           normalise=False, save=None,
+    ...                           plot_style='vector', color='r',
+    ...                           overlay=True)
+
+    vector plot with colormap viridis:
+
+    >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    ...                           normalise=False, save=None,
+    ...                           plot_style='colormap',
+    ...                           overlay=False, cmap='viridis')
+
+    colormap arrows with sampling applied:
+
+    >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    ...                           sampling=3.0321, units='pm',
+    ...                           normalise=False, plot_style='colormap',
+    ...                           overlay=False, save=None, cmap='viridis')
+
+    vector plot with colormap viridis and unit vectors:
+
+    >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    ...                           normalise=True, save=None,
+    ...                           plot_style='colormap', color='r',
+    ...                           overlay=False, cmap='viridis')
+
+    normalised vectors on a contourf map:
+
+    >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    ...                           normalise=True, plot_style='contour',
+    ...                           overlay=False, pivot='middle',
+    ...                           color='darkgray', cmap='viridis', save=None)
 
     '''
 
-    if image is None and "overlay" in plot_style:
-        raise ValueError("Both plot_style='overlay' and 'image=None' have "
-                         "been set. You must include an image if you want "
-                         "an overlay. Hint: Use 'sublattice.image'")
+    u, v = np.array(u), np.array(v)
 
-    # scale by sampling by each
-    # u, v = np.asarray(u)*sampling, np.asarray(v)*sampling
+    if sampling is not None:
+        u, v = u*sampling, v*sampling
 
-    if "vectors" in plot_style:
+    # for ax.quiver optional C paramater, we need to set this to
+    # something. None doesn't work!
+    vector_mags = get_vector_magnitudes(u, v, sampling=sampling)
 
-        _, ax = plt.subplots()
-        ax.quiver(
-            x,
-            y,
-            u,
-            v,
-            angles=angles,
-            scale_units=scale_units,
-            scale=scale,
-            headwidth=headwidth,
-            headlength=headlength,
-            headaxislength=headaxislength,
-            pivot=pivot,
-            color=color)
-        ax.set(aspect='equal')
-        ax.set_xlim(0, image.shape[1])
-        ax.set_ylim(image.shape[0], 0)
-        plt.title(title)
-        plt.tight_layout()
-        if save is not None:
-            plt.savefig(fname=save + '_vectors.png',
-                        transparent=True, frameon=False, bbox_inches='tight',
-                        pad_inches=None, dpi=300, labels=False)
-
-    if "overlay" in plot_style:
-        _, ax = plt.subplots()
-        ax.quiver(
-            x,
-            y,
-            u,
-            v,
-            angles=angles,
-            scale_units=scale_units,
-            scale=scale,
-            headwidth=headwidth,
-            headlength=headlength,
-            headaxislength=headaxislength,
-            pivot=pivot,
-            color=color)
-        ax.set(aspect='equal')
-        ax.set_xlim(0, image.shape[1])
-        ax.set_ylim(image.shape[0], 0)
-        plt.imshow(image)
-        plt.gca().axes.get_xaxis().set_visible(False)
-        plt.gca().axes.get_yaxis().set_visible(False)
-        plt.title(title)
-        plt.tight_layout()
-        if save is not None:
-            plt.savefig(fname=save + '_overlay.png',
-                        transparent=True, frameon=False, bbox_inches='tight',
-                        pad_inches=None, dpi=300, labels=False)
-
-    if 'contour' in plot_style:
-        '''
-
-        vector_mags = get_vector_magnitudes(u, v, sampling=)
-        plt.figure()
-        plt.contourf(x, y, contour_map)
-
-
-
-        '''
-        pass
-
-    if 'normalised' in plot_style:
-        '''
+    if normalise:
         # Normalise the data for uniform arrow size
         u_norm = u / np.sqrt(u ** 2.0 + v ** 2.0)
         v_norm = v / np.sqrt(u ** 2.0 + v ** 2.0)
-        colormapping_arrows = np.hypot(u, v)
-        '''
-        pass
+        u = u_norm
+        v = v_norm
 
-    if 'colormap' in plot_style:
-        '''
+    _, ax = plt.subplots()
+    ax.set_title(title, loc='left', fontsize=20)
+    # plot_style options
+    if plot_style == "vector":
+        Q = ax.quiver(
+            x, y, u, v, color=color, pivot=pivot, angles=angles,
+            scale_units=scale_units, scale=scale, headwidth=headwidth,
+            headlength=headlength, headaxislength=headaxislength)
+        length = np.max(np.hypot(u, v))/2
+        ax.quiverkey(Q, 0.9, 1.025, length,
+                     label='{:.0E} {}'.format(Decimal(length), units),
+                     labelpos='E', coordinates='axes')
 
-        '''
-        pass
+    elif plot_style == "colormap":
+        if cmap is None:
+            cmap = 'viridis'
+        ax.quiver(
+            x, y, u, v, vector_mags, color=color, cmap=cmap,
+            pivot=pivot, angles=angles, scale_units=scale_units,
+            scale=scale, headwidth=headwidth,
+            headlength=headlength, headaxislength=headaxislength)
+
+        norm = colors.Normalize(vmin=np.min(vector_mags),
+                                vmax=np.max(vector_mags))
+        sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
+        sm.set_array([])
+        cbar = plt.colorbar(mappable=sm)
+        cbar.ax.set_ylabel('Vector Magnitude ({})'.format(units))
+
+    elif plot_style == 'contour':
+        if cmap is None:
+            cmap = 'viridis'
+
+        contour_map = plt.tricontourf(x, y, vector_mags, cmap=cmap)
+
+        ax.quiver(
+            x, y, u, v, color=color, pivot=pivot,
+            angles=angles, scale_units=scale_units,
+            scale=scale, headwidth=headwidth,
+            headlength=headlength, headaxislength=headaxislength)
+
+    ax.set(aspect='equal')
+    ax.set_xlim(0, image.shape[1])
+    ax.set_ylim(image.shape[0], 0)
+
+    if plot_style == 'contour':
+        cbar = plt.colorbar(mappable=contour_map)
+        cbar.ax.set_ylabel('Vector Magnitude ({})'.format(units))
+    if overlay:
+        plt.imshow(image)
+
+    plt.gca().axes.get_xaxis().set_visible(False)
+    plt.gca().axes.get_yaxis().set_visible(False)
+    # plt.tight_layout()
+    if save is not None:
+        plt.savefig(fname=save + '_' + plot_style + '.png',
+                    transparent=True, frameon=False, bbox_inches='tight',
+                    pad_inches=None, dpi=300, labels=False)
 
 
 def get_vector_magnitudes(u, v, sampling=None):
