@@ -1,7 +1,6 @@
 
 from temul.element_tools import split_and_sort_element
 from temul.io import save_individual_images_from_image_stack
-from temul.atomap_devel_temp import add_atoms_with_gui
 
 import atomap.api as am
 from atomap.atom_finding_refining import _make_circular_mask
