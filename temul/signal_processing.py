@@ -1687,7 +1687,8 @@ def choose_mask_coordinates(image, norm='log'):
     return(mask_coords)
 
 
-def get_masked_ifft(image, mask_coords, mask_radius=10):
+def get_masked_ifft(image, mask_coords, mask_radius=10, space="real",
+                    keep_masked_area=True, plot_masked_fft=False):
     '''
     loop through each mask_coords and mask the fft. Then return
     an ifft of the image.
@@ -1705,6 +1706,15 @@ def get_masked_ifft(image, mask_coords, mask_radius=10):
         two simple coordinates.
     mask_radius : int, default 10
         Radius in pixels of the mask.
+    space : string, default "real"
+        If the input image is a Fourier transform already, set space="fourier"
+    keep_masked_area : Bool, default True
+        If True, this will set the mask at the mask_coords.
+        If False, this will set the mask as everything other than the
+        mask_coords.
+    plot_masked_fft : Bool, default False
+        If True, the mask used to filter the FFT will be plotted. Good for
+        checking that the mask is doing what you want.
 
     Returns
     -------
@@ -1717,11 +1727,40 @@ def get_masked_ifft(image, mask_coords, mask_radius=10):
     >>> image = get_simple_cubic_signal()
     >>> mask_coords = [[170.2, 170.8],[129.8, 130]]
     >>> # mask_coords = choose_mask_coordinates(image=image, norm='log')
-    >>> image_ifft = get_masked_ifft(
-    ...     image=image,
-    ...     mask_coords=mask_coords)
+
+    Use the defaults:
+
+    >>> image_ifft = tmlsp.get_masked_ifft(
+    ...     image=image, mask_coords=mask_coords)
+    >>> image_ifft.plot()
+
+    Plot the masked fft:
+
+    >>> image_ifft = tmlsp.get_masked_ifft(
+    ...     image=image, mask_coords=mask_coords,
+    ...     plot_masked_fft=True)
+    >>> image_ifft.plot()
+
+    Use unmasked fft area and plot the masked fft:
+
+    >>> image_ifft = tmlsp.get_masked_ifft(
+    ...     image=image, mask_coords=mask_coords,
+    ...     plot_masked_fft=True, keep_masked_area=False)
+    >>> image_ifft.plot()
+
+    If the input image is already a Fourier transform:
+
+    >>> fft_image = image.fft(shift=True)
+    >>> image_ifft = tmlsp.get_masked_ifft(
+    ...     image=fft_image, mask_coords=mask_coords,
+    ...     space='fourier')
+    >>> image_ifft.plot()
 
     '''
+    if space == 'real':
+        fft = image.fft(shift=True)
+    elif space == 'fourier':
+        fft = image
 
     for mask_coord in mask_coords:
 
@@ -1734,20 +1773,24 @@ def get_masked_ifft(image, mask_coords, mask_radius=10):
                                    imageSizeY=image.data.shape[0],
                                    radius=mask_radius).T
 
-        # the tilda ~ inverses the mask
-        # fill in nothings with 0
-        fft = image.fft(shift=True)
-        masked_fft = np.ma.array(fft.data, mask=~mask).filled(0)
-
         # check if the combined masked_fft exists
         try:
-            masked_fft_combined
+            mask_combined
         except NameError:
-            masked_fft_combined = masked_fft
+            mask_combined = mask
         else:
-            masked_fft_combined += masked_fft
+            mask_combined += mask
 
-    masked_fft_image = hs.signals.ComplexSignal2D(masked_fft_combined)
+    # the tilda ~ inverses the mask
+    # fill in nothings with 0
+    if keep_masked_area:
+        masked_fft = np.ma.array(fft.data, mask=~mask_combined).filled(0)
+    elif not keep_masked_area:
+        masked_fft = np.ma.array(fft.data, mask=mask_combined).filled(0)
+
+    masked_fft_image = hs.signals.ComplexSignal2D(masked_fft)
+    if plot_masked_fft:
+        masked_fft_image.amplitude.plot(norm="log")
     # sort out units here
     image_ifft = masked_fft_image.ifft()
     image_ifft = np.absolute(image_ifft)
