@@ -162,7 +162,7 @@ def plot_polarisation_vectors(x, y, u, v, image,
     u, v = np.array(u), np.array(v)
 
     if sampling is not None:
-        u, v = u*sampling, v*sampling
+        u, v = u * sampling, v * sampling
 
     # for ax.quiver optional C paramater, we need to set this to
     # something. None doesn't work!
@@ -183,7 +183,7 @@ def plot_polarisation_vectors(x, y, u, v, image,
             x, y, u, v, color=color, pivot=pivot, angles=angles,
             scale_units=scale_units, scale=scale, headwidth=headwidth,
             headlength=headlength, headaxislength=headaxislength)
-        length = np.max(np.hypot(u, v))/2
+        length = np.max(np.hypot(u, v)) / 2
         ax.quiverkey(Q, 0.9, 1.025, length,
                      label='{:.0E} {}'.format(Decimal(length), units),
                      labelpos='E', coordinates='axes')
@@ -439,13 +439,13 @@ def atom_deviation_from_straight_line_fit(sublattice,
             slope, intercept = scipy.polyfit(
                 original_atoms_array[:, 0], original_atoms_array[:, 1], 1)
 
-            slope_neg_inv = -(1/slope)
+            slope_neg_inv = -(1 / slope)
             angle = np.arctan(slope_neg_inv)  # * (180/np.pi)
 
             x1 = atom_plane.start_atom.pixel_x
-            y1 = slope*x1 + intercept
+            y1 = slope * x1 + intercept
             x2 = atom_plane.end_atom.pixel_x
-            y2 = slope*x2 + intercept
+            y2 = slope * x2 + intercept
 
             p1 = np.array((x1, y1), ndmin=2)
             # end xy coord for straight line fit
@@ -458,11 +458,11 @@ def atom_deviation_from_straight_line_fit(sublattice,
             # or away using new_atom_pos_array and -new_atom_diff_array
             for original_atom in original_atoms_array:
 
-                distance = np.cross(p2-p1, original_atom -
-                                    p1) / np.linalg.norm(p2-p1)
+                distance = np.cross(p2 - p1, original_atom -
+                                    p1) / np.linalg.norm(p2 - p1)
                 distance = float(distance)
-                x_diff = distance*np.cos(angle)
-                y_diff = distance*np.sin(angle)
+                x_diff = distance * np.cos(angle)
+                y_diff = distance * np.sin(angle)
 
                 x_on_plane = original_atom[0] + x_diff
                 y_on_plane = original_atom[1] + y_diff
@@ -497,10 +497,11 @@ def atom_deviation_from_straight_line_fit(sublattice,
 
 
 def plot_atom_deviation_from_all_zone_axes(
-        sublattice, image=None, plot_style=['overlay'],
-        save='atom_deviation', pivot='middle', color='yellow',
-        angles='xy', scale_units='xy', scale=None, headwidth=3.0,
-        headlength=5.0, headaxislength=4.5, title=""):
+        sublattice, image=None, sampling=None, units='pix',
+        plot_style='vector', overlay=True, normalise=False,
+        save='atom_deviation', title="", color='yellow', cmap=None,
+        pivot='middle', angles='xy', scale_units='xy', scale=None,
+        headwidth=3.0, headlength=5.0, headaxislength=4.5):
     '''
     # need to add the truncated colormap version: divergent plot.
 
@@ -542,19 +543,20 @@ def plot_atom_deviation_from_all_zone_axes(
             sublattice=sublattice, axis_number=axis_number,
             save=None)
 
-        plot_polarisation_vectors(u=u, v=v, x=x, y=y, image=image,
-                                  plot_style=plot_style, save=save,
-                                  pivot=pivot, color=color, angles=angles,
-                                  scale_units=scale_units, scale=scale,
-                                  headwidth=headwidth, headlength=headlength,
-                                  headaxislength=headaxislength, title=title)
+        plot_polarisation_vectors(
+            u=u, v=v, x=x, y=y, image=image, sampling=sampling, units=units,
+            plot_style=plot_style, overlay=overlay, normalise=normalise, save=save,
+            title=title, color=color, cmap=cmap, pivot=pivot, angles=angles,
+            scale_units=scale_units, scale=scale, headwidth=headwidth,
+            headlength=headlength, headaxislength=headaxislength)
 
 
 def combine_atom_deviations_from_zone_axes(
-        sublattice, image=None, save='atom_deviation_all_zones',
-        plot_style=['overlay'], pivot='middle', color='yellow',
-        angles='xy', scale_units='xy', scale=None, headwidth=3.0,
-        headlength=5.0, headaxislength=4.5, title=""):
+        sublattice, image=None, sampling=None, units='pix',
+        plot_style='vector', overlay=True, normalise=False,
+        save='atom_deviation', title="", color='yellow', cmap=None,
+        pivot='middle', angles='xy', scale_units='xy', scale=None,
+        headwidth=3.0, headlength=5.0, headaxislength=4.5):
     '''
     Combine the atom deviations of each atom for all zone axes.
     Good for plotting vortexes and seeing the total deviation from a
@@ -645,12 +647,12 @@ def combine_atom_deviations_from_zone_axes(
         if image is None:
             image = sublattice.image
 
-        plot_polarisation_vectors(u=u, v=v, x=x, y=y, image=image,
-                                  plot_style=plot_style, save=save,
-                                  pivot=pivot, color=color, angles=angles,
-                                  scale_units=scale_units, scale=scale,
-                                  headwidth=headwidth, headlength=headlength,
-                                  headaxislength=headaxislength, title=title)
+        plot_polarisation_vectors(
+            u=u, v=v, x=x, y=y, image=image, sampling=sampling, units=units,
+            plot_style=plot_style, overlay=overlay, normalise=normalise, save=save,
+            title=title, color=color, cmap=cmap, pivot=pivot, angles=angles,
+            scale_units=scale_units, scale=scale, headwidth=headwidth,
+            headlength=headlength, headaxislength=headaxislength)
 
     return(x, y, u, v)
 
