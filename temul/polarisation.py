@@ -410,7 +410,13 @@ def atom_deviation_from_straight_line_fit(sublattice,
     This polarisation can then be visualised in plot_polarisation_vectors()
 
     '''
-    zon_vec_needed = sublattice.zones_axis_average_distances[axis_number]
+
+    if sublattice.zones_axis_average_distances is None:
+        raise Exception(
+            "zones_axis_average_distances is empty. "
+            "Has sublattice.construct_zone_axes() been run?")
+    else:
+        zon_vec_needed = sublattice.zones_axis_average_distances[axis_number]
     original_atom_pos_list = []
     new_atom_pos_list = []
     new_atom_diff_list = []
@@ -523,6 +529,13 @@ def plot_atom_deviation_from_all_zone_axes(
     if image is None:
         image = sublattice.image
 
+    if sublattice.zones_axis_average_distances is None:
+        raise Exception(
+            "zones_axis_average_distances is empty. "
+            "Has sublattice.construct_zone_axes() been run?")
+    else:
+        pass
+
     for axis_number in range(len(sublattice.zones_axis_average_distances)):
 
         x, y, u, v = atom_deviation_from_straight_line_fit(
@@ -578,6 +591,13 @@ def combine_atom_deviations_from_zone_axes(
 
     all_atoms_in_planes_xy = []
     all_atoms_in_planes_uv = []
+
+    if sublattice.zones_axis_average_distances is None:
+        raise Exception(
+            "zones_axis_average_distances is empty. "
+            "Has sublattice.construct_zone_axes() been run?")
+    else:
+        pass
 
     for axis_number in range(len(sublattice.zones_axis_average_distances)):
 
