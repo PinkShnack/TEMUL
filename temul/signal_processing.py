@@ -1,6 +1,7 @@
 
 from temul.element_tools import split_and_sort_element
 from temul.io import save_individual_images_from_image_stack
+from temul.atomap_devel_temp import add_atoms_with_gui
 
 import atomap.api as am
 from atomap.atom_finding_refining import _make_circular_mask
@@ -1681,8 +1682,11 @@ def choose_mask_coordinates(image, norm='log'):
     fft = image.fft(shift=True)
     fft_amp = fft.amplitude
 
-    mask_coords = am.add_atoms_with_gui(
-        fft_amp.data, norm='log')
+    mask_coords = add_atoms_with_gui(
+        fft_amp.data, norm=norm)
+
+    # mask_coords = am.add_atoms_with_gui(
+    #     fft_amp.data, norm=norm)
 
     return(mask_coords)
 
@@ -1726,7 +1730,7 @@ def get_masked_ifft(image, mask_coords, mask_radius=10, space="real",
     >>> import temul.signal_processing as tmlsp
     >>> image = get_simple_cubic_signal()
     >>> mask_coords = [[170.2, 170.8],[129.8, 130]]
-    >>> # mask_coords = choose_mask_coordinates(image=image, norm='log')
+    >>> # mask_coords = tmlsp.choose_mask_coordinates(image=image, norm='log')
 
     Use the defaults:
 
