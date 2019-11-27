@@ -64,7 +64,7 @@ def plot_polarisation_vectors(x, y, u, v, image,
                               plot_style='vector',
                               overlay=True, normalise=False,
                               save='polarisation_image', title="",
-                              color='yellow', cmap=None,
+                              color='yellow', cmap=None, monitor_dpi=96,
                               pivot='middle', angles='xy', scale_units='xy',
                               scale=None, headwidth=3.0, headlength=5.0,
                               headaxislength=4.5):
@@ -96,6 +96,10 @@ def plot_polarisation_vectors(x, y, u, v, image,
     color : string, default "r"
         Color of the arrows when `plot_style="vector" or "contour".
     cmap : matplotlib colormap, default "viridis"
+    monitor_dpi : int, default 96
+        The DPI of the monitor, generally 96 pixels. Used to scale the image
+        so that large images render correctly. Use a smaller value or
+        `monitor_dpi=None` to enlarge too-small images.
 
     See matplotlib's quiver function for the remaining parameters.
 
@@ -120,14 +124,15 @@ def plot_polarisation_vectors(x, y, u, v, image,
     >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           normalise=False, save=None,
     ...                           plot_style='vector', color='r',
-    ...                           overlay=False, title='Vector Arrows')
+    ...                           overlay=False, title='Vector Arrows',
+    ...                           monitor_dpi=50)
 
     vector plot with red arrows overlaid on the image:
 
     >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           normalise=False, save=None,
     ...                           plot_style='vector', color='r',
-    ...                           overlay=True)
+    ...                           overlay=True, monitor_dpi=50)
 
     vector plot with colormap viridis:
 
@@ -175,7 +180,12 @@ def plot_polarisation_vectors(x, y, u, v, image,
         u = u_norm
         v = v_norm
 
-    _, ax = plt.subplots()
+    if monitor_dpi is not None:
+        _, ax = plt.subplots(figsize=[image.shape[1] / monitor_dpi,
+                                      image.shape[0] / monitor_dpi])
+    else:
+        _, ax = plt.subplots()
+
     ax.set_title(title, loc='left', fontsize=20)
     # plot_style options
     if plot_style == "vector":
@@ -501,7 +511,7 @@ def plot_atom_deviation_from_all_zone_axes(
         plot_style='vector', overlay=True, normalise=False,
         save='atom_deviation', title="", color='yellow', cmap=None,
         pivot='middle', angles='xy', scale_units='xy', scale=None,
-        headwidth=3.0, headlength=5.0, headaxislength=4.5):
+        headwidth=3.0, headlength=5.0, headaxislength=4.5, monitor_dpi=96):
     '''
     # need to add the truncated colormap version: divergent plot.
 
@@ -523,7 +533,7 @@ def plot_atom_deviation_from_all_zone_axes(
     >>> sublatticeA.refine_atom_positions_using_center_of_mass()
     >>> sublatticeA.construct_zone_axes()
     >>> plot_atom_deviation_from_all_zone_axes(sublatticeA,
-    ...     plot_style=['vectors'], save=None)
+    ...     plot_style='vector', save=None)
 
     '''
 
@@ -545,10 +555,11 @@ def plot_atom_deviation_from_all_zone_axes(
 
         plot_polarisation_vectors(
             u=u, v=v, x=x, y=y, image=image, sampling=sampling, units=units,
-            plot_style=plot_style, overlay=overlay, normalise=normalise, save=save,
-            title=title, color=color, cmap=cmap, pivot=pivot, angles=angles,
-            scale_units=scale_units, scale=scale, headwidth=headwidth,
-            headlength=headlength, headaxislength=headaxislength)
+            plot_style=plot_style, overlay=overlay, normalise=normalise,
+            save=save, title=title, color=color, cmap=cmap, pivot=pivot,
+            angles=angles, scale_units=scale_units, scale=scale,
+            headwidth=headwidth, headlength=headlength,
+            headaxislength=headaxislength, monitor_dpi=monitor_dpi)
 
 
 def combine_atom_deviations_from_zone_axes(
@@ -556,7 +567,7 @@ def combine_atom_deviations_from_zone_axes(
         plot_style='vector', overlay=True, normalise=False,
         save='atom_deviation', title="", color='yellow', cmap=None,
         pivot='middle', angles='xy', scale_units='xy', scale=None,
-        headwidth=3.0, headlength=5.0, headaxislength=4.5):
+        headwidth=3.0, headlength=5.0, headaxislength=4.5, monitor_dpi=96):
     '''
     Combine the atom deviations of each atom for all zone axes.
     Good for plotting vortexes and seeing the total deviation from a
@@ -649,10 +660,11 @@ def combine_atom_deviations_from_zone_axes(
 
         plot_polarisation_vectors(
             u=u, v=v, x=x, y=y, image=image, sampling=sampling, units=units,
-            plot_style=plot_style, overlay=overlay, normalise=normalise, save=save,
-            title=title, color=color, cmap=cmap, pivot=pivot, angles=angles,
-            scale_units=scale_units, scale=scale, headwidth=headwidth,
-            headlength=headlength, headaxislength=headaxislength)
+            plot_style=plot_style, overlay=overlay, normalise=normalise,
+            save=save, title=title, color=color, cmap=cmap, pivot=pivot,
+            angles=angles, scale_units=scale_units, scale=scale,
+            headwidth=headwidth, headlength=headlength,
+            headaxislength=headaxislength, monitor_dpi=monitor_dpi)
 
     return(x, y, u, v)
 
