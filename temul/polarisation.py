@@ -76,7 +76,9 @@ def plot_polarisation_vectors(x, y, u, v, image,
     See matplotlib's quiver() function for more details.
 
     x, y : list or 1D NumPy array
+        xy coordinates on the image
     u, v : list or 1D NumPy array
+        uv vector components
     image : 2D NumPy array
     sampling : float, default None
         Pixel sampling of the image for calibration.
@@ -667,6 +669,110 @@ def combine_atom_deviations_from_zone_axes(
             headaxislength=headaxislength, monitor_dpi=monitor_dpi)
 
     return(x, y, u, v)
+
+
+def get_average_polarisation_in_regions(x, y, u, v, image, divide_into=8):
+    '''
+    This function splits the image into a certain number of regions and
+    averages and plots the polarisation vectors in those regions.
+
+    Parameters
+    ----------
+    x, y : list or 1D NumPy array
+        xy coordinates on the image
+    u, v : list or 1D NumPy array
+        uv vector components
+    image : 2D NumPy array
+    divide_into : int, default 8
+        The number used to divide the image up. If 8, then the image will be
+        split into an 8x8 grid.
+
+    Returns
+    -------
+    Four lists: x_new, y_new, u_new, v_new.
+    x_new and y_new are the certain coordinates of the regions.
+    u_new and v_new are the averaged polarisation vectors.
+
+    Examples
+    --------
+    >>> import matplotlib.pyplot as plt
+    >>> import numpy as np
+    >>> import atomap.api as am
+    >>> from temul.polarisation import (
+    ...    combine_atom_deviations_from_zone_axes,
+    ...    plot_polarisation_vectors, get_average_polarisation_in_regions)
+    >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
+    >>> sublatticeA = atom_lattice.sublattice_list[0]
+    >>> sublatticeA.find_nearest_neighbors()
+    >>> sublatticeA.refine_atom_positions_using_center_of_mass()
+    >>> sublatticeA.construct_zone_axes()
+
+    Get and plot the original polarisation vectors:
+
+    >>> x, y, u, v = combine_atom_deviations_from_zone_axes(sublatticeA,
+    ...     save=None)
+    >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    ...                   normalise=False, save=None,
+    ...                   plot_style='vector', color='r',
+    ...                   overlay=False, title='Actual Vector Arrows',
+    ...                   monitor_dpi=50)
+
+    Get and plot the new, averaged polarisation vectors
+
+    >>> x_new, y_new, u_new, v_new = get_average_polarisation_in_regions(
+    ...     x, y, u, v, image=sublatticeA.image, divide_into=8)
+    >>> plot_polarisation_vectors(x_new, y_new, u_new, v_new,
+    ...                   image=sublatticeA.image,
+    ...                   normalise=False, save=None,
+    ...                   plot_style='vector', color='r',
+    ...                   overlay=False, title='Averaged Vector Arrows',
+    ...                   monitor_dpi=50)
+    '''
+
+    if divide_into >= np.sqrt(len(x)):
+        raise ValueError(
+            "divide_into ({}) cannot be greater than the number of "
+            "vector coordinates in each dimension ({})".format(
+                divide_into, np.sqrt(len(x))))
+
+    # divide the image into sections
+    image_x_max, image_y_max = image.shape[-1], image.shape[-2]
+    x_region_length = image_x_max // divide_into
+    y_region_length = image_y_max // divide_into
+
+    all_x_region_lengths = []
+    all_y_region_lengths = []
+    for i in range(divide_into):
+        all_x_region_lengths.append(
+            [i * x_region_length, (i + 1) * x_region_length])
+        all_y_region_lengths.append(
+            [i * y_region_length, (i + 1) * y_region_length])
+
+    # get the new x, y coords
+    x_new, y_new = [], []
+    for x_length in all_x_region_lengths:
+        for y_length in all_y_region_lengths:
+            x_new.append(x_length[1] - ((x_length[1] - x_length[0]) / 2))
+            y_new.append(y_length[1] - ((y_length[1] - y_length[0]) / 2))
+
+    # get the new averaged u, v components
+    u_new, v_new = [], []
+    for x_length in all_x_region_lengths:
+        for y_length in all_y_region_lengths:
+            u_area, v_area = [], []
+            for (x_i, y_i, u_i, v_i) in zip(x, y, u, v):
+                if x_length[0] < x_i < x_length[1] and \
+                   y_length[0] < y_i < y_length[1]:
+
+                    u_area.append(u_i)
+                    v_area.append(v_i)
+
+            u_mean = np.mean(np.array(u_area))
+            u_new.append(u_mean)
+            v_mean = np.mean(np.array(v_area))
+            v_new.append(v_mean)
+
+    return(x_new, y_new, u_new, v_new)
 
 
 """
