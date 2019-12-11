@@ -16,9 +16,6 @@ class model_refiner():
     def __init__(self, sublattice_and_elements_dict,
                  comparison_image, name=''):
         '''
-        df indexes (row names) should be related to the refinement used.
-        original could be "original"
-
 
         counts_int_ref = pd.DataFrame(columns=element_list)
         count_atoms = temul.count_atoms_in_sublattice_list([sub1, sub2, sub3, sub_new], filename=None)
@@ -120,8 +117,6 @@ class model_refiner():
                 self.element_count_history_list[-2:]))
 
     def get_element_count_as_dataframe(self):
-        # for individ sublattices, need a sublattices param, and have it
-        # simply index the self.element_list as in image_difference_intensity_model_refiner
 
         elements_ = [i for sublist in self.element_list for i in sublist]
         elements_ = list(set(elements_))
@@ -130,14 +125,14 @@ class model_refiner():
         df = pd.DataFrame(columns=elements_)
         for element_in_history in self.element_count_history_list:
             df = df.append(element_in_history, ignore_index=True).fillna(0)
-        # change index: index=self.refinement_history
+        for i, refinement_name in enumerate(self.refinement_history):
+            df.rename(index={i: refinement_name}, inplace=True)
+
         return df
 
     def plot_element_count_as_bar_chart(self, flip_colrows=True,
                                         title="Refinement of Elements",
                                         fontsize=16):
-        # see comment in init :
-        # counts_.columns = ['No Refine', 'Position Refine', 'Intensity Refine']
         df = self.get_element_count_as_dataframe()
         if flip_colrows:
             df = df.T
@@ -209,3 +204,27 @@ class model_refiner():
                           .format(i+1))
                     # include number of the loop in "exciting the loop here... with .format(n)"
                     break
+
+
+# a_list = Counter({'Mo': 1, 'F': 5, 'He': 9})
+# b_list = ['init', 'one', 'two']
+# for i, (a, b) in enumerate(zip(a_list, b_list)):
+
+#     print(i)
+#     print(a)
+#     print(b)
+
+
+# df = pd.DataFrame(columns=a_list)
+
+# i = 0
+# a = 'Mo'
+# b = 'one'
+
+# for i, (a, b) in enumerate(zip(a_list, b_list)):
+
+#     df = df.append({'Mo': 3}, ignore_index=True).fillna(0)
+
+# for i, b in enumerate(b_list):
+#     df.rename(index={i: b}, inplace=True)
+# df
