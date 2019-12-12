@@ -18,55 +18,9 @@ class model_refiner():
     def __init__(self, sublattice_and_elements_dict,
                  comparison_image, name=''):
         '''
-        for get_individual_elements_as_dataframe to work, we need to be able to 
-        number the refinements.
-        could do it two ways:
-        A:
-        intensity 1
-        intensity 2
-        position 1
-        intensity 3 etc. which could be complex, have to look back at the 
-        history to choose the next number
-        B:
-        1 intensity
-        2 intensity
-        3 position
-        4 intensity etc. which is probably not as descriptive but easier to
-        implement. have to create the index dict in 
-        get_element_count_as_dataframe
-            df.rename(index={i: refinement_name}, inplace=True)
-
-        as maybe row_name={i: str(i) + " " + refinement_name}
-            df.rename(index=row_name, inplace=True)
-
-
-
-        counts_int_ref = pd.DataFrame(columns=element_list)
-        count_atoms = temul.count_atoms_in_sublattice_list([sub1, sub2, sub3, sub_new], filename=None)
-        counts_int_ref = counts_int_ref.append(count_atoms, ignore_index=True).fillna(0)
-
-        indiv_elems = temul.count_all_individual_elements(indiv_element_list, counts_int_ref)
-        indiv_elems_int_ref = pd.DataFrame.from_dict(indiv_elems)
-        counts_int_ref = pd.concat([indiv_elems_int_ref, counts_int_ref], axis=1)
-
         Object which is used to refine the elements in a
         sublattice object
 
-        can i have sublattice_and_element_list as a dict?
-
-        if you call model_refiner.count_elements it would store the count in
-        the object and return a df. You could call a plot elements method too.
-        Might make the refine functions easier to use over several sublattices
-        as each would normally need the function run separately for each one
-        (because different elements etc.).
-        You create a model_refiner object, input being the sublattice,
-        element_list. just a list/dict of those.
-
-        dict = {sub1 : element_list1,
-                sub2 : element_list2, ...}
-
-        IF the counter attribute isn't empy, append! then you simply have a list
-        of the history.
         '''
 
         self.sublattice_list = list(sublattice_and_elements_dict.keys())
@@ -88,7 +42,8 @@ class model_refiner():
 
     def _comparison_image_init(self, comparison_image):
 
-        if not isinstance(comparison_image, hyperspy._signals.signal2d.Signal2D):
+        if not isinstance(comparison_image,
+                          hyperspy._signals.signal2d.Signal2D):
             raise ValueError(
                 "comparison_image must be a 2D Hyperspy signal of type "
                 "hyperspy._signals.signal2d.Signal2D. The current incorrect "
@@ -183,7 +138,7 @@ class model_refiner():
         elif element_configs is 1:  # only individual elements
             df = self.get_individual_elements_as_dataframe(
                 split_symbol=['_', '.'])
-        elif element_configs is 2:  # both element configs + individual elements
+        elif element_configs is 2:  # both element configs + individual
             df = self.combine_individual_and_element_counts_as_dataframe(
                 split_symbol=['_', '.'])
         else:
@@ -204,7 +159,7 @@ class model_refiner():
         plt.title(title, fontsize=fontsize)
         plt.ylabel('Element Count', fontsize=fontsize)
         # plt.gca().axes.get_xaxis().set_visible(False)
-        plt.tight_layout()
+        # plt.tight_layout()
 
     def image_difference_intensity_model_refiner(
             self,
