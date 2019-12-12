@@ -3,7 +3,9 @@ from atomap.api import dummy_data
 import atomap.api as am
 from temul.model_creation import (count_atoms_in_sublattice_list,
                                   compare_count_atoms_in_sublattice_list,
-                                  image_difference_intensity)
+                                  image_difference_intensity,
+                                  count_all_individual_elements)
+from temul.element_tools import (get_individual_elements_from_element_list)
 from collections import Counter
 import pandas as pd
 import hyperspy
@@ -16,12 +18,34 @@ class model_refiner():
     def __init__(self, sublattice_and_elements_dict,
                  comparison_image, name=''):
         '''
+        for get_individual_elements_as_dataframe to work, we need to be able to 
+        number the refinements.
+        could do it two ways:
+        A:
+        intensity 1
+        intensity 2
+        position 1
+        intensity 3 etc. which could be complex, have to look back at the 
+        history to choose the next number
+        B:
+        1 intensity
+        2 intensity
+        3 position
+        4 intensity etc. which is probably not as descriptive but easier to
+        implement. have to create the index dict in 
+        get_element_count_as_dataframe
+            df.rename(index={i: refinement_name}, inplace=True)
+
+        as maybe row_name={i: str(i) + " " + refinement_name}
+            df.rename(index=row_name, inplace=True)
+
+
 
         counts_int_ref = pd.DataFrame(columns=element_list)
         count_atoms = temul.count_atoms_in_sublattice_list([sub1, sub2, sub3, sub_new], filename=None)
         counts_int_ref = counts_int_ref.append(count_atoms, ignore_index=True).fillna(0)
 
-        indiv_elems = temul.count_all_individual_elements(individual_element_list, counts_int_ref)
+        indiv_elems = temul.count_all_individual_elements(indiv_element_list, counts_int_ref)
         indiv_elems_int_ref = pd.DataFrame.from_dict(indiv_elems)
         counts_int_ref = pd.concat([indiv_elems_int_ref, counts_int_ref], axis=1)
 
@@ -126,14 +150,54 @@ class model_refiner():
         for element_in_history in self.element_count_history_list:
             df = df.append(element_in_history, ignore_index=True).fillna(0)
         for i, refinement_name in enumerate(self.refinement_history):
-            df.rename(index={i: refinement_name}, inplace=True)
+            df.rename(index={i: str(i) + " " + refinement_name}, inplace=True)
 
         return df
 
-    def plot_element_count_as_bar_chart(self, flip_colrows=True,
+    def get_individual_elements_as_dataframe(self, split_symbol=['_', '.']):
+
+        df_all = self.get_element_count_as_dataframe()
+        indiv_element_list = get_individual_elements_from_element_list(
+            self.element_list, split_symbol=split_symbol)
+        indiv_element_counts = count_all_individual_elements(
+            indiv_element_list, df_all)
+        df = pd.DataFrame.from_dict(indiv_element_counts)
+        return df
+
+    def combine_individual_and_element_counts_as_dataframe(
+            self, split_symbol=['_', '.']):
+
+        df_configs = self.get_element_count_as_dataframe()
+        df_indiv = self.get_individual_elements_as_dataframe(
+            split_symbol=['_', '.'])
+
+        df_combined = pd.concat([df_configs, df_indiv], axis=1)
+        return df_combined
+
+    def plot_element_count_as_bar_chart(self, element_configs=0,
+                                        flip_colrows=True,
                                         title="Refinement of Elements",
-                                        fontsize=16):
-        df = self.get_element_count_as_dataframe()
+                                        fontsize=16, split_symbol=['_', '.']):
+        if element_configs is 0:  # only element configs
+            df = self.get_element_count_as_dataframe()
+        elif element_configs is 1:  # only individual elements
+            df = self.get_individual_elements_as_dataframe(
+                split_symbol=['_', '.'])
+        elif element_configs is 2:  # both element configs + individual elements
+            df = self.combine_individual_and_element_counts_as_dataframe(
+                split_symbol=['_', '.'])
+        else:
+            raise ValueError(
+                "element_configs can only be 0, 1, or 2. "
+                "0 returns only the element configurations given in "
+                "self.element_list ({}). "
+                "1 returns the individual elements ({}). "
+                "2 returns a combination of 1 and 2.".format(
+                    self.element_list,
+                    get_individual_elements_from_element_list(
+                        self.element_list,
+                        split_symbol=split_symbol)))
+
         if flip_colrows:
             df = df.T
         df.plot.bar(fontsize=fontsize)

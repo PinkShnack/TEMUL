@@ -109,15 +109,25 @@ def split_and_sort_element(element, split_symbol=['_', '.']):
 
     Returns
     -------
-    list with element_split, element_name, element_count, and
-    element_atomic_number
+    list of a list with element_split, element_name, element_count, and
+    element_atomic_number.
+    See examples below
 
     Examples
     --------
     >>> from temul.element_tools import split_and_sort_element
-    >>> single_element = split_and_sort_element(element='S_1')
-    >>> complex_element = split_and_sort_element(element='O_6.Mo_3.Ti_5')
 
+    simple atomic column
+
+    >>> split_and_sort_element(element='S_1')
+    [[['S', '1'], 'S', 1, 16]]
+
+    complex atomic column
+
+    >>> split_and_sort_element(element='O_6.Mo_3.Ti_5')
+    [[['O', '6'], 'O', 6, 8],
+     [['Mo', '3'], 'Mo', 3, 42],
+     [['Ti', '5'], 'Ti', 5, 22]]
     '''
     splitting_info = []
 
@@ -156,3 +166,64 @@ def split_and_sort_element(element, split_symbol=['_', '.']):
             "and count. Use '.' to separate elements in the same xy position")
 
     return(splitting_info)
+
+
+def get_individual_elements_from_element_list(
+        element_list,
+        split_symbol=['_', '.']):
+    """
+    Examples
+    --------
+
+    Single list
+
+    >>> import temul.element_tools as tml_el
+    >>> element_list = ['Mo_0', 'Ti_3', 'Ti_9', 'Ge_2']
+    >>> get_individual_elements_from_element_list(
+    ...     element_list, split_symbol=['_', '.'])
+    ['Ge', 'Mo', 'Ti']
+
+    some complex atomic_columns
+
+    >>> element_list = ['Mo_0', 'Ti_3.Re_7', 'Ti_9.Re_3', 'Ge_2']
+    >>> get_individual_elements_from_element_list(
+    ...     element_list, split_symbol=['_', '.'])
+    ['Ge', 'Mo', 'Re', 'Ti']
+
+    multiple lists in element_list. Used in model_refiner if you have more than
+    one sublattice.
+
+    >>> element_list = [['Ti_7_0', 'Ti_9.Re_3', 'Ge_2'], ['B_9', 'B_2.Fe_8']]
+    >>> get_individual_elements_from_element_list(
+    ...     element_list, split_symbol=['_', '.'])
+    ['B', 'Fe', 'Ge', 'Re', 'Ti']
+    """
+
+    if len(element_list) == 0:
+        raise ValueError("The length of element_list must be greater than 0")
+
+    # check if element_list is a list of list
+    # (several sublattices in model_refiner)
+    list_of_lists = any(isinstance(sub, list) for sub in element_list)
+
+    element_info = []
+    if list_of_lists:
+        for sub_list in element_list:
+            for element in sub_list:
+                element_info.append(split_and_sort_element(
+                    element, split_symbol=split_symbol))
+
+    else:
+        for element in element_list:
+            element_info.append(split_and_sort_element(
+                element, split_symbol=split_symbol))
+
+    indiv_elements = []
+    for i, _ in enumerate(element_info):
+        element_split = element_info[i]
+        for k, _ in enumerate(element_split):
+            indiv_elements.append(element_split[k][1])
+    indiv_elements = list(set(indiv_elements))
+    indiv_elements.sort()
+
+    return indiv_elements
