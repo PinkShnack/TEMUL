@@ -156,10 +156,11 @@ class model_refiner():
         if flip_colrows:
             df = df.T
         df.plot.bar(fontsize=fontsize)
-        plt.title(title, fontsize=fontsize)
+        plt.title(title, fontsize=fontsize+4)
         plt.ylabel('Element Count', fontsize=fontsize)
+        plt.legend(loc=0, fontsize=fontsize-4)
         # plt.gca().axes.get_xaxis().set_visible(False)
-        # plt.tight_layout()
+        plt.tight_layout()
 
     def image_difference_intensity_model_refiner(
             self,
