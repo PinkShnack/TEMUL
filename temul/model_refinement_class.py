@@ -4,7 +4,9 @@ import atomap.api as am
 from temul.model_creation import (count_atoms_in_sublattice_list,
                                   compare_count_atoms_in_sublattice_list,
                                   image_difference_intensity,
-                                  count_all_individual_elements)
+                                  image_difference_position,
+                                  count_all_individual_elements,
+                                  change_sublattice_pseudo_inplace)
 from temul.element_tools import (get_individual_elements_from_element_list)
 from collections import Counter
 import pandas as pd
@@ -224,6 +226,52 @@ class model_refiner():
                           .format(i+1))
                     # include number of the loop in "exciting the loop here... with .format(n)"
                     break
+
+
+def image_difference_position_model_refiner(self,
+                                            sublattices='all',
+                                            comparison_image='default',
+                                            pixel_threshold=5,
+                                            num_peaks=5,
+                                            inplace=True,
+                                            percent_to_nn=0.40,
+                                            mask_radius=None,
+                                            filename=None,
+                                            refinement_method="Position"):
+    '''
+    To add: docstring...
+
+
+
+    note:
+    refine the found positions very tighly (percent_to_nn=0.1)
+
+    '''
+
+    # define variables for refinement
+    if 'all' in sublattices:
+        sublattice_list = self.sublattice_list
+        element_list = self.element_list
+    elif isinstance(sublattices, list):
+        sublattice_list = [self.sublattice_list[i] for i in sublattices]
+        element_list = [self.element_list[i] for i in sublattices]
+
+    if 'default' in comparison_image:
+        comparison_image = self.comparison_image
+
+    for sublattice, element_list_i in zip(
+            sublattice_list, element_list):
+
+        image_difference_position(sublattice=sublattice,
+                                  sim_image=comparison_image,
+                                  pixel_threshold=pixel_threshold,
+                                  filename=filename,
+                                  percent_to_nn=percent_to_nn,
+                                  mask_radius=mask_radius,
+                                  num_peaks=num_peaks,
+                                  inplace=inplace)
+
+    self.update_element_count_and_refinement_history(refinement_method)
 
 
 # a_list = Counter({'Mo': 1, 'F': 5, 'He': 9})

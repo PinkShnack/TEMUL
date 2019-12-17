@@ -547,7 +547,7 @@ def image_difference_intensity(sublattice,
         pass
 
 
-def image_difference_position(sublattice_list,
+def image_difference_position_new_sub(sublattice_list,
                               sim_image,
                               pixel_threshold,
                               filename=None,
@@ -1572,3 +1572,309 @@ def create_dataframe_for_cif(sublattice_list, element_list):
     # example_df = create_dataframe_for_cif(atom_lattice, element_list)
 
     # '_atom_site_fract_z' : format( (sublattice.atom_list[i].z_height)[p+(k*k)], '.6f'), #great touch
+
+
+
+def change_sublattice_pseudo_inplace(new_atom_positions, old_sublattice):
+    '''
+    Create and return a new Sublattice object which is a copy of
+    old_sublattice except with extra atom positions set with
+    new_atom_positions.
+
+    Parameters
+    ----------
+    new_atom_positions : NumPy array
+        In the form [[x0, y0], [x1, y1], [x2, y2], ... ]
+    old_sublattice : Atomap Sublattice
+    
+    Examples
+    --------
+    >>> from temul.model_creation import change_sublattice_pseudo_inplace
+    >>> from atomap.sublattice import Sublattice
+    >>> import numpy as np
+    >>> atom_positions = [[1, 5], [2, 4]]
+    >>> image_data = np.random.random((7, 7))
+    >>> sublattice_A = Sublattice(atom_positions, image_data)
+    >>> new_atom_positions = [[4, 3], [6, 6]]
+    >>> sublattice_B = change_sublattice_pseudo_inplace(
+    ...     new_atom_positions, sublattice_A)
+    >>> sublattice_B.atom_positions
+    [[1, 2, 4, 6], [5, 4, 3, 6]]
+
+    >>> sublattice_A.atom_positions
+    [[1, 2], [5, 4]]
+
+    It also copies information such as elements
+
+    >>> sublattice_A.atom_list[0].elements = 'Ti_1'
+    >>> sublattice_A = change_sublattice_pseudo_inplace(
+    ...     new_atom_positions, sublattice_A)
+    >>> sublattice_A.atom_list[0].elements
+    'Ti_1'
+
+    Returns
+    -------
+    An Atomap Sublattice object that combines the new_atom_positions with
+    the information from the old_sublattice.
+    '''
+
+    atom_position_list = np.array(old_sublattice.atom_positions).T.tolist()
+    image = old_sublattice.image
+    original_image = old_sublattice.original_image
+    name = old_sublattice.name
+    color = old_sublattice._plot_color
+    pixel_size = old_sublattice.pixel_size
+
+    combined_atom_positions = atom_position_list + new_atom_positions
+
+    new_sublattice = am.Sublattice(combined_atom_positions, image,
+                                   original_image, name, color,
+                                   pixel_size)
+
+    for old_info, new_info in zip(old_sublattice.atom_list,
+                                new_sublattice.atom_list):
+
+        # should only apply to data that was part of the old_sublattice.
+        # if there are new positions in the new_sublattice, they shouldn't be
+        # affected by this.
+        # old_info = old_list.atom_list[i]
+        # new_info = new_list.atom_list[i]
+
+        new_info.old_pixel_x_list = old_info.pixel_x
+        new_info.old_pixel_y_list = old_info.pixel_y
+        new_info.elements = old_info.elements
+        new_info.z_height = old_info.z_height
+        new_info.refine_position = old_info.refine_position
+
+    return new_sublattice
+
+
+def image_difference_position(sublattice,
+                              sim_image,
+                              pixel_threshold,
+                              filename=None,
+                              percent_to_nn=0.40,
+                              mask_radius=None,
+                              num_peaks=5,
+                              inplace=True):
+    '''
+    Find new atomic coordinates by comparing experimental to simulated image.
+    Changes the sublattice inplace using change_sublattice_pseudo_inplace.
+
+    The aim is to change the sublattice elements so that the experimental image
+    agrees with the simulated image in a realistic manner.
+    See also image_difference_intensity function and the model_refiner class.
+
+    Parameters
+    ----------
+    sublattice : Atomap sublattice object
+    sim_image : simulated image used for comparison with sublattice image
+    pixel_threshold : int
+        minimum pixel distance from current sublattice atoms. If the new atomic
+        coordinates are greater than this distance, they will be created.
+        Choose a pixel_threshold that will not create new atoms in unrealistic
+        positions.
+    filename : string, default None
+        name with which the image will be saved
+    percent_to_nn : float, default 0.40
+        Determines the boundary of the area surrounding each atomic
+        column, as fraction of the distance to the nearest neighbour.
+    mask_radius : float, default None
+        Radius of the mask around each atom. If this is not set,
+        the radius will be the distance to the nearest atom in the
+        same sublattice times the `percent_to_nn` value.
+        Note: if `mask_radius` is not specified, the Atom_Position objects
+        must have a populated nearest_neighbor_list.
+    num_peaks : int, default 5
+        number of new atoms to add
+    add_sublattice : bool, default False
+        If set to True, a new sublattice will be created and returned.
+        The reason it is set to False is so that one can check if new atoms
+        would be added with the given parameters.
+    sublattice_name : string, default 'sub_new'
+        the outputted sublattice object name and sublattice.name the new
+        sublattice will be given
+
+    Returns
+    -------
+    Atomap Sublattice object, with added positions if found.
+
+    Examples
+    --------
+
+    >>> from temul.model_creation import (image_difference_position,
+    ...                                   change_sublattice_pseudo_inplace)
+    >>> import atomap.api as am
+    >>> sublattice = am.dummy_data.get_simple_cubic_with_vacancies_sublattice(
+    ...                                             image_noise=True)
+    >>> sim_image = am.dummy_data.get_simple_cubic_signal()
+    >>> for i in range(0, len(sublattice.atom_list)):
+    ...         sublattice.atom_list[i].elements = 'Mo_1'
+    ...         sublattice.atom_list[i].z_height = '0.5'
+    >>> len(sublattice.atom_list)
+    397
+
+    >>> sublattice = image_difference_position(sublattice=sublattice,
+    ...                           sim_image=sim_image,
+    ...                           pixel_threshold=10,
+    ...                           percent_to_nn=None,
+    ...                           mask_radius=5,
+    ...                           num_peaks=5,
+    ...                           inplace=True)
+    '3 new atoms found! Adding new atom positions.'
+
+    >>> len(sublattice.atom_list)
+    400
+
+    One can now sort these atom positions into elements.
+
+    Returns
+    -------
+    Atomap Sublattice object
+    '''
+
+    image_for_sublattice = sublattice.signal
+    diff_image = hs.signals.Signal2D(
+        image_for_sublattice.data - sim_image.data)
+    diff_image_inverse = hs.signals.Signal2D(
+        sim_image.data - image_for_sublattice.data)
+
+    # below function edit of get_atom_positions. Just allows num_peaks from
+    # sklearn>find_local_maximum
+    atom_positions_diff_image = get_atom_positions_in_difference_image(
+        diff_image, num_peaks=num_peaks)
+    atom_positions_diff_image_inverse = get_atom_positions_in_difference_image(
+        diff_image_inverse, num_peaks=num_peaks)
+
+    diff_image_sub = am.Sublattice(atom_positions_diff_image, diff_image)
+    # diff_image_sub.find_nearest_neighbors()
+    # diff_image_sub.refine_atom_positions_using_center_of_mass(
+    #     percent_to_nn=percent_to_nn, mask_radius=mask_radius)
+    # diff_image_sub.refine_atom_positions_using_2d_gaussian(
+    #     percent_to_nn=percent_to_nn, mask_radius=mask_radius)
+    atom_positions_sub_diff = np.array(diff_image_sub.atom_positions).T
+
+    # sublattice.plot()
+
+    diff_image_sub_inverse = am.Sublattice(atom_positions_diff_image_inverse,
+                                           diff_image_inverse)
+    # diff_image_sub_inverse.find_nearest_neighbors()
+    # diff_image_sub_inverse.refine_atom_positions_using_center_of_mass(
+    #     percent_to_nn=percent_to_nn, mask_radius=mask_radius)
+    # diff_image_sub_inverse.refine_atom_positions_using_2d_gaussian(
+    #     percent_to_nn=percent_to_nn, mask_radius=mask_radius)
+    atom_positions_sub_diff_inverse = np.array(
+        diff_image_sub_inverse.atom_positions).T
+
+    # these should be inputs for the image_list below
+
+    atom_positions_diff_all = np.concatenate(
+        (atom_positions_sub_diff, atom_positions_sub_diff_inverse))
+
+    atom_positions_sub_new = []
+
+    for atom in range(0, len(atom_positions_diff_all)):
+
+        new_atom_distance_list = []
+
+        # for sublattice in sublattice_list:
+        sublattice_atom_pos = np.array(sublattice.atom_positions).T
+
+        for p in range(0, len(sublattice_atom_pos)):
+
+            xy_distances = atom_positions_diff_all[atom] - \
+                sublattice_atom_pos[p]
+
+            # put all distances in this array with this loop
+            vector_array = []
+            vector = np.sqrt((xy_distances[0]**2) +
+                                (xy_distances[1]**2))
+            vector_array.append(vector)
+
+            new_atom_distance_list.append(
+                [vector_array, atom_positions_diff_all[atom],
+                    sublattice])
+
+        # use list comprehension to get the distances on their own, the [0] is
+        # changing the list of lists to a list of floats
+        new_atom_distance_sublist = [sublist[:1][0] for sublist in
+                                     new_atom_distance_list]
+        new_atom_distance_min = min(new_atom_distance_sublist)
+
+        new_atom_distance_min_index = new_atom_distance_sublist.index(
+            new_atom_distance_min)
+
+        new_atom_index = new_atom_distance_list[new_atom_distance_min_index]
+
+        if new_atom_index[0][0] > pixel_threshold:  # greater than 10 pixels
+
+            if len(atom_positions_sub_new) == 0:
+                atom_positions_sub_new = [np.ndarray.tolist(new_atom_index[1])]
+            else:
+                atom_positions_sub_new.extend(
+                    [np.ndarray.tolist(new_atom_index[1])])
+        else:
+            pass
+
+    if len(atom_positions_sub_new) == 0:
+        print("No New Atoms")
+
+    elif len(atom_positions_sub_new) != 0 and inplace is True:
+        print("{} new atoms found! Adding new atom positions.".format(
+            len(atom_positions_sub_new)))
+
+        sublattice = change_sublattice_pseudo_inplace(
+            new_atom_positions=atom_positions_sub_new,
+            old_sublattice=sublattice)
+
+
+    #    sub_new.refine_atom_positions_using_center_of_mass(
+    #       percent_to_nn=percent_to_nn, mask_radius=mask_radius)
+    #    sub_new.refine_atom_positions_using_2d_gaussian(
+    #       percent_to_nn=percent_to_nn, mask_radius=mask_radius)
+
+
+    # try:
+    #     sub_new
+    # except NameError:
+    #     sub_new_exists = False
+    # else:
+    #     sub_new_exists = True
+
+    if filename is not None:
+        '''
+        diff_image.plot()
+        diff_image_sub.plot()
+        diff_image_inverse.plot()
+        diff_image_sub_inverse.plot()
+        '''
+
+        plt.figure()
+        plt.suptitle('Image Difference Position' + filename)
+
+        plt.subplot(1, 2, 1)
+        plt.imshow(diff_image.data)
+        plt.title('diff')
+        plt.axis("off")
+
+        plt.subplot(1, 2, 2)
+        plt.imshow(diff_image_inverse.data)
+        plt.title('diff_inv')
+        plt.axis("off")
+        plt.show()
+
+        plt.savefig(fname='pos_diff_' + filename + '.png',
+                    transparent=True, frameon=False, bbox_inches='tight',
+                    pad_inches=None, dpi=300, labels=False)
+
+        sublattice.plot()
+        plt.title(sublattice.name + filename, fontsize=20)
+        plt.gca().axes.get_xaxis().set_visible(False)
+        plt.gca().axes.get_yaxis().set_visible(False)
+        plt.tight_layout()
+        plt.savefig(fname='pos_diff_' + sublattice.name + filename + '.png',
+                    transparent=True, frameon=False, bbox_inches='tight',
+                    pad_inches=None, dpi=300, labels=False)
+
+    return(sublattice)
+
