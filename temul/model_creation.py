@@ -243,6 +243,39 @@ changing the atom_position location. Using intensity of current positions only
 #   make the simulation agree more with the experiment
 
 
+def get_most_common_sublattice_element(sublattice):
+    '''
+    Find the most common element configuration in a sublattice.
+
+    Parameters
+    ----------
+    sublattice : Atomap Sublattice object
+
+    Returns
+    -------
+    Most common element configuration in the sublattice
+
+    Examples
+    --------
+    >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
+    >>> for i, atom in enumerate(sublattice.atom_list):
+    >>>     if i % 3 == 0:
+    >>>         atom.elements = 'Ti_3'
+    >>>     else:
+    >>>         atom.elements = 'Ti_2'
+    >>> get_most_common_sublattice_element(sublattice)
+    'Ti_2'
+    '''
+
+    all_elements = []
+    for atom in sublattice.atom_list:
+        all_elements.append(atom.elements)
+
+    most_common_element = max(set(all_elements), key=all_elements.count)
+
+    return most_common_element
+
+
 def change_sublattice_atoms_via_intensity(
         sublattice,
         image_diff_array,
@@ -315,46 +348,49 @@ def change_sublattice_atoms_via_intensity(
             p = int(p)
 
             elem = sublattice.atom_list[p].elements
-            if elem in element_list:
-                atom_index = element_list.index(elem)
 
-                if darker_or_brighter == 0:
-                    if '_0' in elem:
-                        pass
-                    else:
-                        new_atom_index = atom_index - 1
-                        if len(sublattice.atom_list[p].z_height) == 2:
-                            z_h = sublattice.atom_list[p].z_height
-                            sublattice.atom_list[p].z_height = [
-                                (z_h[0] + z_h[1])/2]
-                        else:
-                            pass
-                        new_atom = element_list[new_atom_index]
+            if elem == '':
+                # raise warning instead of error
+                # set the '' elem to the most common elem?
+                elem = get_most_common_sublattice_element(sublattice)
+                print("No element has been assigned for atom {}. It will be "
+                      "assigned {}. It should be refined with the "
+                      "model_refiner class.".format(p, elem))
 
-                elif darker_or_brighter == 1:
-                    new_atom_index = atom_index + 1
+            elif elem not in element_list:
+                raise ValueError("The element ({}, {}) isn't in the "
+                                 "element_list".format(p, elem))
+
+            atom_index = element_list.index(elem)
+
+            if darker_or_brighter == 0:
+                if '_0' in elem:
+                    pass
+                else:
+                    new_atom_index = atom_index - 1
                     if len(sublattice.atom_list[p].z_height) == 2:
                         z_h = sublattice.atom_list[p].z_height
                         sublattice.atom_list[p].z_height = [
                             (z_h[0] + z_h[1])/2]
                     else:
                         pass
-                        new_atom = element_list[new_atom_index]
+                    new_atom = element_list[new_atom_index]
 
-                elif new_atom_index < 0:
-                    raise ValueError("You don't have any smaller atoms")
-                elif new_atom_index >= len(element_list):
-                    raise ValueError("You don't have any bigger atoms")
+            elif darker_or_brighter == 1:
+                new_atom_index = atom_index + 1
+                if len(sublattice.atom_list[p].z_height) == 2:
+                    z_h = sublattice.atom_list[p].z_height
+                    sublattice.atom_list[p].z_height = [
+                        (z_h[0] + z_h[1])/2]
+                else:
+                    pass
+                    new_atom = element_list[new_atom_index]
 
+            elif new_atom_index < 0:
+                raise ValueError("You don't have any smaller atoms")
+            elif new_atom_index >= len(element_list):
+                raise ValueError("You don't have any bigger atoms")
 #                new_atom = element_list[new_atom_index]
-
-            elif elem == '':
-                raise ValueError("No element assigned for atom %s. Note that "
-                                 "this error only picks up first instance of "
-                                 "fail" % p)
-            elif elem not in element_list:
-                raise ValueError("This element isn't in the element_list")
-
             try:
                 new_atom
             except NameError:
@@ -548,14 +584,14 @@ def image_difference_intensity(sublattice,
 
 
 def image_difference_position_new_sub(sublattice_list,
-                              sim_image,
-                              pixel_threshold,
-                              filename=None,
-                              percent_to_nn=0.40,
-                              mask_radius=None,
-                              num_peaks=5,
-                              add_sublattice=False,
-                              sublattice_name='sub_new'):
+                                      sim_image,
+                                      pixel_threshold,
+                                      filename=None,
+                                      percent_to_nn=0.40,
+                                      mask_radius=None,
+                                      num_peaks=5,
+                                      add_sublattice=False,
+                                      sublattice_name='sub_new'):
     '''
     Find new atomic coordinates by comparing experimental to simulated image.
     Create a new sublattice to store the new atomic coordinates.
@@ -1574,7 +1610,6 @@ def create_dataframe_for_cif(sublattice_list, element_list):
     # '_atom_site_fract_z' : format( (sublattice.atom_list[i].z_height)[p+(k*k)], '.6f'), #great touch
 
 
-
 def change_sublattice_pseudo_inplace(new_atom_positions, old_sublattice):
     '''
     Create and return a new Sublattice object which is a copy of
@@ -1586,7 +1621,7 @@ def change_sublattice_pseudo_inplace(new_atom_positions, old_sublattice):
     new_atom_positions : NumPy array
         In the form [[x0, y0], [x1, y1], [x2, y2], ... ]
     old_sublattice : Atomap Sublattice
-    
+
     Examples
     --------
     >>> from temul.model_creation import change_sublattice_pseudo_inplace
@@ -1632,7 +1667,7 @@ def change_sublattice_pseudo_inplace(new_atom_positions, old_sublattice):
                                    pixel_size)
 
     for old_info, new_info in zip(old_sublattice.atom_list,
-                                new_sublattice.atom_list):
+                                  new_sublattice.atom_list):
 
         # should only apply to data that was part of the old_sublattice.
         # if there are new positions in the new_sublattice, they shouldn't be
@@ -1788,7 +1823,7 @@ def image_difference_position(sublattice,
             # put all distances in this array with this loop
             vector_array = []
             vector = np.sqrt((xy_distances[0]**2) +
-                                (xy_distances[1]**2))
+                             (xy_distances[1]**2))
             vector_array.append(vector)
 
             new_atom_distance_list.append(
@@ -1827,12 +1862,10 @@ def image_difference_position(sublattice,
             new_atom_positions=atom_positions_sub_new,
             old_sublattice=sublattice)
 
-
     #    sub_new.refine_atom_positions_using_center_of_mass(
     #       percent_to_nn=percent_to_nn, mask_radius=mask_radius)
     #    sub_new.refine_atom_positions_using_2d_gaussian(
     #       percent_to_nn=percent_to_nn, mask_radius=mask_radius)
-
 
     # try:
     #     sub_new
@@ -1877,4 +1910,3 @@ def image_difference_position(sublattice,
                     pad_inches=None, dpi=300, labels=False)
 
     return(sublattice)
-

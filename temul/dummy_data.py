@@ -174,7 +174,29 @@ def get_model_refiner_one_sublattice_varying_amp(
     return refiner
 
 
-def get_model_refiner_one_sublattice_vacancies(
+def get_model_refiner_one_sublattice_3_vacancies(
+        image_noise=True, test_element='Ti_2'):
+
+    # make one with more vacancies maybe
+    sub1 = am.dummy_data.get_simple_cubic_with_vacancies_sublattice(
+        image_noise=image_noise)
+    for i in range(0, len(sub1.atom_list)):
+        sub1.atom_list[i].elements = test_element
+
+    test_element_info = split_and_sort_element(test_element)
+    sub1_element_list = auto_generate_sublattice_element_list(
+        material_type='single_element_column',
+        elements=test_element_info[0][1],
+        max_number_atoms_z=test_element_info[0][2]+3)
+
+    refiner_dict = {sub1: sub1_element_list}
+    comparison_image = am.dummy_data.get_simple_cubic_signal(
+        image_noise=image_noise)
+    refiner = model_refiner(refiner_dict, comparison_image)
+    return refiner
+
+
+def get_model_refiner_one_sublattice_12_vacancies(
         image_noise=True, test_element='Ti_2'):
 
     # make one with more vacancies maybe
@@ -201,10 +223,10 @@ def get_model_refiner_one_sublattice_vacancies(
     return refiner
 
 
-def get_model_refiner_with_vacancies_refined(
+def get_model_refiner_with_12_vacancies_refined(
         image_noise=True, test_element='Ti_2', filename=None):
 
-    refined_model = get_model_refiner_one_sublattice_vacancies(
+    refined_model = get_model_refiner_one_sublattice_12_vacancies(
         image_noise=image_noise, test_element=test_element)
     refined_model.image_difference_intensity_model_refiner(filename=filename)
     refined_model.image_difference_intensity_model_refiner(filename=filename)
@@ -216,13 +238,14 @@ def get_model_refiner_with_vacancies_refined(
 
     return refined_model
 
+
 '''
 # for results section example
 %matplotlib qt
 %matplotlib qt
 
-from temul.dummy_data import get_model_refiner_with_vacancies_refined
-refiner = get_model_refiner_with_vacancies_refined(
+from temul.dummy_data import get_model_refiner_with_12_vacancies_refined
+refiner = get_model_refiner_with_12_vacancies_refined(
             image_noise=True, filename='Refine Example')
 refiner.element_count_history_list
 refiner.combine_individual_and_element_counts_as_dataframe()
@@ -240,4 +263,52 @@ refiner.comparison_image.plot()
 # refiner.get_element_count_as_dataframe()
 # refiner.plot_element_count_as_bar_chart()
 # refiner.plot_element_count_as_bar_chart(flip_colrows=False)
+'''
+
+
+def get_model_refiner_with_3_vacancies_refined(
+        image_noise=True, test_element='Ti_2', filename=None):
+    '''
+    >>> refiner = get_model_refiner_with_3_vacancies_refined()
+    >>> history = refiner.get_element_count_as_dataframe()
+    '''
+    refiner = get_model_refiner_one_sublattice_3_vacancies(
+        image_noise=image_noise, test_element=test_element)
+
+    refiner.image_difference_position_model_refiner(
+        pixel_threshold=10, filename=filename)
+
+    refiner.image_difference_intensity_model_refiner(filename=filename)
+    refiner.image_difference_intensity_model_refiner(filename=filename)
+
+    return refiner
+
+
+'''
+# Position Refinement
+refiner = get_model_refiner_one_sublattice_3_vacancies()
+
+# sublattice and comparison image before refinement
+refiner.sublattice[0].plot()
+refiner.comparison_image.plot()
+
+refiner.image_difference_position_model_refiner(pixel_threshold=10)
+
+refiner.sublattice[0].plot()
+refiner.get_element_count_as_dataframe()
+
+refiner.plot_element_count_as_bar_chart(
+    element_configs=2, flip_colrows=True, fontsize=24)
+
+
+# Combination of Refinements (cont.)
+
+refiner.image_difference_intensity_model_refiner()
+refiner.image_difference_intensity_model_refiner()
+
+refiner.get_element_count_as_dataframe()
+
+refiner.plot_element_count_as_bar_chart(
+    element_configs=2, flip_colrows=True, fontsize=24)
+
 '''

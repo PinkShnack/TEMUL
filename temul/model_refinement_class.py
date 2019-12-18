@@ -173,6 +173,22 @@ class model_refiner():
             mask_radius=None,
             filename=None,
             refinement_method="Intensity"):
+        '''
+        Change the elements for sublattice atom positions that don't match with
+        comparison_image.
+
+        See image_difference_intensity for details.
+
+        Parameters
+        ----------
+        See image_difference_intensity for parameter information.
+        refinement_method : string, default "Intensity"
+            Name passed to self.refinement_history for tracking purposes.
+
+        Examples
+        --------
+        See dummy_data.get_model_refiner_with_12_vacancies_refined
+        '''
 
         # define variables for refinement
         if 'all' in sublattices:
@@ -227,51 +243,58 @@ class model_refiner():
                     # include number of the loop in "exciting the loop here... with .format(n)"
                     break
 
+    def image_difference_position_model_refiner(self,
+                                                sublattices='all',
+                                                comparison_image='default',
+                                                pixel_threshold=5,
+                                                num_peaks=5,
+                                                inplace=True,
+                                                percent_to_nn=0.40,
+                                                mask_radius=None,
+                                                filename=None,
+                                                refinement_method="Position"):
+        '''
+        Find new atom positions that were perhaps missed by the initial
+        position finding steps. Each sublattice will be updated with new atom
+        positions if new atom positions are found.
 
-def image_difference_position_model_refiner(self,
-                                            sublattices='all',
-                                            comparison_image='default',
-                                            pixel_threshold=5,
-                                            num_peaks=5,
-                                            inplace=True,
-                                            percent_to_nn=0.40,
-                                            mask_radius=None,
-                                            filename=None,
-                                            refinement_method="Position"):
-    '''
-    To add: docstring...
+        See image_difference_position for details.
 
+        Parameters
+        ----------
+        See image_difference_position for parameter information.
+        refinement_method : string, default "Position"
+            Name passed to self.refinement_history for tracking purposes.
 
+        Examples
+        --------
+        See dummy_data.get_model_refiner_with_3_vacancies_refined
+        '''
 
-    note:
-    refine the found positions very tighly (percent_to_nn=0.1)
+        # define variables for refinement
+        if 'all' in sublattices:
+            sublattice_list = self.sublattice_list
+        elif isinstance(sublattices, list):
+            sublattice_list = [self.sublattice_list[i] for i in sublattices]
 
-    '''
+        if 'default' in comparison_image:
+            comparison_image = self.comparison_image
 
-    # define variables for refinement
-    if 'all' in sublattices:
-        sublattice_list = self.sublattice_list
-        element_list = self.element_list
-    elif isinstance(sublattices, list):
-        sublattice_list = [self.sublattice_list[i] for i in sublattices]
-        element_list = [self.element_list[i] for i in sublattices]
+        for i, sublattice in enumerate(sublattice_list):
 
-    if 'default' in comparison_image:
-        comparison_image = self.comparison_image
+            sublattice = image_difference_position(
+                sublattice=sublattice,
+                sim_image=comparison_image,
+                pixel_threshold=pixel_threshold,
+                filename=filename,
+                percent_to_nn=percent_to_nn,
+                mask_radius=mask_radius,
+                num_peaks=num_peaks,
+                inplace=inplace)
 
-    for sublattice, element_list_i in zip(
-            sublattice_list, element_list):
+            self.sublattice_list[i] = sublattice
 
-        image_difference_position(sublattice=sublattice,
-                                  sim_image=comparison_image,
-                                  pixel_threshold=pixel_threshold,
-                                  filename=filename,
-                                  percent_to_nn=percent_to_nn,
-                                  mask_radius=mask_radius,
-                                  num_peaks=num_peaks,
-                                  inplace=inplace)
-
-    self.update_element_count_and_refinement_history(refinement_method)
+        self.update_element_count_and_refinement_history(refinement_method)
 
 
 # a_list = Counter({'Mo': 1, 'F': 5, 'He': 9})
