@@ -239,33 +239,6 @@ def get_model_refiner_with_12_vacancies_refined(
     return refined_model
 
 
-'''
-# for results section example
-%matplotlib qt
-%matplotlib qt
-
-from temul.dummy_data import get_model_refiner_with_12_vacancies_refined
-refiner = get_model_refiner_with_12_vacancies_refined(
-            image_noise=True, filename='Refine Example')
-refiner.element_count_history_list
-refiner.combine_individual_and_element_counts_as_dataframe()
-refiner.plot_element_count_as_bar_chart(
-    element_configs=2, flip_colrows=True, fontsize=24)
-refiner.plot_element_count_as_bar_chart(
-    element_configs=2, flip_colrows=False, fontsize=24)
-refiner.sublattice_list[0].plot()
-refiner.comparison_image.plot()
-
-
-# refiner.image_difference_intensity_model_refiner(filename='yes')
-# refiner.sublattice_list[0].plot()
-# refiner.comparison_image.plot()
-# refiner.get_element_count_as_dataframe()
-# refiner.plot_element_count_as_bar_chart()
-# refiner.plot_element_count_as_bar_chart(flip_colrows=False)
-'''
-
-
 def get_model_refiner_with_3_vacancies_refined(
         image_noise=True, test_element='Ti_2', filename=None):
     '''
@@ -282,33 +255,3 @@ def get_model_refiner_with_3_vacancies_refined(
     refiner.image_difference_intensity_model_refiner(filename=filename)
 
     return refiner
-
-
-'''
-# Position Refinement
-refiner = get_model_refiner_one_sublattice_3_vacancies()
-
-# sublattice and comparison image before refinement
-refiner.sublattice[0].plot()
-refiner.comparison_image.plot()
-
-refiner.image_difference_position_model_refiner(pixel_threshold=10)
-
-refiner.sublattice[0].plot()
-refiner.get_element_count_as_dataframe()
-
-refiner.plot_element_count_as_bar_chart(
-    element_configs=2, flip_colrows=True, fontsize=24)
-
-
-# Combination of Refinements (cont.)
-
-refiner.image_difference_intensity_model_refiner()
-refiner.image_difference_intensity_model_refiner()
-
-refiner.get_element_count_as_dataframe()
-
-refiner.plot_element_count_as_bar_chart(
-    element_configs=2, flip_colrows=True, fontsize=24)
-
-'''

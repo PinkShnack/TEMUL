@@ -187,7 +187,19 @@ class model_refiner():
 
         Examples
         --------
-        See dummy_data.get_model_refiner_with_12_vacancies_refined
+        >>> from temul.dummy_data import (
+        ...     get_model_refiner_with_12_vacancies_refined)
+        >>> refiner = get_model_refiner_with_12_vacancies_refined(
+        ...     image_noise=True, filename='Refine Example')
+        >>> refiner.element_count_history_list
+        >>> refiner.combine_individual_and_element_counts_as_dataframe()
+        >>> refiner.plot_element_count_as_bar_chart(
+        ...     element_configs=2, flip_colrows=True, fontsize=24)
+        >>> refiner.plot_element_count_as_bar_chart(
+        ...     element_configs=2, flip_colrows=False, fontsize=24)
+        >>> refiner.sublattice_list[0].plot()
+        >>> refiner.comparison_image.plot()
+
         '''
 
         # define variables for refinement
@@ -268,7 +280,21 @@ class model_refiner():
 
         Examples
         --------
-        See dummy_data.get_model_refiner_with_3_vacancies_refined
+        >>> refiner = get_model_refiner_one_sublattice_3_vacancies()
+        >>> refiner.sublattice_list[0].plot()
+        >>> refiner.comparison_image.plot()
+        >>> refiner.image_difference_position_model_refiner(
+        ...     pixel_threshold=10, filename='Example')
+        >>> refiner.sublattice_list[0].plot()
+
+        Combination of Refinements (cont.)
+
+        >>> refiner.image_difference_intensity_model_refiner()
+        >>> refiner.image_difference_intensity_model_refiner()
+        >>> refiner.get_element_count_as_dataframe()
+        >>> refiner.plot_element_count_as_bar_chart(
+        ...     element_configs=2, flip_colrows=True, fontsize=24)
+
         '''
 
         # define variables for refinement
