@@ -3,7 +3,7 @@ from atomap.testing_tools import MakeTestData
 import numpy as np
 import atomap.api as am
 import hyperspy
-from temul.model_refinement_class import model_refiner
+from temul.model_refiner import Model_Refiner
 from temul.model_creation import auto_generate_sublattice_element_list
 from temul.element_tools import split_and_sort_element
 from scipy.ndimage import gaussian_filter
@@ -137,7 +137,7 @@ def get_model_refiner_two_sublattices():
                     sub2: sub2_element_list}
     blurred_image = hyperspy._signals.signal2d.Signal2D(
         gaussian_filter(atom_lattice.image, 3))
-    atom_lattice_refiner = model_refiner(refiner_dict, blurred_image)
+    atom_lattice_refiner = Model_Refiner(refiner_dict, blurred_image)
     return atom_lattice_refiner
 
 
@@ -170,7 +170,7 @@ def get_model_refiner_one_sublattice_varying_amp(
     comparison_image = get_simple_cubic_signal(
         image_noise=image_noise,
         amplitude=test_element_info[0][2])
-    refiner = model_refiner(refiner_dict, comparison_image)
+    refiner = Model_Refiner(refiner_dict, comparison_image)
     return refiner
 
 
@@ -192,7 +192,7 @@ def get_model_refiner_one_sublattice_3_vacancies(
     refiner_dict = {sub1: sub1_element_list}
     comparison_image = am.dummy_data.get_simple_cubic_signal(
         image_noise=image_noise)
-    refiner = model_refiner(refiner_dict, comparison_image)
+    refiner = Model_Refiner(refiner_dict, comparison_image)
     return refiner
 
 
@@ -219,7 +219,7 @@ def get_model_refiner_one_sublattice_12_vacancies(
 
     refiner_dict = {sub1: sub1_element_list}
     comparison_image = sublattice.signal
-    refiner = model_refiner(refiner_dict, comparison_image)
+    refiner = Model_Refiner(refiner_dict, comparison_image)
     return refiner
 
 
@@ -243,6 +243,9 @@ def get_model_refiner_with_3_vacancies_refined(
         image_noise=True, test_element='Ti_2', filename=None):
     '''
     >>> refiner = get_model_refiner_with_3_vacancies_refined()
+    3 new atoms found! Adding new atom positions.
+    Changing some atoms
+    Changing some atoms
     >>> history = refiner.get_element_count_as_dataframe()
     '''
     refiner = get_model_refiner_one_sublattice_3_vacancies(

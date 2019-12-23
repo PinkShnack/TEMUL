@@ -1,6 +1,6 @@
-
+'''
 import atomap.api as am
-from temul.model_refinement_class import model_refiner
+import model_refiner as mr
 import numpy as np
 from collections import Counter
 from scipy.ndimage import gaussian_filter
@@ -28,7 +28,7 @@ def test_comparison_image():
 
     blurred_image = hyperspy._signals.signal2d.Signal2D(
         gaussian_filter(atom_lattice.image, 3))
-    atom_lattice_refiner = model_refiner(refiner_dict, blurred_image)
+    atom_lattice_refiner = Model_Refiner(refiner_dict, blurred_image)
 
     assert isinstance(atom_lattice_refiner.comparison_image,
                       hyperspy._signals.signal2d.Signal2D)
@@ -53,7 +53,7 @@ def test_repeating_intensity_refinement_no_change():
                     sub2: sub2_element_list}
 
     blurred_image = gaussian_filter(atom_lattice.image, 3)
-    atom_lattice_refiner = model_refiner(refiner_dict, blurred_image)
+    atom_lattice_refiner = Model_Refiner(refiner_dict, blurred_image)
 
     dataframe_before = atom_lattice_refiner.get_element_count_as_dataframe()
 
@@ -89,9 +89,9 @@ def test_image_difference_intensity_model_refiner():
         sublattice.atom_list[i].z_height = [0.5]
     element_list = ['H_0', 'Mo_0', 'Mo_1', 'Mo_2']
 
-    # create a model_refiner object
+    # create a Model_Refiner object
     refiner_dict = {sublattice: element_list}
-    atom_lattice_refiner = model_refiner(refiner_dict, sim_image,
+    atom_lattice_refiner = Model_Refiner(refiner_dict, sim_image,
                                          name='simple example')
 
     dataframe_before = atom_lattice_refiner.get_element_count_as_dataframe()
@@ -110,43 +110,4 @@ def test_image_difference_intensity_model_refiner():
 
     assert dataframe_after.equals(dataframe_before.append(
         Counter({'Mo_1': 397, 'Mo_0': 3}), ignore_index=True).fillna(0))
-
-
-def divide_pay(amount, staff_hours):
-    """
-    Divide an invoice evenly amongst staff depending on how many hours they
-    worked on a project
-    """
-    total_hours = 0
-    for person in staff_hours:
-        total_hours += staff_hours[person]
-
-    if total_hours == 0:
-        raise ValueError("No hours entered")
-
-    per_hour = amount / total_hours
-
-    staff_pay = {}
-    for person in staff_hours:
-        pay = staff_hours[person] * per_hour
-        staff_pay[person] = pay
-
-    return staff_pay
-
-
-class InvoiceCalculatorTests(unittest.TestCase):
-    def test_equality(self):
-        pay = divide_pay(300.0, {"Alice": 3.0, "Bob": 6.0, "Carol": 0.0})
-        self.assertEqual(pay, {'Bob': 75.0, 'Alice': 75.0, 'Carol': 150.0})
-
-    def test_zero_hours_total(self):
-        with self.assertRaises(ValueError):
-            pay = divide_pay(360.0, {"Alice": 0.0, "Bob": 0.0, "Carol": 0.0})
-
-    def test_zero_hours_total2(self):
-        self.assertRaises(ValueError, divide_pay, 360.0, {
-                          "Alice": 0.0, "Bob": 0.0, "Carol": 0.0})
-
-
-if __name__ == "__main__":
-    unittest.main()
+'''

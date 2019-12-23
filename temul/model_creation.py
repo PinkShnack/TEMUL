@@ -132,7 +132,7 @@ def count_atoms_in_sublattice_list(sublattice_list, filename=None):
     >>> added_atoms = count_atoms_in_sublattice_list(
     ...     sublattice_list=[sub1, sub2])
 
-    Compare before and after 
+    Compare before and after
     >>> at_lat_before = am.dummy_data.get_simple_atom_lattice_two_sublattices()
     >>> no_added_atoms = count_atoms_in_sublattice_list(
     ...    sublattice_list=at_lat_before.sublattice_list)
@@ -259,10 +259,10 @@ def get_most_common_sublattice_element(sublattice):
     --------
     >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
     >>> for i, atom in enumerate(sublattice.atom_list):
-    >>>     if i % 3 == 0:
-    >>>         atom.elements = 'Ti_3'
-    >>>     else:
-    >>>         atom.elements = 'Ti_2'
+    ...     if i % 3 == 0:
+    ...         atom.elements = 'Ti_3'
+    ...     else:
+    ...         atom.elements = 'Ti_2'
     >>> get_most_common_sublattice_element(sublattice)
     'Ti_2'
     '''
@@ -280,7 +280,8 @@ def change_sublattice_atoms_via_intensity(
         sublattice,
         image_diff_array,
         darker_or_brighter,
-        element_list):
+        element_list,
+        print_outputs=False):
     # get the index in sublattice from the image_difference_intensity() output,
     #   which is the image_diff_array input here.
     # then, depending on whether the image_diff_array is for atoms that should
@@ -353,9 +354,10 @@ def change_sublattice_atoms_via_intensity(
                 # raise warning instead of error
                 # set the '' elem to the most common elem?
                 elem = get_most_common_sublattice_element(sublattice)
-                print("No element has been assigned for atom {}. It will be "
-                      "assigned {}. It should be refined with the "
-                      "model_refiner class.".format(p, elem))
+                if print_outputs:
+                    print("No element has been assigned for atom {}. It will "
+                          "be assigned {}. It should be refined with the "
+                          "Model_Refiner class.".format(p, elem))
 
             elif elem not in element_list:
                 raise ValueError("The element ({}, {}) isn't in the "
@@ -407,7 +409,8 @@ def image_difference_intensity(sublattice,
                                filename=None,
                                percent_to_nn=0.40,
                                mask_radius=None,
-                               change_sublattice=False):
+                               change_sublattice=False,
+                               print_outputs=False):
     '''
     Find the differences in a sublattice's atom_position intensities.
     Change the elements of these atom_positions depending on this difference of
@@ -646,7 +649,7 @@ def image_difference_position_new_sub(sublattice_list,
     ...         sublattice.atom_list[i].elements = 'Mo_1'
     ...         sublattice.atom_list[i].z_height = '0.5'
     >>> # Check without adding a new sublattice
-    >>> image_difference_position(sublattice_list=[sublattice],
+    >>> image_difference_position_new_sub(sublattice_list=[sublattice],
     ...                           sim_image=sim_image,
     ...                           pixel_threshold=1,
     ...                           percent_to_nn=None,
@@ -656,7 +659,8 @@ def image_difference_position_new_sub(sublattice_list,
     >>> # Add a new sublattice
     >>> # if you have problems with mask_radius, increase it!
     >>> # Just a gaussian fitting issue, could turn it off!
-    >>> sub_new = image_difference_position(sublattice_list=[sublattice],
+    >>> sub_new = image_difference_position_new_sub(
+    ...                                   sublattice_list=[sublattice],
     ...                                   sim_image=sim_image,
     ...                                   pixel_threshold=10,
     ...                                   num_peaks=5,
@@ -1362,7 +1366,8 @@ def return_z_coordinates(z_thickness,
     Examples
     --------
     # >>> from temul.model_creation import return_z_coordinates
-    # >>> Au_NP_z_coord = return_z_coordinates(z_thickness=20, z_bond_length=1.5)
+    # >>> Au_NP_z_coord = return_z_coordinates(z_thickness=20,
+    #       z_bond_length=1.5)
 
     '''
 
@@ -1465,7 +1470,8 @@ def convert_numpy_z_coords_to_z_height_string(z_coords):
     # >>> from temul.model_creation import (
     # ...     return_z_coordinates,
     # ...     convert_numpy_z_coords_to_z_height_string)
-    # >>> Au_NP_z_coord = return_z_coordinates(z_thickness=20, z_bond_length=1.5)
+    # >>> Au_NP_z_coord = return_z_coordinates(z_thickness=20,
+    #       z_bond_length=1.5)
     # >>> Au_NP_z_height_string = convert_numpy_z_coords_to_z_height_string(
     # ...     Au_NP_z_coord)
 
@@ -1562,7 +1568,8 @@ def create_dataframe_for_cif(sublattice_list, element_list):
         for i in range(0, len(sublattice.atom_list)):
             # check if the element is in the given element list
             if sublattice.atom_list[i].elements in element_list:
-                # this loop cycles through the length of the split element eg, 2 for 'Se_1.S_1' and
+                # this loop cycles through the length of the split element eg,
+                # 2 for 'Se_1.S_1' and
                 #   outputs an atom label and z_height for each
                 for k in range(0, len(split_and_sort_element(sublattice.atom_list[i].elements))):
                     if split_and_sort_element(sublattice.atom_list[i].elements)[k][2] >= 1:
@@ -1698,7 +1705,7 @@ def image_difference_position(sublattice,
 
     The aim is to change the sublattice elements so that the experimental image
     agrees with the simulated image in a realistic manner.
-    See also image_difference_intensity function and the model_refiner class.
+    See also image_difference_intensity function and the Model_Refiner class.
 
     Parameters
     ----------
@@ -1756,7 +1763,7 @@ def image_difference_position(sublattice,
     ...                           mask_radius=5,
     ...                           num_peaks=5,
     ...                           inplace=True)
-    '3 new atoms found! Adding new atom positions.'
+    3 new atoms found! Adding new atom positions.
 
     >>> len(sublattice.atom_list)
     400

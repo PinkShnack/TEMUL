@@ -124,10 +124,8 @@ def split_and_sort_element(element, split_symbol=['_', '.']):
 
     complex atomic column
 
-    >>> split_and_sort_element(element='O_6.Mo_3.Ti_5')
-    [[['O', '6'], 'O', 6, 8],
-     [['Mo', '3'], 'Mo', 3, 42],
-     [['Ti', '5'], 'Ti', 5, 22]]
+    >>> info = split_and_sort_element(element='O_6.Mo_3.Ti_5')
+
     '''
     splitting_info = []
 
@@ -190,7 +188,7 @@ def get_individual_elements_from_element_list(
     ...     element_list, split_symbol=['_', '.'])
     ['Ge', 'Mo', 'Re', 'Ti']
 
-    multiple lists in element_list. Used in model_refiner if you have more than
+    multiple lists in element_list. Used in Model_Refiner if you have more than
     one sublattice.
 
     >>> element_list = [['Ti_7_0', 'Ti_9.Re_3', 'Ge_2'], ['B_9', 'B_2.Fe_8']]
@@ -203,7 +201,7 @@ def get_individual_elements_from_element_list(
         raise ValueError("The length of element_list must be greater than 0")
 
     # check if element_list is a list of list
-    # (several sublattices in model_refiner)
+    # (several sublattices in Model_Refiner)
     list_of_lists = any(isinstance(sub, list) for sub in element_list)
 
     element_info = []
