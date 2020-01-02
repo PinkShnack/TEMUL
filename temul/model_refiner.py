@@ -5,6 +5,9 @@ from temul.model_creation import (count_atoms_in_sublattice_list,
                                   image_difference_position,
                                   count_all_individual_elements)
 from temul.element_tools import get_individual_elements_from_element_list
+from temul.io import create_dataframe_for_xyz
+from temul.signal_processing import (
+    simulate_and_filter_and_calibrate_with_prismatic)
 import pandas as pd
 import hyperspy
 import matplotlib.pyplot as plt
@@ -330,6 +333,45 @@ class Model_Refiner():
             self.sublattice_list[i] = sublattice
 
         self.update_element_count_and_refinement_history(refinement_method)
+
+    def create_filtered_calibrated_simulation(
+            self,
+            calibration_area,
+            calibration_separation,
+            delta_image_filter,
+            sublattices='all',
+            x_distance=5,
+            y_distance=5,
+            z_distance=5,
+            header_comment='example',
+            filename='refiner_simulation',
+            reference_image=0):
+
+        if 'all' in sublattices:
+            sublattice_list = self.sublattice_list
+            element_list = self.element_list
+        elif isinstance(sublattices, list):
+            sublattice_list = [self.sublattice_list[i] for i in sublattices]
+            element_list = [self.element_list[i] for i in sublattices]
+
+        create_dataframe_for_xyz(
+            sublattice_list=sublattice_list,
+            element_list=element_list,
+            x_distance=x_distance,
+            y_distance=y_distance,
+            z_distance=z_distance,
+            filename=filename + '_xyz_file',
+            header_comment=header_comment)
+
+        simulation = simulate_and_filter_and_calibrate_with_prismatic(
+            xyz_filename=filename + '_xyz_file.xyz',
+            filename=filename + '_image_file',
+            reference_image=self.sublattice_list[reference_image].image,
+            calibration_area=calibration_area,
+            calibration_separation=calibration_separation,
+            delta_image_filter=delta_image_filter)
+
+        self.comparison_image = simulation
 
 
 # a_list = Counter({'Mo': 1, 'F': 5, 'He': 9})

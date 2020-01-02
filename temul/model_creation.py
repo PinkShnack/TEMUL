@@ -281,7 +281,7 @@ def change_sublattice_atoms_via_intensity(
         image_diff_array,
         darker_or_brighter,
         element_list,
-        print_outputs=False):
+        verbose=False):
     # get the index in sublattice from the image_difference_intensity() output,
     #   which is the image_diff_array input here.
     # then, depending on whether the image_diff_array is for atoms that should
@@ -354,7 +354,7 @@ def change_sublattice_atoms_via_intensity(
                 # raise warning instead of error
                 # set the '' elem to the most common elem?
                 elem = get_most_common_sublattice_element(sublattice)
-                if print_outputs:
+                if verbose:
                     print("No element has been assigned for atom {}. It will "
                           "be assigned {}. It should be refined with the "
                           "Model_Refiner class.".format(p, elem))
@@ -418,7 +418,7 @@ def image_difference_intensity(sublattice,
                                percent_to_nn=0.40,
                                mask_radius=None,
                                change_sublattice=False,
-                               print_outputs=False):
+                               verbose=False):
     '''
     Find the differences in a sublattice's atom_position intensities.
     Change the elements of these atom_positions depending on this difference of
