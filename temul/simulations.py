@@ -23,6 +23,118 @@ import os
 from glob import glob
 
 
+def simulate_and_filter_and_calibrate_with_prismatic(
+        xyz_filename,
+        filename,
+        reference_image,
+        calibration_area,
+        calibration_separation,
+        delta_image_filter=0.1,
+        max_sigma=6,
+        percent_to_nn=0.4,
+        mask_radius=None,
+        refine=True,
+        scalebar_true=False,
+        probeStep=None,
+        E0=60e3,
+        integrationAngleMin=0.085,
+        integrationAngleMax=0.186,
+        interpolationFactor=16,
+        realspacePixelSize=0.0654,
+        numFP=1,
+        probeSemiangle=0.030,
+        alphaBeamMax=0.032,
+        scanWindowMin=0.0,
+        scanWindowMax=1.0,
+        algorithm="prism",
+        numThreads=2):
+    '''
+    Simulate an xyz coordinate model with pyprismatic
+    fast simulation software.
+
+    Parameters
+    ----------
+
+    xyz_filename : string
+        filename of the xyz coordinate model. Must be in the prismatic format.
+        See http://prism-em.com/docs-inputs/ for more information.
+    filename : string, default None
+        name with which the image will be saved
+    reference_image : hyperspy signal 2D
+        image from which calibration information is taken, such
+        as sampling, pixel height and pixel width
+    calibration_area : list
+        xy pixel coordinates of the image area to be used to calibrate
+        the intensity. In the form [[0,0], [512,512]]
+        See calibrate_intensity_distance_with_sublattice_roi()
+    calibration_separation : int
+        pixel separation used for the intensity calibration.
+        See calibrate_intensity_distance_with_sublattice_roi()
+    percent_to_nn : float, default 0.40
+        Determines the boundary of the area surrounding each atomic
+        column, as fraction of the distance to the nearest neighbour.
+    mask_radius : float, default None
+            Radius of the mask around each atom. If this is not set,
+            the radius will be the distance to the nearest atom in the
+            same sublattice times the `percent_to_nn` value.
+            Note: if `mask_radius` is not specified, the Atom_Position objects
+            must have a populated nearest_neighbor_list.
+    refine, scalebar_true
+        See function calibrate_intensity_distance_with_sublattice_roi()
+    probeStep, E0 ... etc.
+        See function simulate_with_prismatic()
+
+
+    Returns
+    -------
+    Simulated image as a hyperspy object
+
+    Examples
+    --------
+
+    # >>> simulate_and_calibrate_with_prismatic()
+    ######## need to include an example reference_image here
+
+    '''
+
+    if len(calibration_area) != 2:
+        raise ValueError('calibration_area must be two points')
+
+    simulate_with_prismatic(xyz_filename=xyz_filename,
+                            filename=filename,
+                            reference_image=reference_image,
+                            probeStep=probeStep,
+                            E0=E0,
+                            integrationAngleMin=integrationAngleMin,
+                            integrationAngleMax=integrationAngleMax,
+                            interpolationFactor=interpolationFactor,
+                            realspacePixelSize=realspacePixelSize,
+                            numFP=numFP,
+                            probeSemiangle=probeSemiangle,
+                            alphaBeamMax=alphaBeamMax,
+                            scanWindowMin=scanWindowMin,
+                            scanWindowMax=scanWindowMax,
+                            algorithm=algorithm,
+                            numThreads=numThreads)
+
+    simulation = load_prismatic_mrc_with_hyperspy(
+        'prism_2Doutput_' + filename + '.mrc', save_name=None)
+
+    simulation = compare_two_image_and_create_filtered_image(
+        image_to_filter=simulation,
+        reference_image=reference_image,
+        delta_image_filter=delta_image_filter,
+        cropping_area=calibration_area,
+        separation=calibration_separation,
+        filename=None,
+        max_sigma=max_sigma,
+        percent_to_nn=percent_to_nn,
+        mask_radius=mask_radius,
+        refine=False)
+
+    return(simulation)
+
+
 def simulate_and_calibrate_with_prismatic(
         xyz_filename,
         filename,
@@ -115,11 +227,8 @@ def simulate_and_calibrate_with_prismatic(
                             algorithm=algorithm,
                             numThreads=numThreads)
 
-    simulation = hs.load('prism_2Doutput_' + filename + '.mrc')
-    simulation.axes_manager[0].name = 'extra_dimension'
-    simulation = simulation.sum('extra_dimension')
-    # simulation.axes_manager[0].scale = real_sampling
-    # simulation.axes_manager[1].scale = real_sampling
+    simulation = load_prismatic_mrc_with_hyperspy(
+        'prism_2Doutput_' + filename + '.mrc', save_name=None)
 
     calibrate_intensity_distance_with_sublattice_roi(
         image=simulation,
@@ -236,7 +345,7 @@ def simulate_with_prismatic(xyz_filename,
 
     if reference_image is not None:
         real_sampling = reference_image.axes_manager[0].scale
-        real_sampling_exp_angs = real_sampling*10
+        real_sampling_exp_angs = real_sampling * 10
         if str(real_sampling_exp_angs)[-1] == '5':
             real_sampling_sim_angs = real_sampling_exp_angs + 0.000005
         pr_sim.probeStepX = pr_sim.probeStepY = round(
@@ -398,7 +507,7 @@ def image_refine_via_intensity_loop(atom_lattice,
 
     df_inten_refine = pd.DataFrame(columns=element_list)
 
-    real_sampling_exp_angs = image_sampling*10
+    real_sampling_exp_angs = image_sampling * 10
 
     if str(real_sampling_exp_angs)[-1] == '5':
         real_sampling_sim_angs = real_sampling_exp_angs + 0.000005
@@ -409,7 +518,7 @@ def image_refine_via_intensity_loop(atom_lattice,
 
         loading_suffix = '_' + str(suffix)
 
-        saving_suffix = '_' + str(suffix+1)
+        saving_suffix = '_' + str(suffix + 1)
 
         if '.xyz' in simulation_filename:
             pass
@@ -574,9 +683,9 @@ def image_refine_via_intensity_loop(atom_lattice,
         create_dataframe_for_xyz(
             sublattice_list=atom_lattice.sublattice_list,
             element_list=element_list,
-            x_distance=image_size_x_nm*10,
-            y_distance=image_size_y_nm*10,
-            z_distance=image_size_z_nm*10,
+            x_distance=image_size_x_nm * 10,
+            y_distance=image_size_y_nm * 10,
+            z_distance=image_size_z_nm * 10,
             filename=filename + saving_suffix,
             header_comment='Something Something Something Dark Side')
 
@@ -598,9 +707,9 @@ def image_refine_via_intensity_loop(atom_lattice,
             dataframe=example_df_cif,
             filename=intensity_refine_name + filename + saving_suffix,
             chemical_name_common='MoSx-1Sex',
-            cell_length_a=image_size_x_nm*10,
-            cell_length_b=image_size_y_nm*10,
-            cell_length_c=image_size_z_nm*10)
+            cell_length_a=image_size_x_nm * 10,
+            cell_length_b=image_size_y_nm * 10,
+            cell_length_c=image_size_z_nm * 10)
 
     df_inten_refine.to_pickle(intensity_refine_name + 'df_inten_refine.pkl')
     df_inten_refine.to_csv(intensity_refine_name +
@@ -621,7 +730,7 @@ def image_refine_via_intensity_loop(atom_lattice,
                  marker='', color=palette(color_num), linewidth=1, alpha=0.9,
                  label=df_column)
 
-    plt.xlim(0, len(df_inten_refine.index)+1)
+    plt.xlim(0, len(df_inten_refine.index) + 1)
     plt.legend(loc=5, ncol=1, fontsize=10,
                fancybox=True, frameon=True, framealpha=1)
     plt.title("Refinement of Atoms via Intensity \nAll Elements",
@@ -636,7 +745,7 @@ def image_refine_via_intensity_loop(atom_lattice,
 
     atom_of_interest = 'Mo_1'
     # Highlight Plot
-    text_position = (len(df_inten_refine.index)+0.2)-1
+    text_position = (len(df_inten_refine.index) + 0.2) - 1
     plt.figure()
     # plt.style.use('seaborn-darkgrid')
     # multiple line plot
@@ -648,11 +757,11 @@ def image_refine_via_intensity_loop(atom_lattice,
              df_inten_refine[atom_of_interest], marker='', color='orange',
              linewidth=4, alpha=0.7)
 
-    plt.xlim(0, len(df_inten_refine.index)+1)
+    plt.xlim(0, len(df_inten_refine.index) + 1)
 
     # Let's annotate the plot
     num = 0
-    for i in df_inten_refine.values[len(df_inten_refine.index)-2][1:]:
+    for i in df_inten_refine.values[len(df_inten_refine.index) - 2][1:]:
         num += 1
         name = list(df_inten_refine)[num]
         if name != atom_of_interest:
@@ -776,16 +885,16 @@ def image_refine_via_position_loop(image,
     create_dataframe_for_xyz(
         sublattice_list=sublattice_list,
         element_list=element_list,
-        x_distance=image_size_x_nm*10,
-        y_distance=image_size_y_nm*10,
-        z_distance=image_size_z_nm*10,
+        x_distance=image_size_x_nm * 10,
+        y_distance=image_size_y_nm * 10,
+        z_distance=image_size_z_nm * 10,
         filename=xyz_filename + '01',
         header_comment=filename)
 
     for suffix in range(1, iterations):
 
         loading_suffix = '_' + str(suffix).zfill(2)
-        saving_suffix = '_' + str(suffix+1).zfill(2)
+        saving_suffix = '_' + str(suffix + 1).zfill(2)
         simulation_filename = xyz_filename + loading_suffix + '.XYZ'
 
         simulation = simulate_and_calibrate_with_prismatic(
@@ -912,9 +1021,9 @@ def image_refine_via_position_loop(image,
         create_dataframe_for_xyz(
             sublattice_list=sublattice_list,
             element_list=element_list,
-            x_distance=image_size_x_nm*10,
-            y_distance=image_size_y_nm*10,
-            z_distance=image_size_z_nm*10,
+            x_distance=image_size_x_nm * 10,
+            y_distance=image_size_y_nm * 10,
+            z_distance=image_size_z_nm * 10,
             filename=xyz_filename + filename + saving_suffix,
             header_comment=filename)
 

@@ -739,12 +739,13 @@ def compare_two_image_and_create_filtered_image(
             separation=separation,
             percent_to_nn=percent_to_nn,
             mask_radius=mask_radius,
-            refine=refine)
+            refine=False,
+            filename=None)
 
         mse_number, ssm_number = measure_image_errors(
             imageA=reference_image_data,
             imageB=temp_image_filtered.data,
-            filename=filename)
+            filename=None)
 
         mse_number_list.append([mse_number, i])
         ssm_number_list.append([ssm_number, i])
@@ -777,7 +778,8 @@ def compare_two_image_and_create_filtered_image(
         separation=separation,
         percent_to_nn=percent_to_nn,
         mask_radius=mask_radius,
-        refine=refine)
+        refine=refine,
+        filename=None)
 
     if filename is not None:
 

@@ -48,6 +48,7 @@ Examples
 12. Change save_variables (e.g., crop_image_hs) to np array.
 13. Change save_image to string
 14. Add mask_reverse for get_masked_ifft() in signal_processing.
+15. Auto toggle refine have a histogram option.
 
 # Ideas for code development
 

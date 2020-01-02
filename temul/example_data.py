@@ -65,3 +65,26 @@ def load_example_Cu_nanoparticle():
         example_Cu_nanoparticle_sim = load(path)
     s = example_Cu_nanoparticle_sim.deepcopy()
     return s
+
+
+example_Se_implanted_MoS2 = None
+
+
+def load_Se_implanted_MoS2_data():
+    """
+    Get the hspy simulated image of an example Cu nanoparticle
+
+    Example
+    -------
+    >>> import temul.example_data as example_data
+    >>> s = example_data.load_example_Cu_nanoparticle()
+
+    """
+    global example_Se_implanted_MoS2
+    if example_Se_implanted_MoS2 is None:
+        path = os.path.join(
+            my_path, 'example_data',
+            'experimental', 'example_Se_implanted_MoS2.dm3')
+        example_Se_implanted_MoS2 = load(path)
+    s = example_Se_implanted_MoS2.deepcopy()
+    return s

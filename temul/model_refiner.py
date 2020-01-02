@@ -152,9 +152,9 @@ class Model_Refiner():
         if flip_colrows:
             df = df.T
         df.plot.bar(fontsize=fontsize)
-        plt.title(title, fontsize=fontsize+4)
+        plt.title(title, fontsize=fontsize + 4)
         plt.ylabel('Element Count', fontsize=fontsize)
-        plt.legend(loc=0, fontsize=fontsize-4)
+        plt.legend(loc=0, fontsize=fontsize - 4)
         # plt.gca().axes.get_xaxis().set_visible(False)
         plt.tight_layout()
 
@@ -166,7 +166,7 @@ class Model_Refiner():
             percent_to_nn=0.40,
             mask_radius=None,
             filename=None,
-            print_outputs=False,
+            verbose=False,
             refinement_method="Intensity"):
         '''
         Change the elements for sublattice atom positions that don't match with
@@ -226,7 +226,7 @@ class Model_Refiner():
                 percent_to_nn=percent_to_nn,
                 mask_radius=mask_radius,
                 change_sublattice=change_sublattice,
-                print_outputs=print_outputs)
+                verbose=verbose)
 
         self.update_element_count_and_refinement_history(refinement_method)
 
@@ -237,7 +237,7 @@ class Model_Refiner():
                                        percent_to_nn=0.40,
                                        mask_radius=None,
                                        filename=None,
-                                       print_outputs=False,
+                                       verbose=False,
                                        ignore_element_count_comparison=False):
 
         for i in range(n):
@@ -248,7 +248,7 @@ class Model_Refiner():
                 percent_to_nn=percent_to_nn,
                 mask_radius=mask_radius,
                 filename=filename,
-                print_outputs=print_outputs)
+                verbose=verbose)
 
             if not ignore_element_count_comparison:
 
@@ -256,7 +256,7 @@ class Model_Refiner():
                     print("The latest refinement did not change the model. "
                           "Exiting the refinement after {} loops. To ignore "
                           "this, set ignore_element_count_comparison=True."
-                          .format(i+1))
+                          .format(i + 1))
                     break
 
     def image_difference_position_model_refiner(self,

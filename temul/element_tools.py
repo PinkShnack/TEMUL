@@ -70,9 +70,9 @@ def atomic_radii_in_pixels(sampling, element_symbol):
 
     # mult by 0.5 to get correct distance (google image of covalent radius)
     # divided by 10 to get nm
-    radius_nm = (element.covalent_radius*0.5)/10
+    radius_nm = (element.covalent_radius * 0.5) / 10
 
-    radius_pix = radius_nm/sampling
+    radius_pix = radius_nm / sampling
 
     return(radius_pix)
 
@@ -225,3 +225,12 @@ def get_individual_elements_from_element_list(
     indiv_elements.sort()
 
     return indiv_elements
+
+
+def combine_element_lists(lists):
+
+    element_list = [i for sublist in lists for i in sublist]
+    element_list = list(set(element_list))
+    element_list = sorted(element_list)
+
+    return element_list

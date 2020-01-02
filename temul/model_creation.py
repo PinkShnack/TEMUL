@@ -376,7 +376,11 @@ def change_sublattice_atoms_via_intensity(
                             (z_h[0] + z_h[1])/2]
                     else:
                         pass
-                    new_atom = element_list[new_atom_index]
+
+                    try:
+                        new_atom = element_list[new_atom_index]
+                    except IndexError:
+                        print("No lower element configuration in element_list")
 
             elif darker_or_brighter == 1:
                 new_atom_index = atom_index + 1
@@ -386,7 +390,11 @@ def change_sublattice_atoms_via_intensity(
                         (z_h[0] + z_h[1])/2]
                 else:
                     pass
+
+                try:
                     new_atom = element_list[new_atom_index]
+                except IndexError:
+                    print("No higher element configuration in element_list")
 
             elif new_atom_index < 0:
                 raise ValueError("You don't have any smaller atoms")
@@ -1093,7 +1101,8 @@ def sort_sublattice_intensities(sublattice,
                                 background_sublattice=None,
                                 num_points=3,
                                 intensity_list_real=False,
-                                percent_to_nn=0.40, mask_radius=None):
+                                percent_to_nn=0.40,
+                                mask_radius=None):
 
     # intensity_list_real is asking whether the intensity values in your
     # intensity_list for the current sublattice
@@ -1114,11 +1123,15 @@ def sort_sublattice_intensities(sublattice,
 
     else:
         sublattice_intensity = get_sublattice_intensity(
-            sublattice, intensity_type, remove_background_method,
-            background_sublattice,
-            num_points, percent_to_nn=percent_to_nn,
+            sublattice=sublattice,
+            intensity_type=intensity_type,
+            remove_background_method=remove_background_method,
+            background_sub=background_sublattice,
+            num_points=num_points,
+            percent_to_nn=percent_to_nn,
             mask_radius=mask_radius)
 
+        print(type(sublattice_intensity))
         for i in sublattice_intensity:
             if i < 0:
                 i = 0.0000000001
@@ -1310,6 +1323,14 @@ def assign_z_height(sublattice, lattice_type, material):
                 print(
                     "You must include a suitable lattice_type. This feature is limited")
 # MoS2 0.2429640475, 0.7570359525
+
+def correct_background_elements(sublattice):
+
+    most_common_element = get_most_common_sublattice_element(sublattice)
+    
+    for atom in sublattice.atom_list:
+        if atom.elements == most_common_element:
+            atom.elements = 'H_0'
 
 
 def print_sublattice_elements(sublattice, number_of_lines='all'):

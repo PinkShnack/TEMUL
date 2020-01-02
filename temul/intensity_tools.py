@@ -3,10 +3,13 @@ import numpy as np
 from atomap.atom_finding_refining import _make_circular_mask
 
 
-def get_sublattice_intensity(sublattice, intensity_type='max',
+def get_sublattice_intensity(sublattice,
+                             intensity_type='max',
                              remove_background_method=None,
-                             background_sub=None, num_points=3,
-                             percent_to_nn=0.4, mask_radius=None):
+                             background_sub=None,
+                             num_points=3,
+                             percent_to_nn=0.4,
+                             mask_radius=None):
     '''
     Finds the intensity for each atomic column using either max, mean,
     min, total or all of them at once.
@@ -82,7 +85,7 @@ def get_sublattice_intensity(sublattice, intensity_type='max',
     else:
         pass
 
-    if remove_background_method is None and background_sub is None:
+    if remove_background_method is None or background_sub is None:
         if intensity_type == 'all':
             sublattice.get_atom_column_amplitude_max_intensity(
                 percent_to_nn=percent_to_nn, mask_radius=mask_radius)
@@ -203,7 +206,8 @@ def get_sublattice_intensity(sublattice, intensity_type='max',
         return(sub_intensity_list_local_bksubtracted)
 
     else:
-        pass
+        raise ValueError("This will return nothing. "
+                         "Your parameters don't make sense")
 
 
 def remove_average_background(sublattice, intensity_type,
