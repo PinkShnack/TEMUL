@@ -459,9 +459,6 @@ import numpy as np
 import atomap.api as am
 import scipy
 import matplotlib.pyplot as plt
-# import os
-# import collections
-# import pandas as pd
 from atomap.atom_finding_refining import subtract_average_background
 from atomap.atom_finding_refining import normalize_signal
 from atomap.tools import remove_atoms_from_image_using_2d_gaussian
@@ -1017,40 +1014,111 @@ plt.close()
 
 from temul.simulations import simulate_and_calibrate_with_prismatic
 from temul.signal_processing import (
-    compare_two_image_and_create_filtered_image,
-    simulate_and_filter_and_calibrate_with_prismatic
+    compare_two_image_and_create_filtered_image
 )
 from temul.model_refiner import Model_Refiner
+import atomap.api as am
+import temul.example_data as example_data
 
-calibration_area = am.add_atoms_with_gui(s.data)
-# calibration_area = [[123.25, 379.15], [319.43, 548.70]] # example
-delta_image_filter = 0.5
+s_original = example_data.load_Se_implanted_MoS2_data()
+real_sampling = s_original.axes_manager[-1].scale
+
+atom_lattice = am.load_atom_lattice_from_hdf5('Atom_Lattice_max.hdf5')
+sub1 = atom_lattice.sublattice_list[0]
+sub2 = atom_lattice.sublattice_list[1]
+sub3 = atom_lattice.sublattice_list[2]
 
 
-simulation = simulate_and_filter_and_calibrate_with_prismatic(
-    xyz_filename=image_name + '.xyz',
-    filename='prismatic_simulation',
-    reference_image=s,
-    calibration_area=calibration_area,
-    calibration_separation=calibration_separation,
-    delta_image_filter=delta_image_filter)
+image = sub1.signal
 
-simulation.plot()
+axes = image.axes_manager
+axes[0].scale = 666
+
+image.axes_manager = axes
+t = 10
+
+one = two = t
+
+# calibration_area = am.add_atoms_with_gui(s.data)
+# # calibration_area = [[123.25, 379.15], [319.43, 548.70]] # example
+# delta_image_filter = 0.5
+
+
+# simulation = simulate_and_filter_and_calibrate_with_prismatic(
+#     xyz_filename=image_name + '.xyz',
+#     filename='prismatic_simulation',
+#     reference_image=s,
+#     calibration_area=calibration_area,
+#     calibration_separation=calibration_separation,
+#     delta_image_filter=delta_image_filter)
+
+# simulation.plot()
 
 ''' Refine the Sublattice elements '''
+element_list_sub1 = ['Mo_0', 'Mo_1', 'Mo_1.S_1', 'Mo_1.Se_1', 'Mo_2']
+element_list_sub2 = ['S_0', 'S_1', 'S_2', 'Se_1', 'Se_1.S_1', 'Se_2']
+element_list_sub3 = ['H_0', 'S_1', 'Se_1', 'Mo_1', ]
 
 sub_dict = {sub1: element_list_sub1,
             sub2: element_list_sub2,
             sub3: element_list_sub3}
 
-refiner = Model_Refiner(sub_dict, simulation, name='Se Implanted MoS2')
+
+image_size_z_nm = 1.2294 / 2
+
+refiner = Model_Refiner(sub_dict,
+                        sampling=real_sampling*10,
+                        thickness=image_size_z_nm*10,
+                        name='Se Implanted MoS2')
 refiner.get_element_count_as_dataframe()
 refiner.plot_element_count_as_bar_chart(2)
 
 refiner.image_difference_intensity_model_refiner()
 
+refiner.sublattice_and_elements_dict
 refiner.sublattice_list
+refiner.element_list
+refiner.flattened_element_list
+refiner.sublattice_list[0].signal.axes_manager
+refiner.sampling
+refiner.thickness
+refiner.image_xyz_sizes
+refiner.name
 
+# pick the top-left and bot-right of clean homogenous area
+refiner.set_calibration_area()
+refiner.calibration_area
+
+# use atomap to get the pixel separation for the atoms you will use for
+# calibration
+# features = am.get_feature_separation(
+#     signal=refiner.reference_image,
+#     separation_range=(8, 15), pca=True)
+# features.plot()
+refiner.set_calibration_separation(11)
+refiner.calibration_separation
+
+refiner.comparison_image
+
+refiner.create_simulation(sublattices='all',
+                          filter_image=False,
+                          calibrate_image=False,
+                          xyz_sizes=None,
+                          header_comment='example',
+                          filename='refiner_simulation')
+
+# sort out probestep i think that;s the issue!
+
+refiner.comparison_image.plot()
+refiner.reference_image.plot()
+
+refiner.reference_image.axes_manager
+
+
+
+
+
+####################
 for i in range(3):
 
     dataframe = create_dataframe_for_xyz(

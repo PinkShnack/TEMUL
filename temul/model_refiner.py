@@ -1,29 +1,52 @@
 
-from temul.model_creation import (count_atoms_in_sublattice_list,
-                                  compare_count_atoms_in_sublattice_list,
-                                  image_difference_intensity,
-                                  image_difference_position,
-                                  count_all_individual_elements)
-from temul.element_tools import get_individual_elements_from_element_list
+from temul.model_creation import (
+    count_atoms_in_sublattice_list,
+    compare_count_atoms_in_sublattice_list,
+    image_difference_intensity,
+    image_difference_position,
+    count_all_individual_elements
+)
+from temul.element_tools import (
+    get_individual_elements_from_element_list,
+    combine_element_lists
+)
 from temul.io import create_dataframe_for_xyz
 from temul.signal_processing import (
-    simulate_and_filter_and_calibrate_with_prismatic)
+    compare_two_image_and_create_filtered_image,
+    calibrate_intensity_distance_with_sublattice_roi
+)
+from temul.simulations import (
+    simulate_with_prismatic,
+    load_prismatic_mrc_with_hyperspy
+)
 import pandas as pd
 import hyperspy
+from atomap.initial_position_finding import add_atoms_with_gui
 import matplotlib.pyplot as plt
 
 
 class Model_Refiner():
     def __init__(self, sublattice_and_elements_dict,
-                 comparison_image, name=''):
+                 comparison_image=None, sampling=None,
+                 thickness=10, name=''):
         '''
         Object which is used to refine the elements in a
         sublattice object
 
+        thickness of sample in angstrom
+        sampling in angstrom per pixel
+
+        do:
+        auto atomic radii:
+        mask_radius_sub2 = atomic_radii_in_pixels(real_sampling, 'S')
+
         '''
 
+        self.sublattice_and_elements_dict = sublattice_and_elements_dict
         self.sublattice_list = list(sublattice_and_elements_dict.keys())
         self.element_list = list(sublattice_and_elements_dict.values())
+        self.flattened_element_list = combine_element_lists(
+            self.element_list)
         self._comparison_image_init(comparison_image)
 
         self.name = name
@@ -39,28 +62,72 @@ class Model_Refiner():
         if len(self.refinement_history) == 0:
             self.refinement_history.append("Initial State")
 
+        self.calibration_area = []
+        self.calibration_separation = 12
+
+        self.reference_image = self.sublattice_list[0].signal
+
+        # maybe have a _sampling_init function
+        if sampling is None:
+            self.sampling = self.reference_image.axes_manager[-1].scale
+        else:
+            self.sampling = sampling
+        if self.reference_image.axes_manager[-1].units == 'nm':
+            self.sampling = self.sampling * 10
+
+        self._reference_image_init()
+
+        self.thickness = thickness
+        self.image_xyz_sizes = [
+            self.sampling * self.reference_image.data.shape[-1],
+            self.sampling * self.reference_image.data.shape[-2],
+            self.thickness]
+
     def _comparison_image_init(self, comparison_image):
 
-        if not isinstance(comparison_image,
-                          hyperspy._signals.signal2d.Signal2D):
-            raise ValueError(
-                "comparison_image must be a 2D Hyperspy signal of type "
-                "hyperspy._signals.signal2d.Signal2D. The current incorrect "
-                "type is {}".format(str(type(comparison_image))))
-
-        for sublattice in self.sublattice_list:
-            if not comparison_image.data.shape == sublattice.image.shape:
+        if comparison_image is None:
+            print("Warning: "
+                  "comparison_image is set to None. You will not be able to "
+                  "refine the model until a comparison_image is set. You can "
+                  "do this via Model_refiner.create_simulation() or by "
+                  "setting the Model_Refiner.comparison_image to an image.")
+        else:
+            if not isinstance(comparison_image,
+                              hyperspy._signals.signal2d.Signal2D):
                 raise ValueError(
-                    "comparison_image must have the same shape as each "
-                    "sublattice image. comparison_image shape is {}, while "
-                    "sublattice '{}' is {}".format(comparison_image.data.shape,
-                                                   sublattice.name,
-                                                   sublattice.image.data))
+                    "comparison_image must be a 2D Hyperspy signal of type "
+                    "hyperspy._signals.signal2d.Signal2D. The current incorrect "
+                    "type is {}".format(str(type(comparison_image))))
 
+            for sublattice in self.sublattice_list:
+                if not comparison_image.data.shape == sublattice.image.shape:
+                    raise ValueError(
+                        "comparison_image must have the same shape as each "
+                        "sublattice image. comparison_image shape is {}, while "
+                        "sublattice '{}' is {}".format(comparison_image.data.shape,
+                                                       sublattice.name,
+                                                       sublattice.image.data))
+
+            comparison_image.axes_manager = self.reference_image.axes_manager
         self.comparison_image = comparison_image
 
+    def _reference_image_init(self):
+        axes = self.reference_image.axes_manager
+        axes[-1].scale = axes[-2].scale = self.sampling
+        axes[-1].units = axes[-2].units = 'A'
+
+    def comparison_image_warning(self):
+
+        if self.comparison_image is None:
+            raise ValueError(
+                "The comparison_image attribute has not been "
+                "set. You will not be able to "
+                "refine the model until a comparison_image is set. You can "
+                "do this via Model_refiner.create_simulation() or by "
+                "setting the Model_Refiner.comparison_image to an image.")
+
     def __repr__(self):
-        return '<%s, %s (sublattices:%s,element_lists:%s)>' % (
+        return '<%s, %s (sublattices:%s,element_list:%s)>' % (
             self.__class__.__name__,
             self.name,
             len(self.sublattice_list),
@@ -161,6 +228,24 @@ class Model_Refiner():
         # plt.gca().axes.get_xaxis().set_visible(False)
         plt.tight_layout()
 
+    def set_calibration_area(self):
+        '''
+        Area that will be used to calibrate a simulation. The pixel separation
+        can be set with set_calibration_separation. The average intensity of
+        the atoms chosen by this separation within the area will be set to 1.
+        The idea is to calibrate the experimental and simulated images with a
+        known intensity (e.g., single Mo atom in MoS2 is relatively
+        consistant).
+
+        reference_image can be changed via the Model_refiner.reference_image
+        attribute.
+        '''
+
+        self.calibration_area = add_atoms_with_gui(self.reference_image)
+
+    def set_calibration_separation(self, pixel_separation):
+        self.calibration_separation = pixel_separation
+
     def image_difference_intensity_model_refiner(
             self,
             sublattices='all',
@@ -207,6 +292,8 @@ class Model_Refiner():
 
         '''
 
+        self.comparison_image_warning()
+
         # define variables for refinement
         if 'all' in sublattices:
             sublattice_list = self.sublattice_list
@@ -242,6 +329,8 @@ class Model_Refiner():
                                        filename=None,
                                        verbose=False,
                                        ignore_element_count_comparison=False):
+
+        self.comparison_image_warning()
 
         for i in range(n):
             self.image_difference_intensity_model_refiner(
@@ -309,6 +398,8 @@ class Model_Refiner():
 
         '''
 
+        self.comparison_image_warning()
+
         # define variables for refinement
         if 'all' in sublattices:
             sublattice_list = self.sublattice_list
@@ -334,44 +425,125 @@ class Model_Refiner():
 
         self.update_element_count_and_refinement_history(refinement_method)
 
-    def create_filtered_calibrated_simulation(
+    def create_simulation(
             self,
-            calibration_area,
-            calibration_separation,
-            delta_image_filter,
             sublattices='all',
-            x_distance=5,
-            y_distance=5,
-            z_distance=5,
+            filter_image=True,
+            calibrate_image=True,
+            xyz_sizes=None,
             header_comment='example',
             filename='refiner_simulation',
-            reference_image=0):
+            probeStep=1.0,
+            E0=60e3,
+            integrationAngleMin=0.085,
+            integrationAngleMax=0.186,
+            detectorAngleStep=0.001,
+            interpolationFactor=16,
+            realspacePixelSize=0.0654,
+            numFP=1,
+            cellDimXYZ=None,
+            tileXYZ=None,
+            probeSemiangle=0.030,
+            alphaBeamMax=0.032,
+            scanWindowMin=0.0,
+            scanWindowMax=1.0,
+            numThreads=2,
+            algorithm="prism",
+            delta_image_filter=0.5,
+            max_sigma=6,
+            percent_to_nn=0.4,
+            mask_radius=None,
+            refine=True):
 
         if 'all' in sublattices:
             sublattice_list = self.sublattice_list
-            element_list = self.element_list
+            element_list = self.flattened_element_list
         elif isinstance(sublattices, list):
             sublattice_list = [self.sublattice_list[i] for i in sublattices]
             element_list = [self.element_list[i] for i in sublattices]
+            element_list = combine_element_lists(element_list)
+
+        if xyz_sizes is None:
+            x_size = self.image_xyz_sizes[0]
+            y_size = self.image_xyz_sizes[1]
+            z_size = self.image_xyz_sizes[2]
 
         create_dataframe_for_xyz(
             sublattice_list=sublattice_list,
             element_list=element_list,
-            x_distance=x_distance,
-            y_distance=y_distance,
-            z_distance=z_distance,
+            x_size=x_size,
+            y_size=y_size,
+            z_size=z_size,
             filename=filename + '_xyz_file',
             header_comment=header_comment)
 
-        simulation = simulate_and_filter_and_calibrate_with_prismatic(
+        simulate_with_prismatic(
             xyz_filename=filename + '_xyz_file.xyz',
-            filename=filename + '_image_file',
-            reference_image=self.sublattice_list[reference_image].image,
-            calibration_area=calibration_area,
-            calibration_separation=calibration_separation,
-            delta_image_filter=delta_image_filter)
+            filename=filename + '_mrc_file',
+            reference_image=self.reference_image,
+            probeStep=probeStep,
+            E0=E0,
+            integrationAngleMin=integrationAngleMin,
+            integrationAngleMax=integrationAngleMax,
+            detectorAngleStep=detectorAngleStep,
+            interpolationFactor=interpolationFactor,
+            realspacePixelSize=realspacePixelSize,
+            numFP=numFP,
+            cellDimXYZ=cellDimXYZ,
+            tileXYZ=tileXYZ,
+            probeSemiangle=probeSemiangle,
+            alphaBeamMax=alphaBeamMax,
+            scanWindowMin=scanWindowMin,
+            scanWindowMax=scanWindowMax,
+            algorithm=algorithm,
+            numThreads=numThreads)
+
+        simulation = load_prismatic_mrc_with_hyperspy(
+            'prism_2Doutput_' + filename + '_mrc_file.mrc', save_name=None)
+
+        if filter_image:
+            simulation = compare_two_image_and_create_filtered_image(
+                image_to_filter=simulation,
+                reference_image=self.reference_image,
+                delta_image_filter=delta_image_filter,
+                cropping_area=self.calibration_area,
+                separation=self.calibration_separation,
+                filename=None,
+                max_sigma=max_sigma,
+                percent_to_nn=percent_to_nn,
+                mask_radius=mask_radius,
+                refine=False)
+
+        if calibrate_image:
+            calibrate_intensity_distance_with_sublattice_roi(
+                image=simulation,
+                cropping_area=self.calibration_area,
+                separation=self.calibration_separation,
+                filename=filename,
+                reference_image=self.reference_image,
+                percent_to_nn=percent_to_nn,
+                mask_radius=mask_radius,
+                refine=refine,
+                scalebar_true=True)
 
         self.comparison_image = simulation
+
+    def calibrate_comparison_image(
+            self, filename=None, percent_to_nn=0.4, mask_radius=None,
+            refine=True):
+
+        self.comparison_image_warning()
+
+        calibrate_intensity_distance_with_sublattice_roi(
+            image=self.comparison_image,
+            cropping_area=self.calibration_area,
+            separation=self.calibration_separation,
+            filename=filename,
+            reference_image=self.reference_image,
+            percent_to_nn=percent_to_nn,
+            mask_radius=mask_radius,
+            refine=refine,
+            scalebar_true=True)
 
 
 # a_list = Counter({'Mo': 1, 'F': 5, 'He': 9})

@@ -330,7 +330,7 @@ def simulate_with_prismatic(xyz_filename,
         raise OSError('XYZ file not found in directory, stopping refinement')
 
     # param inputs, feel free to add more!!
-
+    # use try except block here to stop crashing
     pr_sim = pr.Metadata(filenameAtoms=simulation_filename)
 
     # use the reference image to get the probe step if given
@@ -348,8 +348,9 @@ def simulate_with_prismatic(xyz_filename,
         real_sampling_exp_angs = real_sampling * 10
         if str(real_sampling_exp_angs)[-1] == '5':
             real_sampling_sim_angs = real_sampling_exp_angs + 0.000005
-        pr_sim.probeStepX = pr_sim.probeStepY = round(
-            real_sampling_sim_angs, 6)
+
+            pr_sim.probeStepX = pr_sim.probeStepY = round(
+                real_sampling_sim_angs, 6)
     else:
         pr_sim.probeStepX = pr_sim.probeStepY = probeStep
 

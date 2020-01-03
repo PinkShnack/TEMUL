@@ -739,7 +739,7 @@ def compare_two_image_and_create_filtered_image(
             separation=separation,
             percent_to_nn=percent_to_nn,
             mask_radius=mask_radius,
-            refine=False,
+            refine=refine,
             filename=None)
 
         mse_number, ssm_number = measure_image_errors(
@@ -772,14 +772,14 @@ def compare_two_image_and_create_filtered_image(
 
     image_filtered = hs.signals.Signal2D(image_to_filter_filtered)
 
-    calibrate_intensity_distance_with_sublattice_roi(
-        image=image_filtered,
-        cropping_area=cropping_area,
-        separation=separation,
-        percent_to_nn=percent_to_nn,
-        mask_radius=mask_radius,
-        refine=refine,
-        filename=None)
+    # calibrate_intensity_distance_with_sublattice_roi(
+    #     image=image_filtered,
+    #     cropping_area=cropping_area,
+    #     separation=separation,
+    #     percent_to_nn=percent_to_nn,
+    #     mask_radius=mask_radius,
+    #     refine=refine,
+    #     filename=None)
 
     if filename is not None:
 
@@ -1247,6 +1247,9 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
         column, as fraction of the distance to the nearest neighbour.
     scalebar_true : Bool, default False
         Set to True if the scale of the image is calibrated to a distance unit.
+        *** is there any point to this? if scale=1, then multiplying has no
+        *** effect, and if it is scaled to nm or angstrom, multiplying is
+        *** good. so keep the code, remove the parameter option!
 
     Returns
     -------

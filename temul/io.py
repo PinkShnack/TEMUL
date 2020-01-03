@@ -265,7 +265,7 @@ def convert_vesta_xyz_to_prismatic_xyz(vesta_xyz_filename,
             if not isinstance(x, str)]
         min_axis = min(axis_values_list)
         max_axis = max(axis_values_list)
-        unit_cell_dimen_axis = max_axis-min_axis
+        unit_cell_dimen_axis = max_axis - min_axis
         unit_cell_dimen_axis = format(unit_cell_dimen_axis, '.6f')
         unit_cell_dimen.append(unit_cell_dimen_axis)
 
@@ -279,9 +279,9 @@ def convert_vesta_xyz_to_prismatic_xyz(vesta_xyz_filename,
                 unit_cell_dimen[i] *= padding
 
             # x, y, z translations
-            file.loc[:, '_atom_site_fract_x'] += unit_cell_dimen[0]/4
-            file.loc[:, '_atom_site_fract_y'] += unit_cell_dimen[1]/4
-            file.loc[:, '_atom_site_fract_z'] += unit_cell_dimen[2]/4
+            file.loc[:, '_atom_site_fract_x'] += unit_cell_dimen[0] / 4
+            file.loc[:, '_atom_site_fract_y'] += unit_cell_dimen[1] / 4
+            file.loc[:, '_atom_site_fract_z'] += unit_cell_dimen[2] / 4
 
         else:
             raise ValueError(
@@ -396,7 +396,7 @@ def write_cif_from_dataframe(dataframe,
                          dataframe['_atom_site_type_symbol']]]))
 
     # put it all together in a cif
-    outFile = open(filename+".cif", "w")
+    outFile = open(filename + ".cif", "w")
     outFile.write(str(cif_file))
     outFile.close()
 
@@ -412,9 +412,9 @@ def write_cif_from_dataframe(dataframe,
 # create dataframe function for single atom lattice for .xyz
 def create_dataframe_for_xyz(sublattice_list,
                              element_list,
-                             x_distance,
-                             y_distance,
-                             z_distance,
+                             x_size,
+                             y_size,
+                             z_size,
                              filename,
                              header_comment='top_level_comment'):
     """
@@ -430,10 +430,10 @@ def create_dataframe_for_xyz(sublattice_list,
     ...     sublattice.atom_list[i].elements = 'Mo_1'
     ...     sublattice.atom_list[i].z_height = '0.5'
     >>> element_list = ['Mo_0', 'Mo_1', 'Mo_2']
-    >>> x_distance, y_distance = 50, 50
-    >>> z_distance = 5
+    >>> x_size, y_size = 50, 50
+    >>> z_size = 5
     >>> dataframe = create_dataframe_for_xyz([sublattice], element_list,
-    ...                          x_distance, y_distance, z_distance,
+    ...                          x_size, y_size, z_size,
     ...                          filename='dataframe',
     ...                          header_comment='Here is an Example')
 
@@ -456,9 +456,9 @@ def create_dataframe_for_xyz(sublattice_list,
 
     # add unit cell dimensions
     df_xyz = df_xyz.append({'_atom_site_Z_number': '',
-                            '_atom_site_fract_x': format(x_distance, '.6f'),
-                            '_atom_site_fract_y': format(y_distance, '.6f'),
-                            '_atom_site_fract_z': format(z_distance, '.6f'),
+                            '_atom_site_fract_x': format(x_size, '.6f'),
+                            '_atom_site_fract_y': format(y_size, '.6f'),
+                            '_atom_site_fract_z': format(z_size, '.6f'),
                             '_atom_site_occupancy': '',
                             '_atom_site_RMS_thermal_vib': ''},
                            ignore_index=True)
@@ -503,10 +503,10 @@ def create_dataframe_for_xyz(sublattice_list,
                                 pass
 
                             df_xyz = df_xyz.append({'_atom_site_Z_number': atomic_number,
-                                                    '_atom_site_fract_x': format(sublattice.atom_list[i].pixel_x * (x_distance / len(sublattice.image[0, :])), '.6f'),
-                                                    '_atom_site_fract_y': format(sublattice.atom_list[i].pixel_y * (y_distance / len(sublattice.image[:, 0])), '.6f'),
+                                                    '_atom_site_fract_x': format(sublattice.atom_list[i].pixel_x * (x_size / len(sublattice.image[0, :])), '.6f'),
+                                                    '_atom_site_fract_y': format(sublattice.atom_list[i].pixel_y * (y_size / len(sublattice.image[:, 0])), '.6f'),
                                                     # this is a fraction already, which is why we don't divide as in x and y
-                                                    '_atom_site_fract_z': format(atom_z_height * z_distance, '.6f'),
+                                                    '_atom_site_fract_z': format(atom_z_height * z_size, '.6f'),
                                                     '_atom_site_occupancy': 1.0,  # might need to loop through the vancancies here?
                                                     '_atom_site_RMS_thermal_vib': 0.05},
                                                    ignore_index=True)  # insert row
@@ -639,6 +639,6 @@ def save_individual_images_from_image_stack(
         im = image_stack_32bit[:, :, i]
         i_filled = str(i).zfill(4)
         imwrite(folder + 'images_aligned_%s.tif' % i_filled, im)
-        i = i+delta
+        i = i + delta
 
 # save_individual_images_from_image_stack(image_stack=s.stack_registered)
