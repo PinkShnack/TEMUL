@@ -527,6 +527,7 @@ class Model_Refiner():
                 scalebar_true=True)
 
         self.comparison_image = simulation
+        # self._comparison_image_init(simulation)
 
     def calibrate_comparison_image(
             self, filename=None, percent_to_nn=0.4, mask_radius=None,

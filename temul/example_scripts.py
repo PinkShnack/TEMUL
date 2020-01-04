@@ -1012,10 +1012,6 @@ plt.savefig(fname=atom_lattice_name + '.png',
 plt.close()
 
 
-from temul.simulations import simulate_and_calibrate_with_prismatic
-from temul.signal_processing import (
-    compare_two_image_and_create_filtered_image
-)
 from temul.model_refiner import Model_Refiner
 import atomap.api as am
 import temul.example_data as example_data
@@ -1067,8 +1063,8 @@ sub_dict = {sub1: element_list_sub1,
 image_size_z_nm = 1.2294 / 2
 
 refiner = Model_Refiner(sub_dict,
-                        sampling=real_sampling*10,
-                        thickness=image_size_z_nm*10,
+                        sampling=real_sampling * 10,
+                        thickness=image_size_z_nm * 10,
                         name='Se Implanted MoS2')
 refiner.get_element_count_as_dataframe()
 refiner.plot_element_count_as_bar_chart(2)
@@ -1099,23 +1095,120 @@ refiner.set_calibration_separation(11)
 refiner.calibration_separation
 
 refiner.comparison_image
+refiner.comparison_image.axes_manager
+refiner.reference_image.axes_manager
 
 refiner.create_simulation(sublattices='all',
                           filter_image=False,
                           calibrate_image=False,
                           xyz_sizes=None,
                           header_comment='example',
-                          filename='refiner_simulation')
+                          filename='refiner_simulation',
+                          interpolationFactor=64,
+                          scanWindowMax=1.0,
+                          probeStep=None)
+
+from temul.simulations import simulate_with_prismatic
+filename = 'refiner_simulation_10'
+simulate_with_prismatic('refiner_simulation_xyz_file.xyz',
+                        filename,
+                        reference_image=None,
+                        probeStep=0.126953125,
+                        interpolationFactor=64,
+                        scanWindowMax=1.0)
+
+
+# import pyprismatic as pr
+# import os
+# simulation_filename = 'refiner_simulation_xyz_file.xyz'
+
+# file_exists = os.path.isfile(simulation_filename)
+# if file_exists:
+#     pass
+# else:
+#     raise OSError('XYZ file not found in directory, stopping refinement')
+
+# # param inputs, feel free to add more!!
+# pr_sim = pr.Metadata(filenameAtoms=simulation_filename)
+
+# reference_image=None
+
+# pr_sim.probeStepX = pr_sim.probeStepY = 0.012
+# pr_sim.tileX, pr_sim.tileY, pr_sim.tileZ = 1,1,1
+
+# integrationAngleMin=0.085
+# integrationAngleMax=0.186
+# detectorAngleStep=0.001
+# realspacePixelSize=0.0654
+# numFP=1
+# cellDimXYZ=None
+# probeSemiangle=0.030
+# alphaBeamMax=0.032
+# scanWindowMin=0.0
+# algorithm="prism"
+# numThreads=2
+
+# #    pr_sim.probeStepX = pr_sim.cellDimX/atom_lattice_data.shape[1]
+# #    pr_sim.probeStepY = pr_sim.cellDimY/atom_lattice_data.shape[0]
+# pr_sim.detectorAngleStep = detectorAngleStep
+# pr_sim.save2DOutput = True
+# pr_sim.save3DOutput = False
+
+# pr_sim.E0 = 60000
+# pr_sim.integrationAngleMin = integrationAngleMin
+# pr_sim.integrationAngleMax = integrationAngleMax
+# pr_sim.interpolationFactorX = pr_sim.interpolationFactorY = 64
+# pr_sim.realspacePixelSizeX = pr_sim.realspacePixelSizeY = \
+#     realspacePixelSize
+# pr_sim.numFP = numFP
+# pr_sim.probeSemiangle = probeSemiangle
+# pr_sim.alphaBeamMax = alphaBeamMax  # in rads
+# pr_sim.scanWindowXMin = pr_sim.scanWindowYMin = scanWindowMin
+# pr_sim.scanWindowYMax = pr_sim.scanWindowXMax = 1.0
+# pr_sim.algorithm = algorithm
+# pr_sim.numThreads = numThreads
+# filename = 'refiner_simulation_9'
+# pr_sim.filenameOutput = filename + '.mrc'
+real_sampling_exp_angs = 0.126953125
+
+real_sampling_sim_angs = real_sampling_exp_angs + 0.000005
+
+real_sampling_sim_angs = round(real_sampling_sim_angs, 6)
+
+# pr_sim.go()
+
+
+# 0.0654
+import hyperspy.api as hs
+real_sampling_exp_angs = 0.126953125
+
+simulation = hs.load('prism_2Doutput_' + filename + '.mrc')
+simulation.axes_manager
+simulation.axes_manager[0].name = 'extra_dimension'
+simulation = simulation.sum('extra_dimension')
+simulation.axes_manager[0].scale = real_sampling_exp_angs
+simulation.axes_manager[1].scale = real_sampling_exp_angs
+simulation.axes_manager[0].units = 'A'
+simulation.axes_manager[1].units = 'A'
+
+simulation.plot()
+
+s_original
+
+
+refiner.sampling
+image_size_pixels = refiner.sublattice_list[0].image.shape
+
+refiner.sampling * image_size_pixels[1]
 
 # sort out probestep i think that;s the issue!
+if not refiner.comparison_image.data.shape == refiner.sublattice_list[0].image.shape:
+    print('This is a problem')
 
 refiner.comparison_image.plot()
 refiner.reference_image.plot()
 
 refiner.reference_image.axes_manager
-
-
-
 
 
 ####################
