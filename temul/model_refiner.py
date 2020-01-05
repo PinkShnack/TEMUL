@@ -23,6 +23,7 @@ import pandas as pd
 import hyperspy
 from atomap.initial_position_finding import add_atoms_with_gui
 import matplotlib.pyplot as plt
+import copy
 
 
 class Model_Refiner():
@@ -48,12 +49,9 @@ class Model_Refiner():
         self.flattened_element_list = combine_element_lists(
             self.element_list)
         self._comparison_image_init(comparison_image)
-
         self.name = name
-
         self._element_count = count_atoms_in_sublattice_list(
             self.sublattice_list, filename=None)
-
         self.element_count_history_list = []
         if len(self.element_count_history_list) == 0:
             self.element_count_history_list.append(self._element_count)
@@ -62,11 +60,11 @@ class Model_Refiner():
         if len(self.refinement_history) == 0:
             self.refinement_history.append("Initial State")
 
-        self.calibration_area = []
-        self.calibration_separation = 12
-
         self.reference_image = self.sublattice_list[0].signal
-
+        self.calibration_area = [[0, 0],
+                                 [self.reference_image.data.shape[-1],
+                                  self.reference_image.data.shape[-2]]]
+        self.calibration_separation = 12
         # maybe have a _sampling_init function
         if sampling is None:
             self.sampling = self.reference_image.axes_manager[-1].scale
@@ -74,7 +72,6 @@ class Model_Refiner():
             self.sampling = sampling
         if self.reference_image.axes_manager[-1].units == 'nm':
             self.sampling = self.sampling * 10
-
         self._reference_image_init()
 
         self.thickness = thickness
@@ -82,6 +79,8 @@ class Model_Refiner():
             self.sampling * self.reference_image.data.shape[-1],
             self.sampling * self.reference_image.data.shape[-2],
             self.thickness]
+
+        self.previous_refiner_instance = None
 
     def _reference_image_init(self):
         axes = self.reference_image.axes_manager
@@ -119,7 +118,7 @@ class Model_Refiner():
 
         self.comparison_image = comparison_image
 
-    def comparison_image_warning(self, error_message=['None', 'wrong_size']):
+    def _comparison_image_warning(self, error_message=['None', 'wrong_size']):
         if 'None' in error_message:
             if self.comparison_image is None:
                 raise ValueError(
@@ -242,7 +241,7 @@ class Model_Refiner():
         # plt.gca().axes.get_xaxis().set_visible(False)
         plt.tight_layout()
 
-    def set_calibration_area(self):
+    def set_calibration_area(self, manual_list=None):
         '''
         Area that will be used to calibrate a simulation. The pixel separation
         can be set with set_calibration_separation. The average intensity of
@@ -253,13 +252,38 @@ class Model_Refiner():
 
         reference_image can be changed via the Model_refiner.reference_image
         attribute.
+
+        manual_list must be a list of two lists, each of length two.
+        For example: [ [0,0], [50, 50] ]
         '''
 
-        self.calibration_area = add_atoms_with_gui(self.reference_image)
+        if isinstance(manual_list, list):
+            self.calibration_area = manual_list
+        else:
+            self.calibration_area = add_atoms_with_gui(self.reference_image)
 
     def set_calibration_separation(self, pixel_separation):
         self.calibration_separation = pixel_separation
 
+    def set_thickness(self, thickness):
+        self.thickness = thickness
+
+    def set_image_xyz_sizes(self, xyz_list):
+        self.image_xyz_sizes = xyz_list
+
+    # tools for reverting to the previous version of the refiner
+    def _save_refiner_instance(self):
+
+        self.previous_refiner_instance = copy.deepcopy(self)
+
+    def revert_to_previous_refiner_instance(self):
+        print("This doesn't seem to work as intended."
+              "If you wish to revert to the previous version of the refiner, "
+              "you can create a new object. For example: "
+              "refiner_2 = refiner_1.previous_refiner_instance")
+        self = self.previous_refiner_instance
+
+    # tools for using refinement algorithm
     def image_difference_intensity_model_refiner(
             self,
             sublattices='all',
@@ -306,7 +330,8 @@ class Model_Refiner():
 
         '''
 
-        self.comparison_image_warning()
+        self._comparison_image_warning()
+        self._save_refiner_instance()
 
         # define variables for refinement
         if 'all' in sublattices:
@@ -344,7 +369,8 @@ class Model_Refiner():
                                        verbose=False,
                                        ignore_element_count_comparison=False):
 
-        self.comparison_image_warning()
+        self._comparison_image_warning()
+        self._save_refiner_instance()
 
         for i in range(n):
             self.image_difference_intensity_model_refiner(
@@ -412,7 +438,8 @@ class Model_Refiner():
 
         '''
 
-        self.comparison_image_warning()
+        self._comparison_image_warning()
+        self._save_refiner_instance()
 
         # define variables for refinement
         if 'all' in sublattices:
@@ -442,11 +469,12 @@ class Model_Refiner():
     def create_simulation(
             self,
             sublattices='all',
-            filter_image=True,
+            filter_image=False,
             calibrate_image=True,
             xyz_sizes=None,
             header_comment='example',
             filename='refiner_simulation',
+            reference_image='auto',
             probeStep=1.0,
             E0=60e3,
             integrationAngleMin=0.085,
@@ -468,6 +496,61 @@ class Model_Refiner():
             percent_to_nn=0.4,
             mask_radius=None,
             refine=True):
+        """
+        Create and simulate a .xyz file from the sublattice information.
+        Uses the pyprismatic prism algorithm by default.
+
+        Note: The error resulting from filter=True with percent_to_nn set can
+        be fixed by setting mask_radius instead of percent_to_nn.
+
+        Parameters
+        ----------
+        sublattices : Atomap Sublattices, default 'all'
+            If set to 'all', sublattices that exist in the `Model_Refiner` will
+            all be used. The `sublattice` indexes can be specified in a list.
+            For example [0, 2] will select the first and third sublattices.
+            A list of `sublattice` objects can instead be used. 
+        filter_image : Bool, default False
+            Choose whether to filter the simulation with a Gaussian to match
+            the `reference_image`.
+        calibrate_image : Bool, default True
+            Choose whether to calibrate the simulation with a set
+            `calibration_area` and `calibration_separation`.
+        xyz_sizes : list, default None
+            List of the x, y, z physical size of the reference_image in
+            angstrom. If None is set, the sizes will be automatically taken
+            from the `image_xyz_sizes` attribute.
+        header_comment : string, default 'example'
+            The first line comment for the .xyz file.
+        filename : string, default 'refiner_simulation'
+            filename with which the .xyz file and simulated .mrc file will be
+            saved.
+        delta_image_filter : float, default 0.5
+            The change in sigma for the `filter` Gaussian filter. Small values
+            will slow the `filter` down.
+        max_sigma : float, default 6
+            The maximum sigma used for the `filter` Gaussian filter. Large
+            values will slow the `filter` down.
+        percent_to_nn : float, default 0.4
+            The percentage distance to the nearest neighbour atom used for
+            atomap atom position refinement.
+        mask_radius : float, default None
+            The pixel distance to the nearest neighbour atom used for atomap
+            atom position refinement
+        refine : Bool, default True
+            Whether to refine the atom positions for the `calibrate` parameter.
+
+        Note: The error resulting from filter=True with percent_to_nn set can
+        be fixed by setting mask_radius instead of percent_to_nn.
+
+        Examples
+        --------
+
+
+        Returns
+        -------
+        Updates the comparison_image attribute with the newly simulated model.
+        """
 
         if 'all' in sublattices:
             sublattice_list = self.sublattice_list
@@ -491,10 +574,13 @@ class Model_Refiner():
             filename=filename + '_xyz_file',
             header_comment=header_comment)
 
+        if 'auto' in reference_image:
+            reference_image = self.reference_image
+
         simulate_with_prismatic(
             xyz_filename=filename + '_xyz_file.xyz',
             filename=filename + '_mrc_file',
-            reference_image=self.reference_image,
+            reference_image=reference_image,
             probeStep=probeStep,
             E0=E0,
             integrationAngleMin=integrationAngleMin,
@@ -539,14 +625,15 @@ class Model_Refiner():
                 mask_radius=mask_radius,
                 refine=refine,
                 scalebar_true=True)
-        
+
+        self._save_refiner_instance()
         self._comparison_image_init(simulation)
 
     def calibrate_comparison_image(
             self, filename=None, percent_to_nn=0.4, mask_radius=None,
             refine=True):
 
-        self.comparison_image_warning()
+        self._comparison_image_warning()
 
         calibrate_intensity_distance_with_sublattice_roi(
             image=self.comparison_image,

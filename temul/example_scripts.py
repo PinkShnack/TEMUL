@@ -1065,13 +1065,25 @@ refiner.element_list
 refiner.flattened_element_list
 refiner.sublattice_list[0].signal.axes_manager
 refiner.sampling
-refiner.thickness
-refiner.image_xyz_sizes
 refiner.name
+
+refiner.thickness
+refiner.image_xyz_sizes 
+
+refiner.set_thickness = 6.10
+refiner.image_xyz_sizes
+
+refiner.set_image_xyz_sizes = [5, 10, 6.2]
+refiner.image_xyz_sizes
+
+refiner.image_xyz_sizes[2] = 10 
+refiner.image_xyz_sizes
+
 
 # pick the top-left and bot-right of clean homogenous area
 refiner.set_calibration_area()
 refiner.calibration_area
+
 
 # use atomap to get the pixel separation for the atoms you will use for
 # calibration
@@ -1092,7 +1104,7 @@ refiner.create_simulation(sublattices='all',
                           xyz_sizes=None,
                           header_comment='example',
                           filename='refiner_simulation',
-                          interpolationFactor=32,
+                          interpolationFactor=100,
                           scanWindowMax=1.0,
                           probeStep=0.126953125,
                           percent_to_nn=None,
@@ -1100,6 +1112,13 @@ refiner.create_simulation(sublattices='all',
 
 refiner.comparison_image.plot()
 refiner.reference_image.plot()
+
+refiner.previous_refiner_instance
+refiner.revert_to_previous_refiner_instance()
+refiner.comparison_image.plot()
+
+refiner_past = refiner.previous_refiner_instance
+refiner_past.get_element_count_as_dataframe()
 
 refiner.image_difference_intensity_model_refiner()
 refiner.get_element_count_as_dataframe()
