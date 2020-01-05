@@ -333,14 +333,14 @@ def simulate_with_prismatic(xyz_filename,
     pr_sim = pr.Metadata(filenameAtoms=simulation_filename)
 
     # use the reference image to get the probe step if given
-
+    # fix these
     if reference_image is None and probeStep is None:
         raise ValueError("Both reference_image and probeStep are None.\
             Either choose a reference image, from which a probe step can\
             be calculated, or choose a probeStep.")
     elif reference_image is not None and probeStep is not None:
-        print("Note: Both reference_image and probeStep have been specified.\
-            .. probeStep will be used.")
+        print("Note: Both reference_image and probeStep have been specified. "
+              "reference_image will be used.")
 
     if reference_image is not None:
         real_sampling = reference_image.axes_manager[0].scale

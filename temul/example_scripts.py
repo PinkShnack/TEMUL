@@ -1024,21 +1024,9 @@ sub1 = atom_lattice.sublattice_list[0]
 sub2 = atom_lattice.sublattice_list[1]
 sub3 = atom_lattice.sublattice_list[2]
 
-
-image = sub1.signal
-
-axes = image.axes_manager
-axes[0].scale = 666
-
-image.axes_manager = axes
-t = 10
-
-one = two = t
-
 # calibration_area = am.add_atoms_with_gui(s.data)
 # # calibration_area = [[123.25, 379.15], [319.43, 548.70]] # example
 # delta_image_filter = 0.5
-
 
 # simulation = simulate_and_filter_and_calibrate_with_prismatic(
 #     xyz_filename=image_name + '.xyz',
@@ -1099,14 +1087,29 @@ refiner.comparison_image.axes_manager
 refiner.reference_image.axes_manager
 
 refiner.create_simulation(sublattices='all',
-                          filter_image=False,
-                          calibrate_image=False,
+                          filter_image=True,
+                          calibrate_image=True,
                           xyz_sizes=None,
                           header_comment='example',
                           filename='refiner_simulation',
-                          interpolationFactor=64,
+                          interpolationFactor=32,
                           scanWindowMax=1.0,
-                          probeStep=None)
+                          probeStep=0.126953125,
+                          percent_to_nn=None,
+                          mask_radius=4.5)
+
+refiner.comparison_image.plot()
+refiner.reference_image.plot()
+
+refiner.image_difference_intensity_model_refiner()
+refiner.get_element_count_as_dataframe()
+
+refiner.image_difference_position_model_refiner()
+refiner.get_element_count_as_dataframe()
+
+
+
+
 
 from temul.simulations import simulate_with_prismatic
 filename = 'refiner_simulation_10'

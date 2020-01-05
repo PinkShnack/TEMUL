@@ -83,6 +83,11 @@ class Model_Refiner():
             self.sampling * self.reference_image.data.shape[-2],
             self.thickness]
 
+    def _reference_image_init(self):
+        axes = self.reference_image.axes_manager
+        axes[-1].scale = axes[-2].scale = self.sampling
+        axes[-1].units = axes[-2].units = 'A'
+
     def _comparison_image_init(self, comparison_image):
 
         if comparison_image is None:
@@ -101,30 +106,39 @@ class Model_Refiner():
 
             for sublattice in self.sublattice_list:
                 if not comparison_image.data.shape == sublattice.image.shape:
-                    raise ValueError(
-                        "comparison_image must have the same shape as each "
-                        "sublattice image. comparison_image shape is {}, while "
-                        "sublattice '{}' is {}".format(comparison_image.data.shape,
-                                                       sublattice.name,
-                                                       sublattice.image.data))
+                    print("Warning: "
+                          "comparison_image must have the same shape as each "
+                          "sublattice image. comparison_image shape is {}, "
+                          "while sublattice '{}' is {}. This will stop you from "
+                          "refining your model.".format(
+                              comparison_image.data.shape,
+                              sublattice.name,
+                              sublattice.image.data))
 
             comparison_image.axes_manager = self.reference_image.axes_manager
+
         self.comparison_image = comparison_image
 
-    def _reference_image_init(self):
-        axes = self.reference_image.axes_manager
-        axes[-1].scale = axes[-2].scale = self.sampling
-        axes[-1].units = axes[-2].units = 'A'
+    def comparison_image_warning(self, error_message=['None', 'wrong_size']):
+        if 'None' in error_message:
+            if self.comparison_image is None:
+                raise ValueError(
+                    "The comparison_image attribute has not been "
+                    "set. You will not be able to "
+                    "refine the model until a comparison_image is set. You can "
+                    "do this via Model_refiner.create_simulation() or by "
+                    "setting the Model_Refiner.comparison_image to an image.")
 
-    def comparison_image_warning(self):
-
-        if self.comparison_image is None:
-            raise ValueError(
-                "The comparison_image attribute has not been "
-                "set. You will not be able to "
-                "refine the model until a comparison_image is set. You can "
-                "do this via Model_refiner.create_simulation() or by "
-                "setting the Model_Refiner.comparison_image to an image.")
+        if 'wrong_size' in error_message:
+            for sublattice in self.sublattice_list:
+                if not self.comparison_image.data.shape == sublattice.image.shape:
+                    raise ValueError(
+                        "comparison_image must have the same shape as each "
+                        "sublattice image. comparison_image shape is {}, "
+                        "while sublattice '{}' is {}".format(
+                            self.comparison_image.data.shape,
+                            sublattice.name,
+                            sublattice.image.data))
 
     def __repr__(self):
         return '<%s, %s (sublattices:%s,element_list:%s)>' % (
@@ -525,9 +539,8 @@ class Model_Refiner():
                 mask_radius=mask_radius,
                 refine=refine,
                 scalebar_true=True)
-
-        self.comparison_image = simulation
-        # self._comparison_image_init(simulation)
+        
+        self._comparison_image_init(simulation)
 
     def calibrate_comparison_image(
             self, filename=None, percent_to_nn=0.4, mask_radius=None,
