@@ -1024,20 +1024,6 @@ sub1 = atom_lattice.sublattice_list[0]
 sub2 = atom_lattice.sublattice_list[1]
 sub3 = atom_lattice.sublattice_list[2]
 
-# calibration_area = am.add_atoms_with_gui(s.data)
-# # calibration_area = [[123.25, 379.15], [319.43, 548.70]] # example
-# delta_image_filter = 0.5
-
-# simulation = simulate_and_filter_and_calibrate_with_prismatic(
-#     xyz_filename=image_name + '.xyz',
-#     filename='prismatic_simulation',
-#     reference_image=s,
-#     calibration_area=calibration_area,
-#     calibration_separation=calibration_separation,
-#     delta_image_filter=delta_image_filter)
-
-# simulation.plot()
-
 ''' Refine the Sublattice elements '''
 element_list_sub1 = ['Mo_0', 'Mo_1', 'Mo_1.S_1', 'Mo_1.Se_1', 'Mo_2']
 element_list_sub2 = ['S_0', 'S_1', 'S_2', 'Se_1', 'Se_1.S_1', 'Se_2']
@@ -1067,17 +1053,17 @@ refiner.sublattice_list[0].signal.axes_manager
 refiner.sampling
 refiner.name
 
-refiner.thickness
-refiner.image_xyz_sizes 
+# refiner.thickness
+# refiner.image_xyz_sizes
 
-refiner.set_thickness = 6.10
-refiner.image_xyz_sizes
+# refiner.set_thickness = 6.10
+# refiner.image_xyz_sizes
 
-refiner.set_image_xyz_sizes = [5, 10, 6.2]
-refiner.image_xyz_sizes
+# refiner.set_image_xyz_sizes = [5, 10, 6.2]
+# refiner.image_xyz_sizes
 
-refiner.image_xyz_sizes[2] = 10 
-refiner.image_xyz_sizes
+# refiner.image_xyz_sizes[2] = 10
+# refiner.image_xyz_sizes
 
 
 # pick the top-left and bot-right of clean homogenous area
@@ -1098,17 +1084,25 @@ refiner.comparison_image
 refiner.comparison_image.axes_manager
 refiner.reference_image.axes_manager
 
+positions = refiner._sublattices_positions
+# len(refiner.sublattice_list[0].atom_list) + \
+# len(refiner.sublattice_list[1].atom_list) + \
+# len(refiner.sublattice_list[2].atom_list) 
+
+refiner.set_calibration_area(
+    manual_list=[[159.05087400067845, 409.82096276271284],
+                 [331.0900946589779, 546.9873684227083]])
 refiner.create_simulation(sublattices='all',
                           filter_image=True,
                           calibrate_image=True,
                           xyz_sizes=None,
                           header_comment='example',
                           filename='refiner_simulation',
-                          interpolationFactor=100,
+                          interpolationFactor=20,
                           scanWindowMax=1.0,
                           probeStep=0.126953125,
                           percent_to_nn=None,
-                          mask_radius=4.5)
+                          mask_radius=2)
 
 refiner.comparison_image.plot()
 refiner.reference_image.plot()
@@ -1116,18 +1110,55 @@ refiner.reference_image.plot()
 refiner.previous_refiner_instance
 refiner.revert_to_previous_refiner_instance()
 refiner.comparison_image.plot()
-
-refiner_past = refiner.previous_refiner_instance
-refiner_past.get_element_count_as_dataframe()
+# refiner_past = refiner.previous_refiner_instance
+# refiner_past.get_element_count_as_dataframe()
 
 refiner.image_difference_intensity_model_refiner()
 refiner.get_element_count_as_dataframe()
 
-refiner.image_difference_position_model_refiner()
+refiner.sublattice_list
+for sub in refiner.sublattice_list:
+    sub.plot()
+
+refiner.image_difference_position_model_refiner(
+    sublattices=[1], pixel_threshold=14,
+    filename='example', num_peaks=10)
+refiner.image_difference_intensity_model_refiner(verbose=True)
+
+refiner.repeating_intensity_refinement(n=5)
+
 refiner.get_element_count_as_dataframe()
 
+refiner.sublattice_list[0].plot()
 
 
+
+
+refiner.error_between_comparison_and_reference_image
+refiner.error_between_images_history
+refiner.plot_error_between_comparison_and_reference_image()
+refiner.plot_error_between_comparison_and_reference_image(style='scatter')
+
+####################
+
+from temul.model_creation import (
+    print_sublattice_elements,
+    get_most_common_sublattice_element)
+print_sublattice_elements(refiner.sublattice_list[1])
+
+for atom in refiner.sublattice_list[1].atom_list:
+    if atom.elements == '':
+        # raise warning instead of error
+        # set the '' elem to the most common elem?
+        atom.elements = get_most_common_sublattice_element(
+            sublattice, info='element')
+        atom.z_height = get_most_common_sublattice_element(
+            sublattice, info='z_height')
+
+        if verbose:
+            print("No element has been assigned for atom {}. It will "
+                    "be assigned {}. It should be refined with the "
+                    "Model_Refiner class.".format(atom, atom.elements))
 
 
 from temul.simulations import simulate_with_prismatic

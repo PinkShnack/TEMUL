@@ -243,7 +243,7 @@ changing the atom_position location. Using intensity of current positions only
 #   make the simulation agree more with the experiment
 
 
-def get_most_common_sublattice_element(sublattice):
+def get_most_common_sublattice_element(sublattice, info='element'):
     '''
     Find the most common element configuration in a sublattice.
 
@@ -257,23 +257,36 @@ def get_most_common_sublattice_element(sublattice):
 
     Examples
     --------
+    >>> import atomap.api as am
+    >>> from temul.model_creation import get_most_common_sublattice_element
     >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
     >>> for i, atom in enumerate(sublattice.atom_list):
     ...     if i % 3 == 0:
     ...         atom.elements = 'Ti_3'
+    ...         atom.z_height = '0.3, 0.6, 0.9'
     ...     else:
     ...         atom.elements = 'Ti_2'
-    >>> get_most_common_sublattice_element(sublattice)
+    ...         atom.z_height = '0.3, 0.6'
+    >>> get_most_common_sublattice_element(sublattice, info='element')
     'Ti_2'
+
+    >>> get_most_common_sublattice_element(sublattice, info='z_height')
+    '0.3, 0.6'
+
     '''
 
-    all_elements = []
-    for atom in sublattice.atom_list:
-        all_elements.append(atom.elements)
+    element_info = print_sublattice_elements(sublattice)
 
+    all_elements = [element[0] for element in element_info]
     most_common_element = max(set(all_elements), key=all_elements.count)
 
-    return most_common_element
+    element_z_height = [element[1] for element in element_info if
+                        element[0] == most_common_element][0]
+
+    if 'element' in info:
+        return most_common_element
+    elif 'z_height' in info:
+        return element_z_height
 
 
 def change_sublattice_atoms_via_intensity(
@@ -339,6 +352,20 @@ def change_sublattice_atoms_via_intensity(
 
 
     '''
+    for atom in sublattice.atom_list:
+        if atom.elements == '':
+            # raise warning instead of error
+            # set the '' elem to the most common elem?
+            atom.elements = get_most_common_sublattice_element(
+                sublattice, info='element')
+            atom.z_height = get_most_common_sublattice_element(
+                sublattice, info='z_height')
+
+            if verbose:
+                print("No element has been assigned for atom {}. It will "
+                      "be assigned {}. It should be refined with the "
+                      "Model_Refiner class.".format(atom, atom.elements))
+
     if image_diff_array.size == 0:
         pass
     else:
@@ -350,16 +377,7 @@ def change_sublattice_atoms_via_intensity(
 
             elem = sublattice.atom_list[p].elements
 
-            if elem == '':
-                # raise warning instead of error
-                # set the '' elem to the most common elem?
-                elem = get_most_common_sublattice_element(sublattice)
-                if verbose:
-                    print("No element has been assigned for atom {}. It will "
-                          "be assigned {}. It should be refined with the "
-                          "Model_Refiner class.".format(p, elem))
-
-            elif elem not in element_list:
+            if elem not in element_list:
                 raise ValueError("The element ({}, {}) isn't in the "
                                  "element_list".format(p, elem))
 
@@ -373,7 +391,7 @@ def change_sublattice_atoms_via_intensity(
                     if len(sublattice.atom_list[p].z_height) == 2:
                         z_h = sublattice.atom_list[p].z_height
                         sublattice.atom_list[p].z_height = [
-                            (z_h[0] + z_h[1])/2]
+                            (z_h[0] + z_h[1]) / 2]
                     else:
                         pass
 
@@ -387,7 +405,7 @@ def change_sublattice_atoms_via_intensity(
                 if len(sublattice.atom_list[p].z_height) == 2:
                     z_h = sublattice.atom_list[p].z_height
                     sublattice.atom_list[p].z_height = [
-                        (z_h[0] + z_h[1])/2]
+                        (z_h[0] + z_h[1]) / 2]
                 else:
                     pass
 
@@ -515,15 +533,15 @@ def image_difference_intensity(sublattice,
     std_dev_ints = np.std(diff_mean_ints)
 
     # plot the mean and std dev on each side of intensities histogram
-    std_from_mean = np.array([mean_ints-std_dev_ints, mean_ints+std_dev_ints,
-                              mean_ints-(2*std_dev_ints), mean_ints +
-                              (2*std_dev_ints),
-                              mean_ints-(3*std_dev_ints), mean_ints +
-                              (3*std_dev_ints),
-                              mean_ints-(4*std_dev_ints), mean_ints +
-                              (4*std_dev_ints)
+    std_from_mean = np.array([mean_ints - std_dev_ints, mean_ints + std_dev_ints,
+                              mean_ints - (2 * std_dev_ints), mean_ints +
+                              (2 * std_dev_ints),
+                              mean_ints - (3 * std_dev_ints), mean_ints +
+                              (3 * std_dev_ints),
+                              mean_ints - (4 * std_dev_ints), mean_ints +
+                              (4 * std_dev_ints)
                               ], ndmin=2).T
-    y_axis_std = np.array([len(diff_mean_ints)/100] * len(std_from_mean),
+    y_axis_std = np.array([len(diff_mean_ints) / 100] * len(std_from_mean),
                           ndmin=2).T
     std_from_mean_array = np.concatenate((std_from_mean, y_axis_std), axis=1)
     std_from_mean_array = np.append(std_from_mean, y_axis_std, axis=1)
@@ -550,11 +568,13 @@ def image_difference_intensity(sublattice,
         change_sublattice_atoms_via_intensity(sublattice=sublattice,
                                               image_diff_array=outliers_bright,
                                               darker_or_brighter=1,
-                                              element_list=element_list)
+                                              element_list=element_list,
+                                              verbose=verbose)
         change_sublattice_atoms_via_intensity(sublattice=sublattice,
                                               image_diff_array=outliers_dark,
                                               darker_or_brighter=0,
-                                              element_list=element_list)
+                                              element_list=element_list,
+                                              verbose=verbose)
 
     else:
         pass
@@ -575,7 +595,7 @@ def image_difference_intensity(sublattice,
 
         plt.figure()
         plt.hist(diff_mean_ints, bins=50, color='b', zorder=-1)
-        plt.scatter(mean_ints, len(diff_mean_ints)/50, c='red', zorder=1)
+        plt.scatter(mean_ints, len(diff_mean_ints) / 50, c='red', zorder=1)
         plt.scatter(
             std_from_mean_array[:, 0], std_from_mean_array[:, 1], c='green',
             zorder=1)
@@ -888,7 +908,7 @@ def scaling_z_contrast(numerator_sublattice, numerator_element,
 
     if len(numerator_element_split) == 1:
         scaling_exponent = log(
-            denominator_element_split[0][2]*scaling_ratio) / (
+            denominator_element_split[0][2] * scaling_ratio) / (
             log(numerator_element_split[0][3]) -
             log(denominator_element_split[0][3]))
     else:
@@ -923,7 +943,7 @@ def auto_generate_sublattice_element_list(material_type,
     elif material_type == 'single_element_column':
         if isinstance(elements, str):
 
-            for i in range(0, max_number_atoms_z+1):
+            for i in range(0, max_number_atoms_z + 1):
                 element_list.append(elements + '_' + str(i))
 
         elif isinstance(elements, list):
@@ -988,13 +1008,13 @@ def find_middle_and_edge_intensities(sublattice,
 
     middle_intensity_list.sort()
 
-    for i in range(0, len(middle_intensity_list)-1):
-        limit = (middle_intensity_list[i] + middle_intensity_list[i+1])/2
+    for i in range(0, len(middle_intensity_list) - 1):
+        limit = (middle_intensity_list[i] + middle_intensity_list[i + 1]) / 2
         limit_intensity_list.append(limit)
 
     if len(limit_intensity_list) <= len(middle_intensity_list):
         max_limit = middle_intensity_list[-1] + \
-            (middle_intensity_list[-1]-limit_intensity_list[-1])
+            (middle_intensity_list[-1] - limit_intensity_list[-1])
         limit_intensity_list.append(max_limit)
     else:
         pass
@@ -1002,8 +1022,9 @@ def find_middle_and_edge_intensities(sublattice,
     if largest_element_intensity is not None:
         ratio = sublattice.image.max() / largest_element_intensity
         middle_intensity_list = [
-            middle/ratio for middle in middle_intensity_list]
-        limit_intensity_list = [limit/ratio for limit in limit_intensity_list]
+            middle / ratio for middle in middle_intensity_list]
+        limit_intensity_list = [
+            limit / ratio for limit in limit_intensity_list]
 
     return middle_intensity_list, limit_intensity_list
 
@@ -1040,10 +1061,10 @@ def find_middle_and_edge_intensities_for_background(
     middle_intensity_list_background.sort()
 
     limit_intensity_list_background = [0.0]
-    for i in range(0, len(middle_intensity_list_background)-1):
+    for i in range(0, len(middle_intensity_list_background) - 1):
         limit = (
             middle_intensity_list_background[i] +
-            middle_intensity_list_background[i+1])/2
+            middle_intensity_list_background[i + 1]) / 2
         limit_intensity_list_background.append(limit)
 
     if len(limit_intensity_list_background) <= len(
@@ -1155,9 +1176,9 @@ def sort_sublattice_intensities(sublattice,
                 pass
 
             elements_of_sublattice = []
-            for p in range(0, (len(limit_intensity_list)-1)):
+            for p in range(0, (len(limit_intensity_list) - 1)):
                 for i in range(0, len(sublattice.atom_list)):
-                    if limit_intensity_list[p]*scalar < sublattice_intensity[i] < limit_intensity_list[p+1]*scalar:
+                    if limit_intensity_list[p] * scalar < sublattice_intensity[i] < limit_intensity_list[p + 1] * scalar:
                         sublattice.atom_list[i].elements = element_list[p]
                         elements_of_sublattice.append(
                             sublattice.atom_list[i].elements)
@@ -1171,9 +1192,9 @@ def sort_sublattice_intensities(sublattice,
                 pass
 
             elements_of_sublattice = []
-            for p in range(0, (len(limit_intensity_list)-1)):
+            for p in range(0, (len(limit_intensity_list) - 1)):
                 for i in range(0, len(sublattice.atom_list)):
-                    if limit_intensity_list[p] < sublattice_intensity[i] < limit_intensity_list[p+1]:
+                    if limit_intensity_list[p] < sublattice_intensity[i] < limit_intensity_list[p + 1]:
                         sublattice.atom_list[i].elements = element_list[p]
                         elements_of_sublattice.append(
                             sublattice.atom_list[i].elements)
@@ -1324,10 +1345,11 @@ def assign_z_height(sublattice, lattice_type, material):
                     "You must include a suitable lattice_type. This feature is limited")
 # MoS2 0.2429640475, 0.7570359525
 
+
 def correct_background_elements(sublattice):
 
     most_common_element = get_most_common_sublattice_element(sublattice)
-    
+
     for atom in sublattice.atom_list:
         if atom.elements == most_common_element:
             atom.elements = 'H_0'
@@ -1411,18 +1433,18 @@ def return_z_coordinates(z_thickness,
         if atom_layout in ('bot', 'center'):
             z_coords = z_coords_all[:number_atoms_z]
         elif atom_layout == 'top':
-            z_coords = z_coords_all[-1*number_atoms_z:]
+            z_coords = z_coords_all[-1 * number_atoms_z:]
         else:
             raise ValueError("Only 'bot', 'center' and 'top' are allowed.")
 
     if fractional_coordinates:
-        z_coords = z_coords/z_thickness
+        z_coords = z_coords / z_thickness
 
     # for centered particles (atoms centered around 0.5 in z)
     if atom_layout == 'center':
         # adds half the distance from the top atom to the top of the unit cell
         # to each atom coordinate.
-        z_coords = z_coords + (1-z_coords.max())/2
+        z_coords = z_coords + (1 - z_coords.max()) / 2
 
     return(z_coords)
 
@@ -1617,8 +1639,8 @@ def create_dataframe_for_cif(sublattice_list, element_list):
 
                             dfObj = dfObj.append({'_atom_site_label': atom_label,
                                                   '_atom_site_occupancy': 1.0,
-                                                  '_atom_site_fract_x': format(sublattice.atom_list[i].pixel_x/len(sublattice.image[0, :]), '.6f'),
-                                                  '_atom_site_fract_y': format((len(sublattice.image[:, 0])-sublattice.atom_list[i].pixel_y)/len(sublattice.image[:, 0]), '.6f'),
+                                                  '_atom_site_fract_x': format(sublattice.atom_list[i].pixel_x / len(sublattice.image[0, :]), '.6f'),
+                                                  '_atom_site_fract_y': format((len(sublattice.image[:, 0]) - sublattice.atom_list[i].pixel_y) / len(sublattice.image[:, 0]), '.6f'),
                                                   # great touch
                                                   '_atom_site_fract_z': format(atom_z_height, '.6f'),
                                                   '_atom_site_adp_type': 'Biso',
@@ -1715,6 +1737,7 @@ def change_sublattice_pseudo_inplace(new_atom_positions, old_sublattice):
 def image_difference_position(sublattice,
                               sim_image,
                               pixel_threshold,
+                              comparison_sublattice_list=None,
                               filename=None,
                               percent_to_nn=0.40,
                               mask_radius=None,
@@ -1777,7 +1800,7 @@ def image_difference_position(sublattice,
     >>> len(sublattice.atom_list)
     397
 
-    >>> sublattice = image_difference_position(sublattice=sublattice,
+    >>> sublattice = image_difference_position(sublattice_to_refine=sublattice,
     ...                           sim_image=sim_image,
     ...                           pixel_threshold=10,
     ...                           percent_to_nn=None,
@@ -1836,27 +1859,33 @@ def image_difference_position(sublattice,
 
     atom_positions_sub_new = []
 
+    # for sublattice in sublattice_list:
+    # SHOULD i HAVE ALL SUBLATTICE POSITIONS HERE?
+
+    if comparison_sublattice_list is None:
+        comparison_sublattice_list = [sublattice]
+
     for atom in range(0, len(atom_positions_diff_all)):
 
         new_atom_distance_list = []
 
-        # for sublattice in sublattice_list:
-        sublattice_atom_pos = np.array(sublattice.atom_positions).T
+        for comp_sub in comparison_sublattice_list:
+            comp_sub_atom_pos = np.array(comp_sub.atom_positions).T
 
-        for p in range(0, len(sublattice_atom_pos)):
+            for p in range(0, len(comp_sub_atom_pos)):
 
-            xy_distances = atom_positions_diff_all[atom] - \
-                sublattice_atom_pos[p]
+                xy_distances = atom_positions_diff_all[atom] - \
+                    comp_sub_atom_pos[p]
 
-            # put all distances in this array with this loop
-            vector_array = []
-            vector = np.sqrt((xy_distances[0]**2) +
-                             (xy_distances[1]**2))
-            vector_array.append(vector)
+                # put all distances in this array with this loop
+                vector_array = []
+                vector = np.sqrt((xy_distances[0]**2) +
+                                (xy_distances[1]**2))
+                vector_array.append(vector)
 
-            new_atom_distance_list.append(
-                [vector_array, atom_positions_diff_all[atom],
-                    sublattice])
+                new_atom_distance_list.append(
+                    [vector_array, atom_positions_diff_all[atom],
+                        sublattice])
 
         # use list comprehension to get the distances on their own, the [0] is
         # changing the list of lists to a list of floats
@@ -1938,3 +1967,16 @@ def image_difference_position(sublattice,
                     pad_inches=None, dpi=300, labels=False)
 
     return(sublattice)
+
+
+def get_positions_from_sublattices(sublattice_list):
+
+    current_sublattice_positions = []
+    for sub in sublattice_list:
+        current_sublattice_positions.append(np.array(sub.atom_positions).T)
+
+    current_sublattice_positions = [
+        i for sublist in current_sublattice_positions for i in sublist]
+    current_sublattice_positions = np.asarray(current_sublattice_positions)
+
+    return current_sublattice_positions

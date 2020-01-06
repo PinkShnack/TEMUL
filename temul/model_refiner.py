@@ -4,7 +4,8 @@ from temul.model_creation import (
     compare_count_atoms_in_sublattice_list,
     image_difference_intensity,
     image_difference_position,
-    count_all_individual_elements
+    count_all_individual_elements,
+    get_positions_from_sublattices
 )
 from temul.element_tools import (
     get_individual_elements_from_element_list,
@@ -13,7 +14,8 @@ from temul.element_tools import (
 from temul.io import create_dataframe_for_xyz
 from temul.signal_processing import (
     compare_two_image_and_create_filtered_image,
-    calibrate_intensity_distance_with_sublattice_roi
+    calibrate_intensity_distance_with_sublattice_roi,
+    measure_image_errors
 )
 from temul.simulations import (
     simulate_with_prismatic,
@@ -81,6 +83,13 @@ class Model_Refiner():
             self.thickness]
 
         self.previous_refiner_instance = None
+        self.update_sublattices_positions(self.sublattice_list)
+
+        self.error_between_comparison_and_reference_image = []
+        self.error_between_images_history = []
+        if len(self.error_between_comparison_and_reference_image) != 0:
+            self.error_between_images_history.append(
+                self.error_between_comparison_and_reference_image)
 
     def _reference_image_init(self):
         axes = self.reference_image.axes_manager
@@ -265,6 +274,43 @@ class Model_Refiner():
     def set_calibration_separation(self, pixel_separation):
         self.calibration_separation = pixel_separation
 
+    def update_error_between_comparison_and_reference_image(self):
+
+        mse_number, ssm_number = measure_image_errors(
+            imageA=self.reference_image.data,
+            imageB=self.comparison_image.data,
+            filename=None)
+
+        self.error_between_comparison_and_reference_image = [
+            mse_number, ssm_number]
+        self.error_between_images_history.append(
+            self.error_between_comparison_and_reference_image)
+
+    def plot_error_between_comparison_and_reference_image(self, style='plot'):
+
+        errors = self.error_between_images_history
+
+        mse = [i[0] for i in errors]
+        ssm = [i[1] for i in errors]
+        x = range(0, len(errors))
+
+        plt.figure()
+        if style == 'plot':
+            plt.plot(x, mse, 'b-', label='Mean Standard Error')
+            plt.plot(x, ssm, 'r--', label='Struc. Sim. Index')
+        elif style == 'scatter':
+            plt.scatter(x=x, y=mse, color='b', label='Mean Standard Error')
+            plt.scatter(x=x, y=ssm, color='r', label='Struc. Sim. Index')
+        plt.title("Reference and Comparison Image Diff.", fontsize=16)
+        plt.xlabel("Simulation Order")
+        plt.ylabel("MSE and SSM Value")
+        plt.legend()
+
+    def update_sublattices_positions(self, sublattice_list):
+
+        positions = get_positions_from_sublattices(sublattice_list)
+        self._sublattices_positions = positions
+
     def set_thickness(self, thickness):
         self.thickness = thickness
 
@@ -391,16 +437,18 @@ class Model_Refiner():
                           .format(i + 1))
                     break
 
-    def image_difference_position_model_refiner(self,
-                                                sublattices='all',
-                                                comparison_image='default',
-                                                pixel_threshold=5,
-                                                num_peaks=5,
-                                                inplace=True,
-                                                percent_to_nn=0.40,
-                                                mask_radius=None,
-                                                filename=None,
-                                                refinement_method="Position"):
+    def image_difference_position_model_refiner(
+            self,
+            sublattices='all',
+            comparison_sublattice_list='auto',
+            comparison_image='default',
+            pixel_threshold=5,
+            num_peaks=5,
+            inplace=True,
+            percent_to_nn=0.40,
+            mask_radius=None,
+            filename=None,
+            refinement_method="Position"):
         '''
         Find new atom positions that were perhaps missed by the initial
         position finding steps. Each sublattice will be updated with new atom
@@ -446,16 +494,36 @@ class Model_Refiner():
             sublattice_list = self.sublattice_list
         elif isinstance(sublattices, list):
             sublattice_list = [self.sublattice_list[i] for i in sublattices]
+            print(
+                "Warning: Setting `sublattices` to a list can cause overwrite"
+                "errors. Best use `sublattice='all'` until this is fixed")
+
+        # elif isinstance(positions_from_sublattices, list):
+        #     positions_from_sublattices = [
+        #         positions_from_sublattices[i] for i in
+        #         positions_from_sublattices] # not correct, would be nice to
+        #         have
 
         if 'default' in comparison_image:
             comparison_image = self.comparison_image
 
+        # if you set sublattices=[1], you get an error that the line
+        # self.sublattice_list[i] = sublattice will overwrite the first
+        # sublattice with the sublattice_list[1] sublattice! could just not
+        # have sublattice as an option! see print warning above!
         for i, sublattice in enumerate(sublattice_list):
+
+            # update the positions_from_sublattices before running the next
+            # sublattice if chosen
+            if comparison_sublattice_list == 'auto':
+
+                comparison_sublattice_list = self.sublattice_list
 
             sublattice = image_difference_position(
                 sublattice=sublattice,
                 sim_image=comparison_image,
                 pixel_threshold=pixel_threshold,
+                comparison_sublattice_list=comparison_sublattice_list,
                 filename=filename,
                 percent_to_nn=percent_to_nn,
                 mask_radius=mask_radius,
@@ -628,6 +696,7 @@ class Model_Refiner():
 
         self._save_refiner_instance()
         self._comparison_image_init(simulation)
+        self.update_error_between_comparison_and_reference_image()
 
     def calibrate_comparison_image(
             self, filename=None, percent_to_nn=0.4, mask_radius=None,
