@@ -670,6 +670,7 @@ class Model_Refiner():
             'prism_2Doutput_' + filename + '_mrc_file.mrc', save_name=None)
 
         if filter_image:
+            # set filename as not None - good to output the mse ssm plot
             simulation = compare_two_image_and_create_filtered_image(
                 image_to_filter=simulation,
                 reference_image=self.reference_image,

@@ -1043,6 +1043,10 @@ refiner = Model_Refiner(sub_dict,
 refiner.get_element_count_as_dataframe()
 refiner.plot_element_count_as_bar_chart(2)
 
+refiner.sublattice_list
+for sub in refiner.sublattice_list:
+    sub.plot()
+
 refiner.image_difference_intensity_model_refiner()
 
 refiner.sublattice_and_elements_dict
@@ -1095,42 +1099,36 @@ refiner.set_calibration_area(
 refiner.create_simulation(sublattices='all',
                           filter_image=True,
                           calibrate_image=True,
-                          xyz_sizes=None,
-                          header_comment='example',
-                          filename='refiner_simulation',
-                          interpolationFactor=20,
-                          scanWindowMax=1.0,
-                          probeStep=0.126953125,
+                          filename='sim',
+                          interpolationFactor=32,
                           percent_to_nn=None,
                           mask_radius=2)
 
 refiner.comparison_image.plot()
 refiner.reference_image.plot()
 
+
+refiner.image_difference_intensity_model_refiner()
+
 refiner.previous_refiner_instance
-refiner.revert_to_previous_refiner_instance()
-refiner.comparison_image.plot()
-# refiner_past = refiner.previous_refiner_instance
-# refiner_past.get_element_count_as_dataframe()
+refiner = refiner.previous_refiner_instance
+
+refiner.repeating_intensity_refinement(n=7)
 
 refiner.image_difference_intensity_model_refiner()
 refiner.get_element_count_as_dataframe()
 
-refiner.sublattice_list
-for sub in refiner.sublattice_list:
-    sub.plot()
-
 refiner.image_difference_position_model_refiner(
-    sublattices=[1], pixel_threshold=14,
+    sublattices='all', pixel_threshold=14,
     filename='example', num_peaks=10)
-refiner.image_difference_intensity_model_refiner(verbose=True)
 
-refiner.repeating_intensity_refinement(n=5)
+refiner.image_difference_intensity_model_refiner()
 
 refiner.get_element_count_as_dataframe()
 
 refiner.sublattice_list[0].plot()
 
+refiner.plot_element_count_as_bar_chart(2, flip_colrows=False)
 
 
 
