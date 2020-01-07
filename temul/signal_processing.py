@@ -614,6 +614,9 @@ def measure_image_errors(imageA, imageB, filename=None):
     ...                                               filename=None)
 
     '''
+    if imageA.dtype is not imageB.dtype:
+        imageA = imageA.astype('float64')
+        imageB = imageB.astype('float64')
 
     mse_number = mse(imageA, imageB)
     ssm_number = ssm(imageA, imageB)
