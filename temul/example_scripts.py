@@ -1091,7 +1091,7 @@ refiner.reference_image.axes_manager
 positions = refiner._sublattices_positions
 # len(refiner.sublattice_list[0].atom_list) + \
 # len(refiner.sublattice_list[1].atom_list) + \
-# len(refiner.sublattice_list[2].atom_list) 
+# len(refiner.sublattice_list[2].atom_list)
 
 refiner.set_calibration_area(
     manual_list=[[159.05087400067845, 409.82096276271284],
@@ -1100,9 +1100,11 @@ refiner.create_simulation(sublattices='all',
                           filter_image=True,
                           calibrate_image=True,
                           filename='sim',
-                          interpolationFactor=32,
+                          interpolationFactor=100,
                           percent_to_nn=None,
                           mask_radius=2)
+
+refiner.plot_reference_and_comparison_images()
 
 refiner.comparison_image.plot()
 refiner.reference_image.plot()
@@ -1131,7 +1133,6 @@ refiner.sublattice_list[0].plot()
 refiner.plot_element_count_as_bar_chart(2, flip_colrows=False)
 
 
-
 refiner.error_between_comparison_and_reference_image
 refiner.error_between_images_history
 refiner.plot_error_between_comparison_and_reference_image()
@@ -1139,152 +1140,4 @@ refiner.plot_error_between_comparison_and_reference_image(style='scatter')
 
 ####################
 
-from temul.model_creation import (
-    print_sublattice_elements,
-    get_most_common_sublattice_element)
-print_sublattice_elements(refiner.sublattice_list[1])
-
-for atom in refiner.sublattice_list[1].atom_list:
-    if atom.elements == '':
-        # raise warning instead of error
-        # set the '' elem to the most common elem?
-        atom.elements = get_most_common_sublattice_element(
-            sublattice, info='element')
-        atom.z_height = get_most_common_sublattice_element(
-            sublattice, info='z_height')
-
-        if verbose:
-            print("No element has been assigned for atom {}. It will "
-                    "be assigned {}. It should be refined with the "
-                    "Model_Refiner class.".format(atom, atom.elements))
-
-
-from temul.simulations import simulate_with_prismatic
-filename = 'refiner_simulation_10'
-simulate_with_prismatic('refiner_simulation_xyz_file.xyz',
-                        filename,
-                        reference_image=None,
-                        probeStep=0.126953125,
-                        interpolationFactor=64,
-                        scanWindowMax=1.0)
-
-
-# import pyprismatic as pr
-# import os
-# simulation_filename = 'refiner_simulation_xyz_file.xyz'
-
-# file_exists = os.path.isfile(simulation_filename)
-# if file_exists:
-#     pass
-# else:
-#     raise OSError('XYZ file not found in directory, stopping refinement')
-
-# # param inputs, feel free to add more!!
-# pr_sim = pr.Metadata(filenameAtoms=simulation_filename)
-
-# reference_image=None
-
-# pr_sim.probeStepX = pr_sim.probeStepY = 0.012
-# pr_sim.tileX, pr_sim.tileY, pr_sim.tileZ = 1,1,1
-
-# integrationAngleMin=0.085
-# integrationAngleMax=0.186
-# detectorAngleStep=0.001
-# realspacePixelSize=0.0654
-# numFP=1
-# cellDimXYZ=None
-# probeSemiangle=0.030
-# alphaBeamMax=0.032
-# scanWindowMin=0.0
-# algorithm="prism"
-# numThreads=2
-
-# #    pr_sim.probeStepX = pr_sim.cellDimX/atom_lattice_data.shape[1]
-# #    pr_sim.probeStepY = pr_sim.cellDimY/atom_lattice_data.shape[0]
-# pr_sim.detectorAngleStep = detectorAngleStep
-# pr_sim.save2DOutput = True
-# pr_sim.save3DOutput = False
-
-# pr_sim.E0 = 60000
-# pr_sim.integrationAngleMin = integrationAngleMin
-# pr_sim.integrationAngleMax = integrationAngleMax
-# pr_sim.interpolationFactorX = pr_sim.interpolationFactorY = 64
-# pr_sim.realspacePixelSizeX = pr_sim.realspacePixelSizeY = \
-#     realspacePixelSize
-# pr_sim.numFP = numFP
-# pr_sim.probeSemiangle = probeSemiangle
-# pr_sim.alphaBeamMax = alphaBeamMax  # in rads
-# pr_sim.scanWindowXMin = pr_sim.scanWindowYMin = scanWindowMin
-# pr_sim.scanWindowYMax = pr_sim.scanWindowXMax = 1.0
-# pr_sim.algorithm = algorithm
-# pr_sim.numThreads = numThreads
-# filename = 'refiner_simulation_9'
-# pr_sim.filenameOutput = filename + '.mrc'
-real_sampling_exp_angs = 0.126953125
-
-real_sampling_sim_angs = real_sampling_exp_angs + 0.000005
-
-real_sampling_sim_angs = round(real_sampling_sim_angs, 6)
-
-# pr_sim.go()
-
-
-# 0.0654
-import hyperspy.api as hs
-real_sampling_exp_angs = 0.126953125
-
-simulation = hs.load('prism_2Doutput_' + filename + '.mrc')
-simulation.axes_manager
-simulation.axes_manager[0].name = 'extra_dimension'
-simulation = simulation.sum('extra_dimension')
-simulation.axes_manager[0].scale = real_sampling_exp_angs
-simulation.axes_manager[1].scale = real_sampling_exp_angs
-simulation.axes_manager[0].units = 'A'
-simulation.axes_manager[1].units = 'A'
-
-simulation.plot()
-
-s_original
-
-
-refiner.sampling
-image_size_pixels = refiner.sublattice_list[0].image.shape
-
-refiner.sampling * image_size_pixels[1]
-
-# sort out probestep i think that;s the issue!
-if not refiner.comparison_image.data.shape == refiner.sublattice_list[0].image.shape:
-    print('This is a problem')
-
-refiner.comparison_image.plot()
-refiner.reference_image.plot()
-
-refiner.reference_image.axes_manager
-
-
-####################
-for i in range(3):
-
-    dataframe = create_dataframe_for_xyz(
-        sublattice_list=refiner.sublattice_list,
-        element_list=element_list,
-        x_distance=image_size_x_nm * 10,
-        y_distance=image_size_y_nm * 10,
-        z_distance=image_size_z_nm * 10,
-        filename=image_name + '_' + str(i),
-        header_comment='Selenium implanted MoS2')
-
-    simulation = simulate_and_filter_and_calibrate_with_prismatic(
-        xyz_filename=image_name + '.xyz',
-        filename='prismatic_simulation',
-        reference_image=s,
-        calibration_area=calibration_area,
-        calibration_separation=calibration_separation,
-        delta_image_filter=delta_image_filter)
-
-    refiner.comparison_image = simulation
-
-    refiner.image_difference_intensity_model_refiner()
-
-
-refiner.get_element_count_as_dataframe()
+import temul.polarisation as tmlpol

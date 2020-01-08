@@ -1294,9 +1294,11 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
     if refine is True:
         calib_sub.find_nearest_neighbors()
         calib_sub.refine_atom_positions_using_center_of_mass(
-            percent_to_nn=percent_to_nn, mask_radius=mask_radius)
+            percent_to_nn=percent_to_nn, mask_radius=mask_radius,
+            show_progressbar=False)
         calib_sub.refine_atom_positions_using_2d_gaussian(
-            percent_to_nn=percent_to_nn, mask_radius=mask_radius)
+            percent_to_nn=percent_to_nn, mask_radius=mask_radius,
+            show_progressbar=False)
     else:
         pass
     # calib_sub.plot()

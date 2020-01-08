@@ -688,7 +688,7 @@ class Model_Refiner():
                 image=simulation,
                 cropping_area=self.calibration_area,
                 separation=self.calibration_separation,
-                filename=filename,
+                filename=None,
                 reference_image=self.reference_image,
                 percent_to_nn=percent_to_nn,
                 mask_radius=mask_radius,
@@ -716,6 +716,14 @@ class Model_Refiner():
             refine=refine,
             scalebar_true=True)
 
+    def plot_reference_and_comparison_images(
+            self, title_reference='Reference', title_comparison='Comparison'):
+        _, (ax1, ax2) = plt.subplots(1, 2)
+        ax1.imshow(self.reference_image.data)
+        ax2.imshow(self.comparison_image.data)
+        ax1.set_title(title_reference)
+        ax2.set_title(title_comparison)
+        plt.show()
 
 # a_list = Counter({'Mo': 1, 'F': 5, 'He': 9})
 # b_list = ['init', 'one', 'two']
