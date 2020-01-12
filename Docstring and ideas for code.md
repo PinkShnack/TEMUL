@@ -49,6 +49,9 @@ Examples
 13. Change save_image to string
 14. Add mask_reverse for get_masked_ifft() in signal_processing.
 15. Auto toggle refine have a histogram option.
+16. Model refiner:
+    16a. DW factor for pyprismatic, set to 0.01 as default.
+    16b. mean square error - correct name
 
 # Ideas for code development
 
