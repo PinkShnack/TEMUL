@@ -225,10 +225,17 @@ def compare_images_line_profile_two_images(imageA, imageB,
     ...     imageA, imageB, line_profile_positions, reduce_func=reduce_func,
     ...     linewidth=3, image_sampling=0.012, crop_offset=30)
 
+    >>> import temul.example_data as example_data
+    >>> imageA = example_data.load_Se_implanted_MoS2_data()
+    >>> imageB = example_data.load_Se_implanted_MoS2_data()
+    >>> line_profile_positions = [[301.42, 318.9], [535.92, 301.82]]
+    >>> compare_images_line_profile_two_images(
+    ...     imageA, imageB, line_profile_positions, reduce_func=None)
+
     Include PTO example from paper
     '''
 
-    if image_sampling == 'Auto':
+    if image_sampling.lower() == 'auto':
         if imageA.axes_manager[0].scale != 1.0:
             image_sampling = imageA.axes_manager[-1].scale
             scale_units = imageA.axes_manager[-1].units
@@ -236,6 +243,9 @@ def compare_images_line_profile_two_images(imageA, imageB,
             raise ValueError("The image sampling cannot be computed."
                              "The image should either be calibrated "
                              "or the image_sampling provided")
+    elif not isinstance(image_sampling, float):
+        raise ValueError("The image_sampling should either be 'auto' or a "
+                         "floating point number")
 
     x0, y0 = line_profile_positions[0]
     x1, y1 = line_profile_positions[1]
