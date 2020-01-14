@@ -228,21 +228,23 @@ def compare_images_line_profile_two_images(imageA, imageB,
     >>> import temul.example_data as example_data
     >>> imageA = example_data.load_Se_implanted_MoS2_data()
     >>> imageB = example_data.load_Se_implanted_MoS2_data()
-    >>> line_profile_positions = [[301.42, 318.9], [535.92, 301.82]]
+    >>> line_profile_positions = [[301.42, 318.9], [535.92, 500.82]]
     >>> compare_images_line_profile_two_images(
     ...     imageA, imageB, line_profile_positions, reduce_func=None)
 
     Include PTO example from paper
     '''
 
-    if image_sampling.lower() == 'auto':
-        if imageA.axes_manager[0].scale != 1.0:
-            image_sampling = imageA.axes_manager[-1].scale
-            scale_units = imageA.axes_manager[-1].units
-        else:
-            raise ValueError("The image sampling cannot be computed."
-                             "The image should either be calibrated "
-                             "or the image_sampling provided")
+    if isinstance(image_sampling, str):
+        if image_sampling.lower() == 'auto':
+            if imageA.axes_manager[0].scale != 1.0:
+                image_sampling = imageA.axes_manager[-1].scale
+                scale_units = imageA.axes_manager[-1].units
+
+            else:
+                raise ValueError("The image sampling cannot be computed."
+                                 "The image should either be calibrated "
+                                 "or the image_sampling provided")
     elif not isinstance(image_sampling, float):
         raise ValueError("The image_sampling should either be 'auto' or a "
                          "floating point number")
@@ -257,6 +259,11 @@ def compare_images_line_profile_two_images(imageA, imageB,
 
     crop_left, crop_right = x0 - crop_offset, x1 + crop_offset
     crop_top, crop_bot = y0 - crop_offset, y1 + crop_offset
+
+    crop_left *= imageA.axes_manager[-1].scale
+    crop_right *= imageA.axes_manager[-1].scale
+    crop_top *= imageA.axes_manager[-1].scale
+    crop_bot *= imageA.axes_manager[-1].scale
 
     imageA_crop = hs.roi.RectangularROI(left=crop_left, right=crop_right,
                                         top=crop_top, bottom=crop_bot)(imageA)
