@@ -158,13 +158,13 @@ def compare_images_line_profile_one_image(image,
 # line_profile_positions = am.add_atoms_with_gui(s)
 
 
-def compare_images_line_profile_two_images(imageA,
-                                           imageB,
+def compare_images_line_profile_two_images(imageA, imageB,
                                            line_profile_positions,
                                            reduce_func=np.mean,
                                            linewidth=1,
-                                           image_sampling='Auto',
-                                           offset=20,
+                                           image_sampling='auto',
+                                           scale_units='nm',
+                                           crop_offset=20,
                                            title='Intensity Profile',
                                            marker_A='^',
                                            marker_B='o',
@@ -179,21 +179,51 @@ def compare_images_line_profile_two_images(imageA,
     Parameters
     ----------
 
-    imageAm, imageB : 2D Hyperspy signal
+    imageA, imageB : 2D Hyperspy signal
     line_profile_positions : list of lists
         one line profile coordinate. Use atomap's am.add_atoms_with_gui()
         function to get these. The two dots will trace the line profile.
+        See Examples below for example.
     linewidth : int, default 1
         see profile_line for parameter details.
-    image_sampling :  float, default 'Auto'
-        if set to 'Auto' the function will attempt to find the sampling of
+    image_sampling :  float, default 'auto'
+        if set to 'auto' the function will attempt to find the sampling of
         image from image.axes_manager[0].scale.
+    scale_units : string, default 'nm'
+    crop_offset : int, default 20
+        number of pixels away from the `line_profile_positions` coordinates the
+        image crop will be taken.
+    filename : string, default None
+        If this is set to a name (string), the image will be saved with that
+        name.
 
     Returns
     -------
 
     Examples
     --------
+    >>> import atomap.api as am
+    >>> from temul.signal_plotting import (
+    ...     compare_images_line_profile_two_images)
+    >>> imageA = am.dummy_data.get_simple_cubic_signal(image_noise=True)
+    >>> imageB = am.dummy_data.get_simple_cubic_signal()
+    >>> # line_profile_positions = am.add_atoms_with_gui(imageA)
+    >>> line_profile_positions = [[81.58, 69.70], [193.10, 184.08]]
+    >>> compare_images_line_profile_two_images(
+    ...     imageA, imageB, line_profile_positions,
+    ...     linewidth=3, image_sampling=0.012, crop_offset=30)
+
+    To use the new skimage functionality try `reduce_func`
+    >>> import numpy as np
+    >>> reduce_func = np.sum # can be any ufunc!
+    >>> compare_images_line_profile_two_images(
+    ...     imageA, imageB, line_profile_positions, reduce_func=reduce_func,
+    ...     linewidth=3, image_sampling=0.012, crop_offset=30)
+
+    >>> reduce_func = lambda x: np.sum(x**0.5)
+    >>> compare_images_line_profile_two_images(
+    ...     imageA, imageB, line_profile_positions, reduce_func=reduce_func,
+    ...     linewidth=3, image_sampling=0.012, crop_offset=30)
 
     Include PTO example from paper
     '''
@@ -206,42 +236,42 @@ def compare_images_line_profile_two_images(imageA,
             raise ValueError("The image sampling cannot be computed."
                              "The image should either be calibrated "
                              "or the image_sampling provided")
-    else:
-        scale_units = 'pix'
 
     x0, y0 = line_profile_positions[0]
     x1, y1 = line_profile_positions[1]
 
-    profile_exp = profile_line(image=imageA.data, src=[y0, x0], dst=[y1, x1],
-                               linewidth=linewidth, reduce_func=reduce_func)
-    profile_y = np.arange(0, len(profile_exp), 1)
-    profile_y = profile_y * image_sampling
+    profile_y_exp = profile_line(image=imageA.data, src=[y0, x0], dst=[y1, x1],
+                                 linewidth=linewidth, reduce_func=reduce_func)
+    profile_x_exp = np.arange(0, len(profile_y_exp), 1)
+    profile_x_exp = profile_x_exp * image_sampling
 
-    crop_left, crop_right = x0 - offset, x1 + offset
-    crop_top, crop_bot = y0 - offset, y1 + offset
+    crop_left, crop_right = x0 - crop_offset, x1 + crop_offset
+    crop_top, crop_bot = y0 - crop_offset, y1 + crop_offset
 
     imageA_crop = hs.roi.RectangularROI(left=crop_left, right=crop_right,
                                         top=crop_top, bottom=crop_bot)(imageA)
 
     # for the final plot, set the marker positions
-    crop_x0 = offset
-    crop_y0 = offset
-    crop_x1 = offset + (x1 - x0)
-    crop_y1 = offset + (y1 - y0)
+    crop_x0 = crop_offset
+    crop_y0 = crop_offset
+    crop_x1 = crop_offset + (x1 - x0)
+    crop_y1 = crop_offset + (y1 - y0)
 
     ''' Simulation '''
 
-    profile_sim = profile_line(image=imageB.data, src=[y0, x0], dst=[y1, x1],
-                               linewidth=linewidth, reduce_func=reduce_func)
-    profile_y_sim = np.arange(0, len(profile_sim), 1)
-    profile_y_sim = profile_y_sim * image_sampling
+    profile_y_sim = profile_line(image=imageB.data, src=[y0, x0], dst=[y1, x1],
+                                 linewidth=linewidth, reduce_func=reduce_func)
+    profile_x_sim = np.arange(0, len(profile_y_sim), 1)
+    profile_x_sim = profile_x_sim * image_sampling
 
     imageB_crop = hs.roi.RectangularROI(left=crop_left, right=crop_right,
                                         top=crop_top, bottom=crop_bot)(imageB)
 
     # -- Plot the line profile comparisons
-    _, (ax1, ax2, ax3) = plt.subplots(ncols=3)
-    subplots_adjust(wspace=0.3)
+    _, (ax1, ax2, ax3) = plt.subplots(
+        figsize=(10, 3), ncols=3, gridspec_kw={'width_ratios': [1, 1, 3],
+                                               'height_ratios': [1]})
+    subplots_adjust(wspace=0.1)
     ax1.imshow(imageA_crop)
     ax1.plot(crop_x0, crop_y0, color='r', marker=marker_A,
              markersize=arrow_markersize, alpha=1)
@@ -260,40 +290,22 @@ def compare_images_line_profile_two_images(imageA,
     ax2.yaxis.set_ticks([])
     ax2.xaxis.set_ticks([])
 
-    ax3.plot(profile_exp, profile_y, color='r', label='Exp')
-    ax3.plot(profile_sim, profile_y_sim, color='b',
-             linestyle='--', label='Sim')
-    ax3.legend(fancybox=True, loc='upper right')
-    ax3.scatter(0, 0.025 * max(profile_y), marker=marker_A, color='k')
-    ax3.scatter(0, max(profile_y) - 0.025 * max(profile_y),
-                marker=marker_B, color='k')
+    ax3.plot(profile_x_exp, profile_y_exp, color='r', label='Exp',
+             linestyle='--')
+    ax3.plot(profile_x_sim, profile_y_sim, color='b', label='Sim')
+
+    ax3.scatter(0, min(profile_y_exp), marker=marker_A, color='k')
+    ax3.scatter(max(profile_x_exp), min(profile_y_exp), marker=marker_B,
+                color='k')
 
     ax3.set_title(title)
-    ax3.set_xlabel('Intensity (a.u.)')
-    ax3.set_ylabel('Distance ({})'.format(scale_units))
-    ax3.set_ylim(max(profile_y), min(profile_y))
-    # ax3.yaxis.set_ticks([])
-    # ax3.xaxis.set_ticks([])
-    # ax3.axes.get_yaxis().set_visible(False)
+    ax3.set_ylabel('Intensity (a.u.)')
+    ax3.set_xlabel('Distance ({})'.format(scale_units))
+    # ax3.set_ylim(max(profile_x_exp), min(profile_x_exp))
+    ax3.legend(fancybox=True, loc='upper right')
     plt.tight_layout()
-    plt.show()
 
     if filename is not None:
         plt.savefig(fname=filename + '.png',
                     transparent=True, frameon=False, bbox_inches='tight',
                     pad_inches=None, dpi=300)
-
-
-import atomap.api as am
-
-imageA = am.dummy_data.get_simple_cubic_signal()
-imageB = am.dummy_data.get_simple_cubic_signal(image_noise=True)
-
-# line_profile_positions = am.add_atoms_with_gui(imageA)
-
-line_profile_positions = [[81.58431549974841, 69.70254857776354],
-                          [193.1090184685826, 184.08685931502936]]
-
-compare_images_line_profile_two_images(
-    imageA, imageB, line_profile_positions, reduce_func=np.mean,
-    linewidth=3, image_sampling=0.012, offset=10, title='Intensity Profile')
