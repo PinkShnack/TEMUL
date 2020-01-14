@@ -1033,7 +1033,6 @@ sub_dict = {sub1: element_list_sub1,
             sub2: element_list_sub2,
             sub3: element_list_sub3}
 
-
 image_size_z_nm = 1.2294 / 2
 
 refiner = Model_Refiner(sub_dict,
@@ -1056,6 +1055,9 @@ refiner.flattened_element_list
 refiner.sublattice_list[0].signal.axes_manager
 refiner.sampling
 refiner.name
+
+refiner.auto_mask_radius
+# refiner.auto_mask_radius[2] = 0.5
 
 # refiner.thickness
 # refiner.image_xyz_sizes
@@ -1096,13 +1098,14 @@ positions = refiner._sublattices_positions
 refiner.set_calibration_area(
     manual_list=[[159.05087400067845, 409.82096276271284],
                  [331.0900946589779, 546.9873684227083]])
+
 refiner.create_simulation(sublattices='all',
                           filter_image=True,
                           calibrate_image=True,
                           filename='sim',
-                          interpolationFactor=100,
-                          percent_to_nn=None,
-                          mask_radius=2)
+                          interpolationFactor=200)
+
+refiner.image_difference_intensity_model_refiner()
 
 refiner.plot_reference_and_comparison_images()
 

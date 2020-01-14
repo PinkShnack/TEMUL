@@ -5,11 +5,14 @@ from temul.model_creation import (
     image_difference_intensity,
     image_difference_position,
     count_all_individual_elements,
-    get_positions_from_sublattices
+    get_positions_from_sublattices,
+    get_most_common_sublattice_element
 )
 from temul.element_tools import (
     get_individual_elements_from_element_list,
-    combine_element_lists
+    combine_element_lists,
+    split_and_sort_element,
+    atomic_radii_in_pixels
 )
 from temul.io import create_dataframe_for_xyz
 from temul.signal_processing import (
@@ -21,6 +24,7 @@ from temul.simulations import (
     simulate_with_prismatic,
     load_prismatic_mrc_with_hyperspy
 )
+import numpy as np
 import pandas as pd
 import hyperspy
 from atomap.initial_position_finding import add_atoms_with_gui
@@ -34,15 +38,7 @@ class Model_Refiner():
                  thickness=10, name=''):
         '''
         Object which is used to refine the elements in a
-        sublattice object
-
-        thickness of sample in angstrom
-        sampling in angstrom per pixel
-
-        do:
-        auto atomic radii:
-        mask_radius_sub2 = atomic_radii_in_pixels(real_sampling, 'S')
-
+        sublattice object.
         '''
 
         self.sublattice_and_elements_dict = sublattice_and_elements_dict
@@ -75,6 +71,8 @@ class Model_Refiner():
         if self.reference_image.axes_manager[-1].units == 'nm':
             self.sampling = self.sampling * 10
         self._reference_image_init()
+
+        self._auto_mask_radii_init()
 
         self.thickness = thickness
         self.image_xyz_sizes = [
@@ -155,6 +153,24 @@ class Model_Refiner():
             len(self.sublattice_list),
             len(self.element_list),
         )
+
+    def _auto_mask_radii_init(self):
+        '''
+        Automatically set the mask_radius for each sublattice.
+        Use mask_radius='auto' when calling a Model Refiner method.
+        Ideally you could have the mask_radius/percent_to_nn change depending
+        on the atom, but for now depending on the sublattice is okay.
+        '''
+
+        mask_radii = []
+        for sublattice in self.sublattice_list:
+            element_config = get_most_common_sublattice_element(
+                sublattice, info='element')
+            chemical = split_and_sort_element(element_config)[0][1]
+            radius = atomic_radii_in_pixels(self.sampling, chemical)
+            mask_radii.append(radius)
+
+        self.auto_mask_radius = mask_radii
 
     @property
     def element_count(self):
@@ -335,8 +351,6 @@ class Model_Refiner():
             sublattices='all',
             comparison_image='default',
             change_sublattice=True,
-            percent_to_nn=0.40,
-            mask_radius=None,
             filename=None,
             verbose=False,
             refinement_method="Intensity"):
@@ -383,22 +397,24 @@ class Model_Refiner():
         if 'all' in sublattices:
             sublattice_list = self.sublattice_list
             element_list = self.element_list
+            mask_radius_list = self.auto_mask_radius
         elif isinstance(sublattices, list):
             sublattice_list = [self.sublattice_list[i] for i in sublattices]
             element_list = [self.element_list[i] for i in sublattices]
+            mask_radius_list = [self.auto_mask_radius[i] for i in sublattices]
 
         if 'default' in comparison_image:
             comparison_image = self.comparison_image
 
-        for sublattice, element_list_i in zip(
-                sublattice_list, element_list):
+        for sublattice, element_list_i, mask_radius in zip(
+                sublattice_list, element_list, mask_radius_list):
 
             image_difference_intensity(
                 sublattice=sublattice,
                 sim_image=comparison_image,
                 element_list=element_list_i,
                 filename=filename,
-                percent_to_nn=percent_to_nn,
+                percent_to_nn=None,
                 mask_radius=mask_radius,
                 change_sublattice=change_sublattice,
                 verbose=verbose)
@@ -409,8 +425,6 @@ class Model_Refiner():
                                        sublattices='all',
                                        comparison_image='default',
                                        change_sublattice=True,
-                                       percent_to_nn=0.40,
-                                       mask_radius=None,
                                        filename=None,
                                        verbose=False,
                                        ignore_element_count_comparison=False):
@@ -423,8 +437,6 @@ class Model_Refiner():
                 sublattices=sublattices,
                 comparison_image=comparison_image,
                 change_sublattice=change_sublattice,
-                percent_to_nn=percent_to_nn,
-                mask_radius=mask_radius,
                 filename=filename,
                 verbose=verbose)
 
@@ -445,8 +457,6 @@ class Model_Refiner():
             pixel_threshold=5,
             num_peaks=5,
             inplace=True,
-            percent_to_nn=0.40,
-            mask_radius=None,
             filename=None,
             refinement_method="Position"):
         '''
@@ -492,11 +502,13 @@ class Model_Refiner():
         # define variables for refinement
         if 'all' in sublattices:
             sublattice_list = self.sublattice_list
+            mask_radius_list = self.auto_mask_radius
         elif isinstance(sublattices, list):
             sublattice_list = [self.sublattice_list[i] for i in sublattices]
             print(
                 "Warning: Setting `sublattices` to a list can cause overwrite"
                 "errors. Best use `sublattice='all'` until this is fixed")
+            mask_radius_list = [self.auto_mask_radius[i] for i in sublattices]
 
         # elif isinstance(positions_from_sublattices, list):
         #     positions_from_sublattices = [
@@ -511,7 +523,8 @@ class Model_Refiner():
         # self.sublattice_list[i] = sublattice will overwrite the first
         # sublattice with the sublattice_list[1] sublattice! could just not
         # have sublattice as an option! see print warning above!
-        for i, sublattice in enumerate(sublattice_list):
+        for i, (sublattice, mask_radius) in enumerate(zip(
+                sublattice_list, mask_radius_list)):
 
             # update the positions_from_sublattices before running the next
             # sublattice if chosen
@@ -525,7 +538,7 @@ class Model_Refiner():
                 pixel_threshold=pixel_threshold,
                 comparison_sublattice_list=comparison_sublattice_list,
                 filename=filename,
-                percent_to_nn=percent_to_nn,
+                percent_to_nn=None,
                 mask_radius=mask_radius,
                 num_peaks=num_peaks,
                 inplace=inplace)
@@ -561,8 +574,8 @@ class Model_Refiner():
             algorithm="prism",
             delta_image_filter=0.5,
             max_sigma=6,
-            percent_to_nn=0.4,
-            mask_radius=None,
+            mask_radius='auto',
+            percent_to_nn=None,
             refine=True):
         """
         Create and simulate a .xyz file from the sublattice information.
@@ -570,6 +583,7 @@ class Model_Refiner():
 
         Note: The error resulting from filter=True with percent_to_nn set can
         be fixed by setting mask_radius instead of percent_to_nn.
+        Error is: "TypeError: 'NoneType' object is not iterable"
 
         Parameters
         ----------
@@ -599,10 +613,10 @@ class Model_Refiner():
         max_sigma : float, default 6
             The maximum sigma used for the `filter` Gaussian filter. Large
             values will slow the `filter` down.
-        percent_to_nn : float, default 0.4
+        percent_to_nn : float, default None
             The percentage distance to the nearest neighbour atom used for
             atomap atom position refinement.
-        mask_radius : float, default None
+        mask_radius : float, default 'auto'
             The pixel distance to the nearest neighbour atom used for atomap
             atom position refinement
         refine : Bool, default True
@@ -669,6 +683,9 @@ class Model_Refiner():
         simulation = load_prismatic_mrc_with_hyperspy(
             'prism_2Doutput_' + filename + '_mrc_file.mrc', save_name=None)
 
+        if mask_radius == 'auto':
+            mask_radius = np.mean(self.auto_mask_radius)
+
         if filter_image:
             # set filename as not None - good to output the mse ssm plot
             simulation = compare_two_image_and_create_filtered_image(
@@ -699,11 +716,16 @@ class Model_Refiner():
         self._comparison_image_init(simulation)
         self.update_error_between_comparison_and_reference_image()
 
-    def calibrate_comparison_image(
-            self, filename=None, percent_to_nn=0.4, mask_radius=None,
-            refine=True):
+    def calibrate_comparison_image(self,
+                                   filename=None,
+                                   percent_to_nn=None,
+                                   mask_radius='auto',
+                                   refine=True):
 
         self._comparison_image_warning()
+
+        if mask_radius == 'auto':
+            mask_radius = np.mean(self.auto_mask_radius)
 
         calibrate_intensity_distance_with_sublattice_roi(
             image=self.comparison_image,
