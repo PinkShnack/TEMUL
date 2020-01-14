@@ -508,7 +508,7 @@ def create_dataframe_for_xyz(sublattice_list,
                                                     # this is a fraction already, which is why we don't divide as in x and y
                                                     '_atom_site_fract_z': format(atom_z_height * z_size, '.6f'),
                                                     '_atom_site_occupancy': 1.0,  # might need to loop through the vancancies here?
-                                                    '_atom_site_RMS_thermal_vib': 0.05},
+                                                    '_atom_site_RMS_thermal_vib': 0.1},
                                                    ignore_index=True)  # insert row
 
     df_xyz = df_xyz.append({'_atom_site_Z_number': int(-1),

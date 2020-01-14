@@ -35,8 +35,14 @@ def count_element_in_pandas_df(element, dataframe):
 
     Examples
     --------
-    # >>> from temul.model_creation import count_element_in_pandas_df
-    # >>> Mo_count = count_element_in_pandas_df(element='Mo', dataframe=df)
+    >>> import pandas as pd
+    >>> from temul.model_creation import count_element_in_pandas_df
+    >>> header = ['Se_1', 'Mo_1', 'S_2']
+    >>> counts = [[9, 4, 3], [8, 6, 2]]
+    >>> df = pd.DataFrame(data=counts, columns=header)
+    >>> Mo_count = count_element_in_pandas_df(element='Mo', dataframe=df)
+    >>> Mo_count
+    Counter({0: 4, 1: 6})
 
     '''
     count_of_element = Counter()
@@ -79,11 +85,19 @@ def count_all_individual_elements(individual_element_list, dataframe):
 
     Examples
     --------
-    # >>> from temul.model_creation import count_all_individual_elements
-    # >>> individual_element_list = ['Mo', 'S', 'Se']
-    # >>> element_count = count_all_individual_elements(
-    # ...     individual_element_list, dataframe=df)
-    # >>> element_count
+    >>> import pandas as pd
+    >>> from temul.model_creation import count_all_individual_elements
+    >>> header = ['Se_1', 'Mo_1', 'S_2']
+    >>> counts = [[9, 4, 3], [8, 6, 2]]
+    >>> df = pd.DataFrame(data=counts, columns=header)
+    >>> individual_element_list = ['Mo', 'S', 'Se']
+    >>> element_count = count_all_individual_elements(
+    ...     individual_element_list, dataframe=df)
+    >>> element_count
+    {'Mo': Counter({0: 4, 1: 6}),
+     'S': Counter({0: 15, 1: 12}),
+     'Se': Counter({0: 9, 1: 8})}
+
     '''
 
     element_count_dict = {}

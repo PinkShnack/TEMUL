@@ -312,10 +312,10 @@ class Model_Refiner():
 
         plt.figure()
         if style == 'plot':
-            plt.plot(x, mse, 'b-', label='Mean Standard Error')
+            plt.plot(x, mse, 'b-', label='Mean Square Error')
             plt.plot(x, ssm, 'r--', label='Struc. Sim. Index')
         elif style == 'scatter':
-            plt.scatter(x=x, y=mse, color='b', label='Mean Standard Error')
+            plt.scatter(x=x, y=mse, color='b', label='Mean Square Error')
             plt.scatter(x=x, y=ssm, color='r', label='Struc. Sim. Index')
         plt.title("Reference and Comparison Image Diff.", fontsize=16)
         plt.xlabel("Simulation Order")

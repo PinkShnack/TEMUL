@@ -88,3 +88,26 @@ def load_Se_implanted_MoS2_data():
         example_Se_implanted_MoS2 = load(path)
     s = example_Se_implanted_MoS2.deepcopy()
     return s
+
+
+example_Se_implanted_MoS2_simulation = None
+
+
+def load_Se_implanted_MoS2_simulation():
+    """
+    Get the hspy simulated image of an example Cu nanoparticle
+
+    Example
+    -------
+    >>> import temul.example_data as example_data
+    >>> s = example_data.load_example_Cu_nanoparticle()
+
+    """
+    global example_Se_implanted_MoS2_simulation
+    if example_Se_implanted_MoS2_simulation is None:
+        path = os.path.join(
+            my_path, 'example_data',
+            'prismatic', 'calibrated_data_prismatic_simulation.hspy')
+        example_Se_implanted_MoS2_simulation = load(path)
+    s = example_Se_implanted_MoS2_simulation.deepcopy()
+    return s

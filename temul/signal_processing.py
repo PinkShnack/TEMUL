@@ -715,12 +715,17 @@ def compare_two_image_and_create_filtered_image(
     comparing to an experimental image.
     See measure_image_errors() and load_and_compare_images()
 
-    # >>> from temul.signal_processing import (
-    # ...     compare_two_image_and_create_filtered_image)
-    # >>> new_sim_data = compare_two_image_and_create_filtered_image(
-    # ...                             image_to_filter=simulation,
-    # ...                             reference_image=atom_lattice_max)
+    Examples
+    --------
 
+    >>> from temul.signal_processing import (
+    ...     compare_two_image_and_create_filtered_image)
+    >>> import temul.example_data as example_data
+    >>> experiment = example_data.load_Se_implanted_MoS2_data()
+    >>> simulation = example_data.load_Se_implanted_MoS2_simulation()
+    >>> filtered_image = compare_two_image_and_create_filtered_image(
+    ...     simulation, experiment, 0.5, cropping_area=[[5,5], [20, 20]],
+    ...     separation=15, mask_radius=4, percent_to_nn=None)
 
     '''
     image_to_filter_data = image_to_filter.data
