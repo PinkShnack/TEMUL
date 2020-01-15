@@ -42,7 +42,8 @@ Examples
 9. Add correct warning to load_data_and_sampling()
 12. Change save_variables (e.g., crop_image_hs) to np array.
 15. Auto toggle refine have a histogram option.
-
+16. remove scalebar_true param, just have a function for it and run it where neccessary (in line profile code too).
+17. Remove 'return' from calibrate_intensity_distance_with_sublattice_roi
 
 # Ideas for code development
 
