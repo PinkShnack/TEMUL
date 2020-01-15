@@ -44,6 +44,10 @@ Examples
 15. Auto toggle refine have a histogram option.
 16. remove scalebar_true param, just have a function for it and run it where neccessary (in line profile code too).
 17. Remove 'return' from calibrate_intensity_distance_with_sublattice_roi
+18. figsize for line profile
+19. round sampling to 6 decimal places in Model Refiner setup
+20. set the calibration area for model refiner to be a small area automatically.
+21. frozen phonon for simulation func: simulate_with_prismatic
 
 # Ideas for code development
 
