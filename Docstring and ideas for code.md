@@ -47,7 +47,8 @@ Examples
 18. figsize for line profile
 19. round sampling to 6 decimal places in Model Refiner setup
 20. set the calibration area for model refiner to be a small area automatically.
-21. frozen phonon for simulation func: simulate_with_prismatic
+21. includeThermalEffects for simulation func: simulate_with_prismatic
+22. save raw simulation within model refiner
 
 # Ideas for code development
 
