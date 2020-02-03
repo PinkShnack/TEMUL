@@ -173,7 +173,7 @@ def plot_polarisation_vectors(x, y, u, v, image,
 
     # for ax.quiver optional C paramater, we need to set this to
     # something. None doesn't work!
-    vector_mags = get_vector_magnitudes(u, v, sampling=sampling)
+    vector_mags = get_vector_magnitudes(u, v)
 
     if normalise:
         # Normalise the data for uniform arrow size
@@ -565,7 +565,7 @@ def plot_atom_deviation_from_all_zone_axes(
 
 
 def combine_atom_deviations_from_zone_axes(
-        sublattice, image=None, sampling=None, units='pix',
+        sublattice, image=None, axes=None, sampling=None, units='pix',
         plot_style='vector', overlay=True, normalise=False,
         save='atom_deviation', title="", color='yellow', cmap=None,
         pivot='middle', angles='xy', scale_units='xy', scale=None,
@@ -591,7 +591,8 @@ def combine_atom_deviations_from_zone_axes(
     --------
 
     >>> import atomap.api as am
-    >>> from temul.polarisation import combine_atom_deviations_from_zone_axes
+    >>> from temul.polarisation import (plot_polarisation_vectors,
+    ...     combine_atom_deviations_from_zone_axes)
     >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
     >>> sublatticeA = atom_lattice.sublattice_list[0]
     >>> sublatticeA.find_nearest_neighbors()
@@ -601,6 +602,13 @@ def combine_atom_deviations_from_zone_axes(
     ...     sublatticeA, save=None)
     >>> plot_polarisation_vectors(u, v, x, y, save=None,
     ...     image=sublatticeA.image)
+
+    # You can also choose the axes:
+
+    # >>> x,y,u,v = combine_atom_deviations_from_zone_axes(
+    # ...     sublatticeA, axes=[0,3], save=None)
+    # >>> plot_polarisation_vectors(u, v, x, y, save=None,
+    # ...     image=sublatticeA.image)
 
     '''
 
@@ -614,7 +622,12 @@ def combine_atom_deviations_from_zone_axes(
     else:
         pass
 
-    for axis_number in range(len(sublattice.zones_axis_average_distances)):
+    if axes is None:
+        axes_list = range(len(sublattice.zones_axis_average_distances))
+    else:
+        axes_list = axes
+
+    for axis_number in axes_list:
 
         x, y, u, v = atom_deviation_from_straight_line_fit(
             sublattice=sublattice, axis_number=axis_number,
@@ -632,6 +645,7 @@ def combine_atom_deviations_from_zone_axes(
     for atom in sublattice.atom_list:
         sublattice_xy.append([atom.pixel_x, atom.pixel_y])
 
+    atoms_not_found = []
     combined_vectors = []
     for atom_xy in sublattice_xy:
         individual_vectors = []
@@ -644,6 +658,15 @@ def combine_atom_deviations_from_zone_axes(
         if len(individual_vectors) != 0:
             calc_combined_vectors = list(sum(np.array(individual_vectors)))
             combined_vectors.append(calc_combined_vectors)
+        else:
+            atoms_not_found.append(atom_xy)
+
+    if len(atoms_not_found) != 0:
+        print("This sublattice_xy atom isn't included in the "
+              "axes given, removing atoms: {}".format(
+                  atoms_not_found))
+    for atom in atoms_not_found:
+        sublattice_xy.remove(atom)
 
     if len(sublattice_xy) != len(combined_vectors):
         raise ValueError("len(sublattice_xy) != len(combined_vectors)")
