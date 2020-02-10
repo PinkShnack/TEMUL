@@ -228,6 +228,9 @@ def get_individual_elements_from_element_list(
 
 
 def combine_element_lists(lists):
+    ''' Reduce multiple element_lists into one list of strings from a list of
+    lists, useful for the `Model Refiner` `flattened_element_list`.
+    '''
 
     element_list = [i for sublist in lists for i in sublist]
     element_list = list(set(element_list))

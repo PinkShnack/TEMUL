@@ -37,8 +37,64 @@ class Model_Refiner():
                  comparison_image=None, sampling=None,
                  thickness=10, name=''):
         '''
-        Object which is used to refine the elements in a
-        sublattice object.
+        Object which is used to refine the elements in a list of
+        Atomap sublattices. There are currently two refinement methods:
+        1. Refine with position `image_difference_position_model_refiner`
+        2. Refine with intensity `image_difference_intensity_model_refiner`.
+
+        Parameters
+        ----------
+        sublattice_and_elements_dict : dictionary
+            A dictionary of the structure `{sublattice: element_list,}` where each
+            sublattice is an Atomap sublattice object and each element_list is
+            a list of elements of the form given in the examples of
+            `get_individual_elements_from_element_list` in the element_tools.py
+            module. 
+        comparison_image : Hyperspy Signal2D, default None
+            This is the image with which the first `sublattice` image will be
+            compared to refine the list of sublattices' elements.
+            If None is given when the Model Refiner is created, or if the
+            `comparison_image` is not the same shape as the first sublattice image,
+            a warning will be returned.
+            To set a `comparison_image`, you can either use
+            `model_refiner.create_simulation` or by setting the
+            `model_refiner.comparison_image` to an image.
+        sampling : float, default None
+            The real space sampling of the `sublattice` images in Angstrom. The
+            sampling is defined as: sampling = angstrom/pixel. This sampling will
+            be identical for the `comparison_image`. If it is set to None, the
+            sampling will automatically be set by the `sublattice.signal` object. 
+        thickness : float, default 10
+            Physical thickness of the sample in Angstrom. This will be used for the
+            simulation.
+        name : string, default ''
+            Name of the Model Refiner.
+
+
+        Attributes
+        ----------
+        sublattice_and_elements_dict: dictionary
+        sublattice_list: list
+        name: string
+        element_list: list of strings, or lists of lists of strings
+        flattened_element_list: list of strings
+        _element_count: Counter
+        element_count_history_list: list of Counters
+        refinement_history: list of strings
+        reference_image: Hyperspy Signal2D
+        calibration_area: 2D array-like; list of 2 lists
+        calibration_separation: int
+        sampling: float
+        thickness: float
+        image_xyz_sizes: list
+        previous_refiner_instance: Model Refiner object
+        error_between_comparison_and_reference_image: list of floats
+        error_between_images_history: list of lists
+
+        Examples
+        --------
+        For now, see `image_difference_intensity_model_refiner` and
+        `image_difference_position_model_refiner` below.
         '''
 
         self.sublattice_and_elements_dict = sublattice_and_elements_dict
@@ -59,9 +115,9 @@ class Model_Refiner():
             self.refinement_history.append("Initial State")
 
         self.reference_image = self.sublattice_list[0].signal
-        self.calibration_area = [[0, 0],
-                                 [self.reference_image.data.shape[-1],
-                                  self.reference_image.data.shape[-2]]]
+        self.calibration_area = [[1, 1],
+                                 [self.reference_image.data.shape[-1] - 1,
+                                  self.reference_image.data.shape[-2] - 1]]
         self.calibration_separation = 12
         # maybe have a _sampling_init function
         if sampling is None:
