@@ -3,6 +3,11 @@ import matplotlib.pyplot as plt
 from matplotlib.pyplot import subplots_adjust
 import numpy as np
 import hyperspy.api as hs
+from matplotlib.text import TextPath
+import datetime as DT
+import matplotlib.dates as mdates
+import scipy.spatial as spatial
+from temul.intensity_tools import get_sublattice_intensity
 
 # line_profile_positions = am.add_atoms_with_gui(s)
 
@@ -284,3 +289,115 @@ def compare_images_line_profile_two_images(imageA,
     plt.savefig(fname='Line Profile Example.png',
                 transparent=True, frameon=False, bbox_inches='tight',
                 pad_inches=None, dpi=300)
+
+class Sublattice_Hover_Intensity(object):
+
+    """User can hover over sublattice overlaid on STEM image to display the x,y location and intensity of that point."""
+    def __init__(self, image, sublattice, sublattice_positions, background_sublattice):    #formatter=fmt,
+        
+        #create intensity list from sublattice and bg sublattice
+        intensity_list = get_sublattice_intensity(sublattice=sublattice, intensity_type='max', remove_background_method='local', background_sub=background_sublattice)
+        intensity_list_norm = intensity_list/max(intensity_list)
+
+        #split sublattice positions into x and y
+        sublattice_position_x = []
+        sublattice_position_y = []
+
+        i = 0
+        while i < len(sublattice_positions):
+            sublattice_position_x.append(sublattice_positions[i][0])
+            sublattice_position_y.append(sublattice_positions[i][1])
+            i += 1
+
+        #plot image and scatter plot of sublattice positions
+        fig = plt.figure()
+        subplot1 = fig.add_subplot(1, 1, 1)
+
+        subplot1.set_title('STEM image')
+        img = plt.imshow(image)
+        scatter = plt.scatter(sublattice_position_x, sublattice_position_y, cmap='inferno', c=intensity_list_norm)    #c=t_metal_intensity_list, cmap='viridis', alpha=0.5
+        plt.colorbar()
+
+        #x_point and y_point are individual points, determined by where the cursor is hovering
+        #x and y in fmt function are the lists of x and y components fed into cursor_hover_int
+        def fmt(x_hover, y_hover, is_date):
+            
+            x_rounded = [round(num, 4) for num in sublattice_position_x]
+            point_index = x_rounded.index(round(x_hover, 4))
+            intensity_at_point = intensity_list_norm[point_index]
+
+            if is_date:
+                x_hover = mdates.num2date(x_hover).strftime("%Y-%m-%d")
+                return 'x: {x}\ny: {y}\nint: {i}'.format(x=x_hover, y=y_hover, i=intensity_at_point)
+
+            else:
+                return 'x: {x:0.2f}\ny: {y:0.2f}\nint: {i:0.3f}'.format(x=x_hover, y=y_hover, i=intensity_at_point)
+
+        try:
+            x = np.asarray(sublattice_position_x, dtype='float')
+            self.is_date = False
+        except (TypeError, ValueError):
+            x = np.asarray(mdates.date2num(sublattice_position_x), dtype='float')
+            self.is_date = True
+          
+        y = np.asarray(sublattice_position_y, dtype='float')
+        self._points = np.column_stack((x, y))
+        self.offsets = (0, 15)
+        self.scale = x.ptp()
+        self.scale = y.ptp() / self.scale if self.scale else 1
+        self.tree = spatial.cKDTree(self.scaled(self._points))
+        self.formatter = fmt
+        self.tolerance = 0.5
+        self.ax1 = subplot1
+        self.fig = fig  #ax.figure
+        self.ax1.xaxis.set_label_position('top')
+        self.dot = subplot1.scatter(
+            [x.min()], [y.min()], s=130, color='white', alpha=0.5)
+        self.annotation = self.setup_annotation()
+        plt.connect('motion_notify_event', self)
+
+
+    def scaled(self, points):
+        points = np.asarray(points)
+        return points * (self.scale, 1)
+
+
+    def __call__(self, event):
+        ax1 = self.ax1
+        # event.inaxes is always the current axis. If you use twinx, ax could be
+        # a different axis.
+        if event.inaxes == ax1:
+            x, y = event.xdata, event.ydata
+        elif event.inaxes is None:
+            return
+        else:
+            inv = ax1.transData.inverted()
+            x, y = inv.transform([(event.x, event.y)]).ravel()
+        
+        annotation = self.annotation
+        x, y = self.snap(x, y)
+        annotation.xy = x, y
+        annotation.set_text(self.formatter(x, y, self.is_date))
+        self.dot.set_offsets((x, y))
+        bbox = ax1.viewLim
+        #ax2.axvline(x=self.formatter(x, y, self.is_date).intensity_at_point)
+
+        event.canvas.draw()
+
+    def setup_annotation(self):
+        """Draw and hide the annotation box."""
+        annotation = self.ax1.annotate(
+            '', xy=(0, 0), ha = 'center',
+            xytext = self.offsets, textcoords = 'offset points', va = 'bottom',
+            bbox = dict(
+                boxstyle='square, pad=0.5', fc='white', alpha=0.5))
+        return annotation
+
+    def snap(self, x, y):
+        """Return the value in self.tree closest to x, y."""
+        dist, idx = self.tree.query(self.scaled((x, y)), k=1, p=1)        
+        try:
+            return self._points[idx]
+        except IndexError:
+            # IndexError: index out of bounds
+            return self._points[0]
