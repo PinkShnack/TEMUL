@@ -368,11 +368,15 @@ class Model_Refiner():
 
         plt.figure()
         if style == 'plot':
-            plt.plot(x, mse, 'b-', label='Mean Square Error')
-            plt.plot(x, ssm, 'r--', label='Struc. Sim. Index')
+            plt.plot(x, mse, color='b', marker='o',
+                     linestyle='-', label='Mean Square Error')
+            plt.plot(x, ssm, color='r', marker='^',
+                     linestyle='--', label='Struc. Sim. Index')
         elif style == 'scatter':
-            plt.scatter(x=x, y=mse, color='b', label='Mean Square Error')
-            plt.scatter(x=x, y=ssm, color='r', label='Struc. Sim. Index')
+            plt.scatter(x=x, y=mse, color='b', marker='o',
+                        label='Mean Square Error')
+            plt.scatter(x=x, y=ssm, color='r', marker='^',
+                        label='Struc. Sim. Index')
         plt.title("Reference and Comparison Image Diff.", fontsize=16)
         plt.xlabel("Simulation Order")
         plt.ylabel("MSE and SSM Value")
@@ -507,6 +511,7 @@ class Model_Refiner():
 
     def image_difference_position_model_refiner(
             self,
+            chosen_sublattice,
             sublattices='all',
             comparison_sublattice_list='auto',
             comparison_image='default',
@@ -582,24 +587,30 @@ class Model_Refiner():
         for i, (sublattice, mask_radius) in enumerate(zip(
                 sublattice_list, mask_radius_list)):
 
-            # update the positions_from_sublattices before running the next
-            # sublattice if chosen
-            if comparison_sublattice_list == 'auto':
+            if sublattice == chosen_sublattice:
 
-                comparison_sublattice_list = self.sublattice_list
+                # update the positions_from_sublattices before running the next
+                # sublattice if chosen
+                if comparison_sublattice_list == 'auto':
 
-            sublattice = image_difference_position(
-                sublattice=sublattice,
-                sim_image=comparison_image,
-                pixel_threshold=pixel_threshold,
-                comparison_sublattice_list=comparison_sublattice_list,
-                filename=filename,
-                percent_to_nn=None,
-                mask_radius=mask_radius,
-                num_peaks=num_peaks,
-                inplace=inplace)
+                    comparison_sublattice_list = self.sublattice_list
 
-            self.sublattice_list[i] = sublattice
+                elif comparison_sublattice_list == 'each':
+                    comparison_sublattice_list = []
+                    comparison_sublattice_list.append(self.sublattice_list[i])
+
+                sublattice = image_difference_position(
+                    sublattice=sublattice,
+                    sim_image=comparison_image,
+                    pixel_threshold=pixel_threshold,
+                    comparison_sublattice_list=comparison_sublattice_list,
+                    filename=filename,
+                    percent_to_nn=None,
+                    mask_radius=mask_radius,
+                    num_peaks=num_peaks,
+                    inplace=inplace)
+
+                self.sublattice_list[i] = sublattice
 
         self.update_element_count_and_refinement_history(refinement_method)
 
@@ -632,7 +643,8 @@ class Model_Refiner():
             max_sigma=6,
             mask_radius='auto',
             percent_to_nn=None,
-            refine=True):
+            refine=True,
+            sigma_offset=0):
         """
         Create and simulate a .xyz file from the sublattice information.
         Uses the pyprismatic prism algorithm by default.
@@ -712,7 +724,7 @@ class Model_Refiner():
             filename=filename + '_xyz_file',
             header_comment=header_comment)
 
-        if 'auto' in reference_image:
+        if reference_image == 'auto':
             reference_image = self.reference_image
 
         simulate_with_prismatic(
@@ -754,7 +766,8 @@ class Model_Refiner():
                 max_sigma=max_sigma,
                 percent_to_nn=percent_to_nn,
                 mask_radius=mask_radius,
-                refine=False)
+                refine=False,
+                sigma_offset=sigma_offset)
 
         if calibrate_image:
             calibrate_intensity_distance_with_sublattice_roi(

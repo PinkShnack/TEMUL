@@ -15,7 +15,8 @@ def compare_images_line_profile_one_image(image,
                                           linewidth=1,
                                           image_sampling='Auto',
                                           arrow=None,
-                                          linetrace=None):
+                                          linetrace=None,
+                                          **kwargs):
     '''
     Plots two line profiles on one image with the line profile intensities
     in a subfigure.
@@ -96,7 +97,7 @@ def compare_images_line_profile_one_image(image,
     _, (ax1, ax2) = plt.subplots(nrows=2)  # figsize=(12, 4)
     subplots_adjust(wspace=0.3)
 
-    ax1.imshow(image.data)
+    ax1.imshow(image.data, **kwargs)
     # ax1.plot([x0, x1], [y0, y1], color='r', marker='v', markersize=10,
     # alpha=0.5)
 
@@ -166,10 +167,12 @@ def compare_images_line_profile_two_images(imageA, imageB,
                                            scale_units='nm',
                                            crop_offset=20,
                                            title='Intensity Profile',
-                                           marker_A='^',
+                                           marker_A='v',
                                            marker_B='o',
                                            arrow_markersize=10,
-                                           filename=None):
+                                           filename=None,
+                                           figsize=(10, 3),
+                                           imageB_intensity_offset=0):
     '''
     Plots two line profiles on two images separately with the line
     profile intensities in a subfigure.
@@ -277,7 +280,7 @@ def compare_images_line_profile_two_images(imageA, imageB,
     ''' Simulation '''
 
     profile_y_sim = profile_line(image=imageB.data, src=[y0, x0], dst=[y1, x1],
-                                 linewidth=linewidth, reduce_func=reduce_func)
+                                 linewidth=linewidth, reduce_func=reduce_func) + imageB_intensity_offset
     profile_x_sim = np.arange(0, len(profile_y_sim), 1)
     profile_x_sim = profile_x_sim * image_sampling
 
@@ -286,7 +289,7 @@ def compare_images_line_profile_two_images(imageA, imageB,
 
     # -- Plot the line profile comparisons
     _, (ax1, ax2, ax3) = plt.subplots(
-        figsize=(10, 3), ncols=3, gridspec_kw={'width_ratios': [1, 1, 3],
+        figsize=figsize, ncols=3, gridspec_kw={'width_ratios': [1, 1, 3],
                                                'height_ratios': [1]})
     subplots_adjust(wspace=0.1)
     ax1.imshow(imageA_crop)
@@ -326,3 +329,125 @@ def compare_images_line_profile_two_images(imageA, imageB,
         plt.savefig(fname=filename + '.png',
                     transparent=True, frameon=False, bbox_inches='tight',
                     pad_inches=None, dpi=300)
+
+
+
+def get_cropping_area(line_profile_positions, crop_offset=20):
+
+    x0, y0 = line_profile_positions[0]
+    x1, y1 = line_profile_positions[1]
+    
+    crop_left, crop_right = x0 - crop_offset, x1 + crop_offset
+    crop_top, crop_bot = y0 - crop_offset, y1 + crop_offset
+
+    return(crop_left, crop_right, crop_top, crop_bot)
+
+
+def plot_atom_energies(sublattice_list, image=None, vac_or_implants=None,
+                       elements_dict_other=None, filename='energy_map',
+                       cmap='plasma', levels=20, colorbar_fontsize=16):
+
+    '''
+    vac_or_implants options are 'implants' and 'vac'
+    
+    Returns the x and y coordinates of the atom positions and the 
+    atom energy.
+    
+    >>> import os
+    >>> import atomap.api as am
+    >>> from temul.signal_plotting import plot_atom_energies
+    
+    >>> base_directory = ('C:/Users/Eoghan.OConnell/Documents/Documents/Eoghan UL/PHD'
+    ...               '/Thesis_Eoghan/Images/Results/Chapter 1/Part 1 - Se/'
+    ...               'Spectroscopy/EELS/Core Loss/Image simulations/020_EELS-SI-During_HAADF')
+    >>> os.chdir(base_directory)
+    >>> atom_lattice = am.load_atom_lattice_from_hdf5('Atom_Lattice_Refiner_max.hdf5')
+    
+    >>> x,y,energy = plot_atom_energies(sublattice_list=[atom_lattice.sublattice_list[1]], vac_or_implants='implants')
+
+    '''
+    
+    if elements_dict_other is None:
+        energies_dict = {'S_0': 2*5.9,
+                         'S_1': 5.9,
+                         'S_2': 0.0,
+                         'Se_1': (2*5.9) - 5.1,
+                         'Se_1.S_1': 5.9 - 5.1,
+                         'Se_2': (2*5.9) - (2*5.1)}
+        
+        energies_dict['Se_1.S_1'] = round(energies_dict['Se_1.S_1'], 2)
+        energies_dict['Se_1'] = round(energies_dict['Se_1'], 2)
+        energies_dict['Se_2'] = round(energies_dict['Se_2'], 2)
+        
+    elif elements_dict_other is not None and vac_or_implants is not None:
+        
+        raise ValueError("both elements_dict_other and vac_or_implants"
+                         " were set to None. If you are using your own"
+                         " elements_dict_other then set vac_or_implants=None")
+
+    if vac_or_implants == 'implants':
+        energies_dict_implants = {k: energies_dict[k] for k in list(energies_dict)[-3:]}
+        energies_dict = energies_dict_implants
+    elif vac_or_implants == 'vac':
+        energies_dict_vac = {k: energies_dict[k] for k in list(energies_dict)[:3]}
+        energies_dict = energies_dict_vac
+    else:
+        pass
+    
+    
+    for key, value in energies_dict.items():  
+        for sub in sublattice_list:
+            for atom in sub.atom_list:
+                if atom.elements == key:
+                    atom.atom_energy = value                        
+                        
+    x, y, energy = [], [], []
+        
+    for sub in sublattice_list:
+        for atom in sub.atom_list:
+            x.append(atom.pixel_x)
+            y.append(atom.pixel_y)
+            energy.append(atom.atom_energy)
+            
+#            print(atom.elements, atom.atom_energy)
+    
+
+        
+    levels = np.arange(-0.5, np.max(energy), np.max(energy)/levels)
+
+    if image is None:
+        image = sublattice_list[0].image
+    # plot the contour map
+    plt.figure()
+    plt.imshow(image)
+    plt.tricontour(x,y,energy, cmap=cmap, levels=levels)
+    m = plt.cm.ScalarMappable(cmap=cmap)
+    m.set_array(energy)
+    cbar = plt.colorbar(m)
+    cbar.set_label(label="Energy Above Pristine (eV)", size=colorbar_fontsize)
+    plt.gca().axes.get_xaxis().set_visible(False)
+    plt.gca().axes.get_yaxis().set_visible(False)
+    plt.tight_layout()
+
+    if filename is not None:
+        plt.savefig(fname=sub.name + '_contour_energy_map.png',
+                transparent=True, frameon=False, bbox_inches='tight',
+                pad_inches=None, dpi=100, labels=False)
+
+    plt.figure()
+    plt.imshow(image)
+    plt.tricontourf(x,y,energy, cmap=cmap, levels=levels)
+    m = plt.cm.ScalarMappable(cmap=cmap)
+    m.set_array(energy)
+    cbar = plt.colorbar(m)
+    cbar.set_label(label="Energy Above Pristine (eV)", size=colorbar_fontsize)
+    plt.gca().axes.get_xaxis().set_visible(False)
+    plt.gca().axes.get_yaxis().set_visible(False)
+    plt.tight_layout()
+        
+    if filename is not None:
+        plt.savefig(fname=sub.name + '_contourf_energy_map.png',
+                transparent=True, frameon=False, bbox_inches='tight',
+                pad_inches=None, dpi=100, labels=False)
+
+    return(x, y, energy)

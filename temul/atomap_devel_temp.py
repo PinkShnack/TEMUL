@@ -17,16 +17,17 @@ import math
 class AtomAdderRemover:
 
     def __init__(self, image, atom_list=None, distance_threshold=4,
-                 norm='linear'):
+                 norm='linear', vmin=None, vmax=None):
         self.image = image
         self.distance_threshold = distance_threshold
         self.fig, self.ax = plt.subplots()
         if norm == 'linear':
-            self.cax = self.ax.imshow(self.image)
+            self.cax = self.ax.imshow(self.image, vmin=vmin, vmax=vmax)
         elif norm == 'log':
             self.cax = self.ax.imshow(self.image,
                                       norm=LogNorm(vmin=np.min(image),
-                                                   vmax=np.max(image)))
+                                                   vmax=np.max(image)),
+                                      vmin=vmin, vmax=vmax)
         if atom_list is None:
             self.atom_list = []
         else:
@@ -83,7 +84,7 @@ class AtomAdderRemover:
 
 
 def add_atoms_with_gui(image, atom_list=None, distance_threshold=4,
-                       norm='linear'):
+                       norm='linear', vmin=None, vmax=None):
     """Add or remove atoms from a list of atom positions.
     Will open a matplotlib figure, where atoms can be added or
     removed by pressing them.
@@ -109,6 +110,6 @@ def add_atoms_with_gui(image, atom_list=None, distance_threshold=4,
     """
     global atom_adder_remover
     atom_adder_remover = AtomAdderRemover(
-        image, atom_list, distance_threshold=distance_threshold, norm=norm)
+        image, atom_list, distance_threshold=distance_threshold, norm=norm, vmin=vmin, vmax=vmax)
     new_atom_list = atom_adder_remover.atom_list
     return new_atom_list

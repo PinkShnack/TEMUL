@@ -429,9 +429,9 @@ def remove_local_background(sublattice, background_sub, intensity_type,
             "All intensities has not yet been implemented. "
             "Use max, mean or total instead")
 
-    if num_points == 0:
+    if num_points < 1:
         raise ValueError(
-            "num_points cannot be 0 if you wish to locally "
+            "num_points cannot be less than 1 if you wish to locally "
             "remove the background")
 
     if intensity_type == 'max':

@@ -353,6 +353,10 @@ def simulate_with_prismatic(xyz_filename,
 
             pr_sim.probeStepX = pr_sim.probeStepY = round(
                 real_sampling_sim_angs, 6)
+        else:
+            real_sampling_sim_angs = real_sampling_exp_angs + 0.000005
+            pr_sim.probeStepX = pr_sim.probeStepY = round(
+                real_sampling_sim_angs, 6)
     else:
         pr_sim.probeStepX = pr_sim.probeStepY = probeStep
 

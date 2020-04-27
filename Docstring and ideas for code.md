@@ -49,6 +49,10 @@ Examples
 20. set the calibration area for model refiner to be a small area automatically.
 21. includeThermalEffects for simulation func: simulate_with_prismatic
 22. save raw simulation within model refiner
+23. Line 1169: Remove print(type(sublattice_intensity))
+24. With the atom intensities, loop over the atoms themselves rather than an index of the sublattice. That way if you want to see the calculatd bksub intensities, when you look at sublattice.atom_amplitude_max_intensity you will get the correct values, rather than just the max values. eg. assign atom.amplitude_max_intensity to the value instead. see local background subtraction and how it doesn't store the bksub values in the, it just outputs a list, we want it to store in the atom.
+25. Add error function to intensity tools
+26. see lin 291 of dark_bright_boracite.py (inoutplane) for calibrating the plot_polarisation_vectors plot.
 
 # Ideas for code development
 

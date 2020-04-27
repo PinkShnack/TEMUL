@@ -392,8 +392,9 @@ def change_sublattice_atoms_via_intensity(
             elem = sublattice.atom_list[p].elements
 
             if elem not in element_list:
-                raise ValueError("The element ({}, {}) isn't in the "
-                                 "element_list".format(p, elem))
+                raise ValueError("The element ({}, {}, {}) isn't in the "
+                                 "element_list".format(
+                                     sublattice.name, p, elem))
 
             atom_index = element_list.index(elem)
 
@@ -1166,7 +1167,6 @@ def sort_sublattice_intensities(sublattice,
             percent_to_nn=percent_to_nn,
             mask_radius=mask_radius)
 
-        print(type(sublattice_intensity))
         for i in sublattice_intensity:
             if i < 0:
                 i = 0.0000000001
@@ -1215,7 +1215,13 @@ def sort_sublattice_intensities(sublattice,
 
         for i in range(0, len(sublattice.atom_list)):
             if sublattice.atom_list[i].elements == '':
-                sublattice.atom_list[i].elements = 'H_0'
+                if sublattice_intensity[i] > limit_intensity_list[-1]:
+                    sublattice.atom_list[i].elements = element_list[-1]
+                else:
+                    sublattice.atom_list[i].elements = get_most_common_sublattice_element(
+                        sublattice)
+                    # print("Warning: An element has not been assigned ({}). It "
+                    #      "will be given the value {}.".format(i, sublattice.atom_list[i].elements))
                 elements_of_sublattice.append(sublattice.atom_list[i].elements)
             else:
                 pass
@@ -1894,7 +1900,7 @@ def image_difference_position(sublattice,
                 # put all distances in this array with this loop
                 vector_array = []
                 vector = np.sqrt((xy_distances[0]**2) +
-                                (xy_distances[1]**2))
+                                 (xy_distances[1]**2))
                 vector_array.append(vector)
 
                 new_atom_distance_list.append(
