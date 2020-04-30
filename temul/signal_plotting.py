@@ -461,10 +461,21 @@ def plot_atom_energies(sublattice_list, image=None, vac_or_implants=None,
 class Sublattice_Hover_Intensity(object):
 
     """User can hover over sublattice overlaid on STEM image to display the x,y location and intensity of that point."""
-    def __init__(self, image, sublattice, sublattice_positions, background_sublattice):    #formatter=fmt,
-        
+    def __init__(self, image, sublattice, sublattice_positions, background_sublattice, normalise_intensity=False, cmap='inferno'):
+        """
+        Parameters
+        ----------
+        image : 2D NumPy array, optional
+        sublattice : sublattice object
+        sublattice_positions : list of x,y coordinates of sublattice atom positions
+        background_sublattice : sublattice object to use for background subtraction
+        normalise_intensity : choose whether to normalise intensity values between 0 and 1, default False.
+        cmap : colormap to use for plotting sublattice, default inferno
+
+        """
+
         #create intensity list from sublattice and bg sublattice
-        intensity_list = get_sublattice_intensity(sublattice=sublattice, intensity_type='max', remove_background_method='local', background_sub=background_sublattice)
+        intensity_list = get_sublattice_intensity(sublattice=sublattice, intensity_type='max', remove_background_method='local', background_sublattice=background_sublattice)
         intensity_list_norm = intensity_list/max(intensity_list)
 
         #split sublattice positions into x and y
@@ -483,7 +494,11 @@ class Sublattice_Hover_Intensity(object):
 
         subplot1.set_title('STEM image')
         img = plt.imshow(image)
-        scatter = plt.scatter(sublattice_position_x, sublattice_position_y, cmap='inferno', c=intensity_list_norm)    #c=t_metal_intensity_list, cmap='viridis', alpha=0.5
+        if normalise_intensity = False:
+        	scatter = plt.scatter(sublattice_position_x, sublattice_position_y, cmap=cmap, c=intensity_list)    #c=t_metal_intensity_list, cmap='viridis', alpha=0.5
+        else:
+        	scatter = plt.scatter(sublattice_position_x, sublattice_position_y, cmap=cmap, c=intensity_list_norm)    #c=t_metal_intensity_list, cmap='viridis', alpha=0.5
+
         plt.colorbar()
 
         #x_point and y_point are individual points, determined by where the cursor is hovering
