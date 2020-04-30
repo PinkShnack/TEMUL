@@ -17,14 +17,42 @@ Examples
 
 # To Dos:
 
-1. sort unnecessary files into current correct files 
+1. sort unnecessary files into current correct files - done
 2. make sure imports are linking each module
 3. create api file that imports everything, or two
-    3a. One for everything
-    3b. One for everything except prismatic
-    
-
-
+    3a. One for everything - done
+    3b. One for everything except prismatic -done
+4. verify api files import what you want
+    4a. just import the no_prismatic api into api with *
+5. make checklist for pull requests.
+    5a. should you add the function to the api/api_no_prismatic?
+    5b. docstring with examples?
+    5c. works in site-packages?
+6. add fft masking code
+    6a. PR on atomap for log plotting of add_atoms_with_gui()
+7. For get_masked_ifft(), calibration of units automatically.   
+8. Update docstrings
+    8a. image stack function example/dummy data
+    8b. dummy data for simulate_and_calibrate_with_prismatic()
+    8d. Fix docstring for return_xyz_coordinates()
+    8f. Fix docstring for convert_numpy_z_coords_to_z_height_string
+    8g. Fix docstring for return_z_coordinates()
+    8h. Fix docstring for convert_numpy_z_coords_to_z_height_string()
+    8j. load_and_compare_images()
+9. Add correct warning to load_data_and_sampling()
+12. Change save_variables (e.g., crop_image_hs) to np array.
+15. Auto toggle refine have a histogram option.
+16. remove scalebar_true param, just have a function for it and run it where neccessary (in line profile code too).
+17. Remove 'return' from calibrate_intensity_distance_with_sublattice_roi
+18. figsize for line profile
+19. round sampling to 6 decimal places in Model Refiner setup
+20. set the calibration area for model refiner to be a small area automatically.
+21. includeThermalEffects for simulation func: simulate_with_prismatic
+22. save raw simulation within model refiner
+23. Line 1169: Remove print(type(sublattice_intensity))
+24. With the atom intensities, loop over the atoms themselves rather than an index of the sublattice. That way if you want to see the calculatd bksub intensities, when you look at sublattice.atom_amplitude_max_intensity you will get the correct values, rather than just the max values. eg. assign atom.amplitude_max_intensity to the value instead. see local background subtraction and how it doesn't store the bksub values in the, it just outputs a list, we want it to store in the atom.
+25. Add error function to intensity tools
+26. see lin 291 of dark_bright_boracite.py (inoutplane) for calibrating the plot_polarisation_vectors plot.
 
 # Ideas for code development
 

@@ -1,8 +1,11 @@
-from skimage.measure import profile_line
-import matplotlib.pyplot as plt
-from matplotlib.pyplot import subplots_adjust
+
 import numpy as np
 import hyperspy.api as hs
+from skimage.measure import profile_line
+
+import matplotlib.pyplot as plt
+from matplotlib.pyplot import subplots_adjust
+from matplotlib.text import TextPath
 
 # line_profile_positions = am.add_atoms_with_gui(s)
 
@@ -12,7 +15,8 @@ def compare_images_line_profile_one_image(image,
                                           linewidth=1,
                                           image_sampling='Auto',
                                           arrow=None,
-                                          linetrace=None):
+                                          linetrace=None,
+                                          **kwargs):
     '''
     Plots two line profiles on one image with the line profile intensities
     in a subfigure.
@@ -35,9 +39,9 @@ def compare_images_line_profile_one_image(image,
         image from image.axes_manager[0].scale.
      arrow : string, default None
         If set, arrows will be plotting on the image. Options are 'h' and
-        'v' for horizontal and vertical arrows, respectively. 
+        'v' for horizontal and vertical arrows, respectively.
     linetrace : int, default None
-        If set, the line profile will be plotted on the image. 
+        If set, the line profile will be plotted on the image.
         The thickness of the linetrace will be linewidth*linetrace.
         Name could be improved maybe.
 
@@ -52,7 +56,8 @@ def compare_images_line_profile_one_image(image,
 
     if image_sampling == 'Auto':
         if image.axes_manager[0].scale != 1.0:
-            image_sampling = image.axes_manager[0].scale
+            image_sampling = image.axes_manager[-1].scale
+            scale_units = image.axes_manager[-1].units
         else:
             raise ValueError("The image sampling cannot be computed."
                              "The image should either be calibrated "
@@ -81,19 +86,20 @@ def compare_images_line_profile_one_image(image,
     profile_y_1 = profile_line(image=image.data, src=[y0, x0], dst=[y1, x1],
                                linewidth=linewidth)
     profile_x_1 = np.arange(0, len(profile_y_1), 1)
-    profile_x_1 = profile_x_1*image_sampling
+    profile_x_1 = profile_x_1 * image_sampling
 
     profile_y_2 = profile_line(image=image.data, src=[y2, x2], dst=[y3, x3],
                                linewidth=linewidth)
     profile_x_2 = np.arange(0, len(profile_y_2), 1)
-    profile_x_2 = profile_x_2*image_sampling
+    profile_x_2 = profile_x_2 * image_sampling
 
     # -- Plot the line profile comparisons
-    fig, (ax1, ax2) = plt.subplots(nrows=2)  # figsize=(12, 4)
+    _, (ax1, ax2) = plt.subplots(nrows=2)  # figsize=(12, 4)
     subplots_adjust(wspace=0.3)
 
-    ax1.imshow(image.data)
-    #ax1.plot([x0, x1], [y0, y1], color='r', marker='v', markersize=10, alpha=0.5)
+    ax1.imshow(image.data, **kwargs)
+    # ax1.plot([x0, x1], [y0, y1], color='r', marker='v', markersize=10,
+    # alpha=0.5)
 
     alpha = 0.5
     color_1 = 'r'
@@ -102,9 +108,9 @@ def compare_images_line_profile_one_image(image,
     if linetrace is not None:
 
         ax1.plot([x0, x1], [y0, y1], color=color_1,
-                 lw=linewidth*linetrace, alpha=alpha)
+                 lw=linewidth * linetrace, alpha=alpha)
         ax1.plot([x2, x3], [y2, y3], color=color_2, ls='-',
-                 lw=linewidth*linetrace, alpha=alpha)
+                 lw=linewidth * linetrace, alpha=alpha)
 
     if arrow is not None:
         if arrow == 'v':
@@ -136,7 +142,7 @@ def compare_images_line_profile_one_image(image,
              ls='--', label='2')
     ax2.set_title('Intensity Profile')
     ax2.set_ylabel('Intensity (a.u.)')
-    ax2.set_xlabel('Distance (nm)')
+    ax2.set_xlabel('Distance ({})'.format(scale_units))
     # ax2.set_ylim(max(profile_y_1), min(profile_y_1))
     ax2.legend(fancybox=True, loc='upper right')
     # ax2.yaxis.set_ticks([])
@@ -153,134 +159,295 @@ def compare_images_line_profile_one_image(image,
 # line_profile_positions = am.add_atoms_with_gui(s)
 
 
-def compare_images_line_profile_two_images(imageA,
-                                           imageB,
+def compare_images_line_profile_two_images(imageA, imageB,
                                            line_profile_positions,
+                                           reduce_func=np.mean,
                                            linewidth=1,
-                                           image_sampling='Auto'):
+                                           image_sampling='auto',
+                                           scale_units='nm',
+                                           crop_offset=20,
+                                           title='Intensity Profile',
+                                           marker_A='v',
+                                           marker_B='o',
+                                           arrow_markersize=10,
+                                           filename=None,
+                                           figsize=(10, 3),
+                                           imageB_intensity_offset=0):
     '''
     Plots two line profiles on two images separately with the line
     profile intensities in a subfigure.
     See skimage PR PinkShnack for details on implementing profile_line
-    in skimage
+    in skimage: https://github.com/scikit-image/scikit-image/pull/4206
 
     Parameters
     ----------
 
-    imageAm, imageB : 2D Hyperspy signal
+    imageA, imageB : 2D Hyperspy signal
     line_profile_positions : list of lists
         one line profile coordinate. Use atomap's am.add_atoms_with_gui()
         function to get these. The two dots will trace the line profile.
+        See Examples below for example.
     linewidth : int, default 1
         see profile_line for parameter details.
-    image_sampling :  float, default 'Auto'
-        if set to 'Auto' the function will attempt to find the sampling of
+    image_sampling :  float, default 'auto'
+        if set to 'auto' the function will attempt to find the sampling of
         image from image.axes_manager[0].scale.
+    scale_units : string, default 'nm'
+    crop_offset : int, default 20
+        number of pixels away from the `line_profile_positions` coordinates the
+        image crop will be taken.
+    filename : string, default None
+        If this is set to a name (string), the image will be saved with that
+        name.
 
     Returns
     -------
 
     Examples
     --------
+    >>> import atomap.api as am
+    >>> from temul.signal_plotting import (
+    ...     compare_images_line_profile_two_images)
+    >>> imageA = am.dummy_data.get_simple_cubic_signal(image_noise=True)
+    >>> imageB = am.dummy_data.get_simple_cubic_signal()
+    >>> # line_profile_positions = am.add_atoms_with_gui(imageA)
+    >>> line_profile_positions = [[81.58, 69.70], [193.10, 184.08]]
+    >>> compare_images_line_profile_two_images(
+    ...     imageA, imageB, line_profile_positions,
+    ...     linewidth=3, image_sampling=0.012, crop_offset=30)
+
+    To use the new skimage functionality try `reduce_func`
+    >>> import numpy as np
+    >>> reduce_func = np.sum # can be any ufunc!
+    >>> compare_images_line_profile_two_images(
+    ...     imageA, imageB, line_profile_positions, reduce_func=reduce_func,
+    ...     linewidth=3, image_sampling=0.012, crop_offset=30)
+
+    >>> reduce_func = lambda x: np.sum(x**0.5)
+    >>> compare_images_line_profile_two_images(
+    ...     imageA, imageB, line_profile_positions, reduce_func=reduce_func,
+    ...     linewidth=3, image_sampling=0.012, crop_offset=30)
+
+    >>> import temul.example_data as example_data
+    >>> imageA = example_data.load_Se_implanted_MoS2_data()
+    >>> imageB = example_data.load_Se_implanted_MoS2_data()
+    >>> line_profile_positions = [[301.42, 318.9], [535.92, 500.82]]
+    >>> compare_images_line_profile_two_images(
+    ...     imageA, imageB, line_profile_positions, reduce_func=None)
 
     Include PTO example from paper
     '''
 
-    # if image_sampling == 'Auto':
-    # compute the sampling
+    if isinstance(image_sampling, str):
+        if image_sampling.lower() == 'auto':
+            if imageA.axes_manager[0].scale != 1.0:
+                image_sampling = imageA.axes_manager[-1].scale
+                scale_units = imageA.axes_manager[-1].units
 
-    image_sampling = 0.1  # nm
-    scale_unit = 'pix'
-    linewidth = 10
-    offset = 40
-
-    plot_arrow_up = '^'  # r'$\uparrow$' #u'$/u2191$'
-    plot_arrow_down = 'v'  # r'$\downarrow$' #u'$/u2193$'
-
-    # plot_arrow_right = r'$\rightarrow$' #u'$/u2192$'
-    # plot_arrow_left = r'$\leftarrow$' #u'$/u2194$'
-    arrow_markersize = 10
-
-    imageA.axes_manager[0].scale = 1
-    imageA.axes_manager[1].scale = 1
-    imageA.axes_manager[0].units = scale_unit
-    imageA.axes_manager[1].units = scale_unit
-
-    # llim, tlim = cropping_area[0]
-    # rlim, blim = cropping_area[1]
+            else:
+                raise ValueError("The image sampling cannot be computed."
+                                 "The image should either be calibrated "
+                                 "or the image_sampling provided")
+    elif not isinstance(image_sampling, float):
+        raise ValueError("The image_sampling should either be 'auto' or a "
+                         "floating point number")
 
     x0, y0 = line_profile_positions[0]
     x1, y1 = line_profile_positions[1]
 
-    profile_exp = profile_line(image=imageA.data, src=[y0, x0], dst=[y1, x1],
-                               linewidth=linewidth)
-    profile_y = np.arange(0, len(profile_exp), 1)
-    profile_y = profile_y*image_sampling
+    profile_y_exp = profile_line(image=imageA.data, src=[y0, x0], dst=[y1, x1],
+                                 linewidth=linewidth, reduce_func=reduce_func)
+    profile_x_exp = np.arange(0, len(profile_y_exp), 1)
+    profile_x_exp = profile_x_exp * image_sampling
 
-    crop_left = x0 - offset
-    crop_right = x1 + offset
-    crop_top = y0 - offset
-    crop_bot = y1 + offset
+    crop_left, crop_right = x0 - crop_offset, x1 + crop_offset
+    crop_top, crop_bot = y0 - crop_offset, y1 + crop_offset
+
+    crop_left *= imageA.axes_manager[-1].scale
+    crop_right *= imageA.axes_manager[-1].scale
+    crop_top *= imageA.axes_manager[-1].scale
+    crop_bot *= imageA.axes_manager[-1].scale
 
     imageA_crop = hs.roi.RectangularROI(left=crop_left, right=crop_right,
                                         top=crop_top, bottom=crop_bot)(imageA)
 
     # for the final plot, set the marker positions
-    crop_x0 = offset
-    crop_y0 = offset
-    crop_x1 = offset + (x1 - x0)
-    crop_y1 = offset + (y1 - y0)
+    crop_x0 = crop_offset
+    crop_y0 = crop_offset
+    crop_x1 = crop_offset + (x1 - x0)
+    crop_y1 = crop_offset + (y1 - y0)
 
     ''' Simulation '''
-    imageB.axes_manager[0].scale = 1
-    imageB.axes_manager[1].scale = 1
-    imageB.axes_manager[0].units = scale_unit
-    imageB.axes_manager[1].units = scale_unit
 
-    profile_sim = profile_line(image=imageB.data, src=[y0, x0], dst=[y1, x1],
-                               linewidth=linewidth)
-    profile_y_sim = np.arange(0, len(profile_sim), 1)
-    profile_y_sim = profile_y_sim*image_sampling
+    profile_y_sim = profile_line(image=imageB.data, src=[y0, x0], dst=[y1, x1],
+                                 linewidth=linewidth, reduce_func=reduce_func) + imageB_intensity_offset
+    profile_x_sim = np.arange(0, len(profile_y_sim), 1)
+    profile_x_sim = profile_x_sim * image_sampling
 
     imageB_crop = hs.roi.RectangularROI(left=crop_left, right=crop_right,
                                         top=crop_top, bottom=crop_bot)(imageB)
 
     # -- Plot the line profile comparisons
-    fig, (ax1, ax2, ax3) = plt.subplots(ncols=3)  # figsize=(12, 4)
-    subplots_adjust(wspace=0.3)
+    _, (ax1, ax2, ax3) = plt.subplots(
+        figsize=figsize, ncols=3, gridspec_kw={'width_ratios': [1, 1, 3],
+                                               'height_ratios': [1]})
+    subplots_adjust(wspace=0.1)
     ax1.imshow(imageA_crop)
-    #ax1.plot([x0, x1], [y0, y1], color='r', marker='v', markersize=10, alpha=0.5)
-    ax1.plot(crop_x0, crop_y0, color='r', marker=plot_arrow_down,
+    ax1.plot(crop_x0, crop_y0, color='r', marker=marker_A,
              markersize=arrow_markersize, alpha=1)
-    ax1.plot(crop_x1, crop_y1, color='r', marker=plot_arrow_up,
+    ax1.plot(crop_x1, crop_y1, color='r', marker=marker_B,
              markersize=arrow_markersize, alpha=1)
     ax1.set_title('Experiment')
     ax1.yaxis.set_ticks([])
     ax1.xaxis.set_ticks([])
 
     ax2.imshow(imageB_crop)
-    ax2.plot(crop_x0, crop_y0, color='b', marker=plot_arrow_down,
+    ax2.plot(crop_x0, crop_y0, color='b', marker=marker_A,
              markersize=arrow_markersize, alpha=1)
-    ax2.plot(crop_x1, crop_y1, color='b', marker=plot_arrow_up,
+    ax2.plot(crop_x1, crop_y1, color='b', marker=marker_B,
              markersize=arrow_markersize, alpha=1)
     ax2.set_title('Simulation')
     ax2.yaxis.set_ticks([])
     ax2.xaxis.set_ticks([])
 
-    ax3.plot(profile_exp, profile_y, color='r', label='Exp')
-    ax3.plot(profile_sim, profile_y_sim, color='b',
-             linestyle='--', label='Sim')
-    ax3.set_title('Intensity Profile')
-    ax3.set_xlabel('Intensity (a.u.)')
-    ax3.set_ylabel('Distance (nm)')
-    ax3.set_ylim(max(profile_y), min(profile_y))
-    ax3.legend(fancybox=True, loc='upper right')
-    # ax3.yaxis.set_ticks([])
-    # ax3.xaxis.set_ticks([])
-    # ax3.axes.get_yaxis().set_visible(False)
-    plt.tight_layout()
-    plt.show()
+    ax3.plot(profile_x_exp, profile_y_exp, color='r', label='Exp',
+             linestyle='--')
+    ax3.plot(profile_x_sim, profile_y_sim, color='b', label='Sim')
 
-    plt.savefig(fname='Line Profile Example.png',
+    ax3.scatter(0, min(profile_y_exp), marker=marker_A, color='k')
+    ax3.scatter(max(profile_x_exp), min(profile_y_exp), marker=marker_B,
+                color='k')
+
+    ax3.set_title(title)
+    ax3.set_ylabel('Intensity (a.u.)')
+    ax3.set_xlabel('Distance ({})'.format(scale_units))
+    # ax3.set_ylim(max(profile_x_exp), min(profile_x_exp))
+    ax3.legend(fancybox=True, loc='upper right')
+    plt.tight_layout()
+
+    if filename is not None:
+        plt.savefig(fname=filename + '.png',
+                    transparent=True, frameon=False, bbox_inches='tight',
+                    pad_inches=None, dpi=300)
+
+
+
+def get_cropping_area(line_profile_positions, crop_offset=20):
+
+    x0, y0 = line_profile_positions[0]
+    x1, y1 = line_profile_positions[1]
+    
+    crop_left, crop_right = x0 - crop_offset, x1 + crop_offset
+    crop_top, crop_bot = y0 - crop_offset, y1 + crop_offset
+
+    return(crop_left, crop_right, crop_top, crop_bot)
+
+
+def plot_atom_energies(sublattice_list, image=None, vac_or_implants=None,
+                       elements_dict_other=None, filename='energy_map',
+                       cmap='plasma', levels=20, colorbar_fontsize=16):
+
+    '''
+    vac_or_implants options are 'implants' and 'vac'
+    
+    Returns the x and y coordinates of the atom positions and the 
+    atom energy.
+    
+    >>> import os
+    >>> import atomap.api as am
+    >>> from temul.signal_plotting import plot_atom_energies
+    
+    >>> base_directory = ('C:/Users/Eoghan.OConnell/Documents/Documents/Eoghan UL/PHD'
+    ...               '/Thesis_Eoghan/Images/Results/Chapter 1/Part 1 - Se/'
+    ...               'Spectroscopy/EELS/Core Loss/Image simulations/020_EELS-SI-During_HAADF')
+    >>> os.chdir(base_directory)
+    >>> atom_lattice = am.load_atom_lattice_from_hdf5('Atom_Lattice_Refiner_max.hdf5')
+    
+    >>> x,y,energy = plot_atom_energies(sublattice_list=[atom_lattice.sublattice_list[1]], vac_or_implants='implants')
+
+    '''
+    
+    if elements_dict_other is None:
+        energies_dict = {'S_0': 2*5.9,
+                         'S_1': 5.9,
+                         'S_2': 0.0,
+                         'Se_1': (2*5.9) - 5.1,
+                         'Se_1.S_1': 5.9 - 5.1,
+                         'Se_2': (2*5.9) - (2*5.1)}
+        
+        energies_dict['Se_1.S_1'] = round(energies_dict['Se_1.S_1'], 2)
+        energies_dict['Se_1'] = round(energies_dict['Se_1'], 2)
+        energies_dict['Se_2'] = round(energies_dict['Se_2'], 2)
+        
+    elif elements_dict_other is not None and vac_or_implants is not None:
+        
+        raise ValueError("both elements_dict_other and vac_or_implants"
+                         " were set to None. If you are using your own"
+                         " elements_dict_other then set vac_or_implants=None")
+
+    if vac_or_implants == 'implants':
+        energies_dict_implants = {k: energies_dict[k] for k in list(energies_dict)[-3:]}
+        energies_dict = energies_dict_implants
+    elif vac_or_implants == 'vac':
+        energies_dict_vac = {k: energies_dict[k] for k in list(energies_dict)[:3]}
+        energies_dict = energies_dict_vac
+    else:
+        pass
+    
+    
+    for key, value in energies_dict.items():  
+        for sub in sublattice_list:
+            for atom in sub.atom_list:
+                if atom.elements == key:
+                    atom.atom_energy = value                        
+                        
+    x, y, energy = [], [], []
+        
+    for sub in sublattice_list:
+        for atom in sub.atom_list:
+            x.append(atom.pixel_x)
+            y.append(atom.pixel_y)
+            energy.append(atom.atom_energy)
+            
+#            print(atom.elements, atom.atom_energy)
+    
+
+        
+    levels = np.arange(-0.5, np.max(energy), np.max(energy)/levels)
+
+    if image is None:
+        image = sublattice_list[0].image
+    # plot the contour map
+    plt.figure()
+    plt.imshow(image)
+    plt.tricontour(x,y,energy, cmap=cmap, levels=levels)
+    m = plt.cm.ScalarMappable(cmap=cmap)
+    m.set_array(energy)
+    cbar = plt.colorbar(m)
+    cbar.set_label(label="Energy Above Pristine (eV)", size=colorbar_fontsize)
+    plt.gca().axes.get_xaxis().set_visible(False)
+    plt.gca().axes.get_yaxis().set_visible(False)
+    plt.tight_layout()
+
+    if filename is not None:
+        plt.savefig(fname=sub.name + '_contour_energy_map.png',
                 transparent=True, frameon=False, bbox_inches='tight',
-                pad_inches=None, dpi=300)
+                pad_inches=None, dpi=100, labels=False)
+
+    plt.figure()
+    plt.imshow(image)
+    plt.tricontourf(x,y,energy, cmap=cmap, levels=levels)
+    m = plt.cm.ScalarMappable(cmap=cmap)
+    m.set_array(energy)
+    cbar = plt.colorbar(m)
+    cbar.set_label(label="Energy Above Pristine (eV)", size=colorbar_fontsize)
+    plt.gca().axes.get_xaxis().set_visible(False)
+    plt.gca().axes.get_yaxis().set_visible(False)
+    plt.tight_layout()
+        
+    if filename is not None:
+        plt.savefig(fname=sub.name + '_contourf_energy_map.png',
+                transparent=True, frameon=False, bbox_inches='tight',
+                pad_inches=None, dpi=100, labels=False)
+
+    return(x, y, energy)

@@ -1,43 +1,33 @@
 
+from temul.element_tools import split_and_sort_element
+from temul.io import save_individual_images_from_image_stack
+from temul.atomap_devel_temp import add_atoms_with_gui
 
+import atomap.api as am
 from atomap.atom_finding_refining import _make_circular_mask
-from matplotlib import gridspec
-import rigidregistration
-from tifffile import imread, imwrite, TiffWriter
-from collections import Counter
-from time import time
-from glob import glob
-from atomap.atom_finding_refining import normalize_signal
-from atomap.tools import remove_atoms_from_image_using_2d_gaussian
-import os
-from skimage.measure import compare_ssim as ssm
-# from atomap.atom_finding_refining import get_atom_positions_in_difference_image
-from scipy.ndimage.filters import gaussian_filter
-import collections
-from atomap.atom_finding_refining import subtract_average_background
-from numpy import mean
+
 import matplotlib
 import matplotlib.pyplot as plt
-import hyperspy.api as hs
-import atomap.api as am
-import numpy as np
-from numpy import log
-import CifFile
-import pandas as pd
+from matplotlib import gridspec
+
+import rigidregistration
+from tifffile import imread
+from skimage.metrics import structural_similarity as ssm
 import scipy
-import periodictable as pt
-import matplotlib
-# matplotlib.use('Agg')
-import temul.model_creation as model_creation
-
-
-import warnings
+from scipy.ndimage.filters import gaussian_filter
 from scipy.optimize import OptimizeWarning
-# warnings.simplefilter("ignore", UserWarning)
+from math import sqrt
+import numpy as np
+from numpy import mean
+import hyperspy.api as hs
+import pandas as pd
+import copy
+from tqdm import trange
+import collections
+import warnings
 warnings.simplefilter("error", OptimizeWarning)
 
 
-# refine with and plot gaussian fitting
 def get_xydata_from_list_of_intensities(
         sublattice_intensity_list,
         hist_bins=100):
@@ -60,9 +50,11 @@ def get_xydata_from_list_of_intensities(
     Examples
     --------
 
+    >>> from temul.signal_processing import get_xydata_from_list_of_intensities
     >>> amp, mu, sigma = 10, 10, 0.5
     >>> sub1_inten = np.random.normal(mu, sigma, 1000)
-    >>> xdata, ydata = get_xydata_from_list_of_intensities(sub1_inten, hist_bins=50)
+    >>> xdata, ydata = get_xydata_from_list_of_intensities(sub1_inten,
+    ...     hist_bins=50)
     '''
 
     hist_bins = hist_bins
@@ -91,7 +83,7 @@ def fit_1D_gaussian_to_data(xdata, amp, mu, sigma):
     amp : float
         amplitude of the gaussian in y-axis
     mu : float
-        mean value of the gaussianin x-axis, corresponding to y-axis 
+        mean value of the gaussianin x-axis, corresponding to y-axis
         amplitude.
     sigma : float
         standard deviation of the gaussian distribution
@@ -103,13 +95,19 @@ def fit_1D_gaussian_to_data(xdata, amp, mu, sigma):
     Examples
     --------
 
+    >>> from temul.signal_processing import (
+    ...     get_xydata_from_list_of_intensities,
+    ...     fit_1D_gaussian_to_data)
     >>> amp, mu, sigma = 10, 10, 0.5
     >>> sub1_inten = np.random.normal(mu, sigma, 1000)
-    >>> xdata, ydata = get_xydata_from_list_of_intensities(sub1_inten, hist_bins=50)
-    >>> gauss_fit_01 = _(xdata, amp, mu, sigma)    
+    >>> xdata, ydata = get_xydata_from_list_of_intensities(sub1_inten,
+    ...     hist_bins=50)
+    >>> gauss_fit_01 = fit_1D_gaussian_to_data(xdata, amp, mu, sigma)
     '''
 
-    return amp*(1/(sigma*(np.sqrt(2*np.pi))))*(np.exp(-((xdata-mu)**2)/((2*sigma)**2)))
+    return(amp*(1/(sigma*(np.sqrt(2*np.pi))))*(np.exp(-((xdata-mu)**2) /
+                                                      ((2*sigma)**2)))
+           )
 
 
 # Fit gaussian to element
@@ -120,8 +118,8 @@ def return_fitting_of_1D_gaussian(
         amp, mu, sigma):
     '''
     Use the initially found centre (mean/mode) value of a sublattice
-    histogram (e.g., Mo_1 in an Mo sublattice) as an input mean for a 
-    gaussian fit of the data. 
+    histogram (e.g., Mo_1 in an Mo sublattice) as an input mean for a
+    gaussian fit of the data.
 
     Parameters
     ----------
@@ -130,23 +128,27 @@ def return_fitting_of_1D_gaussian(
 
     Returns
     -------
-    optimised parameters (popt) and estimated covariance (pcov) of the 
+    optimised parameters (popt) and estimated covariance (pcov) of the
     fitted gaussian function.
 
     Examples
     --------
 
+    >>> from temul.signal_processing import (
+    ...     get_xydata_from_list_of_intensities,
+    ...     return_fitting_of_1D_gaussian,
+    ...     fit_1D_gaussian_to_data)
     >>> amp, mu, sigma = 10, 10, 0.5
     >>> sub1_inten = np.random.normal(mu, sigma, 1000)
-    >>> xdata, ydata = get_xydata_from_list_of_intensities(sub1_inten, hist_bins=50)
+    >>> xdata, ydata = get_xydata_from_list_of_intensities(sub1_inten,
+    ...     hist_bins=50)
     >>> popt_gauss, _ = return_fitting_of_1D_gaussian(
-                            function=fit_1D_gaussian_to_data,
-                            xdata=xdata,
-                            ydata=ydata,
-                            p0=[amp, mu, sigma])
-    >>> print("calculated mean: " + str(round(np.mean(xdata),3)) + "\n"
-              + "fitted mean: " + str(round(popt_gauss[1],3)))
+    ...                     fit_1D_gaussian_to_data,
+    ...                     xdata, ydata,
+    ...                     amp, mu, sigma)
 
+    # print("Calculated Mean: " + str(round(np.mean(xdata),3))
+    # + "\n Fitted Mean: " + str(round(popt_gauss[1],3)))
     '''
 
     popt_gauss, pcov_gauss = scipy.optimize.curve_fit(
@@ -169,19 +171,21 @@ def plot_gaussian_fit(xdata, ydata, function, amp, mu, sigma,
                       facecolor='r', alpha=0.5):
     # save_image/filename maybe?
     '''
+    >>> from temul.signal_processing import (fit_1D_gaussian_to_data,
+    ...                                 plot_gaussian_fit,
+    ...                                 return_fitting_of_1D_gaussian)
     >>> amp, mu, sigma = 10, 10, 0.5
     >>> sub1_inten = np.random.normal(mu, sigma, 1000)
-    >>> xdata, ydata = get_xydata_from_list_of_intensities(sub1_inten, hist_bins=50)
+    >>> xdata, ydata = get_xydata_from_list_of_intensities(sub1_inten,
+    ...     hist_bins=50)
     >>> popt_gauss, _ = return_fitting_of_1D_gaussian(
-                            function=fit_1D_gaussian_to_data,
-                            xdata=xdata,
-                            ydata=ydata,
-                            p0=[amp, mu, sigma])
-    >>> plot_gaussian_fit(xdata, ydata, function=_, 
-                  amp=popt_gauss[0], mu=popt_gauss[1], sigma=popt_gauss[2],
-                  gauss_art='r--', gauss_label='Gauss Fit',
-                  plot_data=True, data_art='ko', data_label='Data Points',
-                  plot_fill=True, facecolor='r', alpha=0.5)
+    ...                     fit_1D_gaussian_to_data,
+    ...                     xdata, ydata, amp, mu, sigma)
+    >>> plot_gaussian_fit(xdata, ydata, function=fit_1D_gaussian_to_data,
+    ...           amp=popt_gauss[0], mu=popt_gauss[1], sigma=popt_gauss[2],
+    ...           gauss_art='r--', gauss_label='Gauss Fit',
+    ...           plot_data=True, data_art='ko', data_label='Data Points',
+    ...           plot_fill=True, facecolor='r', alpha=0.5)
     '''
 
     _gaussian_fit = function(xdata=xdata, amp=amp, mu=mu, sigma=sigma)
@@ -238,7 +242,7 @@ def get_fitting_tools_for_plotting_gaussians(element_list,
                                              gaussian_amp=5,
                                              gauss_sigma_division=100):
     '''
-    Creates a list of parameters and details for fitting the intensities of a 
+    Creates a list of parameters and details for fitting the intensities of a
     sublattice with multiple Gaussians.
     '''
 
@@ -251,7 +255,8 @@ def get_fitting_tools_for_plotting_gaussians(element_list,
             "element list must be the same length as middle list")
 
     fitting_tools = []
-    for i, (element, middle) in enumerate(zip(element_list, scaled_middle_intensity_list)):
+    for i, (element, middle) in enumerate(zip(
+            element_list, scaled_middle_intensity_list)):
         element_name = element
         middle_int = middle
         lower_int = scaled_limit_intensity_list[i]
@@ -287,14 +292,14 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
 
     middle_intensity_list_real_sub1, limit_intensity_list_real_sub1 = make_middle_limit_intensity_list_real(
                                         sublattice=sub1,
-                                        middle_intensity_list=middle_intensity_list_sub1, 
+                                        middle_intensity_list=middle_intensity_list_sub1,
                                         limit_intensity_list=limit_intensity_list_sub1,
                                         method=method,
                                         sublattice_scalar=sub1_mode)
 
     middle_intensity_list_real_sub2, limit_intensity_list_real_sub2 = make_middle_limit_intensity_list_real(
                                         sublattice=sub2,
-                                        middle_intensity_list=middle_intensity_list_sub2, 
+                                        middle_intensity_list=middle_intensity_list_sub2,
                                         limit_intensity_list=limit_intensity_list_sub2,
                                         method=method,
                                         sublattice_scalar=sub2_mode)
@@ -302,12 +307,16 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
 
     element_list_all_subs = [element_list_sub1, element_list_sub2]
 
-    fitting_tools_all_subs = [get_fitting_tools_for_plotting_gaussians(element_list_sub1, 
-                                                middle_intensity_list_real_sub1,
-                                                limit_intensity_list_real_sub1),
-                            get_fitting_tools_for_plotting_gaussians(element_list_sub2, 
-                                                middle_intensity_list_real_sub2,
-                                                limit_intensity_list_real_sub2)]
+    fitting_tools_all_subs = [
+        get_fitting_tools_for_plotting_gaussians(
+            element_list_sub1,
+            middle_intensity_list_real_sub1,
+            limit_intensity_list_real_sub1),
+        get_fitting_tools_for_plotting_gaussians(
+            element_list_sub2,
+            middle_intensity_list_real_sub2,
+            limit_intensity_list_real_sub2)
+            ]
 
 
     plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
@@ -336,14 +345,17 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
 
         cyclers_all.append(cycler_sub)
 
-    if len(cyclers_all) != len(element_list_all_subs) != len(fitting_tools_all_subs):
+    if len(cyclers_all) != len(element_list_all_subs) != len(
+            fitting_tools_all_subs):
         raise ValueError(
-            "len(cyclers_all) != len(element_list_all) != len(fitting_tools_all_subs), "
+            "len(cyclers_all) != len(element_list_all) != "
+            "len(fitting_tools_all_subs), "
             + str(len(cyclers_all)) + ', ' +
             str(len(element_list_all_subs)) + ', '
             + str(len(fitting_tools_all_subs)))
 
-    for cycler, element, fitting in zip(cyclers_all, element_list_all_subs, fitting_tools_all_subs):
+    for cycler, element, fitting in zip(
+            cyclers_all, element_list_all_subs, fitting_tools_all_subs):
         if len(cycler) != len(element) != len(fitting):
             raise ValueError("len(cycler) != len(element) != len(fitting)")
 
@@ -355,15 +367,18 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
                                  gridspec_kw={'height_ratios': [2, 0.5]})
     plt.subplots_adjust(hspace=0)
 
-    #fig.suptitle("Fit of all Elements with Residuals", family="serif", fontsize=20)
+    # fig.suptitle("Fit of all Elements with Residuals", family="serif",
+    # fontsize=20)
     ax2.set_xlabel("Intensity (a.u.)", family="serif",  fontsize=20)
     ax1.set_ylabel("Counts", family="serif",  fontsize=20)
     ax2.set_ylabel("Res.", family="serif",  fontsize=20)
 
     sub_residual_gauss_list = []
-    for sublattice_array, fitting_tools_sub, cycler_sub, marker, in zip(sub_ints_all, fitting_tools_all_subs, cyclers_all, marker_list):
-        x_array, y_array = get_xydata_from_list_of_intensities(sublattice_array,
-                                                               hist_bins=hist_bins)
+    for sublattice_array, fitting_tools_sub, cycler_sub, marker, in zip(
+            sub_ints_all, fitting_tools_all_subs, cyclers_all, marker_list):
+        x_array, y_array = get_xydata_from_list_of_intensities(
+            sublattice_array,
+            hist_bins=hist_bins)
 
         if plotting_style == 'scatter':
             ax1.plot(x_array, y_array, color='grey',
@@ -381,7 +396,7 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
 
         for fitting_tools, kwargs in zip(fitting_tools_sub, cycler_sub):
             # label for plotting
-            label_info = model_creation.split_and_sort_element(
+            label_info = split_and_sort_element(
                 fitting_tools[0])
             label_name = label_info[0][1] + '_{' + str(label_info[0][2]) + '}'
 
@@ -411,22 +426,24 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
 
                     sub_residual_gauss = abs(
                         y - (fit_1D_gaussian_to_data(x, *popt_gauss)))
-                    sub_gauss_hl = ax1.plot(x, fit_1D_gaussian_to_data(x, *popt_gauss),
-                                            label=r"$\bf{%s}$ : " % label_name +
-                                            str(round(
-                                                sum(abs(sub_residual_gauss)), 1)),
-                                            linewidth=1.5,
-                                            **kwargs)
+                    sub_gauss_hl = ax1.plot(
+                        x, fit_1D_gaussian_to_data(x, *popt_gauss),
+                        label=r"$\bf{%s}$ : " % label_name +
+                        str(round(
+                            sum(abs(sub_residual_gauss)), 1)),
+                        linewidth=1.5,
+                        **kwargs)
 
                     sub_residual_gauss_list.append([fitting_tools[0],
                                                     sub_residual_gauss])
-                    sub_resid = ax2.plot(x, sub_residual_gauss, marker=marker[1],
-                                         color='grey',
-                                         linestyle='',
-                                         markersize=4,
-                                         alpha=0.75,
-                                         label=fitting_tools[0] + ': ' +
-                                         str(round(sum(abs(sub_residual_gauss)), 1)))
+                    sub_resid = ax2.plot(
+                        x, sub_residual_gauss, marker=marker[1],
+                        color='grey',
+                        linestyle='',
+                        markersize=4,
+                        alpha=0.75,
+                        label=fitting_tools[0] + ': ' +
+                        str(round(sum(abs(sub_residual_gauss)), 1)))
 
                 except OptimizeWarning:
                     print("Warning - Covariance could not be estimated for " +
@@ -438,26 +455,29 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
                     print("Error (see leastsq in scipy/optimize/minpack) - " +
                           "Not enough data for fitting of " +
                           fitting_tools[0] + ", skipping...")
-                    # https://stackoverflow.com/questions/48637960/improper-input-n-3-must-not-exceed-m-1-error-trying-to-fit-a-gaussian-function?rq=1
+    # https://stackoverflow.com/questions/48637960/improper-input-n-3-must-
+    #   not-exceed-m-1-error-trying-to-fit-a-gaussian-function?rq=1
 
     legend1 = ax1.legend(
         loc="best", prop={'size': 10}, ncol=2, edgecolor='grey')
     for line in legend1.get_lines():
         line.set_linewidth(1.5)
 
-    #ax1.hist(sub1_ints, bins=500)
-    #ax1.hist(sub2_ints, bins=500)
+    # ax1.hist(sub1_ints, bins=500)
+    # ax1.hist(sub2_ints, bins=500)
     if filename is not None:
         plt.savefig(fname=filename + '.png',
                     transparent=True, frameon=False, bbox_inches='tight',
                     pad_inches=None, dpi=900, labels=False)
 
 
-######## Image Registration ########
+'''
+Image Registration
+'''
 
 
 def rigid_registration(file, masktype='hann', n=4, findMaxima='gf'):
-    ''' 
+    '''
     Perform image registraion with the rigid registration package
 
     Parameters
@@ -466,17 +486,17 @@ def rigid_registration(file, masktype='hann', n=4, findMaxima='gf'):
     file : stack of tiff images
 
     masktype : filtering method, default 'hann'
-        See https://github.com/bsavitzky/rigidRegistration for 
+        See https://github.com/bsavitzky/rigidRegistration for
         more information
 
     n : width of filter, default 4
         larger numbers mean smaller filter width
-        See https://github.com/bsavitzky/rigidRegistration for 
+        See https://github.com/bsavitzky/rigidRegistration for
         more information
 
     findMaxima : image matching method, default 'gf'
-        'pixel' and 'gf' options, See 
-        https://github.com/bsavitzky/rigidRegistration for 
+        'pixel' and 'gf' options, See
+        https://github.com/bsavitzky/rigidRegistration for
         more information
 
     Returns
@@ -518,11 +538,13 @@ def rigid_registration(file, masktype='hann', n=4, findMaxima='gf'):
     s.get_outliers_NN(max_shift=8)
     # s.show_Rij(mask=True)
 
-    s.make_corrected_Rij()    # Correct outliers using the transitivity relations
-    # s.show_Rij_c()            # Display the corrected shift matrix
-
+    s.make_corrected_Rij()
+    # Correct outliers using the transitivity relations
+    # s.show_Rij_c()
+    # Display the corrected shift matrix
     # Create registered image stack and average
-    # To skip calculation of image shifts, or correcting the shift matrix, pass the function
+    # To skip calculation of image shifts, or correcting the shift matrix, pass
+    # the function
     s.get_averaged_image()
     # get_shifts=False, or correct_Rij=False
 
@@ -538,16 +560,19 @@ def rigid_registration(file, masktype='hann', n=4, findMaxima='gf'):
     # Save the average image
     s.save("average_image.tif")
 
-    # Save the average image, including outer areas. Be careful when analysis outer regions of this file
+    # Save the average image, including outer areas. Be careful when analysis
+    # outer regions of this file
     s.save("average_image_no_crop.tif", crop=False)
 
     # creates a folder and put all the individual images in there
-    save_individual_images(image_stack=s.stack_registered)
+    save_individual_images_from_image_stack(image_stack=s.stack_registered)
 
 
-######## Image Comparison ########
-
+'''
+Image Comparison
 # https://www.pyimagesearch.com/2014/09/15/python-compare-two-images/
+'''
+
 
 def mse(imageA, imageB):
     err = np.sum((imageA.astype("float") - imageB.astype("float")) ** 2)
@@ -555,8 +580,8 @@ def mse(imageA, imageB):
     return err
 
 
-def measure_image_errors(imageA, imageB, filename):
-    ''' 
+def measure_image_errors(imageA, imageB, filename=None):
+    '''
     Measure the Mean Squared Error (mse) and Structural Similarity Index (ssm)
     between two images.
 
@@ -580,15 +605,18 @@ def measure_image_errors(imageA, imageB, filename):
     >>> imageA = am.dummy_data.get_simple_cubic_signal().data
     >>> imageB = am.dummy_data.get_simple_cubic_with_vacancies_signal().data
     >>> mse_number, ssm_number = measure_image_errors(imageA, imageB,
-                                                      plot_details=True)
+    ...                                               filename=None)
 
-    Showing the ideal case of both images being exactly equal   
+    Showing the ideal case of both images being exactly equal
     >>> imageA = am.dummy_data.get_simple_cubic_signal().data
     >>> imageB = am.dummy_data.get_simple_cubic_signal().data
     >>> mse_number, ssm_number = measure_image_errors(imageA, imageA,
-                                                      plot_details=True)
+    ...                                               filename=None)
 
     '''
+    if imageA.dtype is not imageB.dtype:
+        imageA = imageA.astype('float64')
+        imageB = imageB.astype('float64')
 
     mse_number = mse(imageA, imageB)
     ssm_number = ssm(imageA, imageB)
@@ -629,8 +657,8 @@ def measure_image_errors(imageA, imageB, filename):
     return(mse_number, ssm_number)
 
 
-#imageA = am.dummy_data.get_simple_cubic_signal().data
-#imageB = am.dummy_data.get_simple_cubic_with_vacancies_signal().data
+# imageA = am.dummy_data.get_simple_cubic_signal().data
+# imageB = am.dummy_data.get_simple_cubic_with_vacancies_signal().data
 # mse_number, ssm_number = measure_image_errors(imageA, imageB,
 
 
@@ -653,16 +681,19 @@ def load_and_compare_images(imageA, imageB, filename=None):
 
     Examples
     --------
-
-    >>> imageA = am.dummy_data.get_simple_cubic_signal(image_noise=True)
-    >>> imageB = am.dummy_data.get_simple_cubic_signal()
-    >>> load_and_compare_images(imageA, imageB, filename=None)
+    # >>> # has to be a name for hyperspy to open with hs.load!!!
+    # >>> imageA = am.dummy_data.get_simple_cubic_signal(image_noise=True)
+    # >>> imageB = am.dummy_data.get_simple_cubic_signal()
+    # >>> load_and_compare_images(imageA, imageB, filename=None)
 
     '''
     imageA = hs.load(imageA)
     imageB = hs.load(imageB)
 
-    mse_number, ssm_number = measure_image_errors(imageA, imageB, filename)
+    mse_number, ssm_number = measure_image_errors(
+        imageA,
+        imageB,
+        filename=filename)
 
     return(mse_number, ssm_number)
 
@@ -670,24 +701,31 @@ def load_and_compare_images(imageA, imageB, filename=None):
 def compare_two_image_and_create_filtered_image(
         image_to_filter,
         reference_image,
-        filename,
         delta_image_filter,
         cropping_area,
         separation,
+        filename=None,
         max_sigma=6,
         percent_to_nn=0.4,
         mask_radius=None,
         refine=False):
     '''
-    Gaussian blur an image for comparison with a reference image. 
-    Good for finding the best gaussian blur for a simulation by 
+    Gaussian blur an image for comparison with a reference image.
+    Good for finding the best gaussian blur for a simulation by
     comparing to an experimental image.
     See measure_image_errors() and load_and_compare_images()
 
-    >>> new_sim_data = compare_two_image(
-                                    image_to_filter=simulation, 
-                                    reference_image=atom_lattice_max)
+    Examples
+    --------
 
+    >>> from temul.signal_processing import (
+    ...     compare_two_image_and_create_filtered_image)
+    >>> import temul.example_data as example_data
+    >>> experiment = example_data.load_Se_implanted_MoS2_data()
+    >>> simulation = example_data.load_Se_implanted_MoS2_simulation()
+    >>> filtered_image = compare_two_image_and_create_filtered_image(
+    ...     simulation, experiment, 0.5, cropping_area=[[5,5], [20, 20]],
+    ...     separation=15, mask_radius=4, percent_to_nn=None)
 
     '''
     image_to_filter_data = image_to_filter.data
@@ -703,12 +741,14 @@ def compare_two_image_and_create_filtered_image(
         temp_image_filtered = hs.signals.Signal2D(
             image_to_filter_data_filtered)
 #        temp_image_filtered.plot()
-        calibrate_intensity_distance_with_sublattice_roi(image=temp_image_filtered,
-                                                         cropping_area=cropping_area,
-                                                         separation=separation,
-                                                         percent_to_nn=percent_to_nn,
-                                                         mask_radius=mask_radius,
-                                                         refine=refine)
+        calibrate_intensity_distance_with_sublattice_roi(
+            image=temp_image_filtered,
+            cropping_area=cropping_area,
+            separation=separation,
+            percent_to_nn=percent_to_nn,
+            mask_radius=mask_radius,
+            refine=refine,
+            filename=None)
 
         mse_number, ssm_number = measure_image_errors(
             imageA=reference_image_data,
@@ -740,12 +780,14 @@ def compare_two_image_and_create_filtered_image(
 
     image_filtered = hs.signals.Signal2D(image_to_filter_filtered)
 
-    calibrate_intensity_distance_with_sublattice_roi(image=image_filtered,
-                                                     cropping_area=cropping_area,
-                                                     separation=separation,
-                                                     percent_to_nn=percent_to_nn,
-                                                     mask_radius=mask_radius,
-                                                     refine=refine)
+    # calibrate_intensity_distance_with_sublattice_roi(
+    #     image=image_filtered,
+    #     cropping_area=cropping_area,
+    #     separation=separation,
+    #     percent_to_nn=percent_to_nn,
+    #     mask_radius=mask_radius,
+    #     refine=refine,
+    #     filename=None)
 
     if filename is not None:
 
@@ -768,7 +810,9 @@ def compare_two_image_and_create_filtered_image(
     return(image_filtered)
 
 
-######## Image Filtering ########
+'''
+Image Filtering
+'''
 
 
 def make_gaussian(size, fwhm, center):
@@ -794,8 +838,9 @@ def make_gaussian(size, fwhm, center):
     return(arr)
 
 
-def double_gaussian_fft_filter(image, filename, 
-        d_inner, d_outer, real_space_sampling, delta=0.05, units='nm'):
+def double_gaussian_fft_filter(image, filename,
+                               d_inner, d_outer, real_space_sampling,
+                               delta=0.05, units='nm'):
     # Folder: G:/SuperStem visit/Feb 2019 data/2019_02_18_QMR_S1574_MoS2-Se-15eV
 
     # Accuracy of calculation. Smaller = more accurate.
@@ -804,7 +849,8 @@ def double_gaussian_fft_filter(image, filename,
     #    delta=0.01
 
     # Find the FWHM for both positive (outer) and negative (inner) gaussians
-    # d_1 is the inner reflection diameter in units of 1/nm (or whatever unit you're working with)
+    # d_1 is the inner reflection diameter in units of 1/nm (or whatever unit
+    # you're working with)
     # I find these in gatan, should be a way of doing automatically.
     #    d_1 = 7.48
     #    d_outer = 14.96
@@ -812,7 +858,6 @@ def double_gaussian_fft_filter(image, filename,
     # image.plot()
     #    image.save('Original Image Data', overwrite=True)
     #    image_name = image.metadata.General.original_filename
-
     '''
     Example d_inner, d_outer:
     MoS2: d_1 = 7.7, d_2 = 14
@@ -830,22 +875,22 @@ def double_gaussian_fft_filter(image, filename,
     fwhm_neg_gaus = reciprocal_d_inner_pix
     fwhm_pos_gaus = reciprocal_d_outer_pix
 
-    #s = normalize_signal(subtract_average_background(s))
+    # s = normalize_signal(subtract_average_background(s))
     image.axes_manager[0].scale = real_space_sampling
     image.axes_manager[1].scale = real_space_sampling
     image.axes_manager[0].units = units
     image.axes_manager[1].units = units
-    #image.save('Calibrated Image Data', overwrite=True)
+    # image.save('Calibrated Image Data', overwrite=True)
 
-#    image.plot()
-#    plt.title('Calibrated Image', fontsize = 20)
-#    plt.gca().axes.get_xaxis().set_visible(False)
-#    plt.gca().axes.get_yaxis().set_visible(False)
-#    plt.tight_layout()
-#    plt.savefig(fname='Calibrated Image.png',
-#                transparent=True, frameon=False, bbox_inches='tight',
-#                pad_inches=None, dpi=300, labels=False)
-#    plt.close()
+    #    image.plot()
+    #    plt.title('Calibrated Image', fontsize = 20)
+    #    plt.gca().axes.get_xaxis().set_visible(False)
+    #    plt.gca().axes.get_yaxis().set_visible(False)
+    #    plt.tight_layout()
+    #    plt.savefig(fname='Calibrated Image.png',
+    #                transparent=True, frameon=False, bbox_inches='tight',
+    #                pad_inches=None, dpi=300, labels=False)
+    #    plt.close()
 
     # Get FFT of the image
     image_fft = image.fft(shift=True)
@@ -871,8 +916,9 @@ def double_gaussian_fft_filter(image, filename,
                             fwhm=fwhm_neg_gaus, center=None)
     # Note that this step isn't actually neccessary for the computation,
     #   we could just subtract when making the double gaussian below.
-    #   However, we do it this way so that we can save a plot of the negative gaussian!
-    #np_arr_neg = np_arr_neg
+    #   However, we do it this way so that we can save a plot of the negative
+    # gaussian!
+    # np_arr_neg = np_arr_neg
     nD_Gaussian_neg = hs.signals.Signal2D(np.array(arr_neg))
     # nD_Gaussian_neg.plot()
 
@@ -897,10 +943,11 @@ def double_gaussian_fft_filter(image, filename,
         DGFilter = normalize_signal(subtract_average_background(DGFilter))
         DGFilter.plot()
         '''
-        # Multiply the 2-D Gaussian with the FFT. This low pass filters the FFT.
+        # Multiply the 2-D Gaussian with the FFT. This low pass filters the
+        # FFT.
         convolution = image_fft*DGFilter
         # convolution.plot(norm='log')
-        #convolution_amp = convolution.amplitude
+        # convolution_amp = convolution.amplitude
         # convolution_amp.plot(norm='log')
 
         # Create the inverse FFT, which is your filtered image!
@@ -912,7 +959,7 @@ def double_gaussian_fft_filter(image, filename,
         int_and_gauss_array.append(
             [neg_gauss_amplitude, minimum_intensity, maximum_intensity])
 
-        #neg_gauss_amplitude = neg_gauss_amplitude + delta
+        # neg_gauss_amplitude = neg_gauss_amplitude + delta
 
     np_arr_2 = np.array(int_and_gauss_array)
     x_axis = np_arr_2[:, 0]
@@ -954,7 +1001,7 @@ def double_gaussian_fft_filter(image, filename,
 
     # Create the inverse FFT, which is your filtered image!
     image_filtered = convolution.ifft()
-    #s = normalize_signal(subtract_average_background(convolution_ifft))
+    # s = normalize_signal(subtract_average_background(convolution_ifft))
 
     image_filtered.axes_manager[0].scale = real_space_sampling
     image_filtered.axes_manager[1].scale = real_space_sampling
@@ -1072,17 +1119,19 @@ def double_gaussian_fft_filter(image, filename,
         Filtering_Variables_Table
         Filtering_Variables_Table.to_pickle(
             'filtering_variables_table_' + filename + '.pkl')
-        #Filtering_Variables_Table.to_csv('Filtering_Variables_Table.csv', sep=',', index=False)
+        # Filtering_Variables_Table.to_csv('Filtering_Variables_Table.csv',
+        # sep=',', index=False)
 
     return(image_filtered)
 
 
-######## Cropping and Calibrating ########
-
+'''
+Cropping and Calibrating
+'''
 
 # cropping done in the scale, so nm, pixel, or whatever you have
+# cropping_area = am.add_atoms_with_gui(image.data)
 
-#cropping_area = am.add_atoms_with_gui(image.data)
 
 def crop_image_hs(image, cropping_area, save_image=True, save_variables=True,
                   scalebar_true=True):
@@ -1104,7 +1153,7 @@ def crop_image_hs(image, cropping_area, save_image=True, save_variables=True,
     if image.axes_manager[0].scale != image.axes_manager[1].scale:
         raise ValueError("x & y scales don't match!")
 
-    if scalebar_true == True:
+    if scalebar_true is True:
         llim *= image.axes_manager[0].scale
         tlim *= image.axes_manager[0].scale
         rlim *= image.axes_manager[0].scale
@@ -1116,7 +1165,7 @@ def crop_image_hs(image, cropping_area, save_image=True, save_variables=True,
     image.plot()
     image_crop = roi.interactive(image)
 
-    if save_image == True:
+    if save_image is True:
         plt.title('Cropped region highlighted', fontsize=20)
         plt.gca().axes.get_xaxis().set_visible(False)
         plt.gca().axes.get_yaxis().set_visible(False)
@@ -1136,7 +1185,7 @@ def crop_image_hs(image, cropping_area, save_image=True, save_variables=True,
     physical_image_crop_size_y = image_crop.axes_manager[1].scale * \
         image_crop.axes_manager[1].size
 
-    if save_image == True:
+    if save_image is True:
         image_crop.save('Cropped Image.hspy')
         image_crop.plot()
         plt.title('Cropped Image', fontsize=20)
@@ -1150,7 +1199,7 @@ def crop_image_hs(image, cropping_area, save_image=True, save_variables=True,
     else:
         plt.close()
 
-    if save_variables == True:
+    if save_variables is True:
         ''' Saving the Variables for the image and filtered Image '''
         Cropping_Variables = collections.OrderedDict()
 #        Cropping_Variables['Image Name'] = [image_name]
@@ -1175,7 +1224,7 @@ def crop_image_hs(image, cropping_area, save_image=True, save_variables=True,
     return image_crop
 
 
-#cropping_area = am.add_atoms_with_gui(image.data)
+# cropping_area = am.add_atoms_with_gui(image.data)
 
 
 def calibrate_intensity_distance_with_sublattice_roi(image,
@@ -1186,8 +1235,9 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
                                                      percent_to_nn=0.2,
                                                      mask_radius=None,
                                                      refine=True,
-                                                     scalebar_true=False):  # add max mean min etc.
-    ''' 
+                                                     scalebar_true=False):
+    # add max mean min etc.
+    '''
     Calibrates the intensity of an image by using a sublattice, found with some
     atomap functions. The mean intensity of that sublattice is set to 1
 
@@ -1198,13 +1248,16 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
         scalebar_true=True
     cropping_area : list of 2 floats, default None
         The best method of choosing the area is by using the atomap
-        function "add_atoms_with_gui(image.data)". Choose two points on the 
+        function "add_atoms_with_gui(image.data)". Choose two points on the
         image. First point is top left of area, second point is bottom right.
     percent_to_nn : float, default 0.40
-        Determines the boundary of the area surrounding each atomic 
+        Determines the boundary of the area surrounding each atomic
         column, as fraction of the distance to the nearest neighbour.
     scalebar_true : Bool, default False
         Set to True if the scale of the image is calibrated to a distance unit.
+        *** is there any point to this? if scale=1, then multiplying has no
+        *** effect, and if it is scaled to nm or angstrom, multiplying is
+        *** good. so keep the code, remove the parameter option!
 
     Returns
     -------
@@ -1214,10 +1267,12 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
     -------
 
     >>> image = am.dummy_data.get_simple_cubic_with_vacancies_signal()
-    >>> image.plot()
-    >>> cropping_area = am.add_atoms_with_gui(image.data) # choose two points
-    >>> calibrate_intensity_distance_with_sublattice_roi(image, cropping_area)
-    >>> image.plot()
+    >>> # image.plot()
+    >>> cropping_area = [[10,10],[100,100]]
+    >>> # cropping_area = am.add_atoms_with_gui(image.data) # manually
+    >>> calibrate_intensity_distance_with_sublattice_roi(image,
+    ...             cropping_area, separation=10)
+    >>> # image.plot()
 
     '''
     llim, tlim = cropping_area[0]
@@ -1226,7 +1281,7 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
     if image.axes_manager[0].scale != image.axes_manager[1].scale:
         raise ValueError("x & y scales don't match!")
 
-    if scalebar_true == True:
+    if scalebar_true is True:
         llim *= image.axes_manager[0].scale
         tlim *= image.axes_manager[0].scale
         rlim *= image.axes_manager[0].scale
@@ -1238,15 +1293,17 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
         left=llim, right=rlim, top=tlim, bottom=blim)(image)
     atom_positions = am.get_atom_positions(
         cal_area, separation=separation, pca=True)
-    #atom_positions = am.add_atoms_with_gui(cal_area, atom_positions)
+    # atom_positions = am.add_atoms_with_gui(cal_area, atom_positions)
     calib_sub = am.Sublattice(atom_positions, cal_area, color='r')
-#    calib_sub.plot()
-    if refine == True:
+    # calib_sub.plot()
+    if refine is True:
         calib_sub.find_nearest_neighbors()
         calib_sub.refine_atom_positions_using_center_of_mass(
-            percent_to_nn=percent_to_nn, mask_radius=mask_radius)
+            percent_to_nn=percent_to_nn, mask_radius=mask_radius,
+            show_progressbar=False)
         calib_sub.refine_atom_positions_using_2d_gaussian(
-            percent_to_nn=percent_to_nn, mask_radius=mask_radius)
+            percent_to_nn=percent_to_nn, mask_radius=mask_radius,
+            show_progressbar=False)
     else:
         pass
     # calib_sub.plot()
@@ -1273,18 +1330,21 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
         # plt.close()
 
 
-######## Atomap extensions ########
+'''
+Atomap extensions
+'''
+
 
 def toggle_atom_refine_position_automatically(sublattice,
-                                              filename,
                                               min_cut_off_percent,
                                               max_cut_off_percent,
+                                              filename=None,
                                               range_type='internal',
                                               method='mode',
                                               percent_to_nn=0.05,
                                               mask_radius=None):
     '''
-    Sets the 'refine_position' attribute of each Atom Position in a 
+    Sets the 'refine_position' attribute of each Atom Position in a
     sublattice using a range of intensities.
 
     Parameters
@@ -1312,7 +1372,7 @@ def toggle_atom_refine_position_automatically(sublattice,
         Save the 'sublattice.toggle_atom_refine_position_with_gui()'
         image.
     percent_to_nn : float, default 0.40
-        Determines the boundary of the area surrounding each atomic 
+        Determines the boundary of the area surrounding each atomic
         column, as fraction of the distance to the nearest neighbour.
 
     Returns
@@ -1323,17 +1383,17 @@ def toggle_atom_refine_position_automatically(sublattice,
 
     >>> min_cut_off_percent = 0.75
     >>> max_cut_off_percent = 1.25
-    >>> sublattice = am.dummy_data.get_simple_cubic_with_vacancies_sublattice(image_noise=True)
+    >>> sublattice = am.dummy_data.get_simple_cubic_with_vacancies_sublattice(
+    ...     image_noise=True)
     >>> sublattice.find_nearest_neighbors()
     >>> sublattice.plot()
     >>> false_list_sublattice =  toggle_atom_refine_position_automatically(
-                                    sublattice=sublattice,
-                                    min_cut_off_percent=min_cut_off_percent,
-                                    max_cut_off_percent=max_cut_off_percent, 
-                                    range_type='internal',
-                                    method='mode',
-                                    save_image=False,
-                                    percent_to_nn=0.05)
+    ...                             sublattice=sublattice,
+    ...                             min_cut_off_percent=min_cut_off_percent,
+    ...                             max_cut_off_percent=max_cut_off_percent,
+    ...                             range_type='internal',
+    ...                             method='mode',
+    ...                             percent_to_nn=0.05)
 
     >>> # Check which atoms will not be refined (red dots)
     >>> sublattice.toggle_atom_refine_position_with_gui()
@@ -1374,7 +1434,7 @@ def toggle_atom_refine_position_automatically(sublattice,
     # checking we have some falses
     false_list_sublattice = []
     for i in range(0, len(sublattice.atom_list)):
-        if sublattice.atom_list[i].refine_position == False:
+        if sublattice.atom_list[i].refine_position is False:
             false_list_sublattice.append(
                 sublattice.atom_list[i].refine_position)
 
@@ -1388,669 +1448,14 @@ def toggle_atom_refine_position_automatically(sublattice,
         plt.gca().axes.get_xaxis().set_visible(False)
         plt.gca().axes.get_yaxis().set_visible(False)
         plt.tight_layout()
-        plt.savefig(fname='toggle_atom_refine_' + sublattice.name + '_' + filename + '.png',
-                    transparent=True, frameon=False, bbox_inches='tight',
-                    pad_inches=None, dpi=300, labels=False)
+        plt.savefig(
+            fname='toggle_atom_refine_' + sublattice.name + '_' + filename +
+                  '.png',
+            transparent=True, frameon=False, bbox_inches='tight',
+            pad_inches=None, dpi=300, labels=False)
         plt.close()
 
     return(false_list_sublattice)
-
-
-# need to add "radius" for where to get intensity from. Do we though?
-#   until we find a way of defining it in the image, radius should be left alone. Radius can be accessed in the
-#   periodictable package anyway.
-# need to add remove backgroun locally or with a third sublattice
-#        sublattice.find_nearest_neighbors()
-
-
-def get_sublattice_intensity(sublattice, intensity_type='max', remove_background_method=None,
-                             background_sublattice=None, num_points=3, percent_to_nn=0.4, mask_radius=None):
-    '''
-    Finds the intensity for each atomic column using either max, mean, 
-    min, total or all of them at once.
-
-    The intensity values are taken from the area defined by 
-    percent_to_nn.
-
-    Results are stored in each Atom_Position object as 
-    amplitude_max_intensity, amplitude_mean_intensity, 
-    amplitude_min_intensity and/or amplitude_total_intensity 
-    which can most easily be accessed through the sublattice object. 
-    See the examples in get_atom_column_amplitude_max_intensity.
-
-    Parameters
-    ----------
-
-    sublattice : sublattice object
-        The sublattice whose intensities you are finding.
-    intensity_type : string, default 'max'
-        Determines the method used to find the sublattice intensities.
-        The available methods are 'max', 'mean', 'min', 'total' and
-        'all'. 
-    remove_background_method : string, default None
-        Determines the method used to remove the background_sublattice
-        intensities from the image. Options are 'average' and 'local'.
-    background_sublattice : sublattice object, default None
-        The sublattice used if remove_background_method is used.
-    num_points : int, default 3
-        If remove_background_method='local', num_points is the number 
-        of nearest neighbour values averaged from background_sublattice
-    percent_to_nn : float, default 0.40
-        Determines the boundary of the area surrounding each atomic 
-        column, as fraction of the distance to the nearest neighbour.
-
-    Returns
-    -------
-    2D numpy array
-
-    Examples
-    --------
-
-    >>> import numpy as np
-    >>> import atomap.api as am
-    >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
-    >>> sublattice.find_nearest_neighbors()
-    >>> intensities_all = get_sublattice_intensity(sublattice=sublattice, 
-                                                   intensity_type='all', 
-                                                   remove_background_method=None,
-                                                   background_sublattice=None)
-
-    >>> intensities_total = get_sublattice_intensity(sublattice=sublattice, 
-                                                   intensity_type='total', 
-                                                   remove_background_method=None,
-                                                   background_sublattice=None)
-
-    >>> intensities_total_local = get_sublattice_intensity(sublattice=sublattice, 
-                                                   intensity_type='total', 
-                                                   remove_background_method='local',
-                                                   background_sublattice=sublattice)
-
-    >>> intensities_max_average = get_sublattice_intensity(sublattice=sublattice, 
-                                                   intensity_type='max', 
-                                                   remove_background_method='average',
-                                                   background_sublattice=sublattice)
-
-    '''
-    if percent_to_nn is not None:
-        sublattice.find_nearest_neighbors()
-    else:
-        pass
-
-    if remove_background_method == None and background_sublattice == None:
-        if intensity_type == 'all':
-            sublattice.get_atom_column_amplitude_max_intensity(
-                percent_to_nn=percent_to_nn, mask_radius=mask_radius)
-            sublattice_max_intensity_list = []
-            sublattice_max_intensity_list.append(
-                sublattice.atom_amplitude_max_intensity)
-            sublattice_max_intensity_list = sublattice_max_intensity_list[0]
-            max_intensities = np.array(sublattice_max_intensity_list)
-
-            sublattice.get_atom_column_amplitude_mean_intensity(
-                percent_to_nn=percent_to_nn, mask_radius=mask_radius)
-            sublattice_mean_intensity_list = []
-            sublattice_mean_intensity_list.append(
-                sublattice.atom_amplitude_mean_intensity)
-            sublattice_mean_intensity_list = sublattice_mean_intensity_list[0]
-            mean_intensities = np.array(sublattice_mean_intensity_list)
-
-            sublattice.get_atom_column_amplitude_min_intensity(
-                percent_to_nn=percent_to_nn, mask_radius=mask_radius)
-            sublattice_min_intensity_list = []
-            sublattice_min_intensity_list.append(
-                sublattice.atom_amplitude_min_intensity)
-            sublattice_min_intensity_list = sublattice_min_intensity_list[0]
-            min_intensities = np.array(sublattice_min_intensity_list)
-
-            sublattice.get_atom_column_amplitude_total_intensity(
-                percent_to_nn=percent_to_nn, mask_radius=mask_radius)
-            sublattice_total_intensity_list = []
-            sublattice_total_intensity_list.append(
-                sublattice.atom_amplitude_total_intensity)
-            sublattice_total_intensity_list = sublattice_total_intensity_list[0]
-            total_intensities = np.array(sublattice_total_intensity_list)
-
-
-#            sublattice_total_intensity_list, _, _ = sublattice.integrate_column_intensity() # maxradius should be changed to percent_to_nn!
-#            total_intensities = np.array(sublattice_total_intensity_list)
-
-            sublattice_intensities = np.column_stack(
-                (max_intensities, mean_intensities, min_intensities, total_intensities))
-            return(sublattice_intensities)
-          #  return max_intensities, mean_intensities, min_intensities, total_intensities
-
-        elif intensity_type == 'max':
-            sublattice.get_atom_column_amplitude_max_intensity(
-                percent_to_nn=percent_to_nn, mask_radius=mask_radius)
-            sublattice_max_intensity_list = []
-            sublattice_max_intensity_list.append(
-                sublattice.atom_amplitude_max_intensity)
-            sublattice_max_intensity_list = sublattice_max_intensity_list[0]
-            max_intensities = np.array(sublattice_max_intensity_list)
-
-            return(max_intensities)
-
-        elif intensity_type == 'mean':
-            sublattice.get_atom_column_amplitude_mean_intensity(
-                percent_to_nn=percent_to_nn, mask_radius=mask_radius)
-            sublattice_mean_intensity_list = []
-            sublattice_mean_intensity_list.append(
-                sublattice.atom_amplitude_mean_intensity)
-            sublattice_mean_intensity_list = sublattice_mean_intensity_list[0]
-            mean_intensities = np.array(sublattice_mean_intensity_list)
-
-            return(mean_intensities)
-
-        elif intensity_type == 'min':
-            sublattice.get_atom_column_amplitude_min_intensity(
-                percent_to_nn=percent_to_nn, mask_radius=mask_radius)
-            sublattice_min_intensity_list = []
-            sublattice_min_intensity_list.append(
-                sublattice.atom_amplitude_min_intensity)
-            sublattice_min_intensity_list = sublattice_min_intensity_list[0]
-            min_intensities = np.array(sublattice_min_intensity_list)
-
-            return(min_intensities)
-
-        elif intensity_type == 'total':
-            sublattice.get_atom_column_amplitude_total_intensity(
-                percent_to_nn=percent_to_nn, mask_radius=mask_radius)
-            sublattice_total_intensity_list = []
-            sublattice_total_intensity_list.append(
-                sublattice.atom_amplitude_total_intensity)
-            sublattice_total_intensity_list = sublattice_total_intensity_list[0]
-            total_intensities = np.array(sublattice_total_intensity_list)
-
-#            sublattice_total_intensity_list, _, _ = sublattice.integrate_column_intensity()
-#            total_intensities = np.array(sublattice_total_intensity_list)
-            return(total_intensities)
-
-        else:
-            raise ValueError('You must choose an intensity_type')
-
-    elif remove_background_method == 'average':
-
-        sublattice_intensity_list_average_bksubtracted = remove_average_background(sublattice=sublattice,
-                                                                                   background_sublattice=background_sublattice,
-                                                                                   intensity_type=intensity_type,
-                                                                                   percent_to_nn=percent_to_nn,
-                                                                                   mask_radius=mask_radius)
-        return(sublattice_intensity_list_average_bksubtracted)
-
-    elif remove_background_method == 'local':
-
-        sublattice_intensity_list_local_bksubtracted = remove_local_background(sublattice=sublattice,
-                                                                               background_sublattice=background_sublattice,
-                                                                               intensity_type=intensity_type,
-                                                                               num_points=num_points,
-                                                                               percent_to_nn=percent_to_nn,
-                                                                               mask_radius=mask_radius)
-        return(sublattice_intensity_list_local_bksubtracted)
-
-    else:
-        pass
-
-
-def get_pixel_count_from_image_slice(
-        self,
-        image_data,
-        percent_to_nn=0.40):
-    """
-    Fid the number of pixels in an area when calling
-    _get_image_slice_around_atom()
-
-    Parameters
-    ----------
-
-    image_data : Numpy 2D array
-    percent_to_nn : float, default 0.40
-        Determines the boundary of the area surrounding each atomic 
-        column, as fraction of the distance to the nearest neighbour.
-
-    Returns
-    -------
-    The number of pixels in the image_slice
-
-    Examples
-    --------
-
-    >>> import atomap.api as am
-    >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
-    >>> sublattice.find_nearest_neighbors()
-    >>> atom0 = sublattice.atom_list[0]
-    >>> pixel_count = atom0.get_pixel_count_from_image_slice(sublattice.image)
-
-    """
-    closest_neighbor = self.get_closest_neighbor()
-
-    slice_size = closest_neighbor * percent_to_nn * 2
-    # data_slice, x0, y0 - see atomap documentation
-    data_slice, _, _ = self._get_image_slice_around_atom(
-        image_data, slice_size)
-
-    pixel_count = len(data_slice[0]) * len(data_slice[0])
-
-    return(pixel_count)
-
-
-def remove_average_background(sublattice, intensity_type,
-                              background_sublattice, percent_to_nn=0.40,
-                              mask_radius=None):
-    '''
-    Remove the average background from a sublattice intensity using
-    a background sublattice. 
-
-    Parameters
-    ----------
-
-    sublattice : sublattice object
-        The sublattice whose intensities are of interest.
-    intensity_type : string
-        Determines the method used to find the sublattice intensities.
-        The available methods are 'max', 'mean', 'min' and 'all'. 
-    background_sublattice : sublattice object
-        The sublattice used to find the average background.
-    percent_to_nn : float, default 0.4
-        Determines the boundary of the area surrounding each atomic 
-        column, as fraction of the distance to the nearest neighbour.
-
-    Returns
-    -------
-    2D numpy array
-
-    Examples
-    --------
-
-    >>> import numpy as np
-    >>> import atomap.api as am
-    >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
-    >>> sublattice.find_nearest_neighbors()
-    >>> intensities_all = remove_average_background(sublattice, intensity_type='all',
-                                                    background_sublattice=sublattice)
-    >>> intensities_max = remove_average_background(sublattice, intensity_type='max',
-                                                background_sublattice=sublattice)
-
-    '''
-    background_sublattice.find_nearest_neighbors()
-    background_sublattice.get_atom_column_amplitude_min_intensity(
-        percent_to_nn=percent_to_nn, mask_radius=mask_radius)
-    background_sublattice_min = []
-    background_sublattice_min.append(
-        background_sublattice.atom_amplitude_min_intensity)
-    background_sublattice_mean_of_min = np.mean(background_sublattice_min)
-
-    if intensity_type == 'all':
-        sublattice.get_atom_column_amplitude_max_intensity(
-            percent_to_nn=percent_to_nn, mask_radius=mask_radius)
-        sublattice_max_intensity_list = []
-        sublattice_max_intensity_list.append(
-            sublattice.atom_amplitude_max_intensity)
-        sublattice_max_intensity_list = sublattice_max_intensity_list[0]
-        max_intensities = np.array(
-            sublattice_max_intensity_list) - background_sublattice_mean_of_min
-
-        sublattice.get_atom_column_amplitude_mean_intensity(
-            percent_to_nn=percent_to_nn, mask_radius=mask_radius)
-        sublattice_mean_intensity_list = []
-        sublattice_mean_intensity_list.append(
-            sublattice.atom_amplitude_mean_intensity)
-        sublattice_mean_intensity_list = sublattice_mean_intensity_list[0]
-        mean_intensities = np.array(
-            sublattice_mean_intensity_list) - background_sublattice_mean_of_min
-
-        sublattice.get_atom_column_amplitude_min_intensity(
-            percent_to_nn=percent_to_nn, mask_radius=mask_radius)
-        sublattice_min_intensity_list = []
-        sublattice_min_intensity_list.append(
-            sublattice.atom_amplitude_min_intensity)
-        sublattice_min_intensity_list = sublattice_min_intensity_list[0]
-        min_intensities = np.array(
-            sublattice_min_intensity_list) - background_sublattice_mean_of_min
-
-#        sublattice.get_atom_column_amplitude_total_intensity(percent_to_nn=percent_to_nn)
-#        sublattice_total_intensity_list = []
-#        sublattice_total_intensity_list.append(sublattice.atom_amplitude_total_intensity)
-#        sublattice_total_intensity_list = sublattice_total_intensity_list[0]
-#        total_intensities = np.array(sublattice_total_intensity_list) - background_sublattice_mean_of_min
-
-        sublattice_intensities = np.column_stack(
-            (max_intensities, mean_intensities, min_intensities))
-        return sublattice_intensities
-
-    elif intensity_type == 'max':
-        sublattice.get_atom_column_amplitude_max_intensity(
-            percent_to_nn=percent_to_nn, mask_radius=mask_radius)
-        sublattice_max_intensity_list = []
-        sublattice_max_intensity_list.append(
-            sublattice.atom_amplitude_max_intensity)
-        sublattice_max_intensity_list = sublattice_max_intensity_list[0]
-        max_intensities = np.array(
-            sublattice_max_intensity_list) - background_sublattice_mean_of_min
-
-        return max_intensities
-
-    elif intensity_type == 'mean':
-        sublattice.get_atom_column_amplitude_mean_intensity(
-            percent_to_nn=percent_to_nn, mask_radius=mask_radius)
-        sublattice_mean_intensity_list = []
-        sublattice_mean_intensity_list.append(
-            sublattice.atom_amplitude_mean_intensity)
-        sublattice_mean_intensity_list = sublattice_mean_intensity_list[0]
-        mean_intensities = np.array(
-            sublattice_mean_intensity_list) - background_sublattice_mean_of_min
-
-        return mean_intensities
-
-    elif intensity_type == 'min':
-        sublattice.get_atom_column_amplitude_min_intensity(
-            percent_to_nn=percent_to_nn, mask_radius=mask_radius)
-        sublattice_min_intensity_list = []
-        sublattice_min_intensity_list.append(
-            sublattice.atom_amplitude_min_intensity)
-        sublattice_min_intensity_list = sublattice_min_intensity_list[0]
-        min_intensities = np.array(
-            sublattice_min_intensity_list) - background_sublattice_mean_of_min
-
-        return min_intensities
-
-    elif intensity_type == 'total':
-        raise ValueError(
-            "Average background removal doesn't work with total intensity, yet")
-#        sublattice.get_atom_column_amplitude_total_intensity(percent_to_nn=percent_to_nn)
-#        sublattice_total_intensity_list = []
-#        sublattice_total_intensity_list.append(sublattice.atom_amplitude_total_intensity)
-#        sublattice_total_intensity_list = sublattice_total_intensity_list[0]
-#        total_intensities = np.array(sublattice_total_intensity_list) - background_sublattice_mean_of_min
-#
-#        return total_intensities
-
-    else:
-        pass
-
-#
-#sublattice0 = am.dummy_data.get_simple_cubic_sublattice()
-#
-# inten = get_sublattice_intensity(sublattice=sublattice0, intensity_type='max', remove_background_method='local',
-#                         background_sublattice=sublattice0, num_points=3, percent_to_nn=0.3)
-
-
-# can make the mean/mode option better:
-#   code blocks aren't needed, just put the if statement lower down where the change is...
-
-
-def remove_local_background(sublattice, background_sublattice, intensity_type,
-                            num_points=3, percent_to_nn=0.40, mask_radius=None):
-    '''
-    Remove the local background from a sublattice intensity using
-    a background sublattice. 
-
-    Parameters
-    ----------
-
-    sublattice : sublattice object
-        The sublattice whose intensities are of interest.
-    intensity_type : string
-        Determines the method used to find the sublattice intensities.
-        The available methods are 'max', 'mean', 'min', 'total' and 'all'. 
-    background_sublattice : sublattice object
-        The sublattice used to find the local backgrounds.
-    num_points : int, default 3
-        The number of nearest neighbour values averaged from 
-        background_sublattice
-    percent_to_nn : float, default 0.40
-        Determines the boundary of the area surrounding each atomic 
-        column, as fraction of the distance to the nearest neighbour.
-
-    Returns
-    -------
-    2D numpy array
-
-    Examples
-    --------
-
-    >>> import numpy as np
-    >>> import atomap.api as am
-    >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
-    >>> sublattice.find_nearest_neighbors()
-    >>> intensities_total = remove_local_background(sublattice, intensity_type='total',
-                                                    background_sublattice=sublattice)
-    >>> intensities_max = remove_local_background(sublattice, intensity_type='max',
-                                                  background_sublattice=sublattice)
-
-    '''
-    # get background_sublattice intensity list
-
-    if percent_to_nn is not None:
-        sublattice.find_nearest_neighbors()
-        background_sublattice.find_nearest_neighbors()
-    else:
-        pass
-
-    background_sublattice.get_atom_column_amplitude_min_intensity(
-        percent_to_nn=percent_to_nn, mask_radius=mask_radius)
-    background_sublattice_min_intensity_list = []
-    background_sublattice_min_intensity_list.append(
-        background_sublattice.atom_amplitude_min_intensity)
-    background_sublattice_min_intensity_list = background_sublattice_min_intensity_list[0]
-    if intensity_type == 'all':
-        raise ValueError(
-            "All intensities has not yet been implemented. Use max, mean or total instead")
-
-    if num_points == 0:
-        raise ValueError(
-            "num_points cannot be 0 if you wish to locally remove the background")
-
-    if intensity_type == 'max':
-        # get list of sublattice and background_sublattice atom positions
-        # np.array().T will not be needed in newer versions of atomap
-        sublattice_atom_pos = np.array(sublattice.atom_positions).T
-        background_sublattice_atom_pos = np.array(
-            background_sublattice.atom_positions).T
-
-        # get sublattice intensity list
-        # could change to my function, which allows choice of intensity type
-        sublattice.get_atom_column_amplitude_max_intensity(
-            percent_to_nn=percent_to_nn, mask_radius=mask_radius)
-        sublattice_max_intensity_list = []
-        sublattice_max_intensity_list.append(
-            sublattice.atom_amplitude_max_intensity)
-        sublattice_max_intensity_list = sublattice_max_intensity_list[0]
-
-        # create list which will be output
-        # therefore the original data is not changed!
-        sublattice_max_intensity_list_bksubtracted = []
-
-        # for each sublattice atom position, calculate the nearest
-        #   background_sublattice atom positions.
-        for p in range(0, len(sublattice_atom_pos)):
-
-            xy_distances = background_sublattice_atom_pos - \
-                sublattice_atom_pos[p]
-
-            # put all distances in this array with this loop
-            vector_array = []
-            for i in range(0, len(xy_distances)):
-                # get distance from sublattice position to every background_sublattice position
-                vector = np.sqrt(
-                    (xy_distances[i][0]**2) + (xy_distances[i][1]**2))
-                vector_array.append(vector)
-            # convert to numpy array
-            vector_array = np.array(vector_array)
-
-            # sort through the vector_array and find the 1st to kth smallest distance and find the
-            #   corressponding index
-            # num_points is the number of nearest points from which the background will be averaged
-            k = num_points
-            min_indices = list(np.argpartition(vector_array, k)[:k])
-            # sum the chosen intensities and find the mean (or median - add this)
-            local_background = 0
-            for index in min_indices:
-                local_background += background_sublattice.atom_amplitude_min_intensity[index]
-
-            local_background_mean = local_background / k
-
-            # subtract this mean local background intensity from the sublattice
-            #   atom position intensity
-            # indexing here is the loop digit p
-            sublattice_bksubtracted_atom = np.array(sublattice.atom_amplitude_max_intensity[p]) - \
-                np.array(local_background_mean)
-
-            sublattice_max_intensity_list_bksubtracted.append(
-                [sublattice_bksubtracted_atom])
-
-        sublattice_max_intensity_list_bksubtracted = np.array(
-            sublattice_max_intensity_list_bksubtracted)
-
-        return(sublattice_max_intensity_list_bksubtracted[:, 0])
-
-    elif intensity_type == 'mean':
-        # get list of sublattice and background_sublattice atom positions
-        # np.array().T will not be needed in newer versions of atomap
-        sublattice_atom_pos = np.array(sublattice.atom_positions).T
-        background_sublattice_atom_pos = np.array(
-            background_sublattice.atom_positions).T
-
-        # get sublattice intensity list
-        # could change to my function, which allows choice of intensity type
-        sublattice.get_atom_column_amplitude_mean_intensity(
-            percent_to_nn=percent_to_nn, mask_radius=mask_radius)
-        sublattice_mean_intensity_list = []
-        sublattice_mean_intensity_list.append(
-            sublattice.atom_amplitude_mean_intensity)
-        sublattice_mean_intensity_list = sublattice_mean_intensity_list[0]
-
-        # create list which will be output
-        # therefore the original data is not changed!
-        sublattice_mean_intensity_list_bksubtracted = []
-
-        # for each sublattice atom position, calculate the nearest
-        #   background_sublattice atom positions.
-        for p in range(0, len(sublattice_atom_pos)):
-
-            xy_distances = background_sublattice_atom_pos - \
-                sublattice_atom_pos[p]
-
-            # put all distances in this array with this loop
-            vector_array = []
-            for i in range(0, len(xy_distances)):
-                # get distance from sublattice position to every background_sublattice position
-                vector = np.sqrt(
-                    (xy_distances[i][0]**2) + (xy_distances[i][1]**2))
-                vector_array.append(vector)
-            # convert to numpy array
-            vector_array = np.array(vector_array)
-
-            # sort through the vector_array and find the 1st to kth smallest distance and find the
-            #   corressponding index
-            # num_points is the number of nearest points from which the background will be averaged
-            k = num_points
-            min_indices = list(np.argpartition(vector_array, k)[:k])
-            # sum the chosen intensities and find the mean (or median - add this)
-            local_background = 0
-            for index in min_indices:
-                local_background += background_sublattice.atom_amplitude_min_intensity[index]
-
-            local_background_mean = local_background / k
-
-            # subtract this mean local background intensity from the sublattice
-            #   atom position intensity
-            # indexing here is the loop digit p
-            sublattice_bksubtracted_atom = np.array(sublattice.atom_amplitude_mean_intensity[p]) - \
-                local_background_mean
-
-            sublattice_mean_intensity_list_bksubtracted.append(
-                [sublattice_bksubtracted_atom])
-
-        sublattice_mean_intensity_list_bksubtracted = np.array(
-            sublattice_mean_intensity_list_bksubtracted)
-
-        return(sublattice_mean_intensity_list_bksubtracted[:, 0])
-
-    elif intensity_type == 'total':
-        # get list of sublattice and background_sublattice atom positions
-        # np.array().T will not be needed in newer versions of atomap
-        sublattice_atom_pos = np.array(sublattice.atom_positions).T
-        background_sublattice_atom_pos = np.array(
-            background_sublattice.atom_positions).T
-
-        # get sublattice intensity list
-        # could change to my function, which allows choice of intensity type
-        sublattice.get_atom_column_amplitude_total_intensity(
-            percent_to_nn=percent_to_nn, mask_radius=mask_radius)
-        sublattice_total_intensity_list = []
-        sublattice_total_intensity_list.append(
-            sublattice.atom_amplitude_total_intensity)
-        sublattice_total_intensity_list = sublattice_total_intensity_list[0]
-
-        # create list which will be output
-        # therefore the original data is not changed!
-        sublattice_total_intensity_list_bksubtracted = []
-
-        # for each sublattice atom position, calculate the nearest
-        #   background_sublattice atom positions.
-        for p in range(0, len(sublattice_atom_pos)):
-
-            xy_distances = background_sublattice_atom_pos - \
-                sublattice_atom_pos[p]
-
-            # put all distances in this array with this loop
-            vector_array = []
-            for i in range(0, len(xy_distances)):
-                # get distance from sublattice position to every background_sublattice position
-                vector = np.sqrt(
-                    (xy_distances[i][0]**2) + (xy_distances[i][1]**2))
-                vector_array.append(vector)
-            # convert to numpy array
-            vector_array = np.array(vector_array)
-
-            # sort through the vector_array and find the 1st to kth smallest distance and find the
-            #   corressponding index
-            # num_points is the number of nearest points from which the background will be averaged
-            k = num_points
-            min_indices = list(np.argpartition(vector_array, range(k))[:k])
-            # if you want the values rather than the indices, use:
-            # vector_array[np.argpartition(vector_array, range(k))[:k]]
-            # sum the chosen intensities and find the total (or median - add this)
-            local_background = 0
-            for index in min_indices:
-                local_background += background_sublattice.atom_amplitude_min_intensity[index]
-
-            local_background_mean = local_background / k
-
-            # for summing pixels around atom
-            if mask_radius is None:
-                pixel_count_in_region = get_pixel_count_from_image_slice(sublattice.atom_list[p],
-                                                                         sublattice.image,
-                                                                         percent_to_nn)
-            elif mask_radius is not None:
-                mask = _make_circular_mask(centerX=sublattice.atom_list[p].pixel_x,
-                                           centerY=sublattice.atom_list[p].pixel_y,
-                                           imageSizeX=sublattice.image.shape[0],
-                                           imageSizeY=sublattice.image.shape[1],
-                                           radius=mask_radius)
-
-                pixel_count_in_region = len(sublattice.image[mask])
-
-            local_background_mean_summed = pixel_count_in_region * local_background_mean
-
-            # subtract this mean local background intensity from the sublattice
-            #   atom position intensity
-            # indexing here is the loop digit p
-            sublattice_bksubtracted_atom = np.array(sublattice.atom_amplitude_total_intensity[p]) - \
-                local_background_mean_summed
-
-            sublattice_total_intensity_list_bksubtracted.append(
-                [sublattice_bksubtracted_atom])
-
-        sublattice_total_intensity_list_bksubtracted = np.array(
-            sublattice_total_intensity_list_bksubtracted)
-
-        return(sublattice_total_intensity_list_bksubtracted[:, 0])
-
-    else:
-        raise ValueError(
-            "You must choose a valid intensity_type. Try max, mean or total")
-
 
 
 def remove_image_intensity_in_data_slice(atom,
@@ -2115,7 +1520,7 @@ def get_cell_image(s, points_x, points_y, method='Voronoi', max_radius='Auto',
     '''
     The same as atomap's integrate, except instead of summing the
     region around an atom, it removes the value from all pixels in
-    that region. 
+    that region.
     For example, with this you can remove the local background intensity
     by setting reduce_func=np.min.
 
@@ -2126,11 +1531,11 @@ def get_cell_image(s, points_x, points_y, method='Voronoi', max_radius='Auto',
     reduce_func : ufunc, default np.min
         function used to reduce the pixel values around each atom
         to a float.
-    
+
     Examples
     --------
-    #### add PTO example from paper 
-    
+    #### add PTO example from paper
+
     Returns
     -------
 
@@ -2182,7 +1587,7 @@ def get_cell_image(s, points_x, points_y, method='Voronoi', max_radius='Auto',
                         disable=not show_progressbar):
         currentMask = (point_record == point)
         currentFeature = currentMask * image.T
-        #integrated_intensity[point] = sum(sum(currentFeature.T)).T
+        # integrated_intensity[point] = sum(sum(currentFeature.T)).T
         # my shite
         # remove zeros from array (needed for np.mean, np.min)
         integrated_intensity[point] = reduce_func(
@@ -2195,3 +1600,218 @@ def get_cell_image(s, points_x, points_y, method='Voronoi', max_radius='Auto',
 
     # return (integrated_intensity, s_intensity_record, point_record.T)
     return(intensity_record)
+
+
+def distance_vector(x1, y1, x2, y2):
+    distance_vector = sqrt(pow(x2-x1, 2) + pow(y2-y1, 2))
+    return(distance_vector)
+
+
+def mean_and_std_nearest_neighbour_distances(sublattice,
+                                             nearest_neighbours=5,
+                                             sampling=None):
+    '''
+    Calculates mean and standard deviation of the distance from each atom to
+    its nearest neighbours.
+
+    Parameters
+    ----------
+    sublattice : Atomap Sublattice object
+    nearest_neighbours : int, default 5
+        The number of nearest neighbours used to calculate the mean distance
+        from an atom. As in atomap, choosing 5 gets the 4 nearest
+        neighbours.
+
+    Returns
+    -------
+    2 lists: list of mean distances, list of standard deviations.
+
+    Examples
+    --------
+    >>> from temul.dummy_data import get_simple_cubic_sublattice
+    >>> import temul.signal_processing as tmlsp
+    >>> sub1 = get_simple_cubic_sublattice()
+    >>> mean, std = tmlsp.mean_and_std_nearest_neighbour_distances(sub1)
+    >>> mean_scaled,_ = tmlsp.mean_and_std_nearest_neighbour_distances(sub1,
+    ...     nearest_neighbours=5,
+    ...     sampling=0.0123)
+
+    '''
+    # 5 will get the nearest 4 atoms
+    sublattice.find_nearest_neighbors(
+        nearest_neighbors=nearest_neighbours)
+
+    # atom_nn_list = []
+    mean_list = []
+    std_dev_list = []
+    # variance_list = []
+    for atom in sublattice.atom_list:
+        atom_nns = atom.nearest_neighbor_list
+        x1 = atom.pixel_x
+        y1 = atom.pixel_y
+
+        distance_list = []
+        for i in range(0, len(atom_nns)):
+            x2 = atom_nns[i].pixel_x
+            y2 = atom_nns[i].pixel_y
+            distance = distance_vector(x1, y1, x2, y2)
+            distance_list.append(distance)
+
+        mean_distance = sum(distance_list)/len(distance_list)
+        mean_list.append(mean_distance)
+        std_dev = np.std(distance_list, dtype=np.float64)
+        std_dev_list.append(std_dev)
+        # variance = np.var(distance_list, dtype=np.float64)
+        # variance_list.append(variance)
+
+    if sampling is not None:
+        mean_list = [k*sampling for k in mean_list]
+        std_dev_list = [k*sampling for k in std_dev_list]
+
+    return(mean_list, std_dev_list)
+
+
+def choose_mask_coordinates(image, norm='log'):
+    '''
+    Pick the mask locations for an FFT.
+    See get_masked_ifft() and
+    atomap.initial_position_finding.add_atoms_with_gui() for more details.
+    Commit 5ba307b5af0b598bedc0284aa989d44e23fdde4d on Atomap
+
+    Parameters
+    ----------
+    image : Hyperspy 2D Signal
+    norm : string, default 'log'
+        How to scale the intensity value for the displayed image.
+        Options are 'linear' and 'log'
+
+    Returns
+    -------
+    mask_coords : list of pixel coordinates
+
+    Examples
+    --------
+    See get_masked_ifft() for example.
+    '''
+
+    fft = image.fft(shift=True)
+    fft_amp = fft.amplitude
+
+    mask_coords = add_atoms_with_gui(
+        fft_amp.data, norm=norm)
+
+    # mask_coords = am.add_atoms_with_gui(
+    #     fft_amp.data, norm=norm)
+
+    return(mask_coords)
+
+
+def get_masked_ifft(image, mask_coords, mask_radius=10, space="real",
+                    keep_masked_area=True, plot_masked_fft=False):
+    '''
+    loop through each mask_coords and mask the fft. Then return
+    an ifft of the image.
+    To Do: calibration of units automatically.
+
+    Masks a fast Fourier transform (FFT) and returns the inverse FFT.
+    Use choose_mask_coordinates() to manually choose mask coordinates in the
+    FFT.
+
+    Parameters
+    ----------
+    image : Hyperspy 2D Signal
+    mask_coords : list of lists
+        Pixel coordinates of the masking locations. See the example below for
+        two simple coordinates.
+    mask_radius : int, default 10
+        Radius in pixels of the mask.
+    space : string, default "real"
+        If the input image is a Fourier transform already, set space="fourier"
+    keep_masked_area : Bool, default True
+        If True, this will set the mask at the mask_coords.
+        If False, this will set the mask as everything other than the
+        mask_coords.
+    plot_masked_fft : Bool, default False
+        If True, the mask used to filter the FFT will be plotted. Good for
+        checking that the mask is doing what you want.
+
+    Returns
+    -------
+    Inverse FFT as a Hyperspy 2D Signal
+
+    Examples
+    --------
+    >>> from temul.dummy_data import get_simple_cubic_signal
+    >>> import temul.signal_processing as tmlsp
+    >>> image = get_simple_cubic_signal()
+    >>> mask_coords = [[170.2, 170.8],[129.8, 130]]
+    >>> # mask_coords = tmlsp.choose_mask_coordinates(image=image, norm='log')
+
+    Use the defaults:
+
+    >>> image_ifft = tmlsp.get_masked_ifft(
+    ...     image=image, mask_coords=mask_coords)
+    >>> image_ifft.plot()
+
+    Plot the masked fft:
+
+    >>> image_ifft = tmlsp.get_masked_ifft(
+    ...     image=image, mask_coords=mask_coords,
+    ...     plot_masked_fft=True)
+    >>> image_ifft.plot()
+
+    Use unmasked fft area and plot the masked fft:
+
+    >>> image_ifft = tmlsp.get_masked_ifft(
+    ...     image=image, mask_coords=mask_coords,
+    ...     plot_masked_fft=True, keep_masked_area=False)
+    >>> image_ifft.plot()
+
+    If the input image is already a Fourier transform:
+
+    >>> fft_image = image.fft(shift=True)
+    >>> image_ifft = tmlsp.get_masked_ifft(
+    ...     image=fft_image, mask_coords=mask_coords,
+    ...     space='fourier')
+    >>> image_ifft.plot()
+
+    '''
+    if space == 'real':
+        fft = image.fft(shift=True)
+    elif space == 'fourier':
+        fft = image
+
+    for mask_coord in mask_coords:
+
+        x_pix = mask_coord[0]
+        y_pix = mask_coord[1]
+
+        # Create a mask over that location and transpose the axes
+        mask = _make_circular_mask(centerX=x_pix, centerY=y_pix,
+                                   imageSizeX=image.data.shape[1],
+                                   imageSizeY=image.data.shape[0],
+                                   radius=mask_radius).T
+
+        # check if the combined masked_fft exists
+        try:
+            mask_combined
+        except NameError:
+            mask_combined = mask
+        else:
+            mask_combined += mask
+
+    # the tilda ~ inverses the mask
+    # fill in nothings with 0
+    if keep_masked_area:
+        masked_fft = np.ma.array(fft.data, mask=~mask_combined).filled(0)
+    elif not keep_masked_area:
+        masked_fft = np.ma.array(fft.data, mask=mask_combined).filled(0)
+
+    masked_fft_image = hs.signals.ComplexSignal2D(masked_fft)
+    if plot_masked_fft:
+        masked_fft_image.amplitude.plot(norm="log")
+    # sort out units here
+    image_ifft = masked_fft_image.ifft()
+    image_ifft = np.absolute(image_ifft)
+
+    return(image_ifft)

@@ -1,34 +1,15 @@
 
-from temul.model_creation import get_and_return_element
-from temul.model_creation import split_and_sort_element
-from atomap.atom_finding_refining import _make_circular_mask
-from matplotlib import gridspec
-import rigidregistration
-from tifffile import imread, imwrite, TiffWriter
-from collections import Counter
-import warnings
-from time import time
-from glob import glob
-from atomap.atom_finding_refining import normalize_signal
-from atomap.tools import remove_atoms_from_image_using_2d_gaussian
-import os
-from skimage.measure import compare_ssim as ssm
-# from atomap.atom_finding_refining import get_atom_positions_in_difference_image
-from scipy.ndimage.filters import gaussian_filter
-import collections
-from atomap.atom_finding_refining import subtract_average_background
-from numpy import mean
+from temul.element_tools import (
+    get_and_return_element, split_and_sort_element)
+
 import matplotlib.pyplot as plt
-import hyperspy.api as hs
-import atomap.api as am
+from tifffile import imwrite
 import numpy as np
-from numpy import log
+import hyperspy.api as hs
 import CifFile
 import pandas as pd
-import scipy
-import periodictable as pt
-import matplotlib
-# matplotlib.use('Agg')
+from glob import glob
+import os
 
 
 def create_new_folder(new_folder_name):
@@ -48,6 +29,7 @@ def create_new_folder(new_folder_name):
     Examples
     --------
 
+    >>> from temul.io import create_new_folder
     >>> create_new_folder('test_folder')
 
     '''
@@ -73,7 +55,7 @@ def batch_convert_emd_to_image(extension_to_save,
         See Hyperspy documentation for information on file writing extensions
         available: http://hyperspy.org/hyperspy-doc/current/user_guide/io.html
     top_level_directory : string
-        The top-level directory in which the emd files exist. The default 
+        The top-level directory in which the emd files exist. The default
         glob_search will search this directory and all subdirectories.
     glob_search : string, default "**/*"
         Glob search string, see glob for more details:
@@ -85,10 +67,11 @@ def batch_convert_emd_to_image(extension_to_save,
     Example
     -------
 
-    >>> batch_convert_emd_to_image(extension_to_save='.png',
-    ...         top_level_directory='G:/Titan Images/08-10-19_MHEOC_SampleImaging stem',
-    ...         glob_search="**/*",
-    ...         overwrite=True)
+    # >>> batch_convert_emd_to_image(extension_to_save='.png',
+    # ...         top_level_directory='G:/Titan Images/
+    #               08-10-19_MHEOC_SampleImaging stem',
+    # ...         glob_search="**/*",
+    # ...         overwrite=True)
 
     """
 
@@ -122,7 +105,8 @@ def batch_convert_emd_to_image(extension_to_save,
                 s.save(filename + extension_to_save, overwrite=True)
 
 
-def load_data_and_sampling(filename, file_extension=None, invert_image=False, save_image=True):
+def load_data_and_sampling(filename, file_extension=None,
+                           invert_image=False, save_image=True):
 
     if '.' in filename:
         s = hs.load(filename)
@@ -135,7 +119,8 @@ def load_data_and_sampling(filename, file_extension=None, invert_image=False, sa
         real_sampling = 1
         s.axes_manager[-1].units = 'pixels'
         s.axes_manager[-2].units = 'pixels'
-        print('WARNING: Image calibrated to pixels, you should calibrate to distance')
+        print("WARNING: Image calibrated to pixels, you should "
+              "calibrate to distance")
     elif s.axes_manager[-1].scale != 1:
         real_sampling = s.axes_manager[-1].scale
         s.axes_manager[-1].units = 'nm'
@@ -145,10 +130,10 @@ def load_data_and_sampling(filename, file_extension=None, invert_image=False, sa
 #    physical_image_size = real_sampling * len(s.data)
     save_name = filename[:-4]
 
-    if invert_image == True:
+    if invert_image is True:
         s.data = np.divide(1, s.data)
 
-        if save_image == True:
+        if save_image is True:
 
             s.plot()
             plt.title(save_name, fontsize=20)
@@ -163,7 +148,7 @@ def load_data_and_sampling(filename, file_extension=None, invert_image=False, sa
             pass
 
     else:
-        if save_image == True:
+        if save_image is True:
             s.plot()
             plt.title(save_name, fontsize=20)
             plt.gca().axes.get_xaxis().set_visible(False)
@@ -192,7 +177,7 @@ def convert_vesta_xyz_to_prismatic_xyz(vesta_xyz_filename,
                                        save=True):
     '''
     Convert from Vesta outputted xyz file format to the prismatic-style xyz
-    format. 
+    format.
     Lose some information from the .cif or .vesta file but okay for now.
     Develop your own converter if you need rms and occupancy! Lots to do.
 
@@ -204,7 +189,7 @@ def convert_vesta_xyz_to_prismatic_xyz(vesta_xyz_filename,
         name to be given to the outputted prismatic xyz file
     delimiter, header, skiprows, engine : pandas.read_csv input parameters
         See pandas.read_csv for documentation
-        Note that the delimiters here are only available if you use 
+        Note that the delimiters here are only available if you use
         engine='python'
     occupancy, rms_thermal_vib : see prismatic documentation
         if you want a file format that will retain these atomic attributes,
@@ -212,8 +197,8 @@ def convert_vesta_xyz_to_prismatic_xyz(vesta_xyz_filename,
     header_comment : string
         header comment for the file.
     save : Bool, default True
-        whether to output the file as a prismatic formatted xyz file with the 
-        name of the file given by "prismatic_xyz_filename". 
+        whether to output the file as a prismatic formatted xyz file with the
+        name of the file given by "prismatic_xyz_filename".
 
     Returns
     -------
@@ -223,17 +208,13 @@ def convert_vesta_xyz_to_prismatic_xyz(vesta_xyz_filename,
     --------
 
     See example_data for the vesta xyz file.
+    >>> from temul.io import convert_vesta_xyz_to_prismatic_xyz
     >>> prismatic_xyz = convert_vesta_xyz_to_prismatic_xyz(
-                vesta_xyz_filename='MoS2_hex_vesta_xyz.xyz',
-                prismatic_xyz_filename='MoS2_hex_prismatic.xyz',
-                delimiter='   |    |  ',
-                header=None,
-                skiprows=[0, 1],
-                engine='python',
-                occupancy=1.0,
-                rms_thermal_vib=0.05,
-                header_comment="Let's make a file!",
-                save=True)
+    ...     'example_data/prismatic/example_MoS2_vesta_xyz.xyz',
+    ...     'example_data/prismatic/MoS2_hex_prismatic.xyz',
+    ...     delimiter='   |    |  ', header=None, skiprows=[0, 1],
+    ...     engine='python', occupancy=1.0, rms_thermal_vib=0.05,
+    ...     header_comment="Let's do this!", save=True)
 
     '''
 
@@ -250,7 +231,11 @@ def convert_vesta_xyz_to_prismatic_xyz(vesta_xyz_filename,
     for i in file.values:
         for value in i:
             if 'nan' in str(value):
-                print('ERROR: nans present, file not read correctly. Try changes the delimiters! See: https://stackoverflow.com/questions/51195299/python-reading-a-data-text-file-with-different-delimiters')
+                print("ERROR: nans present, file not read correctly. "
+                      "Try changes the delimiters! "
+                      "See: https://stackoverflow.com/"
+                      "questions/51195299/python-reading-a-data-text-file"
+                      "-with-different-delimiters")
 
     file.columns = ['_atom_site_Z_number',
                     '_atom_site_fract_x',
@@ -276,14 +261,15 @@ def convert_vesta_xyz_to_prismatic_xyz(vesta_xyz_filename,
         file[name] = file[name].round(6)
 
         axis_values_list = [
-            x for x in file.loc[0:file.shape[0], name].values if not isinstance(x, str)]
+            x for x in file.loc[0:file.shape[0], name].values
+            if not isinstance(x, str)]
         min_axis = min(axis_values_list)
         max_axis = max(axis_values_list)
-        unit_cell_dimen_axis = max_axis-min_axis
+        unit_cell_dimen_axis = max_axis - min_axis
         unit_cell_dimen_axis = format(unit_cell_dimen_axis, '.6f')
         unit_cell_dimen.append(unit_cell_dimen_axis)
 
-    print(unit_cell_dimen)
+    # print(unit_cell_dimen)
     unit_cell_dimen = [float(unit_cell) for unit_cell in unit_cell_dimen]
     # should match the vesta values (or be slightly larger)
 
@@ -293,9 +279,9 @@ def convert_vesta_xyz_to_prismatic_xyz(vesta_xyz_filename,
                 unit_cell_dimen[i] *= padding
 
             # x, y, z translations
-            file.loc[:, '_atom_site_fract_x'] += unit_cell_dimen[0]/4
-            file.loc[:, '_atom_site_fract_y'] += unit_cell_dimen[1]/4
-            file.loc[:, '_atom_site_fract_z'] += unit_cell_dimen[2]/4
+            file.loc[:, '_atom_site_fract_x'] += unit_cell_dimen[0] / 4
+            file.loc[:, '_atom_site_fract_y'] += unit_cell_dimen[1] / 4
+            file.loc[:, '_atom_site_fract_z'] += unit_cell_dimen[2] / 4
 
         else:
             raise ValueError(
@@ -303,7 +289,7 @@ def convert_vesta_xyz_to_prismatic_xyz(vesta_xyz_filename,
                 "Example: (1, 1, 2) will double the _atom_site_fract_z, "
                 "adding 0.5 of _atom_site_fract_z to each side.")
 
-    print(unit_cell_dimen)
+    # print(unit_cell_dimen)
 
     file.loc[-1] = ['', unit_cell_dimen[0],
                     unit_cell_dimen[1],
@@ -320,7 +306,7 @@ def convert_vesta_xyz_to_prismatic_xyz(vesta_xyz_filename,
     # add -1 to end file
     file.loc[file.shape[0]] = [int(-1), '', '', '', '', '']
 
-    if save == True:
+    if save is True:
 
         if '.xyz' not in prismatic_xyz_filename:
             file.to_csv(prismatic_xyz_filename + '.xyz',
@@ -410,7 +396,7 @@ def write_cif_from_dataframe(dataframe,
                          dataframe['_atom_site_type_symbol']]]))
 
     # put it all together in a cif
-    outFile = open(filename+".cif", "w")
+    outFile = open(filename + ".cif", "w")
     outFile.write(str(cif_file))
     outFile.close()
 
@@ -426,9 +412,9 @@ def write_cif_from_dataframe(dataframe,
 # create dataframe function for single atom lattice for .xyz
 def create_dataframe_for_xyz(sublattice_list,
                              element_list,
-                             x_distance,
-                             y_distance,
-                             z_distance,
+                             x_size,
+                             y_size,
+                             z_size,
                              filename,
                              header_comment='top_level_comment'):
     """
@@ -438,17 +424,18 @@ def create_dataframe_for_xyz(sublattice_list,
     Example
     -------
 
+    >>> import atomap.api as am
     >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
     >>> for i in range(0, len(sublattice.atom_list)):
-            sublattice.atom_list[i].elements = 'Mo_1'
-            sublattice.atom_list[i].z_height = '0.5'
+    ...     sublattice.atom_list[i].elements = 'Mo_1'
+    ...     sublattice.atom_list[i].z_height = '0.5'
     >>> element_list = ['Mo_0', 'Mo_1', 'Mo_2']
-    >>> x_distance, y_distance = 50, 50
-    >>> z_distance = 5
+    >>> x_size, y_size = 50, 50
+    >>> z_size = 5
     >>> dataframe = create_dataframe_for_xyz([sublattice], element_list,
-                                 x_distance, y_distance, z_distance,
-                                 save='dataframe',
-                                 header_comment='Here is an Example')
+    ...                          x_size, y_size, z_size,
+    ...                          filename='dataframe',
+    ...                          header_comment='Here is an Example')
 
     """
     df_xyz = pd.DataFrame(columns=['_atom_site_Z_number',
@@ -469,9 +456,9 @@ def create_dataframe_for_xyz(sublattice_list,
 
     # add unit cell dimensions
     df_xyz = df_xyz.append({'_atom_site_Z_number': '',
-                            '_atom_site_fract_x': format(x_distance, '.6f'),
-                            '_atom_site_fract_y': format(y_distance, '.6f'),
-                            '_atom_site_fract_z': format(z_distance, '.6f'),
+                            '_atom_site_fract_x': format(x_size, '.6f'),
+                            '_atom_site_fract_y': format(y_size, '.6f'),
+                            '_atom_site_fract_z': format(z_size, '.6f'),
                             '_atom_site_occupancy': '',
                             '_atom_site_RMS_thermal_vib': ''},
                            ignore_index=True)
@@ -481,25 +468,31 @@ def create_dataframe_for_xyz(sublattice_list,
 
         for i in range(0, len(sublattice.atom_list)):
             if sublattice.atom_list[i].elements in element_list:
-                #value = 0
-                # this loop cycles through the length of the split element eg, 2 for 'Se_1.S_1' and
+                # value = 0
+                # this loop cycles through the length of the split element eg,
+                # 2 for 'Se_1.S_1' and
                 #   outputs an atom label for each
-                for k in range(0, len(split_and_sort_element(sublattice.atom_list[i].elements))):
-                    if split_and_sort_element(sublattice.atom_list[i].elements)[k][2] >= 1:
+                for k in range(0, len(split_and_sort_element(
+                        sublattice.atom_list[i].elements))):
+                    if split_and_sort_element(
+                            sublattice.atom_list[i].elements)[k][2] >= 1:
                         atomic_number = split_and_sort_element(
                             sublattice.atom_list[i].elements)[k][3]
 
                         if "," in sublattice.atom_list[i].z_height:
                             atom_z_height = float(
-                                sublattice.atom_list[i].z_height.split(",")[k])
+                                sublattice.atom_list[i].z_height.split(",")[
+                                    k])
                         else:
                             atom_z_height = float(
                                 sublattice.atom_list[i].z_height)
 
                         # this loop controls the  z_height
                         # len(sublattice.atom_list[i].z_height)):
-                        for p in range(0, split_and_sort_element(sublattice.atom_list[i].elements)[k][2]):
-                            # could use ' ' + value to get an extra space between columns!
+                        for p in range(0, split_and_sort_element(
+                                sublattice.atom_list[i].elements)[k][2]):
+                            # could use ' ' + value to get an extra space
+                            # between columns!
                             # nans could be better than ''
                             # (len(sublattice.image)-
 
@@ -510,12 +503,12 @@ def create_dataframe_for_xyz(sublattice_list,
                                 pass
 
                             df_xyz = df_xyz.append({'_atom_site_Z_number': atomic_number,
-                                                    '_atom_site_fract_x': format(sublattice.atom_list[i].pixel_x * (x_distance / len(sublattice.image[0, :])), '.6f'),
-                                                    '_atom_site_fract_y': format(sublattice.atom_list[i].pixel_y * (y_distance / len(sublattice.image[:, 0])), '.6f'),
+                                                    '_atom_site_fract_x': format(sublattice.atom_list[i].pixel_x * (x_size / len(sublattice.image[0, :])), '.6f'),
+                                                    '_atom_site_fract_y': format(sublattice.atom_list[i].pixel_y * (y_size / len(sublattice.image[:, 0])), '.6f'),
                                                     # this is a fraction already, which is why we don't divide as in x and y
-                                                    '_atom_site_fract_z': format(atom_z_height * z_distance, '.6f'),
+                                                    '_atom_site_fract_z': format(atom_z_height * z_size, '.6f'),
                                                     '_atom_site_occupancy': 1.0,  # might need to loop through the vancancies here?
-                                                    '_atom_site_RMS_thermal_vib': 0.05},
+                                                    '_atom_site_RMS_thermal_vib': 0.1},
                                                    ignore_index=True)  # insert row
 
     df_xyz = df_xyz.append({'_atom_site_Z_number': int(-1),
@@ -531,11 +524,11 @@ def create_dataframe_for_xyz(sublattice_list,
 
     return(df_xyz)
 
-#element_list = ['S_0', 'S_1', 'S_2', 'S_2.C_1', 'S_2.C_2', 'Mo_1', 'Mo_0']
-#example_df = create_dataframe_for_cif(atom_lattice, element_list)
+# element_list = ['S_0', 'S_1', 'S_2', 'S_2.C_1', 'S_2.C_2', 'Mo_1', 'Mo_0']
+# example_df = create_dataframe_for_cif(atom_lattice, element_list)
 
 
-######## Image Stack ########
+''' Image Stack '''
 
 
 def dm3_stack_to_tiff_stack(loading_file,
@@ -574,9 +567,12 @@ def dm3_stack_to_tiff_stack(loading_file,
     Examples
     --------
 
-    >>> directory = os.chdir('C:/Users/Eoghan.OConnell/Documents/Documents/Eoghan UL/PHD/Experimental/Ion implantation experiments/Feb 2019 SStem data')
-    >>> filename = '003_HAADF_movie_300_4nm_MC'
-    >>> dm3_stack_to_tiff_stack(filename=filename, crop=True, crop_start=20.0, crop_end=30.0)
+    # >>> directory = os.chdir('C:/Users/Eoghan.OConnell/Documents/Documents/
+    # Eoghan UL/PHD/Experimental/Ion implantation experiments/Feb 2019
+    # SStem data')
+    # >>> filename = '003_HAADF_movie_300_4nm_MC'
+    # >>> dm3_stack_to_tiff_stack(filename=filename, crop=True,
+    # crop_start=20.0, crop_end=30.0)
 
 
     '''
@@ -589,23 +585,27 @@ def dm3_stack_to_tiff_stack(loading_file,
 
     s = hs.load(file)
 
-    if crop == True:
+    if crop is True:
         s = s.inav[crop_start:crop_end]
 
         # In the form: '20.0:80.0'
 
-    # Save the dm3 file as a tiff stack. Allows us to use below analysis without editing!
+    # Save the dm3 file as a tiff stack. Allows us to use below
+    # analysis without editing!
     saving_file = filename + saving_file_extension
     s.save(saving_file)
-    # These two lines normalize the hyperspy loaded file. Do Not so if you are also normalizing below
+    # These two lines normalize the hyperspy loaded file. Do Not
+    # so if you are also normalizing below
     # stack.change_dtype('float')
-    #stack.data /= stack.data.max()
+    # stack.data /= stack.data.max()
 
-#dm3_stack_to_tiff_stack(loading_file = loading_file, crop=True, crop_start=50.0, crop_end=54.0)
+# dm3_stack_to_tiff_stack(loading_file = loading_file, crop=True,
+# crop_start=50.0, crop_end=54.0)
 
 
 # for after rigid registration
-def save_individual_images_from_image_stack(image_stack, output_folder='individual_images'):
+def save_individual_images_from_image_stack(
+        image_stack, output_folder='individual_images'):
     '''
     Save each image in an image stack. The images are saved in a new folder.
 
@@ -615,7 +615,7 @@ def save_individual_images_from_image_stack(image_stack, output_folder='individu
     image_stack : rigid registration image stack object
 
     output_folder : string
-        Name of the folder in which all individual images from 
+        Name of the folder in which all individual images from
         the stack will be saved.
 
     Returns
@@ -639,6 +639,6 @@ def save_individual_images_from_image_stack(image_stack, output_folder='individu
         im = image_stack_32bit[:, :, i]
         i_filled = str(i).zfill(4)
         imwrite(folder + 'images_aligned_%s.tif' % i_filled, im)
-        i = i+delta
+        i = i + delta
 
 # save_individual_images_from_image_stack(image_stack=s.stack_registered)

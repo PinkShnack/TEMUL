@@ -37,7 +37,8 @@ def load_example_Au_nanoparticle():
     global example_Au_nanoparticle
     if example_Au_nanoparticle is None:
         path = os.path.join(
-            my_path, 'example_data', 'experimental', 'example_Au_nanoparticle.emd')
+            my_path, 'example_data',
+            'experimental', 'example_Au_nanoparticle.emd')
         example_Au_nanoparticle = load(path)
     s = example_Au_nanoparticle.deepcopy()
     return s
@@ -63,4 +64,50 @@ def load_example_Cu_nanoparticle():
             'structures', 'example_Cu_nanoparticle_sim.hspy')
         example_Cu_nanoparticle_sim = load(path)
     s = example_Cu_nanoparticle_sim.deepcopy()
+    return s
+
+
+example_Se_implanted_MoS2 = None
+
+
+def load_Se_implanted_MoS2_data():
+    """
+    Get the hspy simulated image of an example Cu nanoparticle
+
+    Example
+    -------
+    >>> import temul.example_data as example_data
+    >>> s = example_data.load_example_Cu_nanoparticle()
+
+    """
+    global example_Se_implanted_MoS2
+    if example_Se_implanted_MoS2 is None:
+        path = os.path.join(
+            my_path, 'example_data',
+            'experimental', 'example_Se_implanted_MoS2.dm3')
+        example_Se_implanted_MoS2 = load(path)
+    s = example_Se_implanted_MoS2.deepcopy()
+    return s
+
+
+example_Se_implanted_MoS2_simulation = None
+
+
+def load_Se_implanted_MoS2_simulation():
+    """
+    Get the hspy simulated image of an example Cu nanoparticle
+
+    Example
+    -------
+    >>> import temul.example_data as example_data
+    >>> s = example_data.load_example_Cu_nanoparticle()
+
+    """
+    global example_Se_implanted_MoS2_simulation
+    if example_Se_implanted_MoS2_simulation is None:
+        path = os.path.join(
+            my_path, 'example_data',
+            'prismatic', 'calibrated_data_prismatic_simulation.hspy')
+        example_Se_implanted_MoS2_simulation = load(path)
+    s = example_Se_implanted_MoS2_simulation.deepcopy()
     return s

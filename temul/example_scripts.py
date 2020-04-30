@@ -1,27 +1,28 @@
 
-# test shelly's comp
-
-import ase
-from ase.cluster.cubic import FaceCenteredCubic
-from ase.io import read, write
-from ase.visualize import view
-from temul.model_creation import get_max_number_atoms_z
 import temul.api as tml
-import os
-import atomap.api as am
-from atomap.testing_tools import MakeTestData
-import hyperspy.api as hs
-import numpy as np
+from temul.model_creation import get_max_number_atoms_z
 from temul.signal_processing import (get_xydata_from_list_of_intensities,
                                      return_fitting_of_1D_gaussian,
                                      fit_1D_gaussian_to_data,
                                      plot_gaussian_fit,
                                      get_fitting_tools_for_plotting_gaussians,
                                      plot_gaussian_fitting_for_multiple_fits)
-# perhaps put the below in a module itseld for vscode?
+
+import atomap.api as am
+import hyperspy.api as hs
+import numpy as np
+
+from ase.visualize import view
+from ase.io import read, write
+from ase.cluster.cubic import FaceCenteredCubic
+import ase
+
+import os
+
 import matplotlib.pyplot as plt
 plt.style.use('default')
-%matplotlib qt
+# %matplotlib qt
+
 
 # example fitting of a gaussian to data
 amp, mu, sigma = 10, 10, 0.5
@@ -271,8 +272,8 @@ cif_filename = "Create_Cu_NP"
 tml.write_cif_from_dataframe(dataframe=df,
                              filename=cif_filename,
                              chemical_name_common=cif_filename,
-                             cell_length_a=s.axes_manager['x'].size/10,
-                             cell_length_b=s.axes_manager['y'].size/10,
+                             cell_length_a=s.axes_manager['x'].size / 10,
+                             cell_length_b=s.axes_manager['y'].size / 10,
                              cell_length_c=z_thickness)
 
 sublattice_structure = read(cif_filename + '.cif')
@@ -281,8 +282,8 @@ view(sublattice_structure)
 # Simulate created NP
 tml.create_dataframe_for_xyz(sublattice_list=[sublattice],
                              element_list=element_list,
-                             x_distance=s.axes_manager['x'].size/10,
-                             y_distance=s.axes_manager['y'].size/10,
+                             x_distance=s.axes_manager['x'].size / 10,
+                             y_distance=s.axes_manager['y'].size / 10,
                              z_distance=z_thickness,
                              filename=cif_filename,
                              header_comment='top_level_comment')
@@ -357,7 +358,7 @@ element_list = ['Au_5']
 elements_in_sublattice = tml.sort_sublattice_intensities(
     sublattice, element_list=element_list)
 
-tml.assign_z_height_to_sublattice(sublattice)
+tml.assign_z_height_to_sublattice(sublattice, z_bond_length=0.5)
 
 tml.print_sublattice_elements(sublattice, 10)
 
@@ -449,25 +450,697 @@ simulation = tml.load_prismatic_mrc_with_hyperspy(
 simulation.plot()
 
 
-# choose directory
-# directory = 'G:/Titan Images/08-10-19_MHEOC_SampleImaging stem/Cross Grating for STEM alignment/Au NP'
-# os.chdir(directory)
+"""
+Thesis example for monolayer Se implanted MoS2
+"""
+
+import hyperspy.api as hs
+import numpy as np
+import atomap.api as am
+import scipy
+import matplotlib.pyplot as plt
+from atomap.atom_finding_refining import subtract_average_background
+from atomap.atom_finding_refining import normalize_signal
+from atomap.tools import remove_atoms_from_image_using_2d_gaussian
+
+import temul.example_data as example_data
+from temul.element_tools import (
+    atomic_radii_in_pixels,
+    combine_element_lists
+)
+from temul.signal_processing import (
+    double_gaussian_fft_filter,
+    calibrate_intensity_distance_with_sublattice_roi,
+    crop_image_hs,
+    toggle_atom_refine_position_automatically)
+from temul.model_creation import (
+    scaling_z_contrast,
+    find_middle_and_edge_intensities,
+    sort_sublattice_intensities,
+    assign_z_height,
+    print_sublattice_elements,
+    find_middle_and_edge_intensities_for_background,
+    correct_background_elements,
+    create_dataframe_for_cif,
+)
+from temul.intensity_tools import get_sublattice_intensity
+from temul.io import (
+    write_cif_from_dataframe,
+    create_dataframe_for_xyz
+)
+
+s_original = example_data.load_Se_implanted_MoS2_data()
+real_sampling = s_original.axes_manager[-1].scale
+s_original.plot()
+
+# define the image name
+''' put in model refiner for auto saving purposes? '''
+image_name = s_original.metadata.General.original_filename
+
+percent_to_nn = None
+percent_to_nn_remove_atoms = 0.4
+percent_to_nn_toggle = 0.05
+min_cut_off_percent = 0.75
+max_cut_off_percent = 1.25
+min_cut_off_percent_sub3 = 0.0
+max_cut_off_percent_sub3 = 3
+mask_radius_sub1 = atomic_radii_in_pixels(real_sampling, 'Mo')
+mask_radius_sub2 = atomic_radii_in_pixels(real_sampling, 'S')
+d_inner = 7.48
+d_outer = 14.96
+
+s_filtered = normalize_signal(subtract_average_background(s_original))
+
+# filter the image
+s_filtered = double_gaussian_fft_filter(
+    image=s_filtered,
+    filename=None,
+    d_inner=d_inner,
+    d_outer=d_outer,
+    delta=0.01,
+    real_space_sampling=real_sampling,
+    units='nm')
+
+s_filtered.plot()
+
+# Choose a feature separation that only includes the Mo atoms.
+# This will be used for calibration (setting average Mo intensity to 1)
+features = am.get_feature_separation(
+    s_filtered, separation_range=(8, 14), pca=True)
+features.plot()
+calibration_separation = 11
+
+# choose the area from which to calibrate the image intensity
+calibration_area = am.add_atoms_with_gui(s_filtered.data)
+# calibration_area = [[431.75, 445.79], [643.14, 635.66]] # example
+
+# calibrate the image
+calibrate_intensity_distance_with_sublattice_roi(image=s_filtered,
+                                                 cropping_area=calibration_area,
+                                                 separation=calibration_separation,
+                                                 filename=None,
+                                                 percent_to_nn=percent_to_nn,
+                                                 mask_radius=mask_radius_sub1,
+                                                 scalebar_true=True)
+
+s_filtered.plot()
+s = s_filtered
+
+# s.plot()
+# Crop the image if you want to analyse a small section
+cropping_area = am.add_atoms_with_gui(s.data)
+# cropping_area = [[288.71, 64.79], [635.54, 631.86]] # example
+
+s_crop = crop_image_hs(image=s,
+                       cropping_area=cropping_area,
+                       save_image=False,
+                       save_variables=False,
+                       scalebar_true=True)
+s_crop.plot()
+s = s_crop
+
+# Set the fractions for finding the other sublattices and colours
+vector_fraction_sub2 = 0.6703
+vector_fraction_sub3 = 0.3303
+sub1_colour = 'blue'
+sub2_colour = 'yellow'
+sub3_colour = 'green'
+sub1_name = 'sub1'
+sub2_name = 'sub2'
+sub3_name = 'sub3'
+sub3_inverse_name = 'sub3_inverse'
 
 
-# '''
-# Au NP example
-# '''
-# # open file
-# s_raw, sampling = temul.load_data_and_sampling(
-#     'STEM 20190813 HAADF 1732.emd', save_image=False)
+''' SUBLATTICE 1 '''
+am.get_feature_separation(s, separation_range=(3, 12), pca=True).plot()
 
-# cropping_area = am.add_atoms_with_gui(s_raw.data)
+separation_sub1 = 7
+atom_positions_1_original = am.get_atom_positions(s, separation_sub1, pca=True)
+# remove some Se atoms:
+atom_positions_1_original = am.add_atoms_with_gui(s, atom_positions_1_original)
 
-# cropping_area = [[1, 2], [1, 2]]
+np.save(file='atom_positions_1_original', arr=atom_positions_1_original)
 
-# s_crop = temul.crop_image_hs(s_raw, cropping_area)
+sub1 = am.Sublattice(atom_positions_1_original, s,
+                     name=sub1_name, color=sub1_colour)
+sub1.find_nearest_neighbors()
 
-# roi = hs.roi.RectangularROI(left=1, right=5, top=1, bottom=5)
-# s_raw.plot()
-# s_crop = roi.interactive(s_raw)
-# s_crop.plot()
+# Do not allow certain atoms from being refined if they are vacancies etc.
+# Automatically :
+false_list_sub1 = toggle_atom_refine_position_automatically(
+    sublattice=sub1,
+    min_cut_off_percent=min_cut_off_percent,
+    max_cut_off_percent=max_cut_off_percent * 1.5,
+    range_type='internal',
+    filename=None,
+    percent_to_nn=percent_to_nn,
+    mask_radius=mask_radius_sub1)
+
+# Manually & to check:
+sub1.toggle_atom_refine_position_with_gui()
+
+sub1.refine_atom_positions_using_center_of_mass(
+    percent_to_nn=percent_to_nn, mask_radius=mask_radius_sub1)
+sub1.refine_atom_positions_using_2d_gaussian(
+    percent_to_nn=percent_to_nn, mask_radius=mask_radius_sub1)
+# sub1.plot()
+
+atom_positions_1_refined = np.array(sub1.atom_positions).T
+np.save(file='atom_positions_1_refined', arr=atom_positions_1_refined)
+
+sub1.get_atom_list_on_image(markersize=2, color=sub1_colour).plot()
+plt.title(sub1_name, fontsize=20)
+plt.gca().axes.get_xaxis().set_visible(False)
+plt.gca().axes.get_yaxis().set_visible(False)
+plt.tight_layout()
+plt.savefig(fname=sub1_name + '.png',
+            transparent=True, frameon=False, bbox_inches='tight',
+            pad_inches=None, dpi=300, labels=False)
+plt.close()
+
+
+''' SUBLATTICE 2 '''
+# remove first sublattice
+sub1_atoms_removed = remove_atoms_from_image_using_2d_gaussian(
+    sub1.image, sub1, percent_to_nn=percent_to_nn_remove_atoms)
+sub1_atoms_removed = hs.signals.Signal2D(sub1_atoms_removed)
+sub1_atoms_removed.plot()
+
+sub1.construct_zone_axes(atom_plane_tolerance=0.5)
+sub1.plot_planes()
+zone_number = 4
+zone_axis_001 = sub1.zones_axis_average_distances[zone_number]
+atom_positions_2 = sub1.find_missing_atoms_from_zone_vector(
+    zone_axis_001, vector_fraction=vector_fraction_sub2)
+
+
+# am.get_feature_separation(sub1_atoms_removed).plot()
+#atom_positions_2 = am.get_atom_positions(sub1_atoms_removed, 19)
+atom_positions_2_original = am.add_atoms_with_gui(
+    sub1_atoms_removed, atom_positions_2)
+np.save(file='atom_positions_2_original', arr=atom_positions_2_original)
+
+sub2_refining = am.Sublattice(atom_positions_2_original, sub1_atoms_removed,
+                              name=sub2_name, color=sub2_colour)
+sub2_refining.find_nearest_neighbors()
+
+# Auto
+false_list_sub2 = toggle_atom_refine_position_automatically(
+    sublattice=sub2_refining,
+    min_cut_off_percent=min_cut_off_percent,
+    max_cut_off_percent=max_cut_off_percent * 1.5,
+    range_type='internal',
+    filename=None,
+    percent_to_nn=percent_to_nn,
+    mask_radius=mask_radius_sub2)
+
+sub2_refining.toggle_atom_refine_position_with_gui()
+
+
+sub2_refining.refine_atom_positions_using_center_of_mass(
+    percent_to_nn=percent_to_nn, mask_radius=mask_radius_sub2)
+sub2_refining.refine_atom_positions_using_2d_gaussian(
+    percent_to_nn=percent_to_nn, mask_radius=mask_radius_sub2)
+# sub2_refining.plot()
+
+sub2_refining.get_atom_list_on_image(markersize=2, color=sub2_colour).plot()
+plt.title(sub2_name + '_refining', fontsize=20)
+plt.gca().axes.get_xaxis().set_visible(False)
+plt.gca().axes.get_yaxis().set_visible(False)
+plt.tight_layout()
+plt.savefig(fname=sub2_name + '_refining.png',
+            transparent=True, frameon=False, bbox_inches='tight',
+            pad_inches=None, dpi=300, labels=False)
+plt.close()
+
+
+atom_positions_2_refined = np.array(sub2_refining.atom_positions).T
+np.save(file='atom_positions_2_refined', arr=atom_positions_2_refined)
+
+sub2 = am.Sublattice(atom_positions_2_refined, s,
+                     name=sub2_name, color=sub2_colour)
+sub2.find_nearest_neighbors()
+sub2.plot()
+
+sub2.get_atom_list_on_image(markersize=2, color=sub2_colour).plot()
+plt.title(sub2_name, fontsize=20)
+plt.gca().axes.get_xaxis().set_visible(False)
+plt.gca().axes.get_yaxis().set_visible(False)
+plt.tight_layout()
+plt.savefig(fname=sub2_name + '.png',
+            transparent=True, frameon=False, bbox_inches='tight',
+            pad_inches=None, dpi=300, labels=False)
+plt.close()
+
+
+''' SUBLATTICE 3 '''
+
+atom_positions_3_original = sub1.find_missing_atoms_from_zone_vector(
+    zone_axis_001, vector_fraction=vector_fraction_sub3)
+
+# am.get_feature_separation(sub1_atoms_removed).plot()
+#atom_positions_2 = am.get_atom_positions(sub1_atoms_removed, 19)
+atom_positions_3_original = am.add_atoms_with_gui(s, atom_positions_3_original)
+np.save(file='atom_positions_3_original', arr=atom_positions_3_original)
+
+s_inverse = s
+s_inverse.data = np.divide(1, s_inverse.data)
+# s_inverse.plot()
+
+sub3_inverse = am.Sublattice(
+    atom_positions_3_original, s_inverse, name=sub3_inverse_name, color=sub3_colour)
+sub3_inverse.find_nearest_neighbors()
+# sub3_inverse.plot()
+
+# get_sublattice_intensity(sublattice=sub3_inverse, intensity_type=intensity_type, remove_background_method=None,
+#                             background_sublattice=None, num_points=3, percent_to_nn=percent_to_nn,
+#                             mask_radius=radius_pix_S)
+
+false_list_sub3_inverse = toggle_atom_refine_position_automatically(
+    sublattice=sub3_inverse,
+    min_cut_off_percent=min_cut_off_percent / 2,
+    max_cut_off_percent=max_cut_off_percent * 2,
+    range_type='internal',
+    method='mean',
+    filename=None,
+    percent_to_nn=percent_to_nn,
+    mask_radius=mask_radius_sub2)
+
+sub3_inverse.toggle_atom_refine_position_with_gui()
+
+sub3_inverse.refine_atom_positions_using_center_of_mass(
+    percent_to_nn=percent_to_nn, mask_radius=mask_radius_sub2)
+sub3_inverse.refine_atom_positions_using_2d_gaussian(
+    percent_to_nn=percent_to_nn, mask_radius=mask_radius_sub2)
+# sub3_inverse.plot()
+
+atom_positions_3_refined = np.array(sub3_inverse.atom_positions).T
+np.save(file='atom_positions_3_refined', arr=atom_positions_3_refined)
+
+s.data = np.divide(1, s.data)
+s.plot()
+
+sub3 = am.Sublattice(atom_positions_3_refined, s,
+                     name=sub3_name, color=sub3_colour)
+sub3.find_nearest_neighbors()
+# sub3.plot()
+
+# Now re-refine the adatom locations for the original data
+false_list_sub3 = toggle_atom_refine_position_automatically(
+    sublattice=sub3,
+    min_cut_off_percent=min_cut_off_percent_sub3,
+    max_cut_off_percent=max_cut_off_percent_sub3,
+    range_type='external',
+    filename=None,
+    percent_to_nn=percent_to_nn,
+    mask_radius=mask_radius_sub2)
+
+sub3.toggle_atom_refine_position_with_gui()
+
+sub3.refine_atom_positions_using_center_of_mass(
+    percent_to_nn=percent_to_nn, mask_radius=mask_radius_sub1)
+sub3.refine_atom_positions_using_2d_gaussian(
+    percent_to_nn=percent_to_nn, mask_radius=mask_radius_sub2)
+# sub3.plot()
+
+atom_positions_3_refined = np.array(sub3.atom_positions).T
+np.save(file='atom_positions_3_refined', arr=atom_positions_3_refined)
+
+sub3.get_atom_list_on_image(markersize=2).plot()
+plt.title(sub3_name, fontsize=20)
+plt.gca().axes.get_xaxis().set_visible(False)
+plt.gca().axes.get_yaxis().set_visible(False)
+plt.tight_layout()
+plt.savefig(fname=sub3_name + '.png',
+            transparent=True, frameon=False, bbox_inches='tight',
+            pad_inches=None, dpi=300, labels=False)
+plt.close()
+
+# Now we have the correct, refined positions of the Mo, S and bksubs
+
+''' ATOM LATTICE '''
+
+atom_lattice = am.Atom_Lattice(image=s,
+                               name=image_name,
+                               sublattice_list=[sub1, sub2, sub3])
+atom_lattice.save(filename="Atom_Lattice.hdf5", overwrite=True)
+
+atom_lattice.get_sublattice_atom_list_on_image(markersize=2).plot()
+plt.title('Atom Lattice', fontsize=20)
+plt.gca().axes.get_xaxis().set_visible(False)
+plt.gca().axes.get_yaxis().set_visible(False)
+plt.tight_layout()
+plt.savefig(fname='Atom_Lattice.png',
+            transparent=True, frameon=False, bbox_inches='tight',
+            pad_inches=None, dpi=300, labels=False)
+plt.close()
+
+
+# atom_lattice = am.load_atom_lattice_from_hdf5('Run7_max/Atom_Lattice.hdf5')
+# sub1 = atom_lattice.sublattice_list[0]
+# sub2 = atom_lattice.sublattice_list[1]
+# sub3 = atom_lattice.sublattice_list[2]
+
+
+# assign elements
+mask_radius_both = [mask_radius_sub1, mask_radius_sub2]
+intensity_type = 'max'
+num_points = 3
+method = 'mode'
+remove_background_method = None
+background_sublattice = None
+bins_for_hist = 15
+image_size_x_nm = real_sampling * s.data.shape[-1]
+image_size_y_nm = real_sampling * s.data.shape[-2]
+image_size_z_nm = 1.2294 / 2
+
+element_list_sub1 = ['Mo_0', 'Mo_1', 'Mo_1.S_1', 'Mo_1.Se_1', 'Mo_2']
+standard_element_sub1 = 'Mo_1'
+
+element_list_sub2 = ['S_0', 'S_1', 'S_2', 'Se_1', 'Se_1.S_1', 'Se_2']
+standard_element_sub2 = 'S_2'
+
+element_list_sub3 = ['H_0', 'S_1', 'Se_1', 'Mo_1', ]
+elements_from_sub1 = ['Mo_1']
+elements_from_sub2 = ['S_1', 'Se_1']
+
+scaling_ratio, scaling_exponent, sub1_mode, sub2_mode = scaling_z_contrast(
+    numerator_sublattice=sub1,
+    numerator_element='Mo_1',
+    denominator_sublattice=sub2,
+    denominator_element='S_2',
+    intensity_type=intensity_type,
+    method=method,
+    remove_background_method=remove_background_method,
+    background_sublattice=background_sublattice,
+    num_points=num_points, percent_to_nn=percent_to_nn,
+    mask_radius=mask_radius_both)
+
+
+# reset the elements column example
+# def reset_elements_and_z_height(sublattice_list):
+#    for sublattice in sublattice_list:
+#        for i in range(0, len(sublattice.atom_list)):
+#            sublattice.atom_list[i].elements = ''
+#            sublattice.atom_list[i].z_height = ''
+#
+#reset_elements_and_z_height(sublattice_list=[sub1, sub2, sub3])
+
+
+'''SUB1'''
+
+# sub1_ints = get_sublattice_intensity(sub1, intensity_type=intensity_type,
+#                                     remove_background_method=remove_background_method,
+#                                     background_sublattice=background_sublattice,
+#                                     num_points=num_points,
+#                                     percent_to_nn=percent_to_nn,
+#                                     mask_radius=mask_radius_sub1)
+#
+#scipy.stats.mode(np.round(sub1_ints, decimals=2))[0][0]
+# sub1_ints.mean()
+# plt.figure()
+#plt.hist(sub1_ints, bins=bins_for_hist)
+# plt.show()
+# sub1.plot()
+
+
+middle_intensity_list_sub1, limit_intensity_list_sub1 = find_middle_and_edge_intensities(
+    sublattice=sub1,
+    element_list=element_list_sub1,
+    standard_element=standard_element_sub1,
+    scaling_exponent=scaling_exponent)
+
+elements_of_sub1 = sort_sublattice_intensities(
+    sub1, intensity_type, element_list_sub1, method,
+    middle_intensity_list_sub1, limit_intensity_list_sub1,
+    remove_background_method=remove_background_method,
+    background_sublattice=background_sublattice,
+    num_points=num_points,
+    percent_to_nn=percent_to_nn,
+    mask_radius=mask_radius_sub1)
+
+assign_z_height(sub1, lattice_type='transition_metal',
+                material='mos2_one_layer')
+
+sub1_info = print_sublattice_elements(sub1)
+
+
+'''SUB2'''
+# sub2_ints = get_sublattice_intensity(
+#     sub2, intensity_type,
+#     remove_background_method=remove_background_method,
+#     background_sub=background_sublattice,
+#     num_points=num_points,
+#     percent_to_nn=percent_to_nn,
+#     mask_radius=mask_radius_sub2)
+
+# scipy.stats.mode(np.round(sub2_ints, decimals=2))[0][0]
+# sub2_ints.mean()
+# plt.figure()
+# plt.hist(sub2_ints, bins=bins_for_hist)
+# plt.show()
+
+
+middle_intensity_list_sub2, limit_intensity_list_sub2 = find_middle_and_edge_intensities(
+    sublattice=sub2,
+    element_list=element_list_sub2,
+    standard_element=standard_element_sub2,
+    scaling_exponent=scaling_exponent)
+
+elements_of_sub2 = sort_sublattice_intensities(
+    sub2, intensity_type, element_list_sub2, method,
+    middle_intensity_list_sub2, limit_intensity_list_sub2,
+    remove_background_method=remove_background_method,
+    background_sublattice=background_sublattice,
+    num_points=num_points, percent_to_nn=percent_to_nn,
+    mask_radius=mask_radius_sub2)
+
+assign_z_height(sub2, lattice_type='chalcogen', material='mos2_one_layer')
+
+sub2_info = print_sublattice_elements(sub2)
+
+
+''' SUB3 '''
+
+# sub3_ints = get_sublattice_intensity(sub3,
+#                                     intensity_type=intensity_type,
+#                                     remove_background_method=remove_background_method,
+#                                     background_sublattice=background_sublattice,
+#                                     num_points=num_points,
+#                                     percent_to_nn=percent_to_nn,
+#                                     mask_radius=mask_radius_sub2)
+#
+#scipy.stats.mode(np.round(sub3_ints, decimals=2))[0][0]
+# sub3_ints.mean()
+# plt.figure()
+#plt.hist(sub3_ints, bins=15)
+# plt.show()
+
+
+middle_intensity_list_sub3, limit_intensity_list_sub3 = find_middle_and_edge_intensities_for_background(
+    elements_from_sub1=elements_from_sub1,
+    elements_from_sub2=elements_from_sub2,
+    sub1_mode=sub1_mode,
+    sub2_mode=sub2_mode,
+    element_list_sub1=element_list_sub1,
+    element_list_sub2=element_list_sub2,
+    middle_intensity_list_sub1=middle_intensity_list_sub1,
+    middle_intensity_list_sub2=middle_intensity_list_sub2)
+
+
+elements_of_sub3 = sort_sublattice_intensities(
+    sub3, intensity_type, element_list_sub3, method,
+    middle_intensity_list_sub3,
+    limit_intensity_list_sub3,
+    remove_background_method=remove_background_method,
+    background_sublattice=background_sublattice,
+    num_points=num_points,
+    intensity_list_real=True,
+    percent_to_nn=percent_to_nn,
+    mask_radius=mask_radius_sub2)
+
+correct_background_elements(sub3)
+
+assign_z_height(sub3, lattice_type='background', material='mos2_one_layer')
+
+sub3_info = print_sublattice_elements(sub3)
+
+
+'''create .CIF file'''
+element_list = combine_element_lists([element_list_sub1,
+                                      element_list_sub2,
+                                      element_list_sub3])
+
+
+example_df_cif = create_dataframe_for_cif(
+    sublattice_list=[sub1, sub2, sub3], element_list=element_list)
+
+write_cif_from_dataframe(dataframe=example_df_cif,
+                         filename=image_name,
+                         chemical_name_common='MoSx-1Sex',
+                         cell_length_a=image_size_x_nm * 10,
+                         cell_length_b=image_size_y_nm * 10,
+                         cell_length_c=image_size_z_nm * 10)
+
+dataframe = create_dataframe_for_xyz(sublattice_list=[sub1, sub2, sub3],
+                                     element_list=element_list,
+                                     x_distance=image_size_x_nm * 10,
+                                     y_distance=image_size_y_nm * 10,
+                                     z_distance=image_size_z_nm * 10,
+                                     filename=image_name,
+                                     header_comment='Selenium implanted MoS2')
+
+
+''' Save Atom Lattice with intensity_type model '''
+
+sublattice_list = [sub1, sub2, sub3]
+atom_lattice_name = 'Atom_Lattice_' + intensity_type
+
+atom_lattice = am.Atom_Lattice(image=atom_lattice.image,
+                               name=atom_lattice_name,
+                               sublattice_list=sublattice_list)
+atom_lattice.save(filename=atom_lattice_name + ".hdf5", overwrite=True)
+
+atom_lattice.get_sublattice_atom_list_on_image(markersize=2).plot()
+plt.title(atom_lattice_name, fontsize=20)
+plt.gca().axes.get_xaxis().set_visible(False)
+plt.gca().axes.get_yaxis().set_visible(False)
+plt.tight_layout()
+plt.savefig(fname=atom_lattice_name + '.png',
+            transparent=True, frameon=False, bbox_inches='tight',
+            pad_inches=None, dpi=300, labels=False)
+plt.close()
+
+
+from temul.model_refiner import Model_Refiner
+import atomap.api as am
+import temul.example_data as example_data
+
+s_original = example_data.load_Se_implanted_MoS2_data()
+real_sampling = s_original.axes_manager[-1].scale
+
+atom_lattice = am.load_atom_lattice_from_hdf5('Atom_Lattice_max.hdf5')
+sub1 = atom_lattice.sublattice_list[0]
+sub2 = atom_lattice.sublattice_list[1]
+sub3 = atom_lattice.sublattice_list[2]
+
+''' Refine the Sublattice elements '''
+element_list_sub1 = ['Mo_0', 'Mo_1', 'Mo_1.S_1', 'Mo_1.Se_1', 'Mo_2']
+element_list_sub2 = ['S_0', 'S_1', 'S_2', 'Se_1', 'Se_1.S_1', 'Se_2']
+element_list_sub3 = ['H_0', 'S_1', 'Se_1', 'Mo_1', ]
+
+sub_dict = {sub1: element_list_sub1,
+            sub2: element_list_sub2,
+            sub3: element_list_sub3}
+
+image_size_z_nm = 1.2294 / 2
+
+refiner = Model_Refiner(sub_dict,
+                        sampling=real_sampling * 10,
+                        thickness=image_size_z_nm * 10,
+                        name='Se Implanted MoS2')
+refiner.get_element_count_as_dataframe()
+refiner.plot_element_count_as_bar_chart(2)
+
+refiner.sublattice_list
+for sub in refiner.sublattice_list:
+    sub.plot()
+
+refiner.image_difference_intensity_model_refiner()
+
+refiner.sublattice_and_elements_dict
+refiner.sublattice_list
+refiner.element_list
+refiner.flattened_element_list
+refiner.sublattice_list[0].signal.axes_manager
+refiner.sampling
+refiner.name
+
+refiner.auto_mask_radius
+# refiner.auto_mask_radius[2] = 0.5
+
+# refiner.thickness
+# refiner.image_xyz_sizes
+
+# refiner.set_thickness = 6.10
+# refiner.image_xyz_sizes
+
+# refiner.set_image_xyz_sizes = [5, 10, 6.2]
+# refiner.image_xyz_sizes
+
+# refiner.image_xyz_sizes[2] = 10
+# refiner.image_xyz_sizes
+
+
+# pick the top-left and bot-right of clean homogenous area
+refiner.set_calibration_area()
+refiner.calibration_area
+
+
+# use atomap to get the pixel separation for the atoms you will use for
+# calibration
+# features = am.get_feature_separation(
+#     signal=refiner.reference_image,
+#     separation_range=(8, 15), pca=True)
+# features.plot()
+refiner.set_calibration_separation(11)
+refiner.calibration_separation
+
+refiner.comparison_image
+refiner.comparison_image.axes_manager
+refiner.reference_image.axes_manager
+
+positions = refiner._sublattices_positions
+# len(refiner.sublattice_list[0].atom_list) + \
+# len(refiner.sublattice_list[1].atom_list) + \
+# len(refiner.sublattice_list[2].atom_list)
+
+refiner.set_calibration_area(
+    manual_list=[[159.05087400067845, 409.82096276271284],
+                 [331.0900946589779, 546.9873684227083]])
+
+refiner.create_simulation(sublattices='all',
+                          filter_image=True,
+                          calibrate_image=True,
+                          filename='sim',
+                          interpolationFactor=200)
+
+refiner.image_difference_intensity_model_refiner()
+
+refiner.plot_reference_and_comparison_images()
+
+refiner.comparison_image.plot()
+refiner.reference_image.plot()
+
+
+refiner.image_difference_intensity_model_refiner()
+
+refiner.previous_refiner_instance
+refiner = refiner.previous_refiner_instance
+
+refiner.repeating_intensity_refinement(n=7)
+
+refiner.image_difference_intensity_model_refiner()
+refiner.get_element_count_as_dataframe()
+
+refiner.image_difference_position_model_refiner(
+    sublattices='all', pixel_threshold=14,
+    filename='example', num_peaks=10)
+
+refiner.image_difference_intensity_model_refiner()
+
+refiner.get_element_count_as_dataframe()
+
+refiner.sublattice_list[0].plot()
+
+refiner.plot_element_count_as_bar_chart(2, flip_colrows=False)
+
+
+refiner.error_between_comparison_and_reference_image
+refiner.error_between_images_history
+refiner.plot_error_between_comparison_and_reference_image()
+refiner.plot_error_between_comparison_and_reference_image(style='scatter')
+
+####################
+
+import temul.polarisation as tmlpol
