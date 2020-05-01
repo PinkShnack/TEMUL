@@ -494,7 +494,7 @@ class Sublattice_Hover_Intensity(object):
 
         subplot1.set_title('STEM image')
         img = plt.imshow(image)
-        if normalise_intensity = False:
+        if normalise_intensity == False:
         	scatter = plt.scatter(sublattice_position_x, sublattice_position_y, cmap=cmap, c=intensity_list)    #c=t_metal_intensity_list, cmap='viridis', alpha=0.5
         else:
         	scatter = plt.scatter(sublattice_position_x, sublattice_position_y, cmap=cmap, c=intensity_list_norm)    #c=t_metal_intensity_list, cmap='viridis', alpha=0.5
