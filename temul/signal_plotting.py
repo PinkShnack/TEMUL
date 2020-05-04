@@ -461,7 +461,7 @@ def plot_atom_energies(sublattice_list, image=None, vac_or_implants=None,
 class Sublattice_Hover_Intensity(object):
 
     """User can hover over sublattice overlaid on STEM image to display the x,y location and intensity of that point."""
-    def __init__(self, image, sublattice, sublattice_positions, background_sublattice, normalise_intensity=False, cmap='inferno'):
+    def __init__(self, image, sublattice, sublattice_positions, background_sublattice, normalise_intensity=False, cmap='inferno', vmin=0, vmax=1):
         """
         Parameters
         ----------
@@ -495,12 +495,161 @@ class Sublattice_Hover_Intensity(object):
         subplot1.set_title('STEM image')
         img = plt.imshow(image)
         if normalise_intensity == False:
-        	scatter = plt.scatter(sublattice_position_x, sublattice_position_y, cmap=cmap, c=intensity_list)    #c=t_metal_intensity_list, cmap='viridis', alpha=0.5
+        	scatter = plt.scatter(sublattice_position_x, sublattice_position_y, cmap=cmap, c=intensity_list, vmin=vmin, vmax=vmax)
         else:
-        	scatter = plt.scatter(sublattice_position_x, sublattice_position_y, cmap=cmap, c=intensity_list_norm)    #c=t_metal_intensity_list, cmap='viridis', alpha=0.5
+        	scatter = plt.scatter(sublattice_position_x, sublattice_position_y, cmap=cmap, c=intensity_list_norm, vmin=vmin, vmax=vmax)
 
         plt.colorbar()
 
+        #x_point and y_point are individual points, determined by where the cursor is hovering
+        #x and y in fmt function are the lists of x and y components fed into cursor_hover_int
+        def fmt(x_hover, y_hover, is_date):
+            
+            x_rounded = [round(num, 4) for num in sublattice_position_x]
+            point_index = x_rounded.index(round(x_hover, 4))
+            intensity_at_point = intensity_list_norm[point_index]
+
+            if is_date:
+                x_hover = mdates.num2date(x_hover).strftime("%Y-%m-%d")
+                return 'x: {x}\ny: {y}\nint: {i}'.format(x=x_hover, y=y_hover, i=intensity_at_point)
+
+            else:
+                return 'x: {x:0.2f}\ny: {y:0.2f}\nint: {i:0.3f}'.format(x=x_hover, y=y_hover, i=intensity_at_point)
+
+        try:
+            x = np.asarray(sublattice_position_x, dtype='float')
+            self.is_date = False
+        except (TypeError, ValueError):
+            x = np.asarray(mdates.date2num(sublattice_position_x), dtype='float')
+            self.is_date = True
+          
+        y = np.asarray(sublattice_position_y, dtype='float')
+        self._points = np.column_stack((x, y))
+        self.offsets = (0, 15)
+        self.scale = x.ptp()
+        self.scale = y.ptp() / self.scale if self.scale else 1
+        self.tree = spatial.cKDTree(self.scaled(self._points))
+        self.formatter = fmt
+        self.tolerance = 0.5
+        self.ax1 = subplot1
+        self.fig = fig  #ax.figure
+        self.ax1.xaxis.set_label_position('top')
+        self.dot = subplot1.scatter(
+            [x.min()], [y.min()], s=130, color='white', alpha=0.5)
+        self.annotation = self.setup_annotation()
+        plt.connect('motion_notify_event', self)
+
+
+    def scaled(self, points):
+        points = np.asarray(points)
+        return points * (self.scale, 1)
+
+
+    def __call__(self, event):
+        ax1 = self.ax1
+        # event.inaxes is always the current axis. If you use twinx, ax could be
+        # a different axis.
+        if event.inaxes == ax1:
+            x, y = event.xdata, event.ydata
+        elif event.inaxes is None:
+            return
+        else:
+            inv = ax1.transData.inverted()
+            x, y = inv.transform([(event.x, event.y)]).ravel()
+        
+        annotation = self.annotation
+        x, y = self.snap(x, y)
+        annotation.xy = x, y
+        annotation.set_text(self.formatter(x, y, self.is_date))
+        self.dot.set_offsets((x, y))
+        bbox = ax1.viewLim
+        #ax2.axvline(x=self.formatter(x, y, self.is_date).intensity_at_point)
+
+        event.canvas.draw()
+
+    def setup_annotation(self):
+        """Draw and hide the annotation box."""
+        annotation = self.ax1.annotate(
+            '', xy=(0, 0), ha = 'center',
+            xytext = self.offsets, textcoords = 'offset points', va = 'bottom',
+            bbox = dict(
+                boxstyle='square, pad=0.5', fc='white', alpha=0.5))
+        return annotation
+
+    def snap(self, x, y):
+        """Return the value in self.tree closest to x, y."""
+        dist, idx = self.tree.query(self.scaled((x, y)), k=1, p=1)        
+        try:
+            return self._points[idx]
+        except IndexError:
+            # IndexError: index out of bounds
+            return self._points[0]
+
+
+class Hybrid_Plot(object):
+
+    """
+    Work in progress:
+
+    Extension of Sublattice_Hover_Intensity, includes histogram of intensity distribution.
+    
+    Will be expanded to map selected intensity over to histogram.
+    """
+    def __init__(self, image, sublattice, sublattice_positions, background_sublattice, normalise_intensity=False, cmap='inferno', vmin=0, vmax=1):
+        """
+        Parameters
+        ----------
+        image : 2D NumPy array, optional
+        sublattice : sublattice object
+        sublattice_positions : list of x,y coordinates of sublattice atom positions
+        background_sublattice : sublattice object to use for background subtraction
+        normalise_intensity : choose whether to normalise intensity values between 0 and 1, default False.
+        cmap : colormap to use for plotting sublattice, default inferno
+
+        """
+
+        #create intensity list from sublattice and bg sublattice
+        intensity_list = get_sublattice_intensity(sublattice=sublattice, intensity_type='max', remove_background_method='local', background_sublattice=background_sublattice)
+        intensity_list_norm = intensity_list/max(intensity_list)
+
+        #split sublattice positions into x and y
+        sublattice_position_x = []
+        sublattice_position_y = []
+
+        i = 0
+        while i < len(sublattice_positions):
+            sublattice_position_x.append(sublattice_positions[i][0])
+            sublattice_position_y.append(sublattice_positions[i][1])
+            i += 1
+
+        #plot image and scatter plot of sublattice positions
+        fig = plt.figure()
+        subplot1 = fig.add_subplot(1, 2, 1)
+
+        subplot1.set_title('STEM image')
+        img = plt.imshow(image)
+        if normalise_intensity == False:
+        	scatter = plt.scatter(sublattice_position_x, sublattice_position_y, cmap=cmap, c=intensity_list, vmin=vmin, vmax=vmax)    #c=t_metal_intensity_list, cmap='viridis', alpha=0.5
+        else:
+        	scatter = plt.scatter(sublattice_position_x, sublattice_position_y, cmap=cmap, c=intensity_list_norm, vmin=vmin, vmax=vmax)    #c=t_metal_intensity_list, cmap='viridis', alpha=0.5
+
+        plt.colorbar()
+
+        subplot2 = fig.add_subplot(1, 2, 2)
+        subplot2.set_title('Intensity Distribution')
+        n, bins, patches = plt.hist(x=intensity_list_norm, bins=100, color='green', edgecolor='black', linewidth=1, range=(0,max(intensity_list_norm)))
+
+        '''FIGURE THIS BIT OUT!'''
+
+        cm = plt.cm.get_cmap(cmap)
+        bin_centers = 0.5 * (bins[:-1] + bins[1:])
+        # scale values to interval [0,1]
+        col = bin_centers - min(bin_centers)
+        col /= max(col)
+
+        for c, p in zip(bin_centers, patches):
+            plt.setp(p, 'facecolor', cm(c))
+        
         #x_point and y_point are individual points, determined by where the cursor is hovering
         #x and y in fmt function are the lists of x and y components fed into cursor_hover_int
         def fmt(x_hover, y_hover, is_date):
