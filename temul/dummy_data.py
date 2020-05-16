@@ -7,6 +7,9 @@ from temul.model_refiner import Model_Refiner
 from temul.model_creation import auto_generate_sublattice_element_list
 from temul.element_tools import split_and_sort_element
 from scipy.ndimage import gaussian_filter
+import matplotlib.pyplot as plt
+import colorcet as cc
+
 
 # changes to atomap code:
 
@@ -116,12 +119,12 @@ def get_model_refiner_two_sublattices():
     sub1 = atom_lattice.sublattice_list[0]
     sub2 = atom_lattice.sublattice_list[1]
     for i in range(0, len(sub1.atom_list)):
-        if i//2 == 0:
+        if i // 2 == 0:
             sub1.atom_list[i].elements = 'Ti_2'
         else:
             sub1.atom_list[i].elements = 'Ti_1'
     for i in range(0, len(sub2.atom_list)):
-        if i//2 == 0:
+        if i // 2 == 0:
             sub2.atom_list[i].elements = 'Cl_2'
         else:
             sub1.atom_list[i].elements = 'Cl_3'
@@ -187,7 +190,7 @@ def get_model_refiner_one_sublattice_3_vacancies(
     sub1_element_list = auto_generate_sublattice_element_list(
         material_type='single_element_column',
         elements=test_element_info[0][1],
-        max_number_atoms_z=test_element_info[0][2]+3)
+        max_number_atoms_z=test_element_info[0][2] + 3)
 
     refiner_dict = {sub1: sub1_element_list}
     comparison_image = am.dummy_data.get_simple_cubic_signal(
@@ -215,7 +218,7 @@ def get_model_refiner_one_sublattice_12_vacancies(
     sub1_element_list = auto_generate_sublattice_element_list(
         material_type='single_element_column',
         elements=test_element_info[0][1],
-        max_number_atoms_z=test_element_info[0][2]+3)
+        max_number_atoms_z=test_element_info[0][2] + 3)
 
     refiner_dict = {sub1: sub1_element_list}
     comparison_image = sublattice.signal
@@ -260,9 +263,6 @@ def get_model_refiner_with_3_vacancies_refined(
     return refiner
 
 
-
-
-
 def _make_distorted_cubic_testdata_adjustable(y_offset=2, image_noise=False):
     test_data = MakeTestData(240, 240)
     x, y = np.mgrid[30:212:40, 30:222:20]
@@ -271,7 +271,7 @@ def _make_distorted_cubic_testdata_adjustable(y_offset=2, image_noise=False):
     x, y = np.mgrid[50:212:40, 30.0:111:20]
     x, y = x.flatten(), y.flatten()
     test_data.add_atom_list(x, y)
-    x, y = np.mgrid[50:212:40, 130+y_offset:222:20]
+    x, y = np.mgrid[50:212:40, 130 + y_offset:222:20]
     x, y = x.flatten(), y.flatten()
     test_data.add_atom_list(x, y)
     if image_noise:
@@ -299,7 +299,7 @@ def get_distorted_cubic_signal_adjustable(y_offset=2, image_noise=False):
 
     """
     test_data = _make_distorted_cubic_testdata_adjustable(
-            y_offset=y_offset, image_noise=image_noise)
+        y_offset=y_offset, image_noise=image_noise)
     return test_data.signal
 
 
@@ -323,5 +323,79 @@ def get_distorted_cubic_sublattice_adjustable(y_offset=2, image_noise=False):
 
     """
     test_data = _make_distorted_cubic_testdata_adjustable(
-            y_offset=y_offset, image_noise=image_noise)
+        y_offset=y_offset, image_noise=image_noise)
     return test_data.sublattice
+
+
+def polarisation_colorwheel_test_dataset(cmap=cc.cm.colorwheel, plot_XY=True,
+                                         degrees=False, normalise=False):
+
+    # Different colours for arrows in quiver plot - see stackoverflow
+    """
+    To do:
+    1. Use colorcet for the colormap (more options and changes more
+    perceptable). Done
+    2. do both: make a colorwheel indicator and place in the corner
+        could use pixstem code for the former.
+        Scalebar already there, set as optional
+    3. make test dataset (have a numpy array with x,y,u,v) and test with it. Done
+    4. commit changes
+
+    Parameters
+    ----------
+    image_noise : default False
+        If True, will add Gaussian noise to the image.
+
+    Returns
+    -------
+    sublattice : Atomap Sublattice
+
+    Examples
+    --------
+    >>> from temul.dummy_data import polarisation_colorwheel_test_dataset
+
+    Use a cyclic colormap for better understanding of vectors
+
+    >>> polarisation_colorwheel_test_dataset(cmap='hsv')
+
+    For more cyclic colormap options (and better colormaps), use colorcet
+
+    >>> import colorcet as cc
+    >>> polarisation_colorwheel_test_dataset(cmap=cc.cm.colorwheel)
+
+    Plot with degrees rather than the default radians
+
+    >>> polarisation_colorwheel_test_dataset(degrees=True)
+
+    To just plot the top and bottom arrows as "diverging" the middle of the
+    colormap should be the same as the edges, such as colorcet's CET_C4.
+
+    >>> polarisation_colorwheel_test_dataset(cmap=cc.cm.CET_C4)
+
+    To just plot the left and right arrows as "diverging" the halfway points of
+    the colormap should be the same as the edges, such as colorcet's CET_C4s.
+
+    >>> polarisation_colorwheel_test_dataset(cmap=cc.cm.CET_C4s)
+
+    """
+
+    x, y = np.meshgrid(np.arange(0, 2 * np.pi, .2),
+                       np.arange(0, 2 * np.pi, .2))
+    u = np.cos(x)
+    v = np.sin(y)
+
+    if normalise:
+        u_norm = u / np.sqrt(u ** 2.0 + v ** 2.0)
+        v_norm = v / np.sqrt(u ** 2.0 + v ** 2.0)
+        u = u_norm
+        v = v_norm
+
+    angles = np.arctan2(v, u)
+    if degrees:
+        angles = angles * (180 / np.pi)
+
+    _, ax = plt.subplots()
+    Q = ax.quiver(x, y, u, v, angles, cmap=cmap)
+    if plot_XY is True:
+        plt.scatter(x, y, color='k', alpha=0.7, s=2)
+    plt.colorbar(Q)

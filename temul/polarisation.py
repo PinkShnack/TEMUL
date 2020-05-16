@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 from matplotlib.cm import ScalarMappable
 from decimal import Decimal
+import colorcet as cc
 
 
 def find_polarisation_vectors(atom_positions_A, atom_positions_B,
@@ -63,7 +64,7 @@ def find_polarisation_vectors(atom_positions_A, atom_positions_B,
 def plot_polarisation_vectors(x, y, u, v, image,
                               sampling=None, units='pix',
                               plot_style='vector',
-                              overlay=True, normalise=False,
+                              overlay=True, normalise=False, degrees=False,
                               save='polarisation_image', title="",
                               color='yellow', cmap=None, monitor_dpi=96,
                               pivot='middle', angles='xy', scale_units='xy',
@@ -165,6 +166,14 @@ def plot_polarisation_vectors(x, y, u, v, image,
     ...                           overlay=False, pivot='middle',
     ...                           color='darkgray', cmap='viridis', save=None)
 
+    "colorwheel" plot of the vectors, useful for vortexes:
+
+    >>> import colorcet as cc
+    >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    ...                           normalise=True, plot_style="colorwheel",
+    ...                           overlay=False, cmap=cc.cm.colorwheel,
+    ...                           save=None, monitor_dpi=50)
+
     '''
 
     u, v = np.array(u), np.array(v)
@@ -177,6 +186,8 @@ def plot_polarisation_vectors(x, y, u, v, image,
     vector_mags = get_vector_magnitudes(u, v)
 
     if normalise:
+        print("Warning: In future, the `normalise` keyword will be changed to "
+              "`unit_vector`.")
         # Normalise the data for uniform arrow size
         u_norm = u / np.sqrt(u ** 2.0 + v ** 2.0)
         v_norm = v / np.sqrt(u ** 2.0 + v ** 2.0)
@@ -217,6 +228,22 @@ def plot_polarisation_vectors(x, y, u, v, image,
         cbar = plt.colorbar(mappable=sm)
         cbar.ax.set_ylabel('Vector Magnitude ({})'.format(units))
 
+    elif plot_style == "colorwheel":
+
+        colorwheel = np.arctan2(v, u)
+        if degrees:
+            colorwheel = colorwheel * (180 / np.pi)
+
+        if cmap is None:
+            cmap = cc.cm.colorwheel
+
+        Q = ax.quiver(
+            x, y, u, v, colorwheel, cmap=cmap,
+            pivot=pivot, angles=angles, scale_units=scale_units,
+            scale=scale, headwidth=headwidth,
+            headlength=headlength, headaxislength=headaxislength)
+        plt.colorbar(Q)
+
     elif plot_style == 'contour':
         if cmap is None:
             cmap = 'viridis'
@@ -240,7 +267,7 @@ def plot_polarisation_vectors(x, y, u, v, image,
                            fontsize=14)
     if overlay:
         plt.imshow(image)
- 
+
     if no_axis_info:
         plt.gca().axes.get_xaxis().set_visible(False)
         plt.gca().axes.get_yaxis().set_visible(False)
@@ -804,8 +831,6 @@ def get_average_polarisation_in_regions(x, y, u, v, image, divide_into=8):
     return(x_new, y_new, u_new, v_new)
 
 
-
-
 def get_average_polarisation_in_regions_square(x, y, u, v, image,
                                                divide_into=4):
     '''
@@ -864,7 +889,7 @@ def get_average_polarisation_in_regions_square(x, y, u, v, image,
     ...                   overlay=False, title='Averaged Vector Arrows',
     ...                   monitor_dpi=50)
     '''
-    
+
     if divide_into >= np.sqrt(len(x)):
         raise ValueError(
             "divide_into ({}) cannot be greater than the number of "
@@ -873,7 +898,7 @@ def get_average_polarisation_in_regions_square(x, y, u, v, image,
 
     # divide the image into sections
     image_x_max, image_y_max = image.shape[-1], image.shape[-2]
-    
+
     region_length = image_x_max // divide_into
     divide_other_into = image_y_max // region_length
 #    other_region_length = image_other_axis_max // divide_other_into
@@ -884,7 +909,7 @@ def get_average_polarisation_in_regions_square(x, y, u, v, image,
     for i in range(divide_into):
         all_x_region_lengths.append(
             [i * region_length, (i + 1) * region_length])
-    
+
     for i in range(divide_other_into):
         all_y_region_lengths.append(
             [i * region_length, (i + 1) * region_length])
@@ -916,36 +941,34 @@ def get_average_polarisation_in_regions_square(x, y, u, v, image,
     return(x_new, y_new, u_new, v_new)
 
 
-
-
-def get_strain_map(sublattice, zone_axis_index, theoretical_value, 
+def get_strain_map(sublattice, zone_axis_index, theoretical_value,
                    sampling=1, units='pix', vmin=None, vmax=None, cmap='inferno',
                    title='Strain Map', filename=None, **kwargs):
-    
+
     zone_vector_index_list = sublattice._get_zone_vector_index_list(
         zone_vector_list=None)
     zone_index, zone_vector = zone_vector_index_list[zone_axis_index]
     zone_data = sublattice.get_monolayer_distance_list_from_zone_vector(
-            zone_vector)
+        zone_vector)
     x_position, y_position, xy_distance = zone_data
-    
-    xy_distance = [i*sampling for i in xy_distance]
-    xy_distance = [(i-theoretical_value)/theoretical_value for 
-                       i in xy_distance]
-    xy_distance = [i*100 for i in xy_distance]
-        
+
+    xy_distance = [i * sampling for i in xy_distance]
+    xy_distance = [(i - theoretical_value) / theoretical_value for
+                   i in xy_distance]
+    xy_distance = [i * 100 for i in xy_distance]
+
     strain_signal = sublattice.get_property_map(
-            x_position, y_position, xy_distance, upscale_map=1)
+        x_position, y_position, xy_distance, upscale_map=1)
     strain_signal.axes_manager[0].scale = sampling
     strain_signal.axes_manager[1].scale = sampling
     strain_signal.axes_manager[0].units = units
     strain_signal.axes_manager[1].units = units
-    
+
     if vmax == 'max':
         vmax = np.max(xy_distance)
     if vmin == 'min':
         vmin = np.min(xy_distance)
-        
+
     strain_signal.plot(vmin=vmin, vmax=vmax, cmap=cmap,
                        colorbar=False, **kwargs)
     plt.gca().axes.get_xaxis().set_visible(False)
@@ -955,37 +978,36 @@ def get_strain_map(sublattice, zone_axis_index, theoretical_value,
     cbar.set_array(xy_distance)
     cbar.set_clim(vmin, vmax)
     plt.colorbar(cbar, fraction=0.046, pad=0.04, label="Strain (% above {} {})".format(
-            theoretical_value, units))
+        theoretical_value, units))
     plt.tight_layout()
-    
+
     if filename is not None:
         plt.savefig(fname="{}_{}_{}.png".format(filename, title, zone_axis_index),
-                transparent=True, frameon=False, bbox_inches='tight',
-                pad_inches=None, dpi=300, labels=False)
-        strain_signal.save("{}_{}_{}.hspy".format(filename, title, zone_axis_index))
-    
-    return(strain_signal)
+                    transparent=True, frameon=False, bbox_inches='tight',
+                    pad_inches=None, dpi=300, labels=False)
+        strain_signal.save("{}_{}_{}.hspy".format(
+            filename, title, zone_axis_index))
 
+    return(strain_signal)
 
 
 def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
                             angle_type='deg', sampling=1, units='pix',
                             vmin=None, vmax=None, cmap='inferno',
                             title='Rotation Map', filename=None, **kwargs):
-
     '''
     Create a map of the angle between each atom in a zone axis' atom planes.
-    
+
     Improvement would be to distinguish between horizontal angle
     e.g., 5 and 175 degrees.
-    
+
     '''
-    
+
     zone_vector_index_list = sublattice._get_zone_vector_index_list(
         zone_vector_list=None)
     zone_index, zone_vector = zone_vector_index_list[zone_axis_index]
     x_list, y_list, dist = sublattice.get_atom_distance_list_from_zone_vector(
-            zone_vector)
+        zone_vector)
 
     angles_list_rad = []
     for atom_plane in sublattice.atom_plane_list:
@@ -995,7 +1017,7 @@ def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
 
     # flatten the list
     angles_list_rad = [i for sublist in angles_list_rad for i in sublist]
-    
+
     if 'deg' in angle_type:
         angles_list_deg = [np.degrees(i) for i in angles_list_rad]
         angles_list = angles_list_deg
@@ -1003,24 +1025,24 @@ def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
         angles_list = angles_list_rad
     else:
         raise ValueError("angle_type must be 'deg' or 'rad'.")
-        
+
     if angle_offset is not None:
-        angles_list = [i+angle_offset for i in angles_list]
+        angles_list = [i + angle_offset for i in angles_list]
 
     rotation_signal = sublattice.get_property_map(
-            x_list, y_list, angles_list, upscale_map=1)
+        x_list, y_list, angles_list, upscale_map=1)
     rotation_signal.axes_manager[0].scale = sampling
     rotation_signal.axes_manager[1].scale = sampling
     rotation_signal.axes_manager[0].units = units
     rotation_signal.axes_manager[1].units = units
-    
+
     if vmax == 'max':
         vmax = np.max(angles_list)
     if vmin == 'min':
         vmin = np.min(angles_list)
-        
+
     rotation_signal.plot(vmin=vmin, vmax=vmax, cmap=cmap,
-                       colorbar=False, **kwargs)
+                         colorbar=False, **kwargs)
     plt.gca().axes.get_xaxis().set_visible(False)
     plt.gca().axes.get_yaxis().set_visible(False)
     plt.title("{}_{}".format(title, zone_axis_index))
@@ -1030,45 +1052,43 @@ def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
     plt.colorbar(cbar, fraction=0.046, pad=0.04,
                  label="Rotation of Atom Planes ({})".format(angle_type))
     plt.tight_layout()
-    
+
     if filename is not None:
         plt.savefig(fname="{}_{}_{}.png".format(filename, title, zone_axis_index),
-                transparent=True, frameon=False, bbox_inches='tight',
-                pad_inches=None, dpi=300, labels=False)
-        rotation_signal.save("{}_{}_{}.hspy".format(filename, title, zone_axis_index))
-    
-    return(rotation_signal) 
+                    transparent=True, frameon=False, bbox_inches='tight',
+                    pad_inches=None, dpi=300, labels=False)
+        rotation_signal.save("{}_{}_{}.hspy".format(
+            filename, title, zone_axis_index))
 
-
+    return(rotation_signal)
 
 
 def ratio_of_lattice_spacings(sublattice, zone_axis_index_A, zone_axis_index_B,
                               ideal_ratio_one=True, sampling=1, units='pix',
                               vmin=None, vmax=None, cmap='inferno',
                               title='Spacings Map', filename=None, **kwargs):
-
     '''
     Create a ratio map between two zone axes.
-    
+
     '''
-    
+
     zone_vector_index_list = sublattice._get_zone_vector_index_list(
         zone_vector_list=None)
 
     # spacing A
     zone_index_A, zone_vector_A = zone_vector_index_list[zone_axis_index_A]
     x_list_A, y_list_A, xy_dist_A = sublattice.get_atom_distance_list_from_zone_vector(
-            zone_vector_A)
+        zone_vector_A)
 
     signal_spacing_A = sublattice.get_property_map(
-            x_list_A, y_list_A, xy_dist_A, upscale_map=1)
+        x_list_A, y_list_A, xy_dist_A, upscale_map=1)
     signal_spacing_A.axes_manager[0].scale = sampling
     signal_spacing_A.axes_manager[1].scale = sampling
     signal_spacing_A.axes_manager[0].units = 'nm'
     signal_spacing_A.axes_manager[1].units = 'nm'
 
     signal_spacing_A.plot(vmin=vmin, vmax=vmax, cmap=cmap,
-                       colorbar=False, **kwargs)
+                          colorbar=False, **kwargs)
     plt.gca().axes.get_xaxis().set_visible(False)
     plt.gca().axes.get_yaxis().set_visible(False)
     plt.title("{}_{}".format(title, zone_index_A))
@@ -1079,21 +1099,20 @@ def ratio_of_lattice_spacings(sublattice, zone_axis_index_A, zone_axis_index_B,
                  label="Spacing of Atoms ({})".format(units))
     plt.tight_layout()
 
-
     # spacing B
     zone_index_B, zone_vector_B = zone_vector_index_list[zone_axis_index_B]
     x_list_B, y_list_B, xy_dist_B = sublattice.get_atom_distance_list_from_zone_vector(
-            zone_vector_B)
+        zone_vector_B)
 
     signal_spacing_B = sublattice.get_property_map(
-            x_list_B, y_list_B, xy_dist_B, upscale_map=1)
+        x_list_B, y_list_B, xy_dist_B, upscale_map=1)
     signal_spacing_B.axes_manager[0].scale = sampling
     signal_spacing_B.axes_manager[1].scale = sampling
     signal_spacing_B.axes_manager[0].units = 'nm'
     signal_spacing_B.axes_manager[1].units = 'nm'
 
     signal_spacing_B.plot(vmin=vmin, vmax=vmax, cmap=cmap,
-                       colorbar=False, **kwargs)
+                          colorbar=False, **kwargs)
     plt.gca().axes.get_xaxis().set_visible(False)
     plt.gca().axes.get_yaxis().set_visible(False)
     plt.title("{}_{}".format(title, zone_index_B))
@@ -1103,32 +1122,30 @@ def ratio_of_lattice_spacings(sublattice, zone_axis_index_A, zone_axis_index_B,
     plt.colorbar(cbar, fraction=0.046, pad=0.04,
                  label="Spacing of Atoms ({})".format(units))
     plt.tight_layout()
-    
-    
+
     # Get the A/B ratio
-    ratio_signal = signal_spacing_A/signal_spacing_B
+    ratio_signal = signal_spacing_A / signal_spacing_B
     ratio_signal_data = ratio_signal.data
 
     if ideal_ratio_one:
         ratio_signal.data = np.where(
-            ratio_signal_data < 1, 1/ratio_signal_data, ratio_signal_data)
+            ratio_signal_data < 1, 1 / ratio_signal_data, ratio_signal_data)
 
     ratio_signal.plot(vmin=vmin, vmax=vmax, cmap=cmap, **kwargs)
     plt.gca().axes.get_xaxis().set_visible(False)
     plt.gca().axes.get_yaxis().set_visible(False)
     plt.title("Ratio of {}_{}/{}".format(title, zone_index_A, zone_index_B))
     plt.tight_layout()
-    
+
     if filename is not None:
         plt.savefig(fname="{}_{}_{}{}.png".format(filename, title,
-                    zone_axis_index_A, zone_axis_index_B),
-                transparent=True, frameon=False, bbox_inches='tight',
-                pad_inches=None, dpi=300, labels=False)
+                                                  zone_axis_index_A, zone_axis_index_B),
+                    transparent=True, frameon=False, bbox_inches='tight',
+                    pad_inches=None, dpi=300, labels=False)
         ratio_signal.save("{}_{}_{}{}.hspy".format(filename, title,
-                          zone_axis_index_A, zone_axis_index_B))
-    
-    return(ratio_signal)
+                                                   zone_axis_index_A, zone_axis_index_B))
 
+    return(ratio_signal)
 
 
 def atom_to_atom_distance_grouped_mean(sublattice, zone_axis_index,
@@ -1137,47 +1154,47 @@ def atom_to_atom_distance_grouped_mean(sublattice, zone_axis_index,
     '''
     average the atom to atom distances in the chosen zone_axis_index along
     the chosen axis ('x' or 'y').
-    
+
     Example
     -------
-    
+
     import numpy as np
     from atomap.dummy_data import get_distorted_cubic_sublattice
     import matplotlib.pyplot as plt
     from temul.polarisation import atom_to_atom_distance_grouped_mean
-    
+
     sublatticeA = get_distorted_cubic_sublattice()
     sublatticeA.construct_zone_axes(atom_plane_tolerance=1)
     groupings, grouped_means = atom_to_atom_distance_grouped_mean(
             sublatticeA, 0, 'y', 40)
     plt.figure()
     plt.plot(groupings, grouped_means, 'k.')
-    
+
     groupings, grouped_means = atom_to_atom_distance_grouped_mean(
             sublatticeA, 0, 'x', 40)
     plt.figure()
     plt.plot(groupings, grouped_means, 'k.')
-    
+
     '''
     zone_vector_index_list = sublattice._get_zone_vector_index_list(
         zone_vector_list=None)
     zone_index, zone_vector = zone_vector_index_list[zone_axis_index]
-    
+
     x, y, dist = sublattice.get_atom_distance_list_from_zone_vector(
-            zone_vector)
-    x, y, dist = x*sampling, y*sampling, dist*sampling
-    
+        zone_vector)
+    x, y, dist = x * sampling, y * sampling, dist * sampling
+
     image_size_yx = sublattice.image.shape
-    
+
     if aggregation_axis == 'x':
         image_size = image_size_yx[1]
         travel_axis = y
     elif aggregation_axis == 'y':
         image_size = image_size_yx[0]
         travel_axis = x
-    
-    groupings = np.arange(0, image_size*1.25, slice_thickness)
-    
+
+    groupings = np.arange(0, image_size * 1.25, slice_thickness)
+
     grouped_means = []
     for group in groupings:
         grouped_region = []
@@ -1186,8 +1203,9 @@ def atom_to_atom_distance_grouped_mean(sublattice, zone_axis_index,
                 grouped_region.append(dist_i)
         grouped_region = np.asarray(grouped_region)
         grouped_means.append(np.mean(grouped_region))
-    
+
     return(groupings, grouped_means)
+
 
 """
 def atom_deviation_from_straight_line_fit(sublattice, save_name='example'):
