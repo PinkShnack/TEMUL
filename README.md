@@ -8,3 +8,9 @@ The easiest way to use this package is to place the TEMUL/temul folder into your
 2. Navigate into the TEMUL folder, copy the "temul" folder.
 3. Navigate to your python packages directory and paste "temul" there.
 4. Open Anaconda prompt and run `python`. Run `import temul`. If no error occurs, run `temul`, which should show the directory in which you just pasted the temul folder.
+
+## Cite
+
+To cite the TEMUL toolkit, use the following DOI:
+
+[![DOI](https://www.zenodo.org/badge/203785298.svg)](https://www.zenodo.org/badge/latestdoi/203785298)
