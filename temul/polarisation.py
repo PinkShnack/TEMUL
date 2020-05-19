@@ -75,7 +75,7 @@ def plot_polarisation_vectors(x, y, u, v, image,
 
     Parameters
     ----------
-    See matplotlib's quiver() function for more details.
+    See matplotlib's quiver function for more details.
 
     x, y : list or 1D NumPy array
         xy coordinates on the image
@@ -87,12 +87,15 @@ def plot_polarisation_vectors(x, y, u, v, image,
     units : string, default "pix"
         Units used to display the magnitude of the vectors.
     plot_style : string, default "vector"
-        Options are "vector", "colormap", "contour"
+        Options are "vector", "colormap", "contour", "colorwheel"
     overlay : Bool, default True
         If set to True, the `image` will be plotting behind the arrows
     normalise : Bool, default False
         Normalise the vectors to unit vectors for plotting purposes.
         Magnitude will still be displayed correctly.
+    degrees : Bool, default False
+        If `plot_layout="colorwheel"`, then setting `degrees=True` will convert
+        the angle unit to degree from the default radians.
     save : string, default "polarisation_image"
         If set to `save=None`, the array will not be saved.
     title : string, default ""
@@ -104,6 +107,9 @@ def plot_polarisation_vectors(x, y, u, v, image,
         The DPI of the monitor, generally 96 pixels. Used to scale the image
         so that large images render correctly. Use a smaller value or
         `monitor_dpi=None` to enlarge too-small images.
+    no_axis_info :  Bool, default True
+        This will remove the x and y axis labels and ticks from the plot if set
+        to True.
 
     See matplotlib's quiver function for the remaining parameters.
 
