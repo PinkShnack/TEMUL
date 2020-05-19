@@ -230,7 +230,8 @@ def plot_polarisation_vectors(x, y, u, v, image,
 
     elif plot_style == "colorwheel":
 
-        colorwheel = np.arctan2(v, u)
+        # -v because in STEM the origin is top left
+        colorwheel = np.arctan2(-v, u)
         if degrees:
             colorwheel = colorwheel * (180 / np.pi)
 
