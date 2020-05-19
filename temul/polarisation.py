@@ -94,7 +94,7 @@ def plot_polarisation_vectors(x, y, u, v, image,
         Normalise the vectors to unit vectors for plotting purposes.
         Magnitude will still be displayed correctly.
     degrees : Bool, default False
-        If `plot_layout="colorwheel"`, then setting `degrees=True` will convert
+        If `plot_style="colorwheel"`, then setting `degrees=True` will convert
         the angle unit to degree from the default radians.
     save : string, default "polarisation_image"
         If set to `save=None`, the array will not be saved.
