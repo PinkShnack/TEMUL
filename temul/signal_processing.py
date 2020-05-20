@@ -25,6 +25,7 @@ import copy
 from tqdm import trange
 import collections
 import warnings
+from matplotlib.widgets import Slider, Button
 warnings.simplefilter("error", OptimizeWarning)
 
 
@@ -1124,6 +1125,103 @@ def double_gaussian_fft_filter(image, filename,
 
     return(image_filtered)
 
+
+def visualise_dg_filter(image, d_inner=7.7, d_outer=14):
+    '''
+
+    Parameters
+    ----------
+    image : Hyperspy 2D Signal
+	d_inner : float, default 7.7
+		Initial 'guess' of full width at half maximum of inner (negative) gaussian to be applied to fft. Can be changed with sliders during visualisation
+	d_outer : float, default 14
+		Initial 'guess' of full width at half maximum of outer (positive) gaussian to be applied to fft. Can be changed with sliders during visualisation
+
+    Returns
+    -------
+
+    Examples
+    --------
+
+    '''
+
+    # Get FFT of the image
+    fft_power_apodized = np.log(image.fft(shift=True, apodization=True).amplitude)
+    fourier_sampling = fft_power_apodized.axes_manager[0].scale
+
+    #Scale d_inner and d_outer
+    #d_inner and d_outer are the actual values used for filtering
+    #d_inner_scaled and d_outer_scaled are just used to scale up the circles
+    #to the right size for visualisation
+    d_outer_scaled = d_outer/fourier_sampling
+    d_inner_scaled = d_inner/fourier_sampling
+
+    #Make a subplot to show DG filter
+    fig, ax = plt.subplots()
+    plt.subplots_adjust(bottom=0.25)
+    fig.set_figheight(100)
+    fig.set_figwidth(100)
+    plt.imshow(fft_power_sampling.data)
+    plt.xlim(800,1200)
+    plt.ylim(800,1200)
+
+    #Plot circles to represent d_inner and d_outer
+    #circles only represent fwhm of two gaussians (inner -ve, outer +ve)
+    #definitely a better way of plotting these
+    outer_circle = plt.Circle((len(fft_power_apodized.data)/2, len(fft_power_apodized.data)/2), d_outer_scaled/2, color='b', alpha=0.5)
+    ax.add_artist(outer_circle)
+
+    inner_circle = plt.Circle((len(fft_power_apodized.data)/2, len(fft_power_apodized.data)/2), d_inner_scaled/2, color='r', alpha=0.5)
+    ax.add_artist(inner_circle)
+
+    #Make sliders
+    axcolor = 'lightgoldenrodyellow'
+    ax_d_inner = plt.axes([0.25, 0.15, 0.5, 0.03], facecolor=axcolor)
+    ax_d_outer = plt.axes([0.25, 0.1, 0.5, 0.03], facecolor=axcolor)
+
+    d_inner_slider = Slider(ax_d_inner, 'd_inner (1/nm)', 0.1, 30.0, valinit=d_inner, valstep=0.1)
+    d_outer_slider = Slider(ax_d_outer, 'd_outer (1/nm)', 0.1, 30.0, valinit=d_outer,valstep=0.1)
+
+    def update(val):
+        outer_circle.radius = (d_outer_slider.val/fourier_sampling)/2
+        inner_circle.radius = (d_inner_slider.val/fourier_sampling)/2
+
+        plt.draw()
+
+    d_inner_slider.on_changed(update)
+    d_outer_slider.on_changed(update)
+
+    # setup reset button
+    resetax = plt.axes([0.8, 0.025, 0.1, 0.05]) #left, bottom, width, height
+    reset_button = Button(resetax, 'Reset', color=axcolor, hovercolor='0.975')
+
+    def reset(event):
+        d_inner_slider.reset()
+        d_outer_slider.reset()
+
+        outer_circle.radius = (d_outer_slider.valinit/fourier_sampling)/2
+        inner_circle.radius = (d_inner_slider.valinit/fourier_sampling)/2
+
+        plt.draw()
+
+    reset_button.on_clicked(reset)
+
+    # setup filter button
+    filterax = plt.axes([0.1, 0.025, 0.1, 0.05])
+    filter_button = Button(filterax, 'Filter', color=axcolor, hovercolor='0.975')
+
+    def filter_image(event):
+        d_inner = d_inner_slider.val
+        d_outer = d_outer_slider.val
+        s_gaussian = double_gaussian_fft_filter(s, filename='test',
+                                d_inner=d_inner, d_outer=d_outer, real_space_sampling=sampling,
+                                delta=0.05, units='nm')
+        s_gaussian.metadata.General.title = "Double Gaussian Filtered Image (d_inner=%.2f, d_outer=%.2f)" %(d_inner,d_outer)
+        s_gaussian.plot()
+
+    filter_button.on_clicked(filter_image)
+
+    plt.show()
 
 '''
 Cropping and Calibrating
