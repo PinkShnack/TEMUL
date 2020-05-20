@@ -1161,7 +1161,7 @@ def visualise_dg_filter(image, d_inner=7.7, d_outer=14):
     plt.subplots_adjust(bottom=0.25)
     fig.set_figheight(100)
     fig.set_figwidth(100)
-    plt.imshow(fft_power_sampling.data)
+    plt.imshow(fft_power_apodized.data)
     plt.xlim(800,1200)
     plt.ylim(800,1200)
 
