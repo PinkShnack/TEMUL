@@ -1,4 +1,7 @@
 """
+
+NOTHING IMPLEMENTED YET
+
 from atomap.atom_finding_refining import _make_circular_mask
 from matplotlib import gridspec
 import rigidregistration

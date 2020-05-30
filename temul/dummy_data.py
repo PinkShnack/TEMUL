@@ -11,8 +11,7 @@ import matplotlib.pyplot as plt
 import colorcet as cc
 
 
-# changes to atomap code:
-
+# adapted from Atomap:
 
 def _make_simple_cubic_testdata(image_noise=False, amplitude=1,
                                 with_vacancies=False):

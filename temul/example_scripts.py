@@ -1,5 +1,5 @@
 
-import temul.api as tml
+'''
 from temul.model_creation import get_max_number_atoms_z
 from temul.signal_processing import (get_xydata_from_list_of_intensities,
                                      return_fitting_of_1D_gaussian,
@@ -7,7 +7,7 @@ from temul.signal_processing import (get_xydata_from_list_of_intensities,
                                      plot_gaussian_fit,
                                      get_fitting_tools_for_plotting_gaussians,
                                      plot_gaussian_fitting_for_multiple_fits)
-
+from temul.dummy_data import get_simple_cubic_sublattice
 import atomap.api as am
 import hyperspy.api as hs
 import numpy as np
@@ -20,6 +20,8 @@ import ase
 import os
 
 import matplotlib.pyplot as plt
+
+
 plt.style.use('default')
 # %matplotlib qt
 
@@ -41,7 +43,7 @@ plot_gaussian_fit(xdata, ydata, function=fit_1D_gaussian_to_data,
 
 
 # fitting to test sample, single atom element.
-sublattice = tml.dummy_data.get_simple_cubic_sublattice(
+sublattice = get_simple_cubic_sublattice(
     image_noise=True,
     amplitude=[5, 10])
 
@@ -382,6 +384,7 @@ tml.write_cif_from_dataframe(dataframe=Au_NP_df,
 
 
 '''
+'''
 Steps
 
 1. get the path to the example data
@@ -391,9 +394,11 @@ Steps
 
 You can add lots to this. For example if you're simulating an experimental
 image, see the function simulate_and_calibrate_with_prismatic() for allowing
-the experimental (reference) image to calculate the probeStep (sampling).
+the experimental(reference) image to calculate the probeStep(sampling).
 Only works if the reference image is loaded into python as a hyperspy 2D signal
 and if the image is calibrated.
+'''
+
 
 '''
 
@@ -494,7 +499,7 @@ real_sampling = s_original.axes_manager[-1].scale
 s_original.plot()
 
 # define the image name
-''' put in model refiner for auto saving purposes? '''
+# put in model refiner for auto saving purposes?
 image_name = s_original.metadata.General.original_filename
 
 percent_to_nn = None
@@ -571,7 +576,7 @@ sub3_name = 'sub3'
 sub3_inverse_name = 'sub3_inverse'
 
 
-''' SUBLATTICE 1 '''
+# SUBLATTICE 1
 am.get_feature_separation(s, separation_range=(3, 12), pca=True).plot()
 
 separation_sub1 = 7
@@ -619,7 +624,7 @@ plt.savefig(fname=sub1_name + '.png',
 plt.close()
 
 
-''' SUBLATTICE 2 '''
+# SUBLATTICE 2
 # remove first sublattice
 sub1_atoms_removed = remove_atoms_from_image_using_2d_gaussian(
     sub1.image, sub1, percent_to_nn=percent_to_nn_remove_atoms)
@@ -693,7 +698,7 @@ plt.savefig(fname=sub2_name + '.png',
 plt.close()
 
 
-''' SUBLATTICE 3 '''
+# SUBLATTICE 3
 
 atom_positions_3_original = sub1.find_missing_atoms_from_zone_vector(
     zone_axis_001, vector_fraction=vector_fraction_sub3)
@@ -778,7 +783,7 @@ plt.close()
 
 # Now we have the correct, refined positions of the Mo, S and bksubs
 
-''' ATOM LATTICE '''
+# ATOM LATTICE
 
 atom_lattice = am.Atom_Lattice(image=s,
                                name=image_name,
@@ -847,7 +852,7 @@ scaling_ratio, scaling_exponent, sub1_mode, sub2_mode = scaling_z_contrast(
 #reset_elements_and_z_height(sublattice_list=[sub1, sub2, sub3])
 
 
-'''SUB1'''
+# SUB1
 
 # sub1_ints = get_sublattice_intensity(sub1, intensity_type=intensity_type,
 #                                     remove_background_method=remove_background_method,
@@ -885,7 +890,7 @@ assign_z_height(sub1, lattice_type='transition_metal',
 sub1_info = print_sublattice_elements(sub1)
 
 
-'''SUB2'''
+# SUB2
 # sub2_ints = get_sublattice_intensity(
 #     sub2, intensity_type,
 #     remove_background_method=remove_background_method,
@@ -920,7 +925,7 @@ assign_z_height(sub2, lattice_type='chalcogen', material='mos2_one_layer')
 sub2_info = print_sublattice_elements(sub2)
 
 
-''' SUB3 '''
+# SUB3
 
 # sub3_ints = get_sublattice_intensity(sub3,
 #                                     intensity_type=intensity_type,
@@ -966,7 +971,7 @@ assign_z_height(sub3, lattice_type='background', material='mos2_one_layer')
 sub3_info = print_sublattice_elements(sub3)
 
 
-'''create .CIF file'''
+# create .CIF file
 element_list = combine_element_lists([element_list_sub1,
                                       element_list_sub2,
                                       element_list_sub3])
@@ -991,7 +996,7 @@ dataframe = create_dataframe_for_xyz(sublattice_list=[sub1, sub2, sub3],
                                      header_comment='Selenium implanted MoS2')
 
 
-''' Save Atom Lattice with intensity_type model '''
+# Save Atom Lattice with intensity_type model 
 
 sublattice_list = [sub1, sub2, sub3]
 atom_lattice_name = 'Atom_Lattice_' + intensity_type
@@ -1024,7 +1029,7 @@ sub1 = atom_lattice.sublattice_list[0]
 sub2 = atom_lattice.sublattice_list[1]
 sub3 = atom_lattice.sublattice_list[2]
 
-''' Refine the Sublattice elements '''
+# Refine the Sublattice elements 
 element_list_sub1 = ['Mo_0', 'Mo_1', 'Mo_1.S_1', 'Mo_1.Se_1', 'Mo_2']
 element_list_sub2 = ['S_0', 'S_1', 'S_2', 'Se_1', 'Se_1.S_1', 'Se_2']
 element_list_sub3 = ['H_0', 'S_1', 'Se_1', 'Mo_1', ]
@@ -1144,3 +1149,4 @@ refiner.plot_error_between_comparison_and_reference_image(style='scatter')
 ####################
 
 import temul.polarisation as tmlpol
+'''

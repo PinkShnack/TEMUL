@@ -1,3 +1,7 @@
+'''
+
+NOT YET IMPLEMENTED
+
 # import all files in TEMUL/temul
 # Call this file if you have everything installed
 
@@ -49,3 +53,4 @@ import temul.example_data as example_data
 
 from atomap.dummy_data import (
     get_distorted_cubic_signal, get_distorted_cubic_sublattice)
+'''
