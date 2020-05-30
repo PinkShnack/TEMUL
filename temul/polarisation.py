@@ -164,6 +164,7 @@ def plot_polarisation_vectors(x, y, u, v, image,
     ...                           normalise=True, save=None,
     ...                           plot_style='colormap', color='r',
     ...                           overlay=False, cmap='viridis')
+    Warning: In future, the `normalise` keyword will be `unit_vector`.
 
     normalised vectors on a contourf map:
 
@@ -171,6 +172,7 @@ def plot_polarisation_vectors(x, y, u, v, image,
     ...                           normalise=True, plot_style='contour',
     ...                           overlay=False, pivot='middle',
     ...                           color='darkgray', cmap='viridis', save=None)
+    Warning: In future, the `normalise` keyword will be `unit_vector`.
 
     "colorwheel" plot of the vectors, useful for vortexes:
 
@@ -179,6 +181,8 @@ def plot_polarisation_vectors(x, y, u, v, image,
     ...                           normalise=True, plot_style="colorwheel",
     ...                           overlay=False, cmap=cc.cm.colorwheel,
     ...                           save=None, monitor_dpi=50)
+    Warning: In future, the `normalise` keyword will be `unit_vector`.
+
 
     '''
 
@@ -192,7 +196,7 @@ def plot_polarisation_vectors(x, y, u, v, image,
     vector_mags = get_vector_magnitudes(u, v)
 
     if normalise:
-        print("Warning: In future, the `normalise` keyword will be changed to "
+        print("Warning: In future, the `normalise` keyword will be "
               "`unit_vector`.")
         # Normalise the data for uniform arrow size
         u_norm = u / np.sqrt(u ** 2.0 + v ** 2.0)
