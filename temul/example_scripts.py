@@ -319,7 +319,6 @@ simulation = tml.load_prismatic_mrc_with_hyperspy(
 simulation.plot()
 
 # Refine created NP
-# ...
 
 
 ######## Model Creation Example - Au NP ########
@@ -407,7 +406,7 @@ and if the image is calibrated.
 vesta_xyz_filename = tml.example_data.path_to_example_data_MoS2_vesta_xyz()
 # print(vesta_xyz_filename)
 
-# set the filenames for opening and closing...
+# set the filenames for opening and closing
 prismatic_xyz_filename = 'MoS2_hex_prismatic_2.xyz'
 mrc_filename = 'prismatic_simulation_2'
 simulated_filename = 'calibrated_data_2_electric_boogaloo'

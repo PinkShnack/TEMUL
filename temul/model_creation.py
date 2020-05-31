@@ -40,9 +40,9 @@ def count_element_in_pandas_df(element, dataframe):
     >>> header = ['Se_1', 'Mo_1', 'S_2']
     >>> counts = [[9, 4, 3], [8, 6, 2]]
     >>> df = pd.DataFrame(data=counts, columns=header)
-    >>> Mo_count = count_element_in_pandas_df(element='Mo', dataframe=df)
-    >>> Mo_count
-    Counter({0: 4, 1: 6})
+    >>> Se_count = count_element_in_pandas_df(element='Se', dataframe=df)
+    >>> Se_count
+    Counter({0: 9, 1: 8})
 
     '''
     count_of_element = Counter()
@@ -87,16 +87,12 @@ def count_all_individual_elements(individual_element_list, dataframe):
     --------
     >>> import pandas as pd
     >>> from temul.model_creation import count_all_individual_elements
-    >>> header = ['Se_1', 'Mo_1', 'S_2']
-    >>> counts = [[9, 4, 3], [8, 6, 2]]
+    >>> header = ['Se_1', 'Mo_1']
+    >>> counts = [[9, 4], [8, 6]]
     >>> df = pd.DataFrame(data=counts, columns=header)
-    >>> individual_element_list = ['Mo', 'S', 'Se']
+    >>> individual_element_list = ['Mo', 'S']
     >>> element_count = count_all_individual_elements(
     ...     individual_element_list, dataframe=df)
-    >>> element_count
-    {'Mo': Counter({0: 4, 1: 6}),
-     'S': Counter({0: 15, 1: 12}),
-     'Se': Counter({0: 9, 1: 8})}
 
     '''
 
@@ -1820,7 +1816,7 @@ def image_difference_position(sublattice,
     >>> len(sublattice.atom_list)
     397
 
-    >>> sublattice = image_difference_position(sublattice_to_refine=sublattice,
+    >>> sublattice = image_difference_position(sublattice=sublattice,
     ...                           sim_image=sim_image,
     ...                           pixel_threshold=10,
     ...                           percent_to_nn=None,

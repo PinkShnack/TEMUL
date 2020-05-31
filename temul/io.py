@@ -210,8 +210,8 @@ def convert_vesta_xyz_to_prismatic_xyz(vesta_xyz_filename,
     See example_data for the vesta xyz file.
     >>> from temul.io import convert_vesta_xyz_to_prismatic_xyz
     >>> prismatic_xyz = convert_vesta_xyz_to_prismatic_xyz(
-    ...     'example_data/prismatic/example_MoS2_vesta_xyz.xyz',
-    ...     'example_data/prismatic/MoS2_hex_prismatic.xyz',
+    ...     'temul/example_data/prismatic/example_MoS2_vesta_xyz.xyz',
+    ...     'temul/example_data/prismatic/MoS2_hex_prismatic.xyz',
     ...     delimiter='   |    |  ', header=None, skiprows=[0, 1],
     ...     engine='python', occupancy=1.0, rms_thermal_vib=0.05,
     ...     header_comment="Let's do this!", save=True)

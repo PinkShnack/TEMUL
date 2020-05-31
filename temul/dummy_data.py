@@ -195,6 +195,8 @@ def get_model_refiner_one_sublattice_3_vacancies(
     comparison_image = am.dummy_data.get_simple_cubic_signal(
         image_noise=image_noise)
     refiner = Model_Refiner(refiner_dict, comparison_image)
+    refiner.auto_mask_radius = [4]
+
     return refiner
 
 
@@ -230,6 +232,7 @@ def get_model_refiner_with_12_vacancies_refined(
 
     refined_model = get_model_refiner_one_sublattice_12_vacancies(
         image_noise=image_noise, test_element=test_element)
+    refined_model.auto_mask_radius = [4]
     refined_model.image_difference_intensity_model_refiner(filename=filename)
     refined_model.image_difference_intensity_model_refiner(filename=filename)
 
@@ -244,6 +247,7 @@ def get_model_refiner_with_12_vacancies_refined(
 def get_model_refiner_with_3_vacancies_refined(
         image_noise=True, test_element='Ti_2', filename=None):
     '''
+    >>> from temul.dummy_data import get_model_refiner_with_3_vacancies_refined
     >>> refiner = get_model_refiner_with_3_vacancies_refined()
     3 new atoms found! Adding new atom positions.
     Changing some atoms
@@ -252,9 +256,11 @@ def get_model_refiner_with_3_vacancies_refined(
     '''
     refiner = get_model_refiner_one_sublattice_3_vacancies(
         image_noise=image_noise, test_element=test_element)
+    refiner.auto_mask_radius = [4]
 
     refiner.image_difference_position_model_refiner(
-        pixel_threshold=10, filename=filename)
+        pixel_threshold=10, filename=filename,
+        chosen_sublattice=refiner.sublattice_list[0])
 
     refiner.image_difference_intensity_model_refiner(filename=filename)
     refiner.image_difference_intensity_model_refiner(filename=filename)
@@ -293,7 +299,7 @@ def get_distorted_cubic_signal_adjustable(y_offset=2, image_noise=False):
     Examples
     --------
     >>> from temul.dummy_data import get_distorted_cubic_signal_adjustable
-    >>> s = am.dummy_data.get_distorted_cubic_signal_adjustable(y_offset=2)
+    >>> s = get_distorted_cubic_signal_adjustable(y_offset=2)
     >>> s.plot()
 
     """
@@ -317,7 +323,7 @@ def get_distorted_cubic_sublattice_adjustable(y_offset=2, image_noise=False):
     Examples
     --------
     >>> from temul.dummy_data import get_distorted_cubic_sublattice_adjustable
-    >>> sublattice = am.dummy_data.get_distorted_cubic_sublattice_adjustable(y_offset=2)
+    >>> sublattice = get_distorted_cubic_sublattice_adjustable(y_offset=2)
     >>> sublattice.plot()
 
     """

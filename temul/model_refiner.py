@@ -102,6 +102,8 @@ class Model_Refiner():
         self.element_list = list(sublattice_and_elements_dict.values())
         self.flattened_element_list = combine_element_lists(
             self.element_list)
+
+        self.reference_image = self.sublattice_list[0].signal
         self._comparison_image_init(comparison_image)
         self.name = name
         self._element_count = count_atoms_in_sublattice_list(
@@ -114,14 +116,17 @@ class Model_Refiner():
         if len(self.refinement_history) == 0:
             self.refinement_history.append("Initial State")
 
-        self.reference_image = self.sublattice_list[0].signal
         self.calibration_area = [[1, 1],
                                  [self.reference_image.data.shape[-1] - 1,
                                   self.reference_image.data.shape[-2] - 1]]
         self.calibration_separation = 12
         # maybe have a _sampling_init function
         if sampling is None:
-            self.sampling = self.reference_image.axes_manager[-1].scale
+            if sampling == 1:
+                print("Sampling (axes_manager.scale) is 1, you may need to "
+                      "set this.")
+            else:
+                self.sampling = self.reference_image.axes_manager[-1].scale
         else:
             self.sampling = sampling
         if self.reference_image.axes_manager[-1].units == 'nm':
@@ -509,6 +514,8 @@ class Model_Refiner():
                           .format(i + 1))
                     break
 
+    # chosen_sublattice should be less ambiguous
+
     def image_difference_position_model_refiner(
             self,
             chosen_sublattice,
@@ -541,7 +548,8 @@ class Model_Refiner():
         >>> refiner.sublattice_list[0].plot()
         >>> refiner.comparison_image.plot()
         >>> refiner.image_difference_position_model_refiner(
-        ...     pixel_threshold=10)
+        ...     pixel_threshold=10,
+        ...     chosen_sublattice=refiner.sublattice_list[0])
         3 new atoms found! Adding new atom positions.
         >>> refiner.sublattice_list[0].plot()
 
