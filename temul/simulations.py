@@ -12,7 +12,8 @@ from temul.model_creation import (count_atoms_in_sublattice_list,
                                   assign_z_height)
 from temul.io import (create_dataframe_for_xyz,
                       write_cif_from_dataframe,
-                      create_new_folder)
+                      create_new_folder,
+                      load_prismatic_mrc_with_hyperspy)
 
 import pyprismatic as pr
 import atomap.api as am
@@ -388,7 +389,6 @@ def simulate_with_prismatic(xyz_filename,
     pr_sim.numThreads = numThreads
     pr_sim.filenameOutput = filename + '.mrc'
     pr_sim.go()
-
 
 
 # -*- coding: utf-8 -*-
