@@ -53,7 +53,6 @@ def get_sublattice_intensity(sublattice,
 
     >>> from temul.intensity_tools import get_sublattice_intensity
     >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
-    >>> # import atomap.dummy_data as dummy_data
     >>> sublattice = dummy_data.get_simple_cubic_sublattice()
     >>> sublattice.find_nearest_neighbors()
     >>> intensities_all = get_sublattice_intensity(
