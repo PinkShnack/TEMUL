@@ -15,6 +15,7 @@ from temul.io import (create_dataframe_for_xyz,
                       create_new_folder,
                       load_prismatic_mrc_with_hyperspy)
 
+import temul.external.atomap_devel_012 as am_dev
 import pyprismatic as pr
 import atomap.api as am
 import matplotlib.pyplot as plt
