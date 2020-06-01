@@ -32,4 +32,4 @@ jobs:
         flake8 --exclude temul/external,temul/example_scripts.py --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        pytest --doctest-modules --ignore="temul/external" --ignore="temul/simulations"
+        pytest --doctest-modules --ignore="temul/external" --ignore="temul/simulations" --ignore="temul/model_refiner.py"

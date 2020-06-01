@@ -14,15 +14,16 @@ from temul.element_tools import (
     split_and_sort_element,
     atomic_radii_in_pixels
 )
-from temul.io import create_dataframe_for_xyz
+from temul.io import (create_dataframe_for_xyz,
+                      load_prismatic_mrc_with_hyperspy
+                      )
 from temul.signal_processing import (
     compare_two_image_and_create_filtered_image,
     calibrate_intensity_distance_with_sublattice_roi,
     measure_image_errors
 )
 from temul.simulations import (
-    simulate_with_prismatic,
-    load_prismatic_mrc_with_hyperspy
+    simulate_with_prismatic
 )
 import numpy as np
 import pandas as pd
