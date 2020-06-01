@@ -2,7 +2,8 @@ from temul.intensity_tools import get_sublattice_intensity
 from temul.element_tools import split_and_sort_element
 
 import atomap.api as am
-from atomap.atom_finding_refining import get_atom_positions_in_difference_image
+from temul.external.atomap_devel_012.atom_finding_refining import (
+    get_atom_positions_in_difference_image)
 
 import matplotlib.pyplot as plt
 import scipy
