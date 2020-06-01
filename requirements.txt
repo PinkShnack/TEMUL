@@ -1,0 +1,14 @@
+matplotlib==2.2.4
+rigidregistration==0.2
+tifffile==2019.1.4
+PyPrismatic==1.1.16
+periodictable==1.5.0
+numpy
+hyperspy
+atomap
+colorcet==2.0.2
+glob2==0.6
+scikit-image
+scipy
+PyCifRW==4.3
+pandas==0.24.2 
