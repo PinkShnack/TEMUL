@@ -390,56 +390,6 @@ def simulate_with_prismatic(xyz_filename,
     pr_sim.go()
 
 
-def load_prismatic_mrc_with_hyperspy(
-        prismatic_mrc_filename,
-        save_name='calibrated_data_'):
-    '''
-    Open a prismatic .mrc file and save as a hyperspy object.
-    Also plots save saves a png.
-
-    Parameters
-    ----------
-
-    prismatic_mrc_filename : string
-        name of the outputted prismatic .mrc file.
-
-    Returns
-    -------
-    Hyperspy Signal 2D of the simulation
-
-    Examples
-    --------
-
-    >>> from temul.simulations import load_prismatic_mrc_with_hyperspy
-    >>> load_prismatic_mrc_with_hyperspy("example_data/prismatic/"
-    ...         "prism_2Doutput_prismatic_simulation.mrc")
-    <Signal2D, title: , dimensions: (|1182, 773)>
-
-    '''
-
-    # if '.mrc' not in prismatic_mrc_filename:
-    #     prismatic_mrc_filename = prismatic_mrc_filename + 'mrc'
-    # if 'prism_2Doutput_' not in prismatic_mrc_filename:
-    #     prismatic_mrc_filename = 'prism_2Doutput' + prismatic_mrc_filename
-
-    simulation = hs.load(prismatic_mrc_filename)
-    simulation.axes_manager[0].name = 'extra_dimension'
-    simulation = simulation.sum('extra_dimension')
-
-    if save_name is not None:
-        simulation.save(save_name, overwrite=True)
-        simulation.plot()
-        plt.title(save_name, fontsize=20)
-        plt.gca().axes.get_xaxis().set_visible(False)
-        plt.gca().axes.get_yaxis().set_visible(False)
-        plt.tight_layout()
-        plt.savefig(fname=save_name + '.png',
-                    transparent=True, frameon=False, bbox_inches='tight',
-                    pad_inches=None, dpi=300, labels=False)
-        # plt.close()
-
-    return simulation
-
 
 # -*- coding: utf-8 -*-
 """

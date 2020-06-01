@@ -1,5 +1,4 @@
 tifffile
-PyPrismatic==1.1.16
 periodictable==1.5.0
 numpy
 hyperspy
