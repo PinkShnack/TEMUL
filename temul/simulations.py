@@ -304,7 +304,7 @@ def simulate_with_prismatic(xyz_filename,
 
     >>> from temul.simulations import simulate_with_prismatic
     >>> simulate_with_prismatic(
-    ...     xyz_filename="temul/example_data/prismatic/"
+    ...     xyz_filename="example_data/prismatic/"
     ...         "MoS2_hex_prismatic.xyz",
     ...     filename='prismatic_simulation',
     ...     probeStep=1.0, reference_image=None, E0=60e3,
@@ -411,7 +411,7 @@ def load_prismatic_mrc_with_hyperspy(
     --------
 
     >>> from temul.simulations import load_prismatic_mrc_with_hyperspy
-    >>> load_prismatic_mrc_with_hyperspy("temul/example_data/prismatic/"
+    >>> load_prismatic_mrc_with_hyperspy("example_data/prismatic/"
     ...         "prism_2Doutput_prismatic_simulation.mrc")
     <Signal2D, title: , dimensions: (|1182, 773)>
 

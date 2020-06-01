@@ -1,4 +1,3 @@
-
 from temul.intensity_tools import get_sublattice_intensity
 from temul.element_tools import split_and_sort_element
 
@@ -544,7 +543,8 @@ def image_difference_intensity(sublattice,
     std_dev_ints = np.std(diff_mean_ints)
 
     # plot the mean and std dev on each side of intensities histogram
-    std_from_mean = np.array([mean_ints - std_dev_ints, mean_ints + std_dev_ints,
+    std_from_mean = np.array([mean_ints - std_dev_ints,
+                              mean_ints + std_dev_ints,
                               mean_ints - (2 * std_dev_ints), mean_ints +
                               (2 * std_dev_ints),
                               mean_ints - (3 * std_dev_ints), mean_ints +
@@ -1188,7 +1188,8 @@ def sort_sublattice_intensities(sublattice,
             elements_of_sublattice = []
             for p in range(0, (len(limit_intensity_list) - 1)):
                 for i in range(0, len(sublattice.atom_list)):
-                    if limit_intensity_list[p] * scalar < sublattice_intensity[i] < limit_intensity_list[p + 1] * scalar:
+                    if limit_intensity_list[p] * scalar < sublattice_intensity[
+                            i] < limit_intensity_list[p + 1] * scalar:
                         sublattice.atom_list[i].elements = element_list[p]
                         elements_of_sublattice.append(
                             sublattice.atom_list[i].elements)
@@ -1204,7 +1205,8 @@ def sort_sublattice_intensities(sublattice,
             elements_of_sublattice = []
             for p in range(0, (len(limit_intensity_list) - 1)):
                 for i in range(0, len(sublattice.atom_list)):
-                    if limit_intensity_list[p] < sublattice_intensity[i] < limit_intensity_list[p + 1]:
+                    if limit_intensity_list[p] < sublattice_intensity[
+                            i] < limit_intensity_list[p + 1]:
                         sublattice.atom_list[i].elements = element_list[p]
                         elements_of_sublattice.append(
                             sublattice.atom_list[i].elements)
@@ -1214,10 +1216,12 @@ def sort_sublattice_intensities(sublattice,
                 if sublattice_intensity[i] > limit_intensity_list[-1]:
                     sublattice.atom_list[i].elements = element_list[-1]
                 else:
-                    sublattice.atom_list[i].elements = get_most_common_sublattice_element(
+                    sublattice.atom_list[
+                        i].elements = get_most_common_sublattice_element(
                         sublattice)
-                    # print("Warning: An element has not been assigned ({}). It "
-                    #      "will be given the value {}.".format(i, sublattice.atom_list[i].elements))
+            # print("Warning: An element has not been assigned ({}). It "
+            #      "will be given the value {}.".format(i,
+            #       sublattice.atom_list[i].elements))
                 elements_of_sublattice.append(sublattice.atom_list[i].elements)
             else:
                 pass
@@ -1250,115 +1254,192 @@ def assign_z_height(sublattice, lattice_type, material):
     for i in range(0, len(sublattice.atom_list)):
         if material == 'mose2_one_layer':
             if lattice_type == 'chalcogen':
-                if len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] == 1:
+                if len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 1 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][2] == 1:
                     sublattice.atom_list[i].z_height = '0.758'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] == 2:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 1 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][2] == 2:
                     sublattice.atom_list[i].z_height = '0.242, 0.758'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] > 2:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 1 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][2] > 2:
                     sublattice.atom_list[i].z_height = '0.242, 0.758, 0.9'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 2 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[1][2] == 1:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 2 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][
+                            2] == 1 and split_and_sort_element(
+                                element=sublattice.atom_list[i].elements)[
+                                    1][2] == 1:
                     sublattice.atom_list[i].z_height = '0.242, 0.758'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 2 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] > 1:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 2 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][2] > 1:
                     sublattice.atom_list[i].z_height = '0.242, 0.758, 0.9'
                 else:
                     sublattice.atom_list[i].z_height = '0.758'
-                    # raise ValueError("z_height is limited to only a handful of positions")
+                    # raise ValueError("z_height is limited to only a "
+                    # "handful of positions")
             elif lattice_type == 'transition_metal':
-                if len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] == 1:
+                if len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 1 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][2] == 1:
                     sublattice.atom_list[i].z_height = '0.5'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] == 2:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 1 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][2] == 2:
                     sublattice.atom_list[i].z_height = '0.5, 0.95'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] > 2:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 1 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][2] > 2:
                     sublattice.atom_list[i].z_height = '0.5, 0.95, 1'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 2 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[1][2] == 1:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 2 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][
+                            2] == 1 and split_and_sort_element(
+                                element=sublattice.atom_list[i].elements)[
+                                    1][2] == 1:
                     sublattice.atom_list[i].z_height = '0.5, 0.95'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 2 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] > 1:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 2 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][2] > 1:
                     sublattice.atom_list[i].z_height = '0.5, 0.95, 1'
                 else:
                     sublattice.atom_list[i].z_height = '0.5'
-                    # raise ValueError("z_height is limited to only a handful of positions")
+                    # raise ValueError("z_height is limited to only a "
+                    # "handful of positions")
             elif lattice_type == 'background':
-                # if sublattice.atom_list[i].elements == 'H_0' or sublattice.atom_list[i].elements == 'vacancy':
+                # if sublattice.atom_list[
+                # i].elements == 'H_0' or sublattice.atom_list[
+                # i].elements == 'vacancy':
                 sublattice.atom_list[i].z_height = '0.95'
-                # elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] == 1:
+                # elif len(split_and_sort_element(element=sublattice.atom_list[
+                # i].elements)) == 1 and split_and_sort_element(
+                # element=sublattice.atom_list[i].elements)[0][2] == 1:
                 #    sublattice.atom_list[i].z_height = [0.9]
                 # else:
                 #    sublattice.atom_list[i].z_height = []
 
             else:
                 print(
-                    "You must include a suitable lattice_type. This feature is limited")
+                    "You must include a suitable lattice_type. "
+                    "This function is limited")
 
         if material == 'mos2_one_layer':
             if lattice_type == 'chalcogen':
-                if len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] == 1:
+                if len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 1 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][2] == 1:
                     # from L Mattheis, PRB, 1973
                     sublattice.atom_list[i].z_height = '0.757'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] == 2:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 1 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][2] == 2:
                     sublattice.atom_list[i].z_height = '0.242, 0.757'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] > 2:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 1 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][2] > 2:
                     sublattice.atom_list[i].z_height = '0.242, 0.757, 0.95'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 2 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[1][2] == 1:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 2 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][
+                            2] == 1 and split_and_sort_element(
+                                element=sublattice.atom_list[i].elements)[
+                                    1][2] == 1:
                     sublattice.atom_list[i].z_height = '0.242, 0.757'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 2 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] > 1:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 2 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][2] > 1:
                     sublattice.atom_list[i].z_height = '0.242, 0.757, 0.95'
                 else:
                     sublattice.atom_list[i].z_height = '0.757'
-                # raise ValueError("z_height is limited to only a handful of positions")
+                # raise ValueError("z_height is limited to only a "
+                # "handful of positions")
             elif lattice_type == 'transition_metal':
-                if len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] == 1:
+                if len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 1 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][2] == 1:
                     sublattice.atom_list[i].z_height = '0.5'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] == 2:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 1 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][2] == 2:
                     sublattice.atom_list[i].z_height = '0.5, 0.95'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] > 2:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 1 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][2] > 2:
                     sublattice.atom_list[i].z_height = '0.5, 0.95, 1'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 2 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[1][2] == 1:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 2 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][
+                            2] == 1 and split_and_sort_element(
+                                element=sublattice.atom_list[i].elements)[
+                                    1][2] == 1:
                     sublattice.atom_list[i].z_height = '0.5, 0.95'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 2 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] > 1:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 2 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][2] > 1:
                     sublattice.atom_list[i].z_height = '0.5, 0.95, 1'
                 else:
                     sublattice.atom_list[i].z_height = '0.5'
-                # raise ValueError("z_height is limited to only a handful of positions")
+                # raise ValueError("z_height is limited to only a "
+                # "handful of positions")
             elif lattice_type == 'background':
-                # if sublattice.atom_list[i].elements == 'H_0' or sublattice.atom_list[i].elements == 'vacancy':
+                # if sublattice.atom_list[
+                # i].elements == 'H_0' or sublattice.atom_list[
+                # i].elements == 'vacancy':
                 sublattice.atom_list[i].z_height = '0.95'
-                # elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] == 1:
+                # elif len(split_and_sort_element(element=sublattice.atom_list[
+                # i].elements)) == 1 and split_and_sort_element(
+                # element=sublattice.atom_list[i].elements)[0][2] == 1:
                 #    sublattice.atom_list[i].z_height = [0.9]
                 # else:
                 #    sublattice.atom_list[i].z_height = []
 
             else:
                 print(
-                    "You must include a suitable lattice_type. This feature is limited")
+                    "You must include a suitable lattice_type. "
+                    "This function is limited")
 
         if material == 'mos2_two_layer':  # from L Mattheis, PRB, 1973
             if lattice_type == 'TM_top':
-                if len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 3:
+                if len(split_and_sort_element(element=sublattice.atom_list[
+                        i].elements)) == 3:
                     sublattice.atom_list[i].z_height = '0.1275, 0.3725, 0.75'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 2:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                        i].elements)) == 2:
                     sublattice.atom_list[i].z_height = '0.1275, 0.3725, 0.75'
                 else:
                     sublattice.atom_list[i].z_height = '0.95'
-                    # raise ValueError("z_height is limited to only a handful of positions")
+                    # raise ValueError("z_height is limited to only a "
+                    # "handful of positions")
             elif lattice_type == 'TM_bot':
-                if len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 3:
+                if len(split_and_sort_element(element=sublattice.atom_list[
+                        i].elements)) == 3:
                     sublattice.atom_list[i].z_height = '0.25, 0.6275, 0.8725'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 2:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                        i].elements)) == 2:
                     sublattice.atom_list[i].z_height = '0.25, 0.6275, 0.8725'
                 else:
                     sublattice.atom_list[i].z_height = '0.95'
-                # raise ValueError("z_height is limited to only a handful of positions")
+                # raise ValueError("z_height is limited to only a "
+                # "handful of positions")
             elif lattice_type == 'background':
-                # if sublattice.atom_list[i].elements == 'H_0' or sublattice.atom_list[i].elements == 'vacancy':
+                # if sublattice.atom_list[
+                # i].elements == 'H_0' or sublattice.atom_list[
+                # i].elements == 'vacancy':
                 sublattice.atom_list[i].z_height = '0.95'
-                # elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] == 1:
+                # elif len(split_and_sort_element(element=sublattice.atom_list[
+                # i].elements)) == 1 and split_and_sort_element(
+                # element=sublattice.atom_list[i].elements)[0][2] == 1:
                 #    sublattice.atom_list[i].z_height = [0.9]
                 # else:
                 #    sublattice.atom_list[i].z_height = []
 
             else:
                 print(
-                    "You must include a suitable lattice_type. This feature is limited")
+                    "You must include a suitable lattice_type. "
+                    "This function is limited")
 # MoS2 0.2429640475, 0.7570359525
 
 
@@ -1630,8 +1711,10 @@ def create_dataframe_for_cif(sublattice_list, element_list):
                 # this loop cycles through the length of the split element eg,
                 # 2 for 'Se_1.S_1' and
                 #   outputs an atom label and z_height for each
-                for k in range(0, len(split_and_sort_element(sublattice.atom_list[i].elements))):
-                    if split_and_sort_element(sublattice.atom_list[i].elements)[k][2] >= 1:
+                for k in range(0, len(split_and_sort_element(
+                        sublattice.atom_list[i].elements))):
+                    if split_and_sort_element(sublattice.atom_list[
+                            i].elements)[k][2] >= 1:
                         atom_label = split_and_sort_element(
                             sublattice.atom_list[i].elements)[k][1]
 
@@ -1645,35 +1728,51 @@ def create_dataframe_for_cif(sublattice_list, element_list):
                         # this loop checks the number of atoms that share
                         # the same x and y coords.
                         # len(sublattice.atom_list[i].z_height)):
-                        for p in range(0, split_and_sort_element(sublattice.atom_list[i].elements)[k][2]):
+                        for p in range(0, split_and_sort_element(
+                                sublattice.atom_list[i].elements)[k][2]):
 
-                            if "," in sublattice.atom_list[i].z_height and split_and_sort_element(sublattice.atom_list[i].elements)[k][2] > 1:
+                            if "," in sublattice.atom_list[
+                                i].z_height and split_and_sort_element(
+                                    sublattice.atom_list[i].elements)[k][
+                                        2] > 1:
                                 atom_z_height = float(
-                                    sublattice.atom_list[i].z_height.split(",")[p])
+                                    sublattice.atom_list[
+                                        i].z_height.split(",")[p])
                             else:
                                 pass
 
-                            dfObj = dfObj.append({'_atom_site_label': atom_label,
-                                                  '_atom_site_occupancy': 1.0,
-                                                  '_atom_site_fract_x': format(sublattice.atom_list[i].pixel_x / len(sublattice.image[0, :]), '.6f'),
-                                                  '_atom_site_fract_y': format((len(sublattice.image[:, 0]) - sublattice.atom_list[i].pixel_y) / len(sublattice.image[:, 0]), '.6f'),
-                                                  # great touch
-                                                  '_atom_site_fract_z': format(atom_z_height, '.6f'),
-                                                  '_atom_site_adp_type': 'Biso',
-                                                  '_atom_site_B_iso_or_equiv': format(1.0, '.6f'),
-                                                  '_atom_site_type_symbol': atom_label},
-                                                 ignore_index=True)  # insert row
+                            dfObj = dfObj.append(
+                                {'_atom_site_label': atom_label,
+                                 '_atom_site_occupancy': 1.0,
+                                 '_atom_site_fract_x': format(
+                                     sublattice.atom_list[i].pixel_x / len(
+                                         sublattice.image[0, :]), '.6f'),
+                                 '_atom_site_fract_y': format(
+                                     (len(sublattice.image[:, 0]) -
+                                      sublattice.atom_list[i].pixel_y) /
+                                     len(sublattice.image[:, 0]), '.6f'),
+                                 # great touch
+                                 '_atom_site_fract_z': format(
+                                     atom_z_height, '.6f'),
+                                 '_atom_site_adp_type': 'Biso',
+                                 '_atom_site_B_iso_or_equiv': format(
+                                     1.0, '.6f'),
+                                 '_atom_site_type_symbol': atom_label},
+                                ignore_index=True)  # insert row
 
     # value += split_and_sort_element(sublattice.atom_list[i].elements)[k][2]
     # need an option to save to the cuurent directory should be easy
     #        dfObj.to_pickle('atom_lattice_atom_position_table.pkl')
-    #        dfObj.to_csv('atom_lattice_atom_position_table.csv', sep=',', index=False)
+    #        dfObj.to_csv('atom_lattice_atom_position_table.csv', sep=',',
+    # index=False)
     return dfObj
 
-    # element_list = ['S_0', 'S_1', 'S_2', 'S_2.C_1', 'S_2.C_2', 'Mo_1', 'Mo_0']
+    # element_list = [
+    # 'S_0', 'S_1', 'S_2', 'S_2.C_1', 'S_2.C_2', 'Mo_1', 'Mo_0']
     # example_df = create_dataframe_for_cif(atom_lattice, element_list)
 
-    # '_atom_site_fract_z' : format( (sublattice.atom_list[i].z_height)[p+(k*k)], '.6f'), #great touch
+    # '_atom_site_fract_z' : format( (sublattice.atom_list[i].z_height)[
+    # p+(k*k)], '.6f'), #great touch
 
 
 def change_sublattice_pseudo_inplace(new_atom_positions, old_sublattice):

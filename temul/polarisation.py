@@ -953,8 +953,9 @@ def get_average_polarisation_in_regions_square(x, y, u, v, image,
 
 
 def get_strain_map(sublattice, zone_axis_index, theoretical_value,
-                   sampling=1, units='pix', vmin=None, vmax=None, cmap='inferno',
-                   title='Strain Map', filename=None, **kwargs):
+                   sampling=1, units='pix', vmin=None, vmax=None,
+                   cmap='inferno', title='Strain Map', filename=None,
+                   **kwargs):
 
     zone_vector_index_list = sublattice._get_zone_vector_index_list(
         zone_vector_list=None)
@@ -988,14 +989,16 @@ def get_strain_map(sublattice, zone_axis_index, theoretical_value,
     cbar = ScalarMappable(cmap=cmap)
     cbar.set_array(xy_distance)
     cbar.set_clim(vmin, vmax)
-    plt.colorbar(cbar, fraction=0.046, pad=0.04, label="Strain (% above {} {})".format(
-        theoretical_value, units))
+    plt.colorbar(cbar, fraction=0.046, pad=0.04,
+                 label="Strain (% above {} {})".format(
+                     theoretical_value, units))
     plt.tight_layout()
 
     if filename is not None:
-        plt.savefig(fname="{}_{}_{}.png".format(filename, title, zone_axis_index),
-                    transparent=True, frameon=False, bbox_inches='tight',
-                    pad_inches=None, dpi=300, labels=False)
+        plt.savefig(
+            fname="{}_{}_{}.png".format(filename, title, zone_axis_index),
+            transparent=True, frameon=False, bbox_inches='tight',
+            pad_inches=None, dpi=300, labels=False)
         strain_signal.save("{}_{}_{}.hspy".format(
             filename, title, zone_axis_index))
 
@@ -1065,9 +1068,10 @@ def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
     plt.tight_layout()
 
     if filename is not None:
-        plt.savefig(fname="{}_{}_{}.png".format(filename, title, zone_axis_index),
-                    transparent=True, frameon=False, bbox_inches='tight',
-                    pad_inches=None, dpi=300, labels=False)
+        plt.savefig(
+            fname="{}_{}_{}.png".format(filename, title, zone_axis_index),
+            transparent=True, frameon=False, bbox_inches='tight',
+            pad_inches=None, dpi=300, labels=False)
         rotation_signal.save("{}_{}_{}.hspy".format(
             filename, title, zone_axis_index))
 
@@ -1088,8 +1092,8 @@ def ratio_of_lattice_spacings(sublattice, zone_axis_index_A, zone_axis_index_B,
 
     # spacing A
     zone_index_A, zone_vector_A = zone_vector_index_list[zone_axis_index_A]
-    x_list_A, y_list_A, xy_dist_A = sublattice.get_atom_distance_list_from_zone_vector(
-        zone_vector_A)
+    x_list_A, y_list_A, xy_dist_A = \
+        sublattice.get_atom_distance_list_from_zone_vector(zone_vector_A)
 
     signal_spacing_A = sublattice.get_property_map(
         x_list_A, y_list_A, xy_dist_A, upscale_map=1)
@@ -1112,8 +1116,8 @@ def ratio_of_lattice_spacings(sublattice, zone_axis_index_A, zone_axis_index_B,
 
     # spacing B
     zone_index_B, zone_vector_B = zone_vector_index_list[zone_axis_index_B]
-    x_list_B, y_list_B, xy_dist_B = sublattice.get_atom_distance_list_from_zone_vector(
-        zone_vector_B)
+    x_list_B, y_list_B, xy_dist_B = \
+        sublattice.get_atom_distance_list_from_zone_vector(zone_vector_B)
 
     signal_spacing_B = sublattice.get_property_map(
         x_list_B, y_list_B, xy_dist_B, upscale_map=1)
@@ -1149,19 +1153,19 @@ def ratio_of_lattice_spacings(sublattice, zone_axis_index_A, zone_axis_index_B,
     plt.tight_layout()
 
     if filename is not None:
-        plt.savefig(fname="{}_{}_{}{}.png".format(filename, title,
-                                                  zone_axis_index_A, zone_axis_index_B),
-                    transparent=True, frameon=False, bbox_inches='tight',
-                    pad_inches=None, dpi=300, labels=False)
-        ratio_signal.save("{}_{}_{}{}.hspy".format(filename, title,
-                                                   zone_axis_index_A, zone_axis_index_B))
+        plt.savefig(fname="{}_{}_{}{}.png".format(
+            filename, title, zone_axis_index_A, zone_axis_index_B),
+            transparent=True, frameon=False, bbox_inches='tight',
+            pad_inches=None, dpi=300, labels=False)
+        ratio_signal.save("{}_{}_{}{}.hspy".format(
+            filename, title, zone_axis_index_A, zone_axis_index_B))
 
     return(ratio_signal)
 
 
-def atom_to_atom_distance_grouped_mean(sublattice, zone_axis_index,
-                                       aggregation_axis='y', slice_thickness=10,
-                                       sampling=1, units='pix'):
+def atom_to_atom_distance_grouped_mean(
+        sublattice, zone_axis_index, aggregation_axis='y', slice_thickness=10,
+        sampling=1, units='pix'):
     '''
     average the atom to atom distances in the chosen zone_axis_index along
     the chosen axis ('x' or 'y').

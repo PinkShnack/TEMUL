@@ -106,9 +106,8 @@ def fit_1D_gaussian_to_data(xdata, amp, mu, sigma):
     >>> gauss_fit_01 = fit_1D_gaussian_to_data(xdata, amp, mu, sigma)
     '''
 
-    return(amp * (1 / (sigma * (np.sqrt(2 * np.pi)))) * (np.exp(-((xdata - mu)**2) /
-                                                                ((2 * sigma)**2)))
-           )
+    return(amp * (1 / (sigma * (np.sqrt(2 * np.pi)))) * (
+        np.exp(-((xdata - mu)**2) / ((2 * sigma)**2))))
 
 
 # Fit gaussian to element
@@ -247,7 +246,8 @@ def get_fitting_tools_for_plotting_gaussians(element_list,
     sublattice with multiple Gaussians.
     '''
 
-    if len(scaled_middle_intensity_list) + 1 != len(scaled_limit_intensity_list):
+    if len(scaled_middle_intensity_list) + 1 != len(
+            scaled_limit_intensity_list):
         raise ValueError(
             "limit list must have a length one greater than middle list")
 
@@ -291,19 +291,21 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
     sub_ints_all = [sub1_ints, sub2_ints]
     marker_list = [['Sub1', '.'],['Sub2', 'x']]
 
-    middle_intensity_list_real_sub1, limit_intensity_list_real_sub1 = make_middle_limit_intensity_list_real(
-                                        sublattice=sub1,
-                                        middle_intensity_list=middle_intensity_list_sub1,
-                                        limit_intensity_list=limit_intensity_list_sub1,
-                                        method=method,
-                                        sublattice_scalar=sub1_mode)
+    middle_intensity_list_real_sub1, limit_intensity_list_real_sub1 = \
+        make_middle_limit_intensity_list_real(
+            sublattice=sub1,
+            middle_intensity_list=middle_intensity_list_sub1,
+            limit_intensity_list=limit_intensity_list_sub1,
+            method=method,
+            sublattice_scalar=sub1_mode)
 
-    middle_intensity_list_real_sub2, limit_intensity_list_real_sub2 = make_middle_limit_intensity_list_real(
-                                        sublattice=sub2,
-                                        middle_intensity_list=middle_intensity_list_sub2,
-                                        limit_intensity_list=limit_intensity_list_sub2,
-                                        method=method,
-                                        sublattice_scalar=sub2_mode)
+    middle_intensity_list_real_sub2, limit_intensity_list_real_sub2 = \
+        make_middle_limit_intensity_list_real(
+            sublattice=sub2,
+            middle_intensity_list=middle_intensity_list_sub2,
+            limit_intensity_list=limit_intensity_list_sub2,
+            method=method,
+            sublattice_scalar=sub2_mode)
 
 
     element_list_all_subs = [element_list_sub1, element_list_sub2]
@@ -418,16 +420,16 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
                         p0=[fitting_tools[4], fitting_tools[5],
                             fitting_tools[6]])
                     individual_gauss = fit_1D_gaussian_to_data(x, *popt_gauss)
-                    sub_gauss = ax1.plot(x, individual_gauss, **kwargs)
-                    sub_gauss_fill = ax1.fill_between(x,
-                                                      individual_gauss.min(),
-                                                      individual_gauss,
-                                                      facecolor=kwargs['c'],
-                                                      alpha=0.5)
+                    _ = ax1.plot(x, individual_gauss, **kwargs)
+                    _ = ax1.fill_between(x,
+                                         individual_gauss.min(),
+                                         individual_gauss,
+                                         facecolor=kwargs['c'],
+                                         alpha=0.5)
 
                     sub_residual_gauss = abs(
                         y - (fit_1D_gaussian_to_data(x, *popt_gauss)))
-                    sub_gauss_hl = ax1.plot(
+                    _ = ax1.plot(
                         x, fit_1D_gaussian_to_data(x, *popt_gauss),
                         label=r"$\bf{%s}$ : " % label_name +
                         str(round(
@@ -437,7 +439,7 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
 
                     sub_residual_gauss_list.append([fitting_tools[0],
                                                     sub_residual_gauss])
-                    sub_resid = ax2.plot(
+                    _ = ax2.plot(
                         x, sub_residual_gauss, marker=marker[1],
                         color='grey',
                         linestyle='',
@@ -845,7 +847,8 @@ def make_gaussian(size, fwhm, center):
 def double_gaussian_fft_filter(image, filename,
                                d_inner, d_outer, real_space_sampling,
                                delta=0.05, units='nm'):
-    # Folder: G:/SuperStem visit/Feb 2019 data/2019_02_18_QMR_S1574_MoS2-Se-15eV
+    # Folder: G:/SuperStem visit/Feb 2019 data/2019_02_18_QMR_S1574_MoS2-
+    # Se-15eV
 
     # Accuracy of calculation. Smaller = more accurate.
     #   0.01 means it will fit until intensity is 0.01 away from 0
@@ -1419,14 +1422,18 @@ def toggle_atom_refine_position_automatically(sublattice,
     if range_type == 'internal':
 
         for i in range(0, len(sublattice.atom_list)):
-            if sublattice_min_cut_off < sublattice.atom_amplitude_max_intensity[i] < sublattice_max_cut_off:
+            if sublattice_min_cut_off < \
+                sublattice.atom_amplitude_max_intensity[
+                    i] < sublattice_max_cut_off:
                 sublattice.atom_list[i].refine_position = True
             else:
                 sublattice.atom_list[i].refine_position = False
 
     elif range_type == 'external':
         for i in range(0, len(sublattice.atom_list)):
-            if sublattice.atom_amplitude_max_intensity[i] > sublattice_max_cut_off or sublattice_min_cut_off > sublattice.atom_amplitude_max_intensity[i]:
+            if sublattice.atom_amplitude_max_intensity[
+                i] > sublattice_max_cut_off or sublattice_min_cut_off > \
+                    sublattice.atom_amplitude_max_intensity[i]:
                 sublattice.atom_list[i].refine_position = True
             else:
                 sublattice.atom_list[i].refine_position = False

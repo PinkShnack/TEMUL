@@ -210,8 +210,8 @@ def convert_vesta_xyz_to_prismatic_xyz(vesta_xyz_filename,
     See example_data for the vesta xyz file.
     >>> from temul.io import convert_vesta_xyz_to_prismatic_xyz
     >>> prismatic_xyz = convert_vesta_xyz_to_prismatic_xyz(
-    ...     'temul/example_data/prismatic/example_MoS2_vesta_xyz.xyz',
-    ...     'temul/example_data/prismatic/MoS2_hex_prismatic.xyz',
+    ...     'example_data/prismatic/example_MoS2_vesta_xyz.xyz',
+    ...     'example_data/prismatic/MoS2_hex_prismatic.xyz',
     ...     delimiter='   |    |  ', header=None, skiprows=[0, 1],
     ...     engine='python', occupancy=1.0, rms_thermal_vib=0.05,
     ...     header_comment="Let's do this!", save=True)
@@ -496,20 +496,33 @@ def create_dataframe_for_xyz(sublattice_list,
                             # nans could be better than ''
                             # (len(sublattice.image)-
 
-                            if "," in sublattice.atom_list[i].z_height and split_and_sort_element(sublattice.atom_list[i].elements)[k][2] > 1:
+                            if "," in sublattice.atom_list[
+                                    i].z_height and split_and_sort_element(
+                                    sublattice.atom_list[i].elements)[
+                                    k][2] > 1:
                                 atom_z_height = float(
-                                    sublattice.atom_list[i].z_height.split(",")[p])
+                                    sublattice.atom_list[
+                                        i].z_height.split(",")[p])
                             else:
                                 pass
 
-                            df_xyz = df_xyz.append({'_atom_site_Z_number': atomic_number,
-                                                    '_atom_site_fract_x': format(sublattice.atom_list[i].pixel_x * (x_size / len(sublattice.image[0, :])), '.6f'),
-                                                    '_atom_site_fract_y': format(sublattice.atom_list[i].pixel_y * (y_size / len(sublattice.image[:, 0])), '.6f'),
-                                                    # this is a fraction already, which is why we don't divide as in x and y
-                                                    '_atom_site_fract_z': format(atom_z_height * z_size, '.6f'),
-                                                    '_atom_site_occupancy': 1.0,  # might need to loop through the vancancies here?
-                                                    '_atom_site_RMS_thermal_vib': 0.1},
-                                                   ignore_index=True)  # insert row
+                            df_xyz = df_xyz.append(
+                                {'_atom_site_Z_number': atomic_number,
+                                 '_atom_site_fract_x': format(
+                                     sublattice.atom_list[i].pixel_x * (
+                                         x_size / len(sublattice.image[
+                                             0, :])), '.6f'),
+                                 '_atom_site_fract_y': format(
+                                     sublattice.atom_list[i].pixel_y * (
+                                         y_size / len(sublattice.image[
+                                             :, 0])), '.6f'),
+                                 # this is a fraction already, which is why we
+                                 # don't divide as in x and y
+                                 '_atom_site_fract_z': format(
+                                     atom_z_height * z_size, '.6f'),
+                                 '_atom_site_occupancy': 1.0,
+                                 '_atom_site_RMS_thermal_vib': 0.1},
+                                ignore_index=True)  # insert row
 
     df_xyz = df_xyz.append({'_atom_site_Z_number': int(-1),
                             '_atom_site_fract_x': '',

@@ -45,28 +45,29 @@ class Model_Refiner():
         Parameters
         ----------
         sublattice_and_elements_dict : dictionary
-            A dictionary of the structure `{sublattice: element_list,}` where each
-            sublattice is an Atomap sublattice object and each element_list is
-            a list of elements of the form given in the examples of
-            `get_individual_elements_from_element_list` in the element_tools.py
-            module. 
+            A dictionary of the structure `{sublattice: element_list,}` where
+            each sublattice is an Atomap sublattice object and each
+            element_list is a list of elements of the form given in the
+            examples of `get_individual_elements_from_element_list` in the
+            element_tools.py module.
         comparison_image : Hyperspy Signal2D, default None
             This is the image with which the first `sublattice` image will be
             compared to refine the list of sublattices' elements.
             If None is given when the Model Refiner is created, or if the
-            `comparison_image` is not the same shape as the first sublattice image,
-            a warning will be returned.
+            `comparison_image` is not the same shape as the first sublattice
+            image, a warning will be returned.
             To set a `comparison_image`, you can either use
             `model_refiner.create_simulation` or by setting the
             `model_refiner.comparison_image` to an image.
         sampling : float, default None
-            The real space sampling of the `sublattice` images in Angstrom. The
-            sampling is defined as: sampling = angstrom/pixel. This sampling will
-            be identical for the `comparison_image`. If it is set to None, the
-            sampling will automatically be set by the `sublattice.signal` object. 
+            The real space sampling of the `sublattice` images in Angstrom.
+            The sampling is defined as: sampling = angstrom/pixel. This
+            sampling will be identical for the `comparison_image`. If it is set
+            to None, the sampling will automatically be set by the
+            `sublattice.signal` object.
         thickness : float, default 10
-            Physical thickness of the sample in Angstrom. This will be used for the
-            simulation.
+            Physical thickness of the sample in Angstrom. This will be used for
+            the simulation.
         name : string, default ''
             Name of the Model Refiner.
 
@@ -168,16 +169,16 @@ class Model_Refiner():
                               hyperspy._signals.signal2d.Signal2D):
                 raise ValueError(
                     "comparison_image must be a 2D Hyperspy signal of type "
-                    "hyperspy._signals.signal2d.Signal2D. The current incorrect "
-                    "type is {}".format(str(type(comparison_image))))
+                    "hyperspy._signals.signal2d.Signal2D. The current "
+                    "incorrect type is {}".format(str(type(comparison_image))))
 
             for sublattice in self.sublattice_list:
                 if not comparison_image.data.shape == sublattice.image.shape:
                     print("Warning: "
                           "comparison_image must have the same shape as each "
                           "sublattice image. comparison_image shape is {}, "
-                          "while sublattice '{}' is {}. This will stop you from "
-                          "refining your model.".format(
+                          "while sublattice '{}' is {}. This will stop you "
+                          "from refining your model.".format(
                               comparison_image.data.shape,
                               sublattice.name,
                               sublattice.image.data))
@@ -192,13 +193,14 @@ class Model_Refiner():
                 raise ValueError(
                     "The comparison_image attribute has not been "
                     "set. You will not be able to "
-                    "refine the model until a comparison_image is set. You can "
-                    "do this via Model_refiner.create_simulation() or by "
+                    "refine the model until a comparison_image is set. You "
+                    "can do this via Model_refiner.create_simulation() or by "
                     "setting the Model_Refiner.comparison_image to an image.")
 
         if 'wrong_size' in error_message:
             for sublattice in self.sublattice_list:
-                if not self.comparison_image.data.shape == sublattice.image.shape:
+                if not self.comparison_image.data.shape == \
+                        sublattice.image.shape:
                     raise ValueError(
                         "comparison_image must have the same shape as each "
                         "sublattice image. comparison_image shape is {}, "
@@ -667,7 +669,7 @@ class Model_Refiner():
             If set to 'all', sublattices that exist in the `Model_Refiner` will
             all be used. The `sublattice` indexes can be specified in a list.
             For example [0, 2] will select the first and third sublattices.
-            A list of `sublattice` objects can instead be used. 
+            A list of `sublattice` objects can instead be used.
         filter_image : Bool, default False
             Choose whether to filter the simulation with a Gaussian to match
             the `reference_image`.

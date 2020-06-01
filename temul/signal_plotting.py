@@ -5,9 +5,9 @@ from skimage.measure import profile_line
 
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import subplots_adjust
-from matplotlib.text import TextPath
+# from matplotlib.text import TextPath
 
-import datetime as DT
+# import datetime as DT
 import matplotlib.dates as mdates
 import scipy.spatial as spatial
 from temul.intensity_tools import get_sublattice_intensity
@@ -284,8 +284,9 @@ def compare_images_line_profile_two_images(imageA, imageB,
 
     ''' Simulation '''
 
-    profile_y_sim = profile_line(image=imageB.data, src=[y0, x0], dst=[y1, x1],
-                                 linewidth=linewidth, reduce_func=reduce_func) + imageB_intensity_offset
+    profile_y_sim = profile_line(
+        image=imageB.data, src=[y0, x0], dst=[y1, x1], linewidth=linewidth,
+        reduce_func=reduce_func) + imageB_intensity_offset
     profile_x_sim = np.arange(0, len(profile_y_sim), 1)
     profile_x_sim = profile_x_sim * image_sampling
 
@@ -353,19 +354,23 @@ def plot_atom_energies(sublattice_list, image=None, vac_or_implants=None,
     '''
     vac_or_implants options are 'implants' and 'vac'
 
-    Returns the x and y coordinates of the atom positions and the 
+    Returns the x and y coordinates of the atom positions and the
     atom energy.
 
     import os
     import atomap.api as am
     from temul.signal_plotting import plot_atom_energies
      Make a test dataset
-    base_directory = ('C:/Users/Eoghan.OConnell/Documents/Documents/Eoghan UL/PHD'
-                  '/Thesis_Eoghan/Images/Results/Chapter 1/Part 1 - Se/'
-                  'Spectroscopy/EELS/Core Loss/Image simulations/020_EELS-SI-During_HAADF')
+    base_directory = (
+        'C:/Users/Eoghan.OConnell/Documents/Documents/Eoghan UL/PHD'
+        '/Thesis_Eoghan/Images/Results/Chapter 1/Part 1 - Se/'
+        'Spectroscopy/EELS/Core Loss/Image simulations/'
+        '020_EELS-SI-During_HAADF')
     os.chdir(base_directory)
-    atom_lattice = am.load_atom_lattice_from_hdf5('Atom_Lattice_Refiner_max.hdf5')
-    x,y,energy = plot_atom_energies(sublattice_list=[atom_lattice.sublattice_list[1]], vac_or_implants='implants')
+    atom_lattice = am.load_atom_lattice_from_hdf5(
+        'Atom_Lattice_Refiner_max.hdf5')
+    x,y,energy = plot_atom_energies(sublattice_list=[
+        atom_lattice.sublattice_list[1]], vac_or_implants='implants')
 
     '''
 
@@ -456,13 +461,19 @@ def plot_atom_energies(sublattice_list, image=None, vac_or_implants=None,
 
 class Sublattice_Hover_Intensity(object):
 
-    """User can hover over sublattice overlaid on STEM image to display the x,y location and intensity of that point."""
+    """
+    User can hover over sublattice overlaid on STEM image to display the
+    x,y location and intensity of that point.
+    """
 
-    def __init__(self, image, sublattice, sublattice_positions, background_sublattice):  # formatter=fmt,
+    def __init__(self, image, sublattice, sublattice_positions,
+                 background_sublattice):  # formatter=fmt,
 
         # create intensity list from sublattice and bg sublattice
         intensity_list = get_sublattice_intensity(
-            sublattice=sublattice, intensity_type='max', remove_background_method='local', background_sub=background_sublattice)
+            sublattice=sublattice, intensity_type='max',
+            remove_background_method='local',
+            background_sub=background_sublattice)
         intensity_list_norm = intensity_list / max(intensity_list)
 
         # split sublattice positions into x and y
@@ -480,14 +491,16 @@ class Sublattice_Hover_Intensity(object):
         subplot1 = fig.add_subplot(1, 1, 1)
 
         subplot1.set_title('STEM image')
-        img = plt.imshow(image)
+        _ = plt.imshow(image)
         # c=t_metal_intensity_list, cmap='viridis', alpha=0.5
-        scatter = plt.scatter(
-            sublattice_position_x, sublattice_position_y, cmap='inferno', c=intensity_list_norm)
+        _ = plt.scatter(
+            sublattice_position_x, sublattice_position_y, cmap='inferno',
+            c=intensity_list_norm)
         plt.colorbar()
 
-        # x_point and y_point are individual points, determined by where the cursor is hovering
-        # x and y in fmt function are the lists of x and y components fed into cursor_hover_int
+        # x_point and y_point are individual points, determined by where the
+        # cursor is hovering x and y in fmt function are the lists of x and y
+        # components fed into cursor_hover_int
         def fmt(x_hover, y_hover, is_date):
 
             x_rounded = [round(num, 4) for num in sublattice_position_x]
@@ -496,10 +509,12 @@ class Sublattice_Hover_Intensity(object):
 
             if is_date:
                 x_hover = mdates.num2date(x_hover).strftime("%Y-%m-%d")
-                return 'x: {x}\ny: {y}\nint: {i}'.format(x=x_hover, y=y_hover, i=intensity_at_point)
+                return 'x: {x}\ny: {y}\nint: {i}'.format(x=x_hover, y=y_hover,
+                                                         i=intensity_at_point)
 
             else:
-                return 'x: {x:0.2f}\ny: {y:0.2f}\nint: {i:0.3f}'.format(x=x_hover, y=y_hover, i=intensity_at_point)
+                return 'x: {x:0.2f}\ny: {y:0.2f}\nint: {i:0.3f}'.format(
+                    x=x_hover, y=y_hover, i=intensity_at_point)
 
         try:
             x = np.asarray(sublattice_position_x, dtype='float')
@@ -531,8 +546,8 @@ class Sublattice_Hover_Intensity(object):
 
     def __call__(self, event):
         ax1 = self.ax1
-        # event.inaxes is always the current axis. If you use twinx, ax could be
-        # a different axis.
+        # event.inaxes is always the current axis. If you use twinx, ax could
+        # be a different axis.
         if event.inaxes == ax1:
             x, y = event.xdata, event.ydata
         elif event.inaxes is None:
@@ -546,8 +561,8 @@ class Sublattice_Hover_Intensity(object):
         annotation.xy = x, y
         annotation.set_text(self.formatter(x, y, self.is_date))
         self.dot.set_offsets((x, y))
-        bbox = ax1.viewLim
-        #ax2.axvline(x=self.formatter(x, y, self.is_date).intensity_at_point)
+        _ = ax1.viewLim
+        # ax2.axvline(x=self.formatter(x, y, self.is_date).intensity_at_point)
 
         event.canvas.draw()
 

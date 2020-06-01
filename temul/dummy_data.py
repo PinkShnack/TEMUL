@@ -334,17 +334,10 @@ def get_distorted_cubic_sublattice_adjustable(y_offset=2, image_noise=False):
 
 def polarisation_colorwheel_test_dataset(cmap=cc.cm.colorwheel, plot_XY=True,
                                          degrees=False, normalise=False):
-
-    # Different colours for arrows in quiver plot - see stackoverflow
     """
-    To do:
-    1. Use colorcet for the colormap (more options and changes more
-    perceptable). Done
-    2. do both: make a colorwheel indicator and place in the corner
-        could use pixstem code for the former.
-        Scalebar already there, set as optional
-    3. make test dataset (have a numpy array with x,y,u,v) and test with it. Done
-    4. commit changes
+    Check how the arrows will be plotted on a colorwheel.
+    Note that for STEM images, the y axis is reversed. This is taken into
+    account in the plot_polarisation_vectors function.
 
     Parameters
     ----------
