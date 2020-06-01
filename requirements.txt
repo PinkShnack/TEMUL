@@ -5,7 +5,7 @@ hyperspy
 atomap
 colorcet==2.0.2
 glob2==0.6
-scikit-image
+scikit-image==0.16.2
 scipy
 PyCifRW==4.3
 pandas==0.24.2 
