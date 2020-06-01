@@ -11,7 +11,6 @@ import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib import gridspec
 
-import rigidregistration
 from tifffile import imread
 from skimage.metrics import structural_similarity as ssm
 import scipy
@@ -472,104 +471,6 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
         plt.savefig(fname=filename + '.png',
                     transparent=True, frameon=False, bbox_inches='tight',
                     pad_inches=None, dpi=900, labels=False)
-
-
-'''
-Image Registration
-'''
-
-
-def rigid_registration(file, masktype='hann', n=4, findMaxima='gf'):
-    '''
-    Perform image registraion with the rigid registration package
-
-    Parameters
-    ----------
-
-    file : stack of tiff images
-
-    masktype : filtering method, default 'hann'
-        See https://github.com/bsavitzky/rigidRegistration for
-        more information
-
-    n : width of filter, default 4
-        larger numbers mean smaller filter width
-        See https://github.com/bsavitzky/rigidRegistration for
-        more information
-
-    findMaxima : image matching method, default 'gf'
-        'pixel' and 'gf' options, See
-        https://github.com/bsavitzky/rigidRegistration for
-        more information
-
-    Returns
-    -------
-    Outputs of
-    report of the image registration
-    aligned and stacked image with and without crop
-    creates a folder and places all uncropped aligned images in it
-
-
-    Examples
-    --------
-
-    >>>
-
-
-    '''
-
-    # Read tiff file. Rearrange axes so final axis iterates over images
-    stack = np.rollaxis(imread(file), 0, 3)
-    # Normalize data between 0 and 1
-    stack = stack[:, :, :] / float(2**16)
-
-    s = rigidregistration.stackregistration.imstack(stack)
-    s.getFFTs()
-
-    # Choose Mask and cutoff frequency
-    s.makeFourierMask(mask=masktype, n=n)     # Set the selected Fourier mask
-    # s.show_Fourier_mask(i=0,j=5)             # Display the results
-
-    # Calculate image shifts using gaussian fitting
-    findMaxima = findMaxima
-    s.setGaussianFitParams(num_peaks=3, sigma_guess=3, window_radius=4)
-
-    # Find shifts.  Set verbose=True to print the correlation status to screen
-    s.findImageShifts(findMaxima=findMaxima, verbose=False)
-
-    # Identify outliers using nearest neighbors to enforce "smoothness"
-    s.set_nz(0, s.nz)
-    s.get_outliers_NN(max_shift=8)
-    # s.show_Rij(mask=True)
-
-    s.make_corrected_Rij()
-    # Correct outliers using the transitivity relations
-    # s.show_Rij_c()
-    # Display the corrected shift matrix
-    # Create registered image stack and average
-    # To skip calculation of image shifts, or correcting the shift matrix, pass
-    # the function
-    s.get_averaged_image()
-    # get_shifts=False, or correct_Rij=False
-
-    s.get_all_aligned_images()
-    # s.show()
-
-    # Display report of registration procedure
-    # s.show_report()
-
-    # Save report of registration procedure
-    s.save_report("registration_report.pdf")
-
-    # Save the average image
-    s.save("average_image.tif")
-
-    # Save the average image, including outer areas. Be careful when analysis
-    # outer regions of this file
-    s.save("average_image_no_crop.tif", crop=False)
-
-    # creates a folder and put all the individual images in there
-    save_individual_images_from_image_stack(image_stack=s.stack_registered)
 
 
 '''
