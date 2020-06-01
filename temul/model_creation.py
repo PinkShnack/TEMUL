@@ -129,8 +129,9 @@ def count_atoms_in_sublattice_list(sublattice_list, filename=None):
     --------
 
     >>> from temul.model_creation import count_atoms_in_sublattice_list
-    >>> import atomap.api as am
-    >>> atom_lattice = am.dummy_data.get_simple_atom_lattice_two_sublattices()
+    >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
+    >>> # import atomap.dummy_data as dummy_data
+    >>> atom_lattice = dummy_data.get_simple_atom_lattice_two_sublattices()
     >>> sub1 = atom_lattice.sublattice_list[0]
     >>> sub2 = atom_lattice.sublattice_list[1]
 
@@ -143,7 +144,7 @@ def count_atoms_in_sublattice_list(sublattice_list, filename=None):
     ...     sublattice_list=[sub1, sub2])
 
     Compare before and after
-    >>> at_lat_before = am.dummy_data.get_simple_atom_lattice_two_sublattices()
+    >>> at_lat_before = dummy_data.get_simple_atom_lattice_two_sublattices()
     >>> no_added_atoms = count_atoms_in_sublattice_list(
     ...    sublattice_list=at_lat_before.sublattice_list)
 
@@ -207,8 +208,9 @@ def compare_count_atoms_in_sublattice_list(counter_list):
     >>> from temul.model_creation import (
     ...     count_atoms_in_sublattice_list,
     ...     compare_count_atoms_in_sublattice_list)
-    >>> import atomap.api as am
-    >>> atom_lattice = am.dummy_data.get_simple_atom_lattice_two_sublattices()
+    >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
+    >>> # import atomap.dummy_data as dummy_data
+    >>> atom_lattice = dummy_data.get_simple_atom_lattice_two_sublattices()
     >>> sub1 = atom_lattice.sublattice_list[0]
     >>> sub2 = atom_lattice.sublattice_list[1]
 
@@ -221,7 +223,7 @@ def compare_count_atoms_in_sublattice_list(counter_list):
     ...     sublattice_list=[sub1, sub2],
     ...     filename=atom_lattice.name)
 
-    >>> at_lat_before = am.dummy_data.get_simple_atom_lattice_two_sublattices()
+    >>> at_lat_before = dummy_data.get_simple_atom_lattice_two_sublattices()
     >>> no_added_atoms = count_atoms_in_sublattice_list(
     ...     sublattice_list=at_lat_before.sublattice_list,
     ...     filename=at_lat_before.name)
@@ -267,9 +269,10 @@ def get_most_common_sublattice_element(sublattice, info='element'):
 
     Examples
     --------
-    >>> import atomap.api as am
     >>> from temul.model_creation import get_most_common_sublattice_element
-    >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
+    >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
+    >>> # import atomap.dummy_data as dummy_data
+    >>> sublattice = dummy_data.get_simple_cubic_sublattice()
     >>> for i, atom in enumerate(sublattice.atom_list):
     ...     if i % 3 == 0:
     ...         atom.elements = 'Ti_3'
@@ -346,7 +349,9 @@ def change_sublattice_atoms_via_intensity(
     Examples
     --------
     >>> from temul.model_creation import change_sublattice_atoms_via_intensity
-    >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
+    >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
+    >>> # import atomap.dummy_data as dummy_data
+    >>> sublattice = dummy_data.get_simple_cubic_sublattice()
     >>> for i in range(0, len(sublattice.atom_list)):
     ...     sublattice.atom_list[i].elements = 'Mo_1'
     ...     sublattice.atom_list[i].z_height = [0.5]
@@ -488,9 +493,10 @@ def image_difference_intensity(sublattice,
 
     Example
     -------
-
-    >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
-    >>> sim_image = am.dummy_data.get_simple_cubic_with_vacancies_signal()
+    >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
+    >>> # import atomap.dummy_data as dummy_data
+    >>> sublattice = dummy_data.get_simple_cubic_sublattice()
+    >>> sim_image = dummy_data.get_simple_cubic_with_vacancies_signal()
     >>> for i in range(0, len(sublattice.atom_list)):
     ...     sublattice.atom_list[i].elements = 'Mo_1'
     ...     sublattice.atom_list[i].z_height = [0.5]
@@ -500,9 +506,9 @@ def image_difference_intensity(sublattice,
     ...                            element_list=element_list)
 
     with some image noise and plotting the images
-    >>> sublattice = am.dummy_data.get_simple_cubic_sublattice(
+    >>> sublattice = dummy_data.get_simple_cubic_sublattice(
     ...     image_noise=True)
-    >>> sim_image = am.dummy_data.get_simple_cubic_with_vacancies_signal()
+    >>> sim_image = dummy_data.get_simple_cubic_with_vacancies_signal()
     >>> for i in range(0, len(sublattice.atom_list)):
     ...     sublattice.atom_list[i].elements = 'Mo_1'
     ...     sublattice.atom_list[i].z_height = [0.5]
@@ -681,10 +687,11 @@ def image_difference_position_new_sub(sublattice_list,
     --------
 
     >>> from temul.model_creation import image_difference_position
-    >>> import atomap.api as am
-    >>> sublattice = am.dummy_data.get_simple_cubic_with_vacancies_sublattice(
+    >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
+    >>> # import atomap.dummy_data as dummy_data
+    >>> sublattice = dummy_data.get_simple_cubic_with_vacancies_sublattice(
     ...                                             image_noise=True)
-    >>> sim_image = am.dummy_data.get_simple_cubic_signal()
+    >>> sim_image = dummy_data.get_simple_cubic_signal()
     >>> for i in range(0, len(sublattice.atom_list)):
     ...         sublattice.atom_list[i].elements = 'Mo_1'
     ...         sublattice.atom_list[i].z_height = '0.5'
@@ -1906,10 +1913,11 @@ def image_difference_position(sublattice,
 
     >>> from temul.model_creation import (image_difference_position,
     ...                                   change_sublattice_pseudo_inplace)
-    >>> import atomap.api as am
-    >>> sublattice = am.dummy_data.get_simple_cubic_with_vacancies_sublattice(
+    >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
+    >>> # import atomap.dummy_data as dummy_data
+    >>> sublattice = dummy_data.get_simple_cubic_with_vacancies_sublattice(
     ...                                             image_noise=True)
-    >>> sim_image = am.dummy_data.get_simple_cubic_signal()
+    >>> sim_image = dummy_data.get_simple_cubic_signal()
     >>> for i in range(0, len(sublattice.atom_list)):
     ...         sublattice.atom_list[i].elements = 'Mo_1'
     ...         sublattice.atom_list[i].z_height = '0.5'

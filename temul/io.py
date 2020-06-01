@@ -424,8 +424,9 @@ def create_dataframe_for_xyz(sublattice_list,
     Example
     -------
 
-    >>> import atomap.api as am
-    >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
+    >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
+    >>> # import atomap.dummy_data as dummy_data
+    >>> sublattice = dummy_data.get_simple_cubic_sublattice()
     >>> for i in range(0, len(sublattice.atom_list)):
     ...     sublattice.atom_list[i].elements = 'Mo_1'
     ...     sublattice.atom_list[i].z_height = '0.5'

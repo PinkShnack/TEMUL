@@ -34,7 +34,9 @@ import numpy as np
 import pandas as pd
 import hyperspy
 import atomap.api as am
-from atomap.initial_position_finding import add_atoms_with_gui
+import temul.external.atomap_devel_012 as am_dev
+from temul.external.atomap_devel_012.initial_position_finding import (
+    add_atoms_with_gui as choose_points_on_image)
 import matplotlib.pyplot as plt
 import copy
 from scipy.ndimage import gaussian_filter
@@ -356,7 +358,8 @@ class Model_Refiner():
         if isinstance(manual_list, list):
             self.calibration_area = manual_list
         else:
-            self.calibration_area = add_atoms_with_gui(self.reference_image)
+            self.calibration_area = choose_points_on_image(
+                self.reference_image)
 
     def set_calibration_separation(self, pixel_separation):
         self.calibration_separation = pixel_separation
@@ -863,7 +866,7 @@ class Model_Refiner():
 
 def get_model_refiner_two_sublattices():
 
-    atom_lattice = am.dummy_data.get_simple_atom_lattice_two_sublattices()
+    atom_lattice = am_dev.dummy_data.get_simple_atom_lattice_two_sublattices()
     sub1 = atom_lattice.sublattice_list[0]
     sub2 = atom_lattice.sublattice_list[1]
     for i in range(0, len(sub1.atom_list)):
@@ -929,7 +932,7 @@ def get_model_refiner_one_sublattice_3_vacancies(
         image_noise=True, test_element='Ti_2'):
 
     # make one with more vacancies maybe
-    sub1 = am.dummy_data.get_simple_cubic_with_vacancies_sublattice(
+    sub1 = am_dev.dummy_data.get_simple_cubic_with_vacancies_sublattice(
         image_noise=image_noise)
     for i in range(0, len(sub1.atom_list)):
         sub1.atom_list[i].elements = test_element
@@ -941,7 +944,7 @@ def get_model_refiner_one_sublattice_3_vacancies(
         max_number_atoms_z=test_element_info[0][2] + 3)
 
     refiner_dict = {sub1: sub1_element_list}
-    comparison_image = am.dummy_data.get_simple_cubic_signal(
+    comparison_image = am_dev.dummy_data.get_simple_cubic_signal(
         image_noise=image_noise)
     refiner = Model_Refiner(refiner_dict, comparison_image)
     refiner.auto_mask_radius = [4]
@@ -960,7 +963,7 @@ def get_model_refiner_one_sublattice_12_vacancies(
     sub1_image = get_simple_cubic_signal(
         image_noise=image_noise,
         with_vacancies=True)
-    sub1 = am.Sublattice(sub1_atom_positions, sub1_image)
+    sub1 = am_dev.Sublattice(sub1_atom_positions, sub1_image)
     for i in range(0, len(sub1.atom_list)):
         sub1.atom_list[i].elements = test_element
 
