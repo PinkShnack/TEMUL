@@ -2,6 +2,8 @@
 
 NOT YET IMPLEMENTED
 
+# Currently, model_refiner.py and simulations.py use pyprismatic
+
 # import all files in TEMUL/temul
 # Call this file if you have everything installed
 

@@ -6,7 +6,8 @@ from temul.model_creation import (
     image_difference_position,
     count_all_individual_elements,
     get_positions_from_sublattices,
-    get_most_common_sublattice_element
+    get_most_common_sublattice_element,
+    auto_generate_sublattice_element_list
 )
 from temul.element_tools import (
     get_individual_elements_from_element_list,
@@ -25,12 +26,18 @@ from temul.signal_processing import (
 from temul.simulations import (
     simulate_with_prismatic
 )
+from temul.dummy_data import (
+    get_simple_cubic_sublattice,
+    get_simple_cubic_signal
+)
 import numpy as np
 import pandas as pd
 import hyperspy
+import atomap.api as am
 from atomap.initial_position_finding import add_atoms_with_gui
 import matplotlib.pyplot as plt
 import copy
+from scipy.ndimage import gaussian_filter
 
 
 class Model_Refiner():
@@ -436,7 +443,7 @@ class Model_Refiner():
 
         Examples
         --------
-        >>> from temul.dummy_data import (
+        >>> from temul.model_refiner import (
         ...     get_model_refiner_with_12_vacancies_refined)
         >>> refiner = get_model_refiner_with_12_vacancies_refined(
         ...     image_noise=True)
@@ -545,7 +552,7 @@ class Model_Refiner():
 
         Examples
         --------
-        >>> from temul.dummy_data import (
+        >>> from temul.model_refiner import (
         ...     get_model_refiner_one_sublattice_3_vacancies)
         >>> refiner = get_model_refiner_one_sublattice_3_vacancies()
         >>> refiner.sublattice_list[0].plot()
@@ -849,3 +856,162 @@ class Model_Refiner():
 # for i, b in enumerate(b_list):
 #     df.rename(index={i: b}, inplace=True)
 # df
+
+
+''' Model Refiner Dummy Data examples '''
+
+
+def get_model_refiner_two_sublattices():
+
+    atom_lattice = am.dummy_data.get_simple_atom_lattice_two_sublattices()
+    sub1 = atom_lattice.sublattice_list[0]
+    sub2 = atom_lattice.sublattice_list[1]
+    for i in range(0, len(sub1.atom_list)):
+        if i // 2 == 0:
+            sub1.atom_list[i].elements = 'Ti_2'
+        else:
+            sub1.atom_list[i].elements = 'Ti_1'
+    for i in range(0, len(sub2.atom_list)):
+        if i // 2 == 0:
+            sub2.atom_list[i].elements = 'Cl_2'
+        else:
+            sub1.atom_list[i].elements = 'Cl_3'
+
+    sub1.atom_list[2].elements = 'Ti_3'
+    sub1.atom_list[5].elements = 'Ti_3'
+    sub2.atom_list[3].elements = 'Cl_1'
+    sub2.atom_list[4].elements = 'Cl_1'
+    sub1_element_list = ['Ti_0', 'Ti_1', 'Ti_2', 'Ti_3']
+    sub2_element_list = ['Cl_0', 'Cl_1', 'Cl_2', 'Cl_3']
+
+    refiner_dict = {sub1: sub1_element_list,
+                    sub2: sub2_element_list}
+    blurred_image = hyperspy._signals.signal2d.Signal2D(
+        gaussian_filter(atom_lattice.image, 3))
+    atom_lattice_refiner = Model_Refiner(refiner_dict, blurred_image)
+    return atom_lattice_refiner
+
+
+def get_model_refiner_two_sublattices_refined(n=4):
+
+    refined_model = get_model_refiner_two_sublattices()
+    refined_model.repeating_intensity_refinement(
+        n=n,
+        ignore_element_count_comparison=True)
+
+    return refined_model
+
+
+def get_model_refiner_one_sublattice_varying_amp(
+        image_noise=False, amplitude=[0, 5],
+        test_element='Ti_2'):
+
+    sub1 = get_simple_cubic_sublattice(image_noise=image_noise,
+                                       amplitude=amplitude)
+    for i in range(0, len(sub1.atom_list)):
+        sub1.atom_list[i].elements = test_element
+
+    test_element_info = split_and_sort_element(test_element)
+    sub1_element_list = auto_generate_sublattice_element_list(
+        material_type='single_element_column',
+        elements=test_element_info[0][1],
+        max_number_atoms_z=np.max(amplitude))
+
+    refiner_dict = {sub1: sub1_element_list}
+    comparison_image = get_simple_cubic_signal(
+        image_noise=image_noise,
+        amplitude=test_element_info[0][2])
+    refiner = Model_Refiner(refiner_dict, comparison_image)
+    return refiner
+
+
+def get_model_refiner_one_sublattice_3_vacancies(
+        image_noise=True, test_element='Ti_2'):
+
+    # make one with more vacancies maybe
+    sub1 = am.dummy_data.get_simple_cubic_with_vacancies_sublattice(
+        image_noise=image_noise)
+    for i in range(0, len(sub1.atom_list)):
+        sub1.atom_list[i].elements = test_element
+
+    test_element_info = split_and_sort_element(test_element)
+    sub1_element_list = auto_generate_sublattice_element_list(
+        material_type='single_element_column',
+        elements=test_element_info[0][1],
+        max_number_atoms_z=test_element_info[0][2] + 3)
+
+    refiner_dict = {sub1: sub1_element_list}
+    comparison_image = am.dummy_data.get_simple_cubic_signal(
+        image_noise=image_noise)
+    refiner = Model_Refiner(refiner_dict, comparison_image)
+    refiner.auto_mask_radius = [4]
+
+    return refiner
+
+
+def get_model_refiner_one_sublattice_12_vacancies(
+        image_noise=True, test_element='Ti_2'):
+
+    # make one with more vacancies maybe
+    sublattice = get_simple_cubic_sublattice(
+        image_noise=image_noise,
+        with_vacancies=False)
+    sub1_atom_positions = np.array(sublattice.atom_positions).T
+    sub1_image = get_simple_cubic_signal(
+        image_noise=image_noise,
+        with_vacancies=True)
+    sub1 = am.Sublattice(sub1_atom_positions, sub1_image)
+    for i in range(0, len(sub1.atom_list)):
+        sub1.atom_list[i].elements = test_element
+
+    test_element_info = split_and_sort_element(test_element)
+    sub1_element_list = auto_generate_sublattice_element_list(
+        material_type='single_element_column',
+        elements=test_element_info[0][1],
+        max_number_atoms_z=test_element_info[0][2] + 3)
+
+    refiner_dict = {sub1: sub1_element_list}
+    comparison_image = sublattice.signal
+    refiner = Model_Refiner(refiner_dict, comparison_image)
+    return refiner
+
+
+def get_model_refiner_with_12_vacancies_refined(
+        image_noise=True, test_element='Ti_2', filename=None):
+
+    refined_model = get_model_refiner_one_sublattice_12_vacancies(
+        image_noise=image_noise, test_element=test_element)
+    refined_model.auto_mask_radius = [4]
+    refined_model.image_difference_intensity_model_refiner(filename=filename)
+    refined_model.image_difference_intensity_model_refiner(filename=filename)
+
+    # now that the vacancies are correctly labelled as Ti_0, we should use
+    # a comparison image that actually represents what might be simulated.
+    refined_model.comparison_image = refined_model.sublattice_list[0].signal
+    refined_model.image_difference_intensity_model_refiner(filename=filename)
+
+    return refined_model
+
+
+def get_model_refiner_with_3_vacancies_refined(
+        image_noise=True, test_element='Ti_2', filename=None):
+    '''
+    >>> from temul.model_refiner import get_model_refiner_with_3_vacancies_refined
+    >>> refiner = get_model_refiner_with_3_vacancies_refined()
+    3 new atoms found! Adding new atom positions.
+    Changing some atoms
+    Changing some atoms
+    >>> history = refiner.get_element_count_as_dataframe()
+    '''
+    refiner = get_model_refiner_one_sublattice_3_vacancies(
+        image_noise=image_noise, test_element=test_element)
+    refiner.auto_mask_radius = [4]
+
+    refiner.image_difference_position_model_refiner(
+        pixel_threshold=10, filename=filename,
+        chosen_sublattice=refiner.sublattice_list[0])
+
+    refiner.image_difference_intensity_model_refiner(filename=filename)
+    refiner.image_difference_intensity_model_refiner(filename=filename)
+
+    return refiner
