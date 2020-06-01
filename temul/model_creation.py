@@ -2,6 +2,7 @@ from temul.intensity_tools import get_sublattice_intensity
 from temul.element_tools import split_and_sort_element
 
 import atomap.api as am
+import temul.external.atomap_devel_012 as am_dev
 from temul.external.atomap_devel_012.atom_finding_refining import (
     get_atom_positions_in_difference_image)
 
@@ -525,7 +526,7 @@ def image_difference_intensity(sublattice,
     diff_image = hs.signals.Signal2D(sublattice.image - sim_image.data)
 
     # create sublattice for the 'difference' data
-    diff_sub = am.Sublattice(
+    diff_sub = am_dev.Sublattice(
         atom_position_list=sublattice_atom_positions, image=diff_image)
 
     if percent_to_nn is not None:
@@ -728,7 +729,7 @@ def image_difference_position_new_sub(sublattice_list,
     atom_positions_diff_image_inverse = get_atom_positions_in_difference_image(
         diff_image_inverse, num_peaks=num_peaks)
 
-    diff_image_sub = am.Sublattice(atom_positions_diff_image, diff_image)
+    diff_image_sub = am_dev.Sublattice(atom_positions_diff_image, diff_image)
     # diff_image_sub.find_nearest_neighbors()
     # diff_image_sub.refine_atom_positions_using_center_of_mass(
     #     percent_to_nn=percent_to_nn, mask_radius=mask_radius)
@@ -738,8 +739,8 @@ def image_difference_position_new_sub(sublattice_list,
 
     # sublattice.plot()
 
-    diff_image_sub_inverse = am.Sublattice(atom_positions_diff_image_inverse,
-                                           diff_image_inverse)
+    diff_image_sub_inverse = am_dev.Sublattice(atom_positions_diff_image_inverse,
+                                               diff_image_inverse)
     # diff_image_sub_inverse.find_nearest_neighbors()
     # diff_image_sub_inverse.refine_atom_positions_using_center_of_mass(
     #     percent_to_nn=percent_to_nn, mask_radius=mask_radius)
@@ -803,7 +804,7 @@ def image_difference_position_new_sub(sublattice_list,
     elif len(atom_positions_sub_new) != 0 and add_sublattice is True:
         print("New Atoms Found! Adding to a new sublattice")
 
-        sub_new = am.Sublattice(
+        sub_new = am_dev.Sublattice(
             atom_positions_sub_new, sublattice_list[0].image,
             name=sublattice_name, color='cyan')
 #        sub_new.refine_atom_positions_using_center_of_mass(
@@ -1835,9 +1836,9 @@ def change_sublattice_pseudo_inplace(new_atom_positions, old_sublattice):
 
     combined_atom_positions = atom_position_list + new_atom_positions
 
-    new_sublattice = am.Sublattice(combined_atom_positions, image,
-                                   original_image, name, color,
-                                   pixel_size)
+    new_sublattice = am_dev.Sublattice(combined_atom_positions, image,
+                                       original_image, name, color,
+                                       pixel_size)
 
     for old_info, new_info in zip(old_sublattice.atom_list,
                                   new_sublattice.atom_list):
@@ -1956,7 +1957,7 @@ def image_difference_position(sublattice,
     atom_positions_diff_image_inverse = get_atom_positions_in_difference_image(
         diff_image_inverse, num_peaks=num_peaks)
 
-    diff_image_sub = am.Sublattice(atom_positions_diff_image, diff_image)
+    diff_image_sub = am_dev.Sublattice(atom_positions_diff_image, diff_image)
     # diff_image_sub.find_nearest_neighbors()
     # diff_image_sub.refine_atom_positions_using_center_of_mass(
     #     percent_to_nn=percent_to_nn, mask_radius=mask_radius)
@@ -1966,8 +1967,8 @@ def image_difference_position(sublattice,
 
     # sublattice.plot()
 
-    diff_image_sub_inverse = am.Sublattice(atom_positions_diff_image_inverse,
-                                           diff_image_inverse)
+    diff_image_sub_inverse = am_dev.Sublattice(
+        atom_positions_diff_image_inverse, diff_image_inverse)
     # diff_image_sub_inverse.find_nearest_neighbors()
     # diff_image_sub_inverse.refine_atom_positions_using_center_of_mass(
     #     percent_to_nn=percent_to_nn, mask_radius=mask_radius)

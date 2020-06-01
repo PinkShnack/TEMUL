@@ -741,7 +741,7 @@ def image_refine_via_intensity_loop(atom_lattice,
     atom_lattice_int_ref_name = 'Atom_Lattice_' + \
         intensity_type + '_refined' + saving_suffix
 
-    atom_lattice_int_ref = am.Atom_Lattice(
+    atom_lattice_int_ref = am_dev.Atom_Lattice(
         image=atom_lattice_signal,
         name=atom_lattice_int_ref_name,
         sublattice_list=atom_lattice.sublattice_list)
@@ -985,9 +985,9 @@ def image_refine_via_position_loop(image,
     df_position_refine.to_csv(filename + '.csv', sep=',', index=False)
 
     '''Save Atom Lattice Object'''
-    atom_lattice = am.Atom_Lattice(image=image.data,
-                                   name='All Sublattices ' + filename,
-                                   sublattice_list=sublattice_list)
+    atom_lattice = am_dev.Atom_Lattice(image=image.data,
+                                       name='All Sublattices ' + filename,
+                                       sublattice_list=sublattice_list)
     atom_lattice.save(filename="Atom_Lattice_" +
                       filename + ".hdf5", overwrite=True)
 

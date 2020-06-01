@@ -507,6 +507,7 @@ def measure_image_errors(imageA, imageB, filename=None):
     Example
     -------
 
+    >>> import atomap.api as am
     >>> imageA = am.dummy_data.get_simple_cubic_signal().data
     >>> imageB = am.dummy_data.get_simple_cubic_with_vacancies_signal().data
     >>> mse_number, ssm_number = measure_image_errors(imageA, imageB,
