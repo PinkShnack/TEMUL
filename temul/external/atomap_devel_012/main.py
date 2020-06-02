@@ -1,17 +1,17 @@
-from atomap.atom_finding_refining import\
-        subtract_average_background,\
-        do_pca_on_signal,\
-        refine_sublattice,\
-        construct_zone_axes_from_sublattice,\
-        get_atom_positions,\
-        normalize_signal
+from atomap_devel_012.atom_finding_refining import\
+    subtract_average_background,\
+    do_pca_on_signal,\
+    refine_sublattice,\
+    construct_zone_axes_from_sublattice,\
+    get_atom_positions,\
+    normalize_signal
 
-from atomap.tools import\
-        remove_atoms_from_image_using_2d_gaussian
+from atomap_devel_012.tools import\
+    remove_atoms_from_image_using_2d_gaussian
 
-from atomap.atom_lattice import Atom_Lattice
-from atomap.sublattice import Sublattice
-import atomap.process_parameters as pp
+from atomap_devel_012.atom_lattice import Atom_Lattice
+from atomap_devel_012.sublattice import Sublattice
+import atomap_devel_012.process_parameters as pp
 
 
 def run_image_filtering(signal, invert_signal=False):
@@ -29,9 +29,9 @@ def run_image_filtering(signal, invert_signal=False):
 
     Example
     -------
-    >>> import atomap.api as am
+    >>> import atomap_devel_012.api as am
     >>> s = am.dummy_data.get_simple_cubic_signal()
-    >>> from atomap.main import run_image_filtering
+    >>> from atomap_devel_012.main import run_image_filtering
     >>> s_new = run_image_filtering(s)
 
     """
@@ -39,9 +39,9 @@ def run_image_filtering(signal, invert_signal=False):
     signal_modified = subtract_average_background(signal)
     signal_modified = do_pca_on_signal(signal_modified)
     signal_modified = normalize_signal(
-            signal_modified, invert_signal=invert_signal)
+        signal_modified, invert_signal=invert_signal)
     if invert_signal:
-        signal.data = 1./signal.data
+        signal.data = 1. / signal.data
     return(signal_modified)
 
 
@@ -73,9 +73,9 @@ def make_atom_lattice_from_image(
         debug_plot=False):
     if s_image0.data.dtype == 'float16':
         raise ValueError(
-                "s_image0 has the dtype float16, which is not supported. "
-                "Convert it to something else, for example using "
-                "s_image0.change_dtype('float64')")
+            "s_image0 has the dtype float16, which is not supported. "
+            "Convert it to something else, for example using "
+            "s_image0.change_dtype('float64')")
     image0_filename = _get_signal_name(s_image0)
 
     name = image0_filename
@@ -90,23 +90,23 @@ def make_atom_lattice_from_image(
     if pixel_separation is None:
         if process_parameter.peak_separation is None:
             raise ValueError(
-                    "pixel_separation is not set.\
+                "pixel_separation is not set.\
                     Either set it in the process_parameter.peak_separation\
                     or pixel_separation parameter")
         else:
-            pixel_separation = process_parameter.peak_separation/image0_scale
+            pixel_separation = process_parameter.peak_separation / image0_scale
     initial_atom_position_list = get_atom_positions(
-            s_image0_modified,
-            separation=pixel_separation)
+        s_image0_modified,
+        separation=pixel_separation)
 
     if s_image1 is not None:
         if s_image1.data.dtype == 'float16':
             raise ValueError(
-                    "s_image1 has the dtype float16, which is not supported. "
-                    "Convert it to something else, for example using "
-                    "s_image1.change_dtype('float64')")
+                "s_image1 has the dtype float16, which is not supported. "
+                "Convert it to something else, for example using "
+                "s_image1.change_dtype('float64')")
         s_image1 = s_image1.deepcopy()
-        s_image1.data = 1./s_image1.data
+        s_image1.data = 1. / s_image1.data
         image1_data = s_image1.data
 
     #################################
@@ -123,7 +123,7 @@ def make_atom_lattice_from_image(
 
     for sublattice_index in range(process_parameter.number_of_sublattices):
         sublattice_para = process_parameter.get_sublattice_from_order(
-                sublattice_index)
+            sublattice_index)
 
         if sublattice_para.image_type == 0:
             s_image = s_image0
@@ -143,13 +143,13 @@ def make_atom_lattice_from_image(
                 image_data_modified)
         else:
             temp_sublattice = atom_lattice.get_sublattice(
-                    sublattice_para.sublattice_position_sublattice)
+                sublattice_para.sublattice_position_sublattice)
             temp_zone_vector_index = temp_sublattice.get_zone_vector_index(
-                    sublattice_para.sublattice_position_zoneaxis)
+                sublattice_para.sublattice_position_zoneaxis)
             zone_vector = temp_sublattice.zones_axis_average_distances[
-                    temp_zone_vector_index]
+                temp_zone_vector_index]
             atom_list = temp_sublattice.find_missing_atoms_from_zone_vector(
-                    zone_vector)
+                zone_vector)
 
             sublattice = Sublattice(
                 atom_list,
@@ -167,18 +167,18 @@ def make_atom_lattice_from_image(
         atom_lattice.sublattice_list.append(sublattice)
         if debug_plot:
             sublattice.plot_atom_list_on_image_data(
-                    figname=sublattice.name + "_initial_position.jpg")
+                figname=sublattice.name + "_initial_position.jpg")
         for atom in sublattice.atom_list:
-            atom.sigma_x = sublattice._pixel_separation/10.
-            atom.sigma_y = sublattice._pixel_separation/10.
+            atom.sigma_x = sublattice._pixel_separation / 10.
+            atom.sigma_y = sublattice._pixel_separation / 10.
         if not(sublattice_para.sublattice_order == 0):
             construct_zone_axes_from_sublattice(
-                    sublattice, zone_axis_para_list=zone_axis_para_list)
+                sublattice, zone_axis_para_list=zone_axis_para_list)
             atom_subtract_config = sublattice_para.atom_subtract_config
             image_data = sublattice.image
             for atom_subtract_para in atom_subtract_config:
                 temp_sublattice = atom_lattice.get_sublattice(
-                        atom_subtract_para['sublattice'])
+                    atom_subtract_para['sublattice'])
                 neighbor_distance = atom_subtract_para['neighbor_distance']
                 image_data = remove_atoms_from_image_using_2d_gaussian(
                     image_data,
@@ -205,6 +205,6 @@ def make_atom_lattice_from_image(
 
         if sublattice_para.sublattice_order == 0:
             sublattice.construct_zone_axes(
-                    zone_axis_para_list=zone_axis_para_list)
+                zone_axis_para_list=zone_axis_para_list)
 
     return(atom_lattice)

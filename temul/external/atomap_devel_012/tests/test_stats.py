@@ -1,6 +1,6 @@
 import numpy as np
-from atomap.sublattice import Sublattice
-import atomap.stats as st
+from atomap_devel_012.sublattice import Sublattice
+import atomap_devel_012.stats as st
 
 
 class TestStats:
@@ -10,8 +10,8 @@ class TestStats:
         image_data = np.arange(10000).reshape(100, 100)
         peaks = np.arange(20).reshape(self.atoms_N, 2)
         sublattice = Sublattice(
-                peaks,
-                image_data)
+            peaks,
+            image_data)
         sublattice.original_image = image_data
         for atom in sublattice.atom_list:
             atom.sigma_x = 2.
@@ -40,5 +40,5 @@ class TestStats:
 
     def test_get_atom_list_atom_sigma_range(self):
         atom_list = st.get_atom_list_atom_sigma_range(
-                self.sublattice, (1., 3.))
+            self.sublattice, (1., 3.))
         assert len(atom_list) == self.atoms_N

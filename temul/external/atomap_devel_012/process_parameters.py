@@ -11,7 +11,7 @@ class SublatticeParameterBase:
         return '<%s, %s>' % (
             self.__class__.__name__,
             self.name
-            )
+        )
 
 
 class GenericSublattice(SublatticeParameterBase):
@@ -46,7 +46,7 @@ class GenericSublattice(SublatticeParameterBase):
 
     Examples
     --------
-    >>> import atomap.process_parameters as pp
+    >>> import atomap_devel_012.process_parameters as pp
     >>> generic_sublattice = pp.GenericSublattice()
 
     """
@@ -58,31 +58,31 @@ class GenericSublattice(SublatticeParameterBase):
         self.name = "S0"
         self.sublattice_order = 0
         self.zone_axis_list = [
-                {'number': 0, 'name': '0'},
-                {'number': 1, 'name': '1'},
-                {'number': 2, 'name': '2'},
-                {'number': 3, 'name': '3'},
-                {'number': 4, 'name': '4'},
-                {'number': 5, 'name': '5'},
-                {'number': 6, 'name': '6'},
-                {'number': 7, 'name': '7'},
-                {'number': 8, 'name': '8'},
-                {'number': 9, 'name': '9'},
-                {'number': 10, 'name': '10'},
-                ]
+            {'number': 0, 'name': '0'},
+            {'number': 1, 'name': '1'},
+            {'number': 2, 'name': '2'},
+            {'number': 3, 'name': '3'},
+            {'number': 4, 'name': '4'},
+            {'number': 5, 'name': '5'},
+            {'number': 6, 'name': '6'},
+            {'number': 7, 'name': '7'},
+            {'number': 8, 'name': '8'},
+            {'number': 9, 'name': '9'},
+            {'number': 10, 'name': '10'},
+        ]
         self.refinement_config = {
-                'config': [
-                    ['image_data_modified', 1, 'center_of_mass'],
-                    ['image_data', 1, 'center_of_mass'],
-                    ['image_data', 1, 'gaussian'],
-                    ],
-                'neighbor_distance': 0.35}
+            'config': [
+                ['image_data_modified', 1, 'center_of_mass'],
+                ['image_data', 1, 'center_of_mass'],
+                ['image_data', 1, 'gaussian'],
+            ],
+            'neighbor_distance': 0.35}
         self.atom_subtract_config = [
-                {
-                    'sublattice': 'S0',
-                    'neighbor_distance': 0.35,
-                    },
-                ]
+            {
+                'sublattice': 'S0',
+                'neighbor_distance': 0.35,
+            },
+        ]
 
 
 class PerovskiteOxide110SublatticeACation(SublatticeParameterBase):
@@ -113,19 +113,19 @@ class PerovskiteOxide110SublatticeACation(SublatticeParameterBase):
         self.color = 'blue'
         self.image_type = 0
         self.zone_axis_list = [
-                {'number': 0, 'name': '110'},
-                {'number': 1, 'name': '100'},
-                {'number': 2, 'name': '11-2'},
-                {'number': 3, 'name': '112'},
-                {'number': 4, 'name': '111'},
-                {'number': 5, 'name': '11-1'},
-                ]
+            {'number': 0, 'name': '110'},
+            {'number': 1, 'name': '100'},
+            {'number': 2, 'name': '11-2'},
+            {'number': 3, 'name': '112'},
+            {'number': 4, 'name': '111'},
+            {'number': 5, 'name': '11-1'},
+        ]
         self.sublattice_order = 0
         self.refinement_config = {
-                'config': [
-                    ['image_data', 2, 'gaussian'],
-                    ],
-                'neighbor_distance': 0.35}
+            'config': [
+                ['image_data', 2, 'gaussian'],
+            ],
+            'neighbor_distance': 0.35}
 
 
 class PerovskiteOxide110SublatticeBCation(SublatticeParameterBase):
@@ -165,27 +165,27 @@ class PerovskiteOxide110SublatticeBCation(SublatticeParameterBase):
         self.color = 'green'
         self.image_type = 0
         self.zone_axis_list = [
-                {'number': 0, 'name': '110'},
-                {'number': 1, 'name': '100'},
-                {'number': 2, 'name': '11-2'},
-                {'number': 3, 'name': '112'},
-                {'number': 4, 'name': '111'},
-                {'number': 5, 'name': '11-1'}, ]
+            {'number': 0, 'name': '110'},
+            {'number': 1, 'name': '100'},
+            {'number': 2, 'name': '11-2'},
+            {'number': 3, 'name': '112'},
+            {'number': 4, 'name': '111'},
+            {'number': 5, 'name': '11-1'}, ]
         self.sublattice_order = 1
         self.sublattice_position_sublattice = "A-cation"
         self.sublattice_position_zoneaxis = "100"
         self.refinement_config = {
-                'config': [
-                    ['image_data', 1, 'center_of_mass'],
-                    ['image_data', 1, 'gaussian'],
-                    ],
-                'neighbor_distance': 0.25}
+            'config': [
+                ['image_data', 1, 'center_of_mass'],
+                ['image_data', 1, 'gaussian'],
+            ],
+            'neighbor_distance': 0.25}
         self.atom_subtract_config = [
-                {
-                    'sublattice': 'A-cation',
-                    'neighbor_distance': 0.35,
-                    },
-                ]
+            {
+                'sublattice': 'A-cation',
+                'neighbor_distance': 0.35,
+            },
+        ]
 
 
 class PerovskiteOxide110SublatticeOxygen(SublatticeParameterBase):
@@ -218,37 +218,38 @@ class PerovskiteOxide110SublatticeOxygen(SublatticeParameterBase):
         from the inverted image, then a sublattice with name 'B-cation'.
 
     """
+
     def __init__(self):
         SublatticeParameterBase.__init__(self)
         self.name = "Oxygen"
         self.color = 'red'
         self.image_type = 1
         self.zone_axis_list = [
-                {'number': 0, 'name': '110'},
-                {'number': 1, 'name': '100'},
-                {'number': 2, 'name': '11-2'},
-                {'number': 3, 'name': '112'},
-                {'number': 4, 'name': '111'},
-                {'number': 5, 'name': '11-1'}, ]
+            {'number': 0, 'name': '110'},
+            {'number': 1, 'name': '100'},
+            {'number': 2, 'name': '11-2'},
+            {'number': 3, 'name': '112'},
+            {'number': 4, 'name': '111'},
+            {'number': 5, 'name': '11-1'}, ]
         self.sublattice_order = 2
         self.sublattice_position_sublattice = "B-cation"
         self.sublattice_position_zoneaxis = "110"
         self.refinement_config = {
-                'config': [
-                    ['image_data', 1, 'center_of_mass'],
-                    ['image_data', 1, 'gaussian'],
-                    ],
-                'neighbor_distance': 0.25}
+            'config': [
+                ['image_data', 1, 'center_of_mass'],
+                ['image_data', 1, 'gaussian'],
+            ],
+            'neighbor_distance': 0.25}
         self.atom_subtract_config = [
-                {
-                    'sublattice': 'A-cation',
-                    'neighbor_distance': 0.35,
-                    },
-                {
-                    'sublattice': 'B-cation',
-                    'neighbor_distance': 0.30,
-                    },
-                ]
+            {
+                'sublattice': 'A-cation',
+                'neighbor_distance': 0.35,
+            },
+            {
+                'sublattice': 'B-cation',
+                'neighbor_distance': 0.30,
+            },
+        ]
 
 
 class ModelParametersBase:
@@ -261,7 +262,7 @@ class ModelParametersBase:
         return '<%s, %s>' % (
             self.__class__.__name__,
             self.name,
-            )
+        )
 
     def get_sublattice_from_order(self, order_number):
         for sublattice in self.sublattice_list:
@@ -282,7 +283,7 @@ class ModelParametersBase:
             sublattice_order_list.append(sublattice.sublattice_order)
             name_list.append(sublattice.name)
         sublattice_config_object.sublattice_order = max(
-                sublattice_order_list) + 1
+            sublattice_order_list) + 1
 
         if sublattice_config_object.color in color_list:
             for color in color_name_list:
@@ -352,7 +353,7 @@ class PerovskiteOxide110(ModelParametersBase):
             PerovskiteOxide110SublatticeACation(),
             PerovskiteOxide110SublatticeBCation(),
             PerovskiteOxide110SublatticeOxygen(),
-            ]
+        ]
 
 
 class SrTiO3_110(PerovskiteOxide110):
@@ -360,11 +361,11 @@ class SrTiO3_110(PerovskiteOxide110):
         PerovskiteOxide110.__init__(self)
         self.sublattice_names = "Sr", "Ti", "O"
         Ti_sublattice_position = {
-                "sublattice": "Sr",
-                "zoneaxis": "100"}
+            "sublattice": "Sr",
+            "zoneaxis": "100"}
         O_sublattice_position = {
-                "sublattice": "Ti",
-                "zoneaxis": "110"}
+            "sublattice": "Ti",
+            "zoneaxis": "110"}
         self.sublattice_position = [
-                Ti_sublattice_position,
-                O_sublattice_position]
+            Ti_sublattice_position,
+            O_sublattice_position]

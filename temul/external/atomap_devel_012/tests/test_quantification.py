@@ -1,8 +1,8 @@
 import numpy as np
 import math
-import atomap.quantification as quant
-from atomap.example_data import get_detector_image_signal
-from atomap.dummy_data import get_simple_cubic_signal
+import atomap_devel_012.quantification as quant
+from atomap_devel_012.example_data import get_detector_image_signal
+from atomap_devel_012.dummy_data import get_simple_cubic_signal
 
 
 class TestDetectorNormalisation:
@@ -10,7 +10,7 @@ class TestDetectorNormalisation:
     def test_centered_distance_matrix(self):
         s = quant.centered_distance_matrix((32, 32), np.zeros((64, 64)))
         assert s[32, 32] == 1
-        assert s[63, 63] == np.sqrt((63-31)**2 + (63-32)**2)
+        assert s[63, 63] == np.sqrt((63 - 31)**2 + (63 - 32)**2)
 
     def test_detector_threshold(self):
         det_image = get_detector_image_signal()

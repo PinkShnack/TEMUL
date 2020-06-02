@@ -1,4 +1,4 @@
-import atomap.dummy_data as dd
+import atomap_devel_012.dummy_data as dd
 
 
 class TestDummyData:

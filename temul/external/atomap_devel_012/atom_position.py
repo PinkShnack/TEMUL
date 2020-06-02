@@ -8,9 +8,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import ndimage
 import math
-from atomap.atom_finding_refining import _make_circular_mask
-from atomap.atom_finding_refining import fit_atom_positions_gaussian
-from atomap.atom_finding_refining import _atom_to_gaussian_component
+from atomap_devel_012.atom_finding_refining import _make_circular_mask
+from atomap_devel_012.atom_finding_refining import fit_atom_positions_gaussian
+from atomap_devel_012.atom_finding_refining import _atom_to_gaussian_component
 
 
 class Atom_Position:
@@ -87,9 +87,9 @@ class Atom_Position:
 
         Examples
         --------
-        >>> from atomap.atom_position import Atom_Position
+        >>> from atomap_devel_012.atom_position import Atom_Position
         >>> atom_position = Atom_Position(10, 5)
-        
+
         POSSIBLE:
         >>> sublattice.atom_list[2].structure_element = S
         >>> sublattice.atom_list[2].structure_count_of_element = 2
@@ -135,7 +135,7 @@ class Atom_Position:
             round(self.pixel_x, 1), round(self.pixel_y, 1),
             round(self.sigma_x, 1), round(self.sigma_y, 1),
             round(self.rotation, 1), round(self.ellipticity, 1),
-            )
+        )
 
     @property
     def sigma_x(self):
@@ -155,7 +155,7 @@ class Atom_Position:
 
     @property
     def sigma_average(self):
-        sigma = (abs(self.sigma_x)+abs(self.sigma_y))*0.5
+        sigma = (abs(self.sigma_x) + abs(self.sigma_y)) * 0.5
         return(sigma)
 
     @property
@@ -182,19 +182,18 @@ class Atom_Position:
         if self.sigma_x > self.sigma_y:
             temp_rotation = self.__rotation % math.pi
         else:
-            temp_rotation = (self.__rotation+(math.pi/2)) % math.pi
+            temp_rotation = (self.__rotation + (math.pi / 2)) % math.pi
         return(temp_rotation)
 
     @property
     def ellipticity(self):
         """Largest sigma divided by the shortest"""
         if self.sigma_x > self.sigma_y:
-            return(self.sigma_x/self.sigma_y)
+            return(self.sigma_x / self.sigma_y)
         else:
-            return(self.sigma_y/self.sigma_x)
-    #def structure_element(self):
+            return(self.sigma_y / self.sigma_x)
+    # def structure_element(self):
      #   """ the elements that should be in this atom position """
-
 
 
     def as_gaussian(self):
@@ -234,7 +233,7 @@ class Atom_Position:
 
         Examples
         --------
-        >>> from atomap.atom_position import Atom_Position
+        >>> from atomap_devel_012.atom_position import Atom_Position
         >>> atom0 = Atom_Position(0, 0)
         >>> atom1 = Atom_Position(1, 1)
         >>> atom2 = Atom_Position(-1, 1)
@@ -247,7 +246,7 @@ class Atom_Position:
             atom0.pixel_y - self.pixel_y])
         if atom1 is None:
             vector1 = np.array([
-                self.pixel_x+1000,
+                self.pixel_x + 1000,
                 0])
         else:
             vector1 = np.array([
@@ -294,10 +293,10 @@ class Atom_Position:
         2D numpy array
 
         """
-        x0 = self.pixel_x - slice_size/2
-        x1 = self.pixel_x + slice_size/2
-        y0 = self.pixel_y - slice_size/2
-        y1 = self.pixel_y + slice_size/2
+        x0 = self.pixel_x - slice_size / 2
+        x1 = self.pixel_x + slice_size / 2
+        y0 = self.pixel_y - slice_size / 2
+        y1 = self.pixel_y + slice_size / 2
 
         if x0 < 0.0:
             x0 = 0
@@ -317,29 +316,29 @@ class Atom_Position:
             gaussian,
             data_slice):
 
-            X, Y = np.meshgrid(
-                    np.arange(-slice_radius, slice_radius, 1),
-                    np.arange(-slice_radius, slice_radius, 1))
-            s_m = gaussian.function(X, Y)
+        X, Y = np.meshgrid(
+            np.arange(-slice_radius, slice_radius, 1),
+            np.arange(-slice_radius, slice_radius, 1))
+        s_m = gaussian.function(X, Y)
 
-            fig, axarr = plt.subplots(2, 2)
-            ax0 = axarr[0][0]
-            ax1 = axarr[0][1]
-            ax2 = axarr[1][0]
-            ax3 = axarr[1][1]
+        fig, axarr = plt.subplots(2, 2)
+        ax0 = axarr[0][0]
+        ax1 = axarr[0][1]
+        ax2 = axarr[1][0]
+        ax3 = axarr[1][1]
 
-            ax0.imshow(data_slice, interpolation="nearest")
-            ax1.imshow(s_m, interpolation="nearest")
-            ax2.plot(data_slice.sum(0))
-            ax2.plot(s_m.sum(0))
-            ax3.plot(data_slice.sum(1))
-            ax3.plot(s_m.sum(1))
+        ax0.imshow(data_slice, interpolation="nearest")
+        ax1.imshow(s_m, interpolation="nearest")
+        ax2.plot(data_slice.sum(0))
+        ax2.plot(s_m.sum(0))
+        ax3.plot(data_slice.sum(1))
+        ax3.plot(s_m.sum(1))
 
-            fig.tight_layout()
-            fig.savefig(
-                "debug_plot_2d_gaussian_" +
-                str(np.random.randint(1000, 10000)) + ".jpg", dpi=400)
-            plt.close('all')
+        fig.tight_layout()
+        fig.savefig(
+            "debug_plot_2d_gaussian_" +
+            str(np.random.randint(1000, 10000)) + ".jpg", dpi=400)
+        plt.close('all')
 
     def get_closest_neighbor(self):
         """
@@ -353,7 +352,7 @@ class Atom_Position:
         closest_neighbor = 100000000000000000
         for neighbor_atom in self.nearest_neighbor_list:
             distance = self.get_pixel_distance_from_another_atom(
-                    neighbor_atom)
+                neighbor_atom)
             if distance < closest_neighbor:
                 closest_neighbor = distance
         return(closest_neighbor)
@@ -383,17 +382,17 @@ class Atom_Position:
 
             slice_size = closest_neighbor * percent_to_nn * 2
             data_slice, x0, y0 = self._get_image_slice_around_atom(
-                    image_data, slice_size)
+                image_data, slice_size)
 
             data_slice_max = data_slice.max()
 
         elif mask_radius is not None:
-            mask = _make_circular_mask(centerX=self.pixel_y, 
-                                        centerY=self.pixel_x,
-                                        imageSizeX=image_data.shape[0],
-                                        imageSizeY=image_data.shape[1],
-                                        radius=mask_radius)
-            
+            mask = _make_circular_mask(centerX=self.pixel_y,
+                                       centerY=self.pixel_x,
+                                       imageSizeX=image_data.shape[0],
+                                       imageSizeY=image_data.shape[1],
+                                       radius=mask_radius)
+
             data_slice_max = image_data[mask].max()
 
 ####
@@ -402,7 +401,6 @@ class Atom_Position:
         return(data_slice_max)
 
 ####
-
 
 
     def calculate_mean_intensity(
@@ -430,24 +428,23 @@ class Atom_Position:
 
             slice_size = closest_neighbor * percent_to_nn * 2
             data_slice, x0, y0 = self._get_image_slice_around_atom(
-                    image_data, slice_size)
+                image_data, slice_size)
 
             data_slice_mean = data_slice.mean()
 
         elif mask_radius is not None:
-            mask = _make_circular_mask(centerX=self.pixel_y, 
-                                        centerY=self.pixel_x,
-                                        imageSizeX=image_data.shape[0],
-                                        imageSizeY=image_data.shape[1],
-                                        radius=mask_radius)
-            
+            mask = _make_circular_mask(centerX=self.pixel_y,
+                                       centerY=self.pixel_x,
+                                       imageSizeX=image_data.shape[0],
+                                       imageSizeY=image_data.shape[1],
+                                       radius=mask_radius)
+
             data_slice_mean = image_data[mask].mean()
 
 ####
         self.amplitude_mean_intensity = data_slice_mean
 
         return(data_slice_mean)
-
 
     def calculate_min_intensity(
             self,
@@ -474,17 +471,17 @@ class Atom_Position:
 
             slice_size = closest_neighbor * percent_to_nn * 2
             data_slice, x0, y0 = self._get_image_slice_around_atom(
-                    image_data, slice_size)
+                image_data, slice_size)
 
             data_slice_min = data_slice.min()
 
         elif mask_radius is not None:
-            mask = _make_circular_mask(centerX=self.pixel_y, 
-                                        centerY=self.pixel_x,
-                                        imageSizeX=image_data.shape[0],
-                                        imageSizeY=image_data.shape[1],
-                                        radius=mask_radius)
-            
+            mask = _make_circular_mask(centerX=self.pixel_y,
+                                       centerY=self.pixel_x,
+                                       imageSizeX=image_data.shape[0],
+                                       imageSizeY=image_data.shape[1],
+                                       radius=mask_radius)
+
             data_slice_min = image_data[mask].min()
 
 ####
@@ -517,17 +514,17 @@ class Atom_Position:
 
             slice_size = closest_neighbor * percent_to_nn * 2
             data_slice, x0, y0 = self._get_image_slice_around_atom(
-                    image_data, slice_size)
+                image_data, slice_size)
 
             data_slice_total = data_slice.sum()
 
         elif mask_radius is not None:
-            mask = _make_circular_mask(centerX=self.pixel_y, 
-                                        centerY=self.pixel_x,
-                                        imageSizeX=image_data.shape[0],
-                                        imageSizeY=image_data.shape[1],
-                                        radius=mask_radius)
-            
+            mask = _make_circular_mask(centerX=self.pixel_y,
+                                       centerY=self.pixel_x,
+                                       imageSizeX=image_data.shape[0],
+                                       imageSizeY=image_data.shape[1],
+                                       radius=mask_radius)
+
             data_slice_total = image_data[mask].sum()
 
 ####
@@ -574,12 +571,12 @@ class Atom_Position:
 
         """
         fit_atom_positions_gaussian(
-                [self],
-                image_data=image_data,
-                rotation_enabled=rotation_enabled,
-                percent_to_nn=percent_to_nn,
-                mask_radius=mask_radius,
-                centre_free=centre_free)
+            [self],
+            image_data=image_data,
+            rotation_enabled=rotation_enabled,
+            percent_to_nn=percent_to_nn,
+            mask_radius=mask_radius,
+            centre_free=centre_free)
 
     def get_center_position_com(
             self,
@@ -590,16 +587,16 @@ class Atom_Position:
             closest_neighbor = 100000000000000000
             for neighbor_atom in self.nearest_neighbor_list:
                 distance = self.get_pixel_distance_from_another_atom(
-                        neighbor_atom)
+                    neighbor_atom)
                 if distance < closest_neighbor:
                     closest_neighbor = distance
             mask_radius = closest_neighbor * percent_to_nn
         mask = _make_circular_mask(
-                self.pixel_y,
-                self.pixel_x,
-                image_data.shape[0],
-                image_data.shape[1],
-                mask_radius)
+            self.pixel_y,
+            self.pixel_x,
+            image_data.shape[0],
+            image_data.shape[1],
+            mask_radius)
         data = copy.deepcopy(image_data)
         mask = np.invert(mask)
         data[mask] = 0
@@ -615,9 +612,9 @@ class Atom_Position:
             percent_to_nn=0.10,
             mask_radius=None):
         new_x, new_y = self.get_center_position_com(
-                image_data,
-                percent_to_nn=percent_to_nn,
-                mask_radius=mask_radius)
+            image_data,
+            percent_to_nn=percent_to_nn,
+            mask_radius=mask_radius)
         self.old_pixel_x_list.append(self.pixel_x)
         self.old_pixel_y_list.append(self.pixel_y)
         self.pixel_x = new_x
@@ -625,7 +622,7 @@ class Atom_Position:
 
     def _calculate_center_of_mass(self, data):
         center_of_mass = ndimage.measurements.center_of_mass(
-                data.astype('float32'))
+            data.astype('float32'))
         return(center_of_mass)
 
     def get_atomic_plane_from_zone_vector(self, zone_vector):
@@ -654,14 +651,14 @@ class Atom_Position:
     def get_ellipticity_vector(self):
         elli = self.ellipticity - 1
         rot = self.get_ellipticity_rotation_vector()
-        vector = (elli*rot[0], elli*rot[1])
+        vector = (elli * rot[0], elli * rot[1])
         return(vector)
 
     def get_rotation_vector(self):
         rot = self.rotation
         vector = (
-                math.cos(rot),
-                math.sin(rot))
+            math.cos(rot),
+            math.sin(rot))
         return(vector)
 
     def get_ellipticity_rotation_vector(self):
@@ -677,7 +674,7 @@ class Atom_Position:
 
     def pixel_distance_from_point(self, point=(0, 0)):
         dist = math.hypot(
-                self.pixel_x - point[0], self.pixel_y - point[1])
+            self.pixel_x - point[0], self.pixel_y - point[1])
         return(dist)
 
     def get_index_in_atom_plane(self, atom_plane):
@@ -690,7 +687,7 @@ class Atom_Position:
         if self == atom_plane.end_atom:
             return(False)
         else:
-            next_atom = atom_plane.atom_list[current_index+1]
+            next_atom = atom_plane.atom_list[current_index + 1]
             return(next_atom)
 
     def get_previous_atom_in_atom_plane(self, atom_plane):
@@ -698,7 +695,7 @@ class Atom_Position:
         if self == atom_plane.start_atom:
             return(False)
         else:
-            previous_atom = atom_plane.atom_list[current_index-1]
+            previous_atom = atom_plane.atom_list[current_index - 1]
             return(previous_atom)
 
     def get_next_atom_in_zone_vector(self, zone_vector):
@@ -754,7 +751,7 @@ class Atom_Position:
             radius = 1
         centerX, centerY = self.pixel_x, self.pixel_y
         mask = _make_circular_mask(
-                centerY, centerX,
-                image_data.shape[0], image_data.shape[1], radius)
-        data_mask = image_data*mask
+            centerY, centerX,
+            image_data.shape[0], image_data.shape[1], radius)
+        data_mask = image_data * mask
         self.intensity_mask = np.mean(data_mask[np.nonzero(mask)])

@@ -1,14 +1,14 @@
 import pytest
 from pytest import approx
 import numpy as np
-import atomap.api as am
-import atomap.tools as to
+import atomap_devel_012.api as am
+import atomap_devel_012.tools as to
 from hyperspy.signals import Signal2D
-from atomap.tools import array2signal1d, array2signal2d, Fingerprinter
-from atomap.tools import remove_atoms_from_image_using_2d_gaussian
-import atomap.dummy_data as dd
-from atomap.tools import integrate
-import atomap.testing_tools as tt
+from atomap_devel_012.tools import array2signal1d, array2signal2d, Fingerprinter
+from atomap_devel_012.tools import remove_atoms_from_image_using_2d_gaussian
+import atomap_devel_012.dummy_data as dd
+from atomap_devel_012.tools import integrate
+import atomap_devel_012.testing_tools as tt
 import hyperspy as hs
 
 
@@ -37,7 +37,7 @@ class TestFingerprinter:
         point_list = tt.make_nn_test_dataset(xN=xN, yN=yN, n=n)
         fp = Fingerprinter()
         fp.fit(point_list)
-        clusters = (xN*2+1)*(yN*2+1)-1
+        clusters = (xN * 2 + 1) * (yN * 2 + 1) - 1
         assert fp.cluster_centers_.shape[0] == clusters
 
     def test_running_advanced(self):
@@ -58,7 +58,7 @@ class TestFingerprinter:
                         if (xD < tolerance) and (yD < tolerance):
                             bool_list.append(True)
                             break
-        clusters = (xN*2+1)*(yN*2+1)-1
+        clusters = (xN * 2 + 1) * (yN * 2 + 1) - 1
         assert len(bool_list) == clusters
 
 
@@ -239,7 +239,7 @@ class TestIntegrate:
         test_data = tt.MakeTestData(60, 100)
         x, y, A = [30, 30], [25, 75], [5, 10]
         test_data.add_atom_list(
-                x=x, y=y, amplitude=A, sigma_x=0.1, sigma_y=0.1)
+            x=x, y=y, amplitude=A, sigma_x=0.1, sigma_y=0.1)
         s = test_data.signal
         i_points, i_record, p_record = integrate(s, x, y, max_radius=1)
 
@@ -270,7 +270,7 @@ class TestIntegrate:
         s_eels = dd.get_eels_spectrum_map()
         peaks = am.get_atom_positions(s, separation=4)
         i_points, i_record, p_record = integrate(
-                s_eels, peaks[:, 0], peaks[:, 1], max_radius=3)
+            s_eels, peaks[:, 0], peaks[:, 1], max_radius=3)
         assert p_record.shape == (100, 100)
         assert s_eels.data.shape == i_record.data.shape
 

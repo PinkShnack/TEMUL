@@ -2,8 +2,8 @@ import numpy as np
 import hyperspy.api as hs
 from hyperspy import components1d
 from hyperspy.signals import EELSSpectrum
-from atomap.testing_tools import MakeTestData
-from atomap.atom_lattice import Atom_Lattice
+from atomap_devel_012.testing_tools import MakeTestData
+from atomap_devel_012.atom_lattice import Atom_Lattice
 
 
 def _make_hexagonal_two_sublattice_testdata(image_noise=False):
@@ -18,21 +18,21 @@ def _make_hexagonal_two_sublattice_testdata(image_noise=False):
 
     xs, ys = im_x + hexagon_height, im_y + hexagon_height
 
-    x0, y0 = np.mgrid[dx:xs:dx*2, 0:ys:dy*2]
+    x0, y0 = np.mgrid[dx:xs:dx * 2, 0:ys:dy * 2]
     x0, y0 = x0.flatten(), y0.flatten()
-    x1, y1 = np.mgrid[0:xs:dx*2, dy:ys:dy*2]
+    x1, y1 = np.mgrid[0:xs:dx * 2, dy:ys:dy * 2]
     x1, y1 = x1.flatten(), y1.flatten()
     x_a, y_a = np.append(x0, x1), np.append(y0, y1)
     test_data.add_atom_list(
-            x_a, y_a, sigma_x=sigma, sigma_y=sigma, amplitude=10)
+        x_a, y_a, sigma_x=sigma, sigma_y=sigma, amplitude=10)
 
-    x2, y2 = np.mgrid[dx*2:xs:dx*2, dy*0.4:ys:dy*2]
+    x2, y2 = np.mgrid[dx * 2:xs:dx * 2, dy * 0.4:ys:dy * 2]
     x2, y2 = x2.flatten(), y2.flatten()
-    x3, y3 = np.mgrid[dx:xs:dx*2, dy*1.4:ys:dy*2]
+    x3, y3 = np.mgrid[dx:xs:dx * 2, dy * 1.4:ys:dy * 2]
     x3, y3 = x3.flatten(), y3.flatten()
     x_b, y_b = np.append(x2, x3), np.append(y2, y3)
     test_data.add_atom_list(
-            x_b, y_b, sigma_x=sigma, sigma_y=sigma, amplitude=5)
+        x_b, y_b, sigma_x=sigma, sigma_y=sigma, amplitude=5)
     if image_noise:
         test_data.add_image_noise(mu=0, sigma=0.004)
     return test_data
@@ -60,7 +60,7 @@ def get_hexagonal_double_signal(image_noise=False):
 
     """
     test_data = _make_hexagonal_two_sublattice_testdata(
-            image_noise=image_noise)
+        image_noise=image_noise)
     signal = test_data.signal
     return signal
 
@@ -94,7 +94,7 @@ def get_simple_cubic_with_vacancies_signal(image_noise=False):
 
     Examples
     --------
-    >>> import atomap.api as am
+    >>> import atomap_devel_012.api as am
     >>> s = am.dummy_data.get_simple_cubic_with_vacancies_signal()
     >>> s.plot()
 
@@ -106,7 +106,7 @@ def get_simple_cubic_with_vacancies_signal(image_noise=False):
 
     """
     test_data = _make_simple_cubic_with_vacancies_testdata(
-            image_noise=image_noise)
+        image_noise=image_noise)
     return test_data.signal
 
 
@@ -126,7 +126,7 @@ def get_simple_cubic_with_vacancies_sublattice(image_noise=False):
 
     Examples
     --------
-    >>> import atomap.api as am
+    >>> import atomap_devel_012.api as am
     >>> s = am.dummy_data.get_simple_cubic_with_vacancies_sublattice()
     >>> s.plot()
 
@@ -138,7 +138,7 @@ def get_simple_cubic_with_vacancies_sublattice(image_noise=False):
 
     """
     test_data = _make_simple_cubic_with_vacancies_testdata(
-            image_noise=image_noise)
+        image_noise=image_noise)
     return test_data.sublattice
 
 
@@ -149,13 +149,13 @@ def _make_polarization_film_A(image_noise=False):
     y0_list = y0.flatten()
     amplitude0 = np.ones(len(x0_list)) * 20
     test_data.add_atom_list(
-            x0_list, y0_list, sigma_x=3, sigma_y=3, amplitude=amplitude0)
-    x1, y1 = np.mgrid[5:312:20, 145+20:312:20]
+        x0_list, y0_list, sigma_x=3, sigma_y=3, amplitude=amplitude0)
+    x1, y1 = np.mgrid[5:312:20, 145 + 20:312:20]
     x1_list = x1.flatten()
     y1_list = y1.flatten()
     amplitude1 = np.ones(len(x1_list)) * 15
     test_data.add_atom_list(
-            x1_list, y1_list, sigma_x=3, sigma_y=3, amplitude=amplitude1)
+        x1_list, y1_list, sigma_x=3, sigma_y=3, amplitude=amplitude1)
     if image_noise:
         test_data.add_image_noise(mu=0, sigma=0.004)
     return test_data
@@ -167,20 +167,20 @@ def _make_polarization_film_B(image_noise=False):
     x0, y0 = np.mgrid[15:312:20, 15:136:20]
     x0 = x0.astype('float64')
     y0 = y0.astype('float64')
-    dx = max_x/y0.shape[1]
+    dx = max_x / y0.shape[1]
     for i in range(y0.shape[1]):
         x0[:, y0.shape[1] - 1 - i] += dx * i
     x0_list = x0.flatten()
     y0_list = y0.flatten()
     amplitude0 = np.ones(len(x0_list)) * 8
     test_data.add_atom_list(
-            x0_list, y0_list, sigma_x=3, sigma_y=3, amplitude=amplitude0)
-    x1, y1 = np.mgrid[15:312:20, 135+20:312:20]
+        x0_list, y0_list, sigma_x=3, sigma_y=3, amplitude=amplitude0)
+    x1, y1 = np.mgrid[15:312:20, 135 + 20:312:20]
     x1_list = x1.flatten()
     y1_list = y1.flatten()
     amplitude1 = np.ones(len(x1_list)) * 8
     test_data.add_atom_list(
-            x1_list, y1_list, sigma_x=3, sigma_y=3, amplitude=amplitude1)
+        x1_list, y1_list, sigma_x=3, sigma_y=3, amplitude=amplitude1)
     if image_noise:
         test_data.add_image_noise(mu=0, sigma=0.004)
     return test_data
@@ -203,7 +203,7 @@ def get_polarization_film_signal(image_noise=False):
 
     Examples
     --------
-    >>> import atomap.api as am
+    >>> import atomap_devel_012.api as am
     >>> s = am.dummy_data.get_polarization_film_signal()
     >>> s.plot()
 
@@ -235,7 +235,7 @@ def get_polarization_film_atom_lattice(image_noise=False):
 
     Examples
     --------
-    >>> import atomap.api as am
+    >>> import atomap_devel_012.api as am
     >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
     >>> atom_lattice.plot()
 
@@ -258,8 +258,8 @@ def get_polarization_film_atom_lattice(image_noise=False):
     sublattice1.original_image = image
     sublattice1._plot_color = 'b'
     atom_lattice = Atom_Lattice(
-            image=image, name='Perovskite film',
-            sublattice_list=[sublattice0, sublattice1])
+        image=image, name='Perovskite film',
+        sublattice_list=[sublattice0, sublattice1])
     return atom_lattice
 
 
@@ -286,7 +286,7 @@ def get_simple_cubic_signal(image_noise=False):
 
     Examples
     --------
-    >>> import atomap.api as am
+    >>> import atomap_devel_012.api as am
     >>> s = am.dummy_data.get_simple_cubic_signal()
     >>> s.plot()
 
@@ -309,7 +309,7 @@ def get_simple_cubic_sublattice(image_noise=False):
 
     Examples
     --------
-    >>> import atomap.api as am
+    >>> import atomap_devel_012.api as am
     >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
     >>> sublattice.plot()
 
@@ -348,7 +348,7 @@ def get_distorted_cubic_signal(image_noise=False):
 
     Examples
     --------
-    >>> import atomap.api as am
+    >>> import atomap_devel_012.api as am
     >>> s = am.dummy_data.get_distorted_cubic_signal()
     >>> s.plot()
 
@@ -371,7 +371,7 @@ def get_distorted_cubic_sublattice(image_noise=False):
 
     Examples
     --------
-    >>> import atomap.api as am
+    >>> import atomap_devel_012.api as am
     >>> sublattice = am.dummy_data.get_distorted_cubic_sublattice()
     >>> sublattice.plot()
 
@@ -383,25 +383,25 @@ def get_distorted_cubic_sublattice(image_noise=False):
 def _make_atom_lists_two_sublattices(test_data_1, test_data_2=None):
     x0, y0 = np.mgrid[10:295:20, 10:300:34]
     test_data_1.add_atom_list(
-            x0.flatten(), y0.flatten(), sigma_x=3, sigma_y=3, amplitude=20)
+        x0.flatten(), y0.flatten(), sigma_x=3, sigma_y=3, amplitude=20)
 
     if test_data_2 is None:
         test_data_2 = test_data_1
 
     x1, y1 = np.mgrid[10:295:20, 27:290:34]
     test_data_2.add_atom_list(
-            x1.flatten(), y1.flatten(), sigma_x=3, sigma_y=3, amplitude=10)
+        x1.flatten(), y1.flatten(), sigma_x=3, sigma_y=3, amplitude=10)
 
 
 def get_two_sublattice_signal():
     test_data = MakeTestData(300, 300)
     x0, y0 = np.mgrid[10:295:20, 10:300:34]
     test_data.add_atom_list(
-            x0.flatten(), y0.flatten(), sigma_x=3, sigma_y=3, amplitude=20)
+        x0.flatten(), y0.flatten(), sigma_x=3, sigma_y=3, amplitude=20)
 
     x1, y1 = np.mgrid[10:295:20, 27:290:34]
     test_data.add_atom_list(
-            x1.flatten(), y1.flatten(), sigma_x=3, sigma_y=3, amplitude=10)
+        x1.flatten(), y1.flatten(), sigma_x=3, sigma_y=3, amplitude=10)
 
     test_data.add_image_noise(mu=0, sigma=0.01)
     return test_data.signal
@@ -420,7 +420,7 @@ def get_simple_atom_lattice_two_sublattices(image_noise=False):
 
     Examples
     --------
-    >>> import atomap.api as am
+    >>> import atomap_devel_012.api as am
     >>> al = am.dummy_data.get_simple_atom_lattice_two_sublattices()
     >>> al.plot()
 
@@ -438,8 +438,8 @@ def get_simple_atom_lattice_two_sublattices(image_noise=False):
     sublattice_2._plot_color = 'b'
     image = test_data_3.signal.data
     atom_lattice = Atom_Lattice(
-            image=image, name='Simple Atom Lattice',
-            sublattice_list=[sublattice_1, sublattice_2])
+        image=image, name='Simple Atom Lattice',
+        sublattice_list=[sublattice_1, sublattice_2])
     return(atom_lattice)
 
 
@@ -447,12 +447,12 @@ def get_simple_heterostructure_signal(image_noise=True):
     test_data = MakeTestData(400, 400)
     x0, y0 = np.mgrid[10:390:15, 10:200:15]
     test_data.add_atom_list(
-            x0.flatten(), y0.flatten(), sigma_x=3, sigma_y=3, amplitude=5)
+        x0.flatten(), y0.flatten(), sigma_x=3, sigma_y=3, amplitude=5)
 
     y0_max = y0.max()
-    x1, y1 = np.mgrid[10:390:15, y0_max+16:395:16]
+    x1, y1 = np.mgrid[10:390:15, y0_max + 16:395:16]
     test_data.add_atom_list(
-            x1.flatten(), y1.flatten(), sigma_x=3, sigma_y=3, amplitude=5)
+        x1.flatten(), y1.flatten(), sigma_x=3, sigma_y=3, amplitude=5)
 
     if image_noise:
         test_data.add_image_noise(mu=0.0, sigma=0.005)
@@ -471,24 +471,24 @@ def get_dumbbell_signal():
 def _add_fantasite_sublattice_A(test_data):
     xA0, yA0 = np.mgrid[10:495:15, 10:495:30]
     xA0, yA0 = xA0.flatten(), yA0.flatten()
-    xA1, yA1 = xA0[0:8*17], yA0[0:8*17]
+    xA1, yA1 = xA0[0:8 * 17], yA0[0:8 * 17]
     test_data.add_atom_list(xA1, yA1, sigma_x=3, sigma_y=3, amplitude=10)
     dx = 1
-    for i in range(8*17, 3*7*17, 2*17):
-        xA2 = xA0[i:i+17] + dx
-        xA3 = xA0[i+17:i+34] - dx
-        yA2, yA3 = yA0[i:i+17], yA0[i+17:i+34]
+    for i in range(8 * 17, 3 * 7 * 17, 2 * 17):
+        xA2 = xA0[i:i + 17] + dx
+        xA3 = xA0[i + 17:i + 34] - dx
+        yA2, yA3 = yA0[i:i + 17], yA0[i + 17:i + 34]
         test_data.add_atom_list(xA2, yA2, sigma_x=3, sigma_y=3, amplitude=10)
         test_data.add_atom_list(xA3, yA3, sigma_x=3, sigma_y=3, amplitude=10)
     down = True
-    for i in range(3*7*17+17, 580, 17):
-        xA4, xA5 = xA0[i:i+17:2], xA0[i+1:i+17:2]
+    for i in range(3 * 7 * 17 + 17, 580, 17):
+        xA4, xA5 = xA0[i:i + 17:2], xA0[i + 1:i + 17:2]
         if down:
-            yA4 = yA0[i:i+17:2] + dx
-            yA5 = yA0[i+1:i+17:2] - dx
+            yA4 = yA0[i:i + 17:2] + dx
+            yA5 = yA0[i + 1:i + 17:2] - dx
         if not down:
-            yA4 = yA0[i:i+17:2] - dx
-            yA5 = yA0[i+1:i+17:2] + dx
+            yA4 = yA0[i:i + 17:2] - dx
+            yA5 = yA0[i + 1:i + 17:2] + dx
         test_data.add_atom_list(xA4, yA4, sigma_x=3, sigma_y=3, amplitude=10)
         test_data.add_atom_list(xA5, yA5, sigma_x=3, sigma_y=3, amplitude=10)
         down = not down
@@ -500,9 +500,9 @@ def _add_fantasite_sublattice_B(test_data):
     xB0, yB0 = np.mgrid[10:495:15, 25:495:30]
     xB0, yB0 = xB0.flatten(), yB0.flatten()
     test_data.add_atom_list(
-            xB0[0:8*16], yB0[0:8*16],
-            sigma_x=3, sigma_y=3, amplitude=20)
-    xB2, yB2 = xB0[8*16:], yB0[8*16:]
+        xB0[0:8 * 16], yB0[0:8 * 16],
+        sigma_x=3, sigma_y=3, amplitude=20)
+    xB2, yB2 = xB0[8 * 16:], yB0[8 * 16:]
     sig = np.arange(3, 4.1, 0.2)
     sigma_y_list = np.hstack((sig, sig[::-1], sig, sig[::-1], np.full(10, 3)))
     down = True
@@ -512,8 +512,8 @@ def _add_fantasite_sublattice_B(test_data):
             rotation *= -1
         sigma_y = sigma_y_list[i // 16]
         test_data.add_atom(
-                x, yB2[i], sigma_x=3, sigma_y=sigma_y,
-                amplitude=20, rotation=rotation)
+            x, yB2[i], sigma_x=3, sigma_y=sigma_y,
+            amplitude=20, rotation=rotation)
         down = not down
     test_data.add_image_noise(mu=0, sigma=0.01, random_seed=0)
     return test_data
@@ -534,8 +534,8 @@ def _get_fantasite_atom_lattice():
     sublattice_1._plot_color = 'b'
     image = test_data3.signal.data
     atom_lattice = Atom_Lattice(
-            image=image, name='Fantasite Atom Lattice',
-            sublattice_list=[sublattice_1, sublattice_2])
+        image=image, name='Fantasite Atom Lattice',
+        sublattice_list=[sublattice_1, sublattice_2])
     return(atom_lattice)
 
 
@@ -557,7 +557,7 @@ def get_fantasite():
 
     Examples
     --------
-    >>> import atomap.api as am
+    >>> import atomap_devel_012.api as am
     >>> s = am.dummy_data.get_fantasite()
     >>> s.plot()
 
@@ -587,7 +587,7 @@ def get_fantasite_sublattice():
 
     Examples
     --------
-    >>> import atomap.api as am
+    >>> import atomap_devel_012.api as am
     >>> sublattice = am.dummy_data.get_fantasite_sublattice()
     >>> sublattice.plot()
 
@@ -612,7 +612,7 @@ def get_fantasite_atom_lattice():
 
     Examples
     --------
-    >>> import atomap.api as am
+    >>> import atomap_devel_012.api as am
     >>> atom_lattice = am.dummy_data.get_fantasite_atom_lattice()
     >>> atom_lattice.plot()
 
@@ -635,7 +635,7 @@ def get_perovskite110_ABF_signal(image_noise=False):
 
     Examples
     --------
-    >>> import atomap.api as am
+    >>> import atomap_devel_012.api as am
     >>> s_ABF = am.dummy_data.get_perovskite110_ABF_signal()
 
     """
@@ -653,7 +653,7 @@ def get_perovskite110_ABF_signal(image_noise=False):
     if image_noise:
         test_data.add_image_noise(mu=0, sigma=0.01)
 
-    ABF = 1-test_data.signal.data
+    ABF = 1 - test_data.signal.data
     s_ABF = hs.signals.Signal2D(ABF)
     return(s_ABF)
 
@@ -663,7 +663,7 @@ def _make_eels_map_spatial_image_la(x_size=100, y_size=100):
     la_x, la_y = np.mgrid[5:100:20, 5:100:10]
     la_x, la_y = la_x.flatten(), la_y.flatten()
     test_data_la.add_atom_list(
-            la_x, la_y, amplitude=20, sigma_x=2.5, sigma_y=2.5)
+        la_x, la_y, amplitude=20, sigma_x=2.5, sigma_y=2.5)
     la_spatial = test_data_la.signal
     return la_spatial
 
@@ -716,7 +716,7 @@ def get_eels_spectrum_survey_image():
 
     Example
     -------
-    >>> import atomap.api as am
+    >>> import atomap_devel_012.api as am
     >>> s = am.dummy_data.get_eels_spectrum_survey_image()
     >>> s.plot()
 
@@ -747,7 +747,7 @@ def get_eels_spectrum_map(add_noise=True):
 
     Example
     -------
-    >>> import atomap.api as am
+    >>> import atomap_devel_012.api as am
     >>> s_eels_map = am.dummy_data.get_eels_spectrum_map()
     >>> s_eels_map.plot()
 
@@ -799,7 +799,7 @@ def get_eels_spectrum_map(add_noise=True):
     data_3d += background_data
 
     if add_noise:
-        data_noise = np.random.random((x_size, y_size, (e1 - e0)))*0.7
+        data_noise = np.random.random((x_size, y_size, (e1 - e0))) * 0.7
         data_3d += data_noise
 
     s_3d = EELSSpectrum(data_3d)

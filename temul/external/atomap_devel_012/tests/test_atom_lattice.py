@@ -1,13 +1,13 @@
 import pytest
 import numpy as np
 from numpy.testing import assert_array_equal
-from atomap.atom_lattice import Atom_Lattice
-from atomap.sublattice import Sublattice
-from atomap.testing_tools import MakeTestData
-import atomap.initial_position_finding as ipf
-from atomap.atom_finding_refining import get_atom_positions
-import atomap.testing_tools as tt
-import atomap.dummy_data as dd
+from atomap_devel_012.atom_lattice import Atom_Lattice
+from atomap_devel_012.sublattice import Sublattice
+from atomap_devel_012.testing_tools import MakeTestData
+import atomap_devel_012.initial_position_finding as ipf
+from atomap_devel_012.atom_finding_refining import get_atom_positions
+import atomap_devel_012.testing_tools as tt
+import atomap_devel_012.dummy_data as dd
 
 
 class TestCreateAtomLatticeObject:
@@ -17,8 +17,8 @@ class TestCreateAtomLatticeObject:
         image_data = np.arange(10000).reshape(100, 100)
         peaks = np.arange(20).reshape(atoms_N, 2)
         self.sublattice = Sublattice(
-                peaks,
-                image_data)
+            peaks,
+            image_data)
 
     def test_create_empty_atom_lattice_object(self):
         Atom_Lattice()
@@ -42,7 +42,7 @@ class TestXYPosition:
         sublattice0 = Sublattice(pos0, np.zeros((40, 40)))
         sublattice1 = Sublattice(pos1, np.zeros((40, 40)))
         self.atom_lattice = Atom_Lattice(
-                np.zeros((40, 40)), sublattice_list=[sublattice0, sublattice1])
+            np.zeros((40, 40)), sublattice_list=[sublattice0, sublattice1])
         self.x_pos = np.concatenate((pos0[:, 0], pos1[:, 0]))
         self.y_pos = np.concatenate((pos0[:, 1], pos1[:, 1]))
 
@@ -78,7 +78,7 @@ class TestDumbbellLattice:
         vector = ipf.find_dumbbell_vector(signal, 4)
         position_list = get_atom_positions(signal, separation=13)
         atom_lattice = ipf.make_atom_lattice_dumbbell_structure(
-                signal, position_list, vector)
+            signal, position_list, vector)
         atom_lattice.refine_position_gaussian()
 
 
@@ -109,9 +109,9 @@ class TestAtomLatticeSignalProperty:
 
     def test_scaling(self):
         sublattice = Sublattice(
-                [[10, 10], ], np.ones((20, 20)), pixel_size=0.2)
+            [[10, 10], ], np.ones((20, 20)), pixel_size=0.2)
         atom_lattice = Atom_Lattice(
-                np.ones((100, 100)), sublattice_list=[sublattice])
+            np.ones((100, 100)), sublattice_list=[sublattice])
         signal = atom_lattice.signal
         assert signal.axes_manager.signal_axes[0].scale == 0.2
         assert signal.axes_manager.signal_axes[1].scale == 0.2

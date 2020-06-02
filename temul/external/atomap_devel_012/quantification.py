@@ -21,7 +21,7 @@ def centered_distance_matrix(centre, det_image):
     Example
     -------
     >>> import hyperspy.api as hs
-    >>> import atomap.api as am
+    >>> import atomap_devel_012.api as am
     >>> s = am.example_data.get_detector_image_signal()
     >>> centered_matrix = am.quant.centered_distance_matrix((256, 256), s.data)
 
@@ -47,7 +47,7 @@ def _detector_threshold(det_image):
 
     Example
     -------
-    >>> import atomap.api as am
+    >>> import atomap_devel_012.api as am
     >>> s_det_image = am.example_data.get_detector_image_signal()
     >>> threshold_image = am.quant._detector_threshold(s_det_image.data)
 
@@ -77,7 +77,7 @@ def _radial_profile(data, centre):
 
     Example
     -------
-    >>> import atomap.api as am
+    >>> import atomap_devel_012.api as am
     >>> s_det_image = am.example_data.get_detector_image_signal()
     >>> radial_profile = am.quant._radial_profile(s_det_image.data, (256, 256))
 
@@ -95,7 +95,7 @@ def _radial_profile(data, centre):
 
 class InteractiveFluxAnalyser:
 
-     def __init__(self, profile, radius, flux_profile, limits=None):
+    def __init__(self, profile, radius, flux_profile, limits=None):
         if limits is None:
             self.profile = profile[0]
             self.radius = radius
@@ -103,23 +103,23 @@ class InteractiveFluxAnalyser:
             self.left = np.int(min(self.profile.get_xdata()))
             self.right = np.int(max(self.profile.get_xdata()))
             self.l_line = self.profile.axes.axvline(
-                    self.left, color='firebrick', linestyle='--')
+                self.left, color='firebrick', linestyle='--')
             self.r_line = self.profile.axes.axvline(
-                    self.right, color='seagreen', linestyle='--')
+                self.right, color='seagreen', linestyle='--')
             self.cid = self.profile.figure.canvas.mpl_connect(
-                    'button_press_event', self.onclick)
+                'button_press_event', self.onclick)
         else:
             self.left, self.right = limits
             self._set_coords()
 
-     def __call__(self):
+    def __call__(self):
         self._set_coords()
         print('Final coordinates are: {}, {}!'.format(self.left, self.right))
-    
-     def _set_coords(self):    
+
+    def _set_coords(self):
         self.coords = [self.left, self.right]
 
-     def onclick(self, event):
+    def onclick(self, event):
         # print('click', vars(event))
         if event.inaxes != self.profile.axes:
             return
@@ -166,8 +166,8 @@ def find_flux_limits(flux_pattern, conv_angle, limits=None):
     """
     if (limits is not None) and (len(limits) != 2):
         raise ValueError(
-                "limits must either be None to get an interactive window, "
-                "or tuple with two values. Currently it is {0}".format(limits))
+            "limits must either be None to get an interactive window, "
+            "or tuple with two values. Currently it is {0}".format(limits))
     elif (limits is not None) and (limits[0] > limits[1]):
         raise ValueError("limits[1] must be larger than limits[0], currently "
                          " limits is {0}".format(limits))
@@ -299,7 +299,7 @@ def detector_normalisation(
     # fill at least half the image.t
 
     m = centered_distance_matrix(
-            (det_image.shape[0] / 2, det_image.shape[1] / 2), det_image)
+        (det_image.shape[0] / 2, det_image.shape[1] / 2), det_image)
     centre_image = np.multiply((m < 512), (1 - threshold_image))
     centre = scipy.ndimage.measurements.center_of_mass(centre_image)
 

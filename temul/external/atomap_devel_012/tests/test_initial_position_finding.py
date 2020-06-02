@@ -1,10 +1,10 @@
 from pytest import approx
 import numpy as np
-from atomap.testing_tools import MakeTestData
-from atomap.initial_position_finding import (
-        find_dumbbell_vector, _get_dumbbell_arrays,
-        make_atom_lattice_dumbbell_structure)
-from atomap.atom_finding_refining import get_atom_positions
+from atomap_devel_012.testing_tools import MakeTestData
+from atomap_devel_012.initial_position_finding import (
+    find_dumbbell_vector, _get_dumbbell_arrays,
+    make_atom_lattice_dumbbell_structure)
+from atomap_devel_012.atom_finding_refining import get_atom_positions
 
 
 class TestFindDumbbellVector:
@@ -55,7 +55,7 @@ class TestGetDumbbellArrays:
         vector = find_dumbbell_vector(s, 4)
         position_list = get_atom_positions(s, 14)
         dumbbell_array0, dumbbell_array1 = _get_dumbbell_arrays(
-                s, position_list, vector)
+            s, position_list, vector)
         assert len(dumbbell_array0) == 100
         assert len(dumbbell_array1) == 100
 
@@ -75,7 +75,7 @@ class TestMakeAtomLatticeDumbbellStructure:
         vector = find_dumbbell_vector(s, 4)
         position_list = get_atom_positions(s, separation=13)
         atom_lattice = make_atom_lattice_dumbbell_structure(
-                s, position_list, vector)
+            s, position_list, vector)
         assert len(atom_lattice.sublattice_list) == 2
         sublattice0 = atom_lattice.sublattice_list[0]
         sublattice1 = atom_lattice.sublattice_list[1]

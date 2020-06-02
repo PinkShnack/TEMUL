@@ -29,7 +29,7 @@ def _remove_parallel_vectors(vector_list, distance_tolerance):
     --------
     Remove vectors which have the same direction, but different length
 
-    >>> import atomap.symmetry_finding as sf
+    >>> import atomap_devel_012.symmetry_finding as sf
     >>> vector_list = [(10, 10), (20, 20)]
     >>> sf._remove_parallel_vectors(vector_list, distance_tolerance=2)
     [(10, 10)]
@@ -59,12 +59,12 @@ def _remove_parallel_vectors(vector_list, distance_tolerance):
             # To find the vectors which are pointing the same or opposite
             # direction, but with different length, the n_vector is
             # made and iterated between -4 and 5.
-            n_vector = (n*zv[0], n*zv[1])
+            n_vector = (n * zv[0], n * zv[1])
             len_vector = math.hypot(zv[0], zv[1])
             for temp_index, temp_zv in enumerate(
-                    vector_list[zone_index+1:]):
-                dist_x = temp_zv[0]-n_vector[0]
-                dist_y = temp_zv[1]-n_vector[1]
+                    vector_list[zone_index + 1:]):
+                dist_x = temp_zv[0] - n_vector[0]
+                dist_y = temp_zv[1] - n_vector[1]
                 distance = math.hypot(dist_x, dist_y)
                 if distance < distance_tolerance:
                     # If the distance from the zv, and the
@@ -77,7 +77,7 @@ def _remove_parallel_vectors(vector_list, distance_tolerance):
                     # to determine which vector is added to
                     # remove_vector_list.
                     len_temp_vector = math.hypot(temp_zv[0], temp_zv[1])
-                    if abs(len_vector - len_temp_vector) < len_vector/10:
+                    if abs(len_vector - len_temp_vector) < len_vector / 10:
                         if abs(zv[0]) >= abs(zv[1]):
                             long_vector = 0
                         else:
@@ -119,14 +119,14 @@ def _remove_duplicate_vectors(vector_list, distance_tolerance):
     Examples
     --------
     >>> vector_list = [(20, 10), (20, 10)]
-    >>> import atomap.symmetry_finding as sf
+    >>> import atomap_devel_012.symmetry_finding as sf
     >>> sf._remove_duplicate_vectors(vector_list, distance_tolerance=1)
     [(20, 10)]
 
     Changing distance_tolerance
 
     >>> vector_list = [(20, 12), (20, 10)]
-    >>> import atomap.symmetry_finding as sf
+    >>> import atomap_devel_012.symmetry_finding as sf
     >>> sf._remove_duplicate_vectors(vector_list, distance_tolerance=1)
     [(20, 10), (20, 12)]
     >>> sf._remove_duplicate_vectors(vector_list, distance_tolerance=3)
@@ -136,10 +136,10 @@ def _remove_duplicate_vectors(vector_list, distance_tolerance):
     vector_list = _sort_vectors_by_length(vector_list)
     remove_index_list = []
     for zi0, zv0 in enumerate(vector_list):
-            for zi1, zv1 in enumerate(vector_list[zi0+1:]):
-                distance = math.hypot(zv1[0]-zv0[0], zv1[1]-zv0[1])
-                if distance < distance_tolerance:
-                    remove_index_list.append(zi0+zi1+1)
+        for zi1, zv1 in enumerate(vector_list[zi0 + 1:]):
+            distance = math.hypot(zv1[0] - zv0[0], zv1[1] - zv0[1])
+            if distance < distance_tolerance:
+                remove_index_list.append(zi0 + zi1 + 1)
     new_vector_list = []
     for index, vector in enumerate(vector_list):
         if index not in remove_index_list:
@@ -162,7 +162,7 @@ def _sort_vectors_by_length(vector_list):
     Examples
     --------
     >>> vector_list = [(20, 10), (0, 10), (10, -10)]
-    >>> import atomap.symmetry_finding as sf
+    >>> import atomap_devel_012.symmetry_finding as sf
     >>> sf._sort_vectors_by_length(vector_list)
     [(0, 10), (10, -10), (20, 10)]
 

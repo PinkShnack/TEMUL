@@ -1,9 +1,9 @@
 import os
 from hyperspy.io import load
 from hyperspy.signals import Signal2D
-import atomap.main as amm
-import atomap.dummy_data as dd
-from atomap.process_parameters import PerovskiteOxide110
+import atomap_devel_012.main as amm
+import atomap_devel_012.dummy_data as dd
+from atomap_devel_012.process_parameters import PerovskiteOxide110
 
 my_path = os.path.dirname(__file__)
 
@@ -12,7 +12,7 @@ class TestMakeAtomLatticeFromImage:
 
     def setup_method(self):
         s_adf_filename = os.path.join(
-                my_path, "datasets", "test_ADF_cropped.hdf5")
+            my_path, "datasets", "test_ADF_cropped.hdf5")
         self.s_adf = load(s_adf_filename)
         self.s_adf.change_dtype('float64')
         self.pixel_separation = 19
@@ -23,9 +23,9 @@ class TestMakeAtomLatticeFromImage:
         pixel_separation = self.pixel_separation
         process_parameter = self.process_parameter
         amm.make_atom_lattice_from_image(
-                s_adf,
-                process_parameter=process_parameter,
-                pixel_separation=pixel_separation)
+            s_adf,
+            process_parameter=process_parameter,
+            pixel_separation=pixel_separation)
 
 
 class TestGetFilename:

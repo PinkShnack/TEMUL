@@ -7,23 +7,23 @@ import hyperspy.api as hs
 from hyperspy.signals import Signal2D
 from hyperspy.drawing._markers.point import Point
 
-import atomap.tools as at
-import atomap.analysis_tools as an
-from atomap.plotting import (
-        _make_atom_planes_marker_list, _make_atom_position_marker_list,
-        _make_arrow_marker_list, _make_multidim_atom_plane_marker_list,
-        _make_zone_vector_text_marker_list, plot_vector_field,
-        vector_list_to_marker_list)
-from atomap.atom_finding_refining import construct_zone_axes_from_sublattice
-from atomap.atom_finding_refining import _make_circular_mask
+import atomap_devel_012.tools as at
+import atomap_devel_012.analysis_tools as an
+from atomap_devel_012.plotting import (
+    _make_atom_planes_marker_list, _make_atom_position_marker_list,
+    _make_arrow_marker_list, _make_multidim_atom_plane_marker_list,
+    _make_zone_vector_text_marker_list, plot_vector_field,
+    vector_list_to_marker_list)
+from atomap_devel_012.atom_finding_refining import construct_zone_axes_from_sublattice
+from atomap_devel_012.atom_finding_refining import _make_circular_mask
 
-from atomap.atom_position import Atom_Position
-from atomap.atom_plane import Atom_Plane
-from atomap.symmetry_finding import _remove_parallel_vectors
-import atomap.gui_classes as gui
+from atomap_devel_012.atom_position import Atom_Position
+from atomap_devel_012.atom_plane import Atom_Plane
+from atomap_devel_012.symmetry_finding import _remove_parallel_vectors
+import atomap_devel_012.gui_classes as gui
 
-from atomap.external.add_marker import add_marker
-from atomap.external.gaussian2d import Gaussian2D
+from atomap_devel_012.external.add_marker import add_marker
+from atomap_devel_012.external.gaussian2d import Gaussian2D
 
 
 class Sublattice():
@@ -35,7 +35,7 @@ class Sublattice():
             name='',
             color='red',
             pixel_size=1.,
-            ):
+    ):
         """
         Parameters
         ----------
@@ -72,7 +72,7 @@ class Sublattice():
         Examples
         --------
         >>> import numpy as np
-        >>> from atomap.sublattice import Sublattice
+        >>> from atomap_devel_012.sublattice import Sublattice
         >>> atom_positions = [[2, 2], [2, 4], [4, 2], [4, 4]]
         >>> image_data = np.random.random((7, 7))
         >>> sublattice = Sublattice(atom_positions, image_data)
@@ -109,29 +109,29 @@ class Sublattice():
     def _image_init(self, image, original_image=None):
         if not hasattr(image, '__array__'):
             raise ValueError(
-                    "image needs to be a NumPy compatible array" +
-                    ", not " + str(type(image)))
+                "image needs to be a NumPy compatible array" +
+                ", not " + str(type(image)))
         image_out = np.array(image)
         if image_out.dtype == 'float16':
             raise ValueError(
-                    "image has the dtype float16, which is not supported. "
-                    "Convert it to something else, for example using "
-                    "image.astype('float64')")
+                "image has the dtype float16, which is not supported. "
+                "Convert it to something else, for example using "
+                "image.astype('float64')")
         if not len(image_out.shape) == 2:
             raise ValueError(
-                    "image needs to be 2 dimensions, not " +
-                    str(len(image_out.shape)))
+                "image needs to be 2 dimensions, not " +
+                str(len(image_out.shape)))
 
         if original_image is not None:
             if not hasattr(original_image, '__array__'):
                 raise ValueError(
-                        "original_image needs to be a NumPy compatible array" +
-                        ", not " + str(type(original_image)))
+                    "original_image needs to be a NumPy compatible array" +
+                    ", not " + str(type(original_image)))
             original_image_out = np.array(original_image)
             if not len(original_image_out.shape) == 2:
                 raise ValueError(
-                        "original_image needs to be 2 dimensions, not " +
-                        str(len(original_image_out.shape)))
+                    "original_image needs to be 2 dimensions, not " +
+                    str(len(original_image_out.shape)))
         else:
             original_image_out = image_out
 
@@ -144,7 +144,7 @@ class Sublattice():
             self.name,
             len(self.atom_list),
             len(self.atom_planes_by_zone_vector),
-            )
+        )
 
     @property
     def atom_positions(self):
@@ -180,7 +180,7 @@ class Sublattice():
 
     @property
     def sigma_average(self):
-        sigma = np.array(self.sigma_x)+np.array(self.sigma_y)
+        sigma = np.array(self.sigma_x) + np.array(self.sigma_y)
         sigma *= 0.5
         return(sigma)
 
@@ -305,8 +305,8 @@ class Sublattice():
         pos_y_list = []
         for atom in self.atom_list:
             angle = atom.get_angle_between_zone_vectors(
-                    zone_vector0,
-                    zone_vector1)
+                zone_vector0,
+                zone_vector1)
             if angle is not False:
                 angle_list.append(angle)
                 pos_x_list.append(atom.pixel_x)
@@ -349,11 +349,11 @@ class Sublattice():
             dist = atom_plane.position_distance_to_neighbor()
             atom_distance_list.extend(dist)
         atom_distance_list = np.array(
-                atom_distance_list).swapaxes(0, 1)
+            atom_distance_list).swapaxes(0, 1)
         return(
-                atom_distance_list[0],
-                atom_distance_list[1],
-                atom_distance_list[2])
+            atom_distance_list[0],
+            atom_distance_list[1],
+            atom_distance_list[2])
 
     def get_monolayer_distance_list_from_zone_vector(
             self,
@@ -422,9 +422,9 @@ class Sublattice():
         if y_position is None:
             y_position = self.y_position
         data_list = np.array([
-                        x_position,
-                        y_position,
-                        property_list])
+            x_position,
+            y_position,
+            property_list])
         data_list = np.swapaxes(data_list, 0, 1)
         return(data_list)
 
@@ -445,17 +445,17 @@ class Sublattice():
         xs, ys, zs = x.shape, y.shape, z.shape
         if (xs != ys) or (xs != zs) or (ys != zs):
             raise ValueError(
-                    "x_position, y_position and property_list must have the "
-                    "same shape")
+                "x_position, y_position and property_list must have the "
+                "same shape")
         data_list = np.array([x, y, z])
         data_list = np.swapaxes(data_list, 0, 1)
         line_profile_data = at.project_position_property_sum_planes(
-                data_list,
-                interface_plane,
-                rebin_data=True)
+            data_list,
+            interface_plane,
+            rebin_data=True)
         line_profile_data = np.array(line_profile_data)
-        position = line_profile_data[:, 0]*scale_xy
-        data = line_profile_data[:, 1]*scale_z
+        position = line_profile_data[:, 0] * scale_xy
+        data = line_profile_data[:, 1] * scale_z
         return(np.array([position, data]))
 
     def _get_regular_grid_from_unregular_property(
@@ -539,7 +539,7 @@ class Sublattice():
 
         Example with ellipticity as property.
 
-        >>> import atomap.api as am
+        >>> import atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> s = sublattice.get_property_map(
         ...                    sublattice.x_position,
@@ -555,12 +555,12 @@ class Sublattice():
                 add_zero_value_sublattice.x_position,
                 add_zero_value_sublattice.y_position)
         data_map = self._get_regular_grid_from_unregular_property(
-                x_list, y_list, z_list, upscale=upscale_map)
+            x_list, y_list, z_list, upscale=upscale_map)
         signal = at.array2signal2d(
-                data_map[2], self.pixel_size/upscale_map, rotate_flip=True)
+            data_map[2], self.pixel_size / upscale_map, rotate_flip=True)
         if atom_plane_list is not None:
             marker_list = _make_atom_planes_marker_list(
-                    atom_plane_list, scale=data_scale, add_numbers=False)
+                atom_plane_list, scale=data_scale, add_numbers=False)
             add_marker(signal, marker_list, permanent=True, plot_marker=False)
         return signal
 
@@ -613,7 +613,7 @@ class Sublattice():
         Example
         -------
         >>> from numpy.random import random
-        >>> import atomap.api as am
+        >>> import atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> for atom in sublattice.atom_list:
         ...     atom.sigma_x, atom.sigma_y = 0.5*random()+1, 0.5*random()+1
@@ -635,8 +635,8 @@ class Sublattice():
         xs, ys, zs = xA.shape, yA.shape, zA.shape
         if (xs != ys) or (xs != zs) or (ys != zs):
             raise ValueError(
-                    "x_list, y_list and z_list must have the "
-                    "same shape")
+                "x_list, y_list and z_list must have the "
+                "same shape")
         line_profile_data_list = self._property_position_projection(
             interface_plane=atom_plane,
             property_list=zA,
@@ -645,24 +645,24 @@ class Sublattice():
             scale_xy=data_scale_xy,
             scale_z=data_scale_z)
         x_new = np.linspace(
-                line_profile_data_list[0, 0],
-                line_profile_data_list[0, -1],
-                interpolate_value*len(line_profile_data_list[0]))
+            line_profile_data_list[0, 0],
+            line_profile_data_list[0, -1],
+            interpolate_value * len(line_profile_data_list[0]))
         y_new = np.interp(
-                x_new,
-                line_profile_data_list[0],
-                line_profile_data_list[1],
-                )
+            x_new,
+            line_profile_data_list[0],
+            line_profile_data_list[1],
+        )
         if invert_line_profile:
             x_new *= -1
-        data_scale = x_new[1]-x_new[0]
+        data_scale = x_new[1] - x_new[0]
         offset = x_new[0]
         signal = at.array2signal1d(
-                y_new,
-                scale=data_scale,
-                offset=offset)
+            y_new,
+            scale=data_scale,
+            offset=offset)
         if invert_line_profile:
-            x_profile_list = line_profile_data_list[0]*-1
+            x_profile_list = line_profile_data_list[0] * -1
         else:
             x_profile_list = line_profile_data_list[0]
         y_profile_list = line_profile_data_list[1]
@@ -692,22 +692,22 @@ class Sublattice():
         pixel_separation, int
         """
         atom_position_list = np.array(
-                [self.x_position, self.y_position]).swapaxes(0, 1)
+            [self.x_position, self.y_position]).swapaxes(0, 1)
         nearest_neighbor_data = cKDTree(
-                atom_position_list,
-                leafsize=leafsize)
+            atom_position_list,
+            leafsize=leafsize)
         distance_list = []
         for atom in self.atom_list:
             nn_data_list = nearest_neighbor_data.query(
-                    atom.get_pixel_position(),
-                    nearest_neighbors)
+                atom.get_pixel_position(),
+                nearest_neighbors)
             # Skipping the first element,
             # since it points to the atom itself
             for nn_link in nn_data_list[1][1:]:
                 distance = atom.get_pixel_distance_from_another_atom(
-                        self.atom_list[nn_link])
+                    self.atom_list[nn_link])
                 distance_list.append(distance)
-        pixel_separation = np.median(distance_list)/2
+        pixel_separation = np.median(distance_list) / 2
         return(pixel_separation)
 
     def find_nearest_neighbors(self, nearest_neighbors=9, leafsize=100):
@@ -721,14 +721,14 @@ class Sublattice():
         leafsize : int, default 100
         """
         atom_position_list = np.array(
-                [self.x_position, self.y_position]).swapaxes(0, 1)
+            [self.x_position, self.y_position]).swapaxes(0, 1)
         nearest_neighbor_data = sp.spatial.cKDTree(
-                atom_position_list,
-                leafsize=leafsize)
+            atom_position_list,
+            leafsize=leafsize)
         for atom in self.atom_list:
             nn_data_list = nearest_neighbor_data.query(
-                    atom.get_pixel_position(),
-                    nearest_neighbors)
+                atom.get_pixel_position(),
+                nearest_neighbors)
             nn_link_list = []
             # Skipping the first element,
             # since it points to the atom itself
@@ -757,8 +757,8 @@ class Sublattice():
         zone_vector = atom_plane1.zone_vector
         if zone_vector != atom_plane2.zone_vector:
             raise ValueError(
-                    "atom_plane1 and atom_plane2 must belong to the"
-                    " same zone vector")
+                "atom_plane1 and atom_plane2 must belong to the"
+                " same zone vector")
         for index, temp_atom_plane in enumerate(
                 self.atom_planes_by_zone_vector[zone_vector]):
             if temp_atom_plane == atom_plane1:
@@ -770,8 +770,8 @@ class Sublattice():
             atom_plane_start_index = atom_plane_end_index
             atom_plane_end_index = temp_index
         atom_plane_slice = self.atom_planes_by_zone_vector[
-                zone_vector][
-                        atom_plane_start_index:atom_plane_end_index]
+            zone_vector][
+            atom_plane_start_index:atom_plane_end_index]
         return(atom_plane_slice)
 
     def toggle_atom_refine_position_with_gui(
@@ -811,8 +811,7 @@ class Sublattice():
         if image is None:
             image = self.image
         toggle_refine_position = gui.AtomToggleRefine(
-                image, self, distance_threshold=distance_threshold)
-
+            image, self, distance_threshold=distance_threshold)
 
     def get_atom_list_between_four_atom_planes(
             self,
@@ -833,9 +832,9 @@ class Sublattice():
         atom_list : list of Atom_Position objects
         """
         ort_slice = self.get_atom_plane_slice_between_two_planes(
-                ort_atom_plane1, ort_atom_plane2)
+            ort_atom_plane1, ort_atom_plane2)
         par_slice = self.get_atom_plane_slice_between_two_planes(
-                par_atom_plane1, par_atom_plane2)
+            par_atom_plane1, par_atom_plane2)
 
         par_atom_list = []
         for atom_plane in par_slice:
@@ -866,7 +865,7 @@ class Sublattice():
                 self.atom_planes_by_zone_vector.items()):
             length = 100000000
             orthogonal_vector = (
-                    length*zone_vector[1], -length*zone_vector[0])
+                length * zone_vector[1], -length * zone_vector[0])
 
             closest_atom_list = []
             for atom_plane in atom_plane_list:
@@ -878,7 +877,7 @@ class Sublattice():
                         closest_atom = dist
                 closest_atom_list.append(closest_atom)
             atom_plane_list.sort(
-                    key=dict(zip(atom_plane_list, closest_atom_list)).get)
+                key=dict(zip(atom_plane_list, closest_atom_list)).get)
 
     def _remove_bad_zone_vectors(self):
         zone_vector_delete_list = []
@@ -892,7 +891,7 @@ class Sublattice():
                     number_of_atoms = len(atom_plane.atom_list)
                     if number_of_atoms == 2:
                         counter_atoms += 1
-                ratio = counter_atoms/len(atom_planes)
+                ratio = counter_atoms / len(atom_planes)
                 if ratio > 0.6:
                     atom_planes_delete_list = []
                     for atom_plane in atom_planes:
@@ -944,7 +943,7 @@ class Sublattice():
 
         Example
         -------
-        >>> import atomap.api as am
+        >>> import atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> sublattice.find_nearest_neighbors()
         >>> sublattice.refine_atom_positions_using_2d_gaussian()
@@ -956,16 +955,16 @@ class Sublattice():
         """
         if (mask_radius is not None) and (percent_to_nn is not None):
             raise ValueError(
-                    "Both percent_to_nn and mask_radius is specified, "
-                    "only one of them should be set")
+                "Both percent_to_nn and mask_radius is specified, "
+                "only one of them should be set")
         if mask_radius is None:
             if percent_to_nn is None:
                 percent_to_nn = 0.4
             if self.atom_list[0].nearest_neighbor_list is None:
                 raise ValueError(
-                        "The atom_position objects does not seem to have a "
-                        "populated nearest neighbor list. "
-                        "Has sublattice.find_nearest_neighbors() been called?")
+                    "The atom_position objects does not seem to have a "
+                    "populated nearest neighbor list. "
+                    "Has sublattice.find_nearest_neighbors() been called?")
         if image_data is None:
             image_data = self.original_image
         image_data = image_data.astype('float64')
@@ -974,10 +973,10 @@ class Sublattice():
                 disable=not show_progressbar):
             if atom.refine_position:
                 atom.refine_position_using_2d_gaussian(
-                        image_data,
-                        rotation_enabled=rotation_enabled,
-                        percent_to_nn=percent_to_nn,
-                        mask_radius=mask_radius)
+                    image_data,
+                    rotation_enabled=rotation_enabled,
+                    percent_to_nn=percent_to_nn,
+                    mask_radius=mask_radius)
 
     def refine_atom_positions_using_center_of_mass(
             self, image_data=None, percent_to_nn=None,
@@ -1001,7 +1000,7 @@ class Sublattice():
 
         Example
         -------
-        >>> import atomap.api as am
+        >>> import atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> sublattice.find_nearest_neighbors()
         >>> sublattice.refine_atom_positions_using_center_of_mass()
@@ -1013,16 +1012,16 @@ class Sublattice():
         """
         if (mask_radius is not None) and (percent_to_nn is not None):
             raise ValueError(
-                    "Both percent_to_nn and mask_radius is specified, "
-                    "only one of them should be set")
+                "Both percent_to_nn and mask_radius is specified, "
+                "only one of them should be set")
         if mask_radius is None:
             if percent_to_nn is None:
                 percent_to_nn = 0.25
             if self.atom_list[0].nearest_neighbor_list is None:
                 raise ValueError(
-                        "The atom_position objects does not seem to have a "
-                        "populated nearest neighbor list. "
-                        "Has sublattice.find_nearest_neighbors() been called?")
+                    "The atom_position objects does not seem to have a "
+                    "populated nearest neighbor list. "
+                    "Has sublattice.find_nearest_neighbors() been called?")
         if image_data is None:
             image_data = self.original_image
         image_data = image_data.astype('float64')
@@ -1063,7 +1062,7 @@ class Sublattice():
 
         Examples
         --------
-        >>> import atomap.api as am
+        >>> import atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> sublattice.construct_zone_axes()
         >>> x_pos, y_pos = sublattice.get_nearest_neighbor_directions()
@@ -1092,8 +1091,8 @@ class Sublattice():
             scale = self.pixel_size
         else:
             scale = 1.
-        x_pos_distances = np.array(x_pos_distances)*scale
-        y_pos_distances = np.array(y_pos_distances)*scale
+        x_pos_distances = np.array(x_pos_distances) * scale
+        y_pos_distances = np.array(y_pos_distances) * scale
         return(x_pos_distances, y_pos_distances)
 
     def get_nearest_neighbor_directions_all(self):
@@ -1123,7 +1122,7 @@ class Sublattice():
         Examples
         --------
         >>> import numpy as np
-        >>> import atomap.api as am
+        >>> import atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> x_pos, y_pos = sublattice.get_nearest_neighbor_directions_all()
         >>> mask = np.sqrt(x_pos**2 + y_pos**2) < 3
@@ -1149,12 +1148,12 @@ class Sublattice():
 
         # Produce a mask that selects all elements except the diagonal
         # i.e. distance vectors from an atom to itself.
-        mask = ~np.diag([True]*n_atoms)
+        mask = ~np.diag([True] * n_atoms)
         assert mask.shape == (n_atoms, n_atoms)
 
         # Remove the diagonal and flatten
         nn = np.array([dx[mask], dy[mask]])
-        assert nn.shape == (2, n_atoms*(n_atoms-1))
+        assert nn.shape == (2, n_atoms * (n_atoms - 1))
 
         return nn
 
@@ -1181,7 +1180,7 @@ class Sublattice():
 
         Example
         -------
-        >>> import atomap.dummy_data as dd
+        >>> import atomap_devel_012.dummy_data as dd
         >>> sublattice = dd.get_simple_cubic_sublattice()
         >>> sublattice._pixel_separation = sublattice._get_pixel_separation()
         >>> sublattice._make_translation_symmetry()
@@ -1192,17 +1191,17 @@ class Sublattice():
         get_fingerprint_2d : function used to get full vector list
 
         """
-        pixel_radius = self._pixel_separation*pixel_separation_factor
+        pixel_radius = self._pixel_separation * pixel_separation_factor
         fp_2d = self.get_fingerprint_2d(pixel_radius=pixel_radius)
         clusters = []
         for zone_vector in fp_2d:
             cluster = (
-                    float(format(zone_vector[0], '.2f')),
-                    float(format(zone_vector[1], '.2f')))
+                float(format(zone_vector[0], '.2f')),
+                float(format(zone_vector[1], '.2f')))
             clusters.append(cluster)
         clusters = _remove_parallel_vectors(
-                clusters,
-                distance_tolerance=self._pixel_separation/1.5)
+            clusters,
+            distance_tolerance=self._pixel_separation / 1.5)
 
         new_zone_vector_name_list = []
         for zone_vector in clusters:
@@ -1221,25 +1220,25 @@ class Sublattice():
     def _generate_all_atom_plane_list(self, atom_plane_tolerance=0.5):
         for zone_vector in self.zones_axis_average_distances:
             self._find_all_atomic_planes_from_direction(
-                    zone_vector, atom_plane_tolerance=atom_plane_tolerance)
+                zone_vector, atom_plane_tolerance=atom_plane_tolerance)
 
     def _find_all_atomic_planes_from_direction(
             self, zone_vector, atom_plane_tolerance=0.5):
         for atom in self.atom_list:
             if not atom.is_in_atomic_plane(zone_vector):
                 atom_plane = self._find_atomic_columns_from_atom(
-                        atom, zone_vector,
-                        atom_plane_tolerance=atom_plane_tolerance)
+                    atom, zone_vector,
+                    atom_plane_tolerance=atom_plane_tolerance)
                 if not (len(atom_plane) == 1):
                     atom_plane_instance = Atom_Plane(
-                            atom_plane, zone_vector, self)
+                        atom_plane, zone_vector, self)
                     for atom in atom_plane:
                         atom.in_atomic_plane.append(atom_plane_instance)
                     self.atom_plane_list.append(atom_plane_instance)
 
     def _find_atomic_columns_from_atom(
             self, start_atom, zone_vector, atom_plane_tolerance=0.5):
-        atom_range = atom_plane_tolerance*self._pixel_separation
+        atom_range = atom_plane_tolerance * self._pixel_separation
         end_of_atom_plane = False
         zone_axis_list1 = [start_atom]
         while not end_of_atom_plane:
@@ -1247,9 +1246,9 @@ class Sublattice():
             atoms_within_distance = []
             for neighbor_atom in atom.nearest_neighbor_list:
                 distance = neighbor_atom.pixel_distance_from_point(
-                        point=(
-                            atom.pixel_x+zone_vector[0],
-                            atom.pixel_y+zone_vector[1]))
+                    point=(
+                        atom.pixel_x + zone_vector[0],
+                        atom.pixel_y + zone_vector[1]))
                 if distance < atom_range:
                     atoms_within_distance.append([distance, neighbor_atom])
             if atoms_within_distance:
@@ -1259,7 +1258,7 @@ class Sublattice():
                 end_of_atom_plane = True
                 atom._end_atom.append(zone_vector)
 
-        zone_vector2 = (-1*zone_vector[0], -1*zone_vector[1])
+        zone_vector2 = (-1 * zone_vector[0], -1 * zone_vector[1])
         start_of_atom_plane = False
         zone_axis_list2 = [start_atom]
         while not start_of_atom_plane:
@@ -1267,9 +1266,9 @@ class Sublattice():
             atoms_within_distance = []
             for neighbor_atom in atom.nearest_neighbor_list:
                 distance = neighbor_atom.pixel_distance_from_point(
-                        point=(
-                            atom.pixel_x+zone_vector2[0],
-                            atom.pixel_y+zone_vector2[1]))
+                    point=(
+                        atom.pixel_x + zone_vector2[0],
+                        atom.pixel_y + zone_vector2[1]))
                 if distance < atom_range:
                     atoms_within_distance.append([distance, neighbor_atom])
             if atoms_within_distance:
@@ -1314,7 +1313,7 @@ class Sublattice():
 
         Example
         -------
-        >>> import atomap.api as am
+        >>> import atomap_devel_012.api as am
         >>> sublattice_A = am.dummy_data.get_simple_cubic_sublattice()
         >>> sublattice_A.construct_zone_axes()
         >>> zone_axis = sublattice_A.zones_axis_average_distances[0]
@@ -1399,7 +1398,7 @@ class Sublattice():
 
         Examples
         --------
-        >>> import atomap.api as am
+        >>> import atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> sublattice.construct_zone_axes()
         >>> zone_vector = sublattice.zones_axis_average_distances[0]
@@ -1410,10 +1409,10 @@ class Sublattice():
         if image is None:
             image = self.original_image
         marker_list = _make_atom_planes_marker_list(
-                atom_plane_list,
-                add_numbers=add_numbers,
-                scale=self.pixel_size,
-                color=color)
+            atom_plane_list,
+            add_numbers=add_numbers,
+            scale=self.pixel_size,
+            color=color)
         signal = at.array2signal2d(image, self.pixel_size)
         add_marker(signal, marker_list, permanent=True, plot_marker=False)
         return signal
@@ -1450,7 +1449,7 @@ class Sublattice():
         Getting a list signals showing the atomic planes for all the
         zone vectors
 
-        >>> import atomap.api as am
+        >>> import atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> sublattice.construct_zone_axes()
         >>> s = sublattice.get_all_atom_planes_by_zone_vector()
@@ -1474,27 +1473,27 @@ class Sublattice():
         if zone_vector_list is None:
             if self.zones_axis_average_distances is None:
                 raise Exception(
-                        "zones_axis_average_distances is empty. "
-                        "Has construct_zone_axes been run?")
+                    "zones_axis_average_distances is empty. "
+                    "Has construct_zone_axes been run?")
             else:
                 zone_vector_list = self.zones_axis_average_distances
 
         atom_plane_list = []
         for zone_vector in zone_vector_list:
             atom_plane_list.append(
-                    self.atom_planes_by_zone_vector[zone_vector])
+                self.atom_planes_by_zone_vector[zone_vector])
         marker_list = _make_multidim_atom_plane_marker_list(
-                atom_plane_list, scale=self.pixel_size)
+            atom_plane_list, scale=self.pixel_size)
         signal = at.array2signal2d(image, self.pixel_size)
-        signal = hs.stack([signal]*len(zone_vector_list))
+        signal = hs.stack([signal] * len(zone_vector_list))
         add_marker(signal, marker_list, permanent=True, plot_marker=False)
         signal.metadata.General.title = "Atom planes by zone vector"
         signal_ax0 = signal.axes_manager.signal_axes[0]
         signal_ax1 = signal.axes_manager.signal_axes[1]
-        x = signal_ax0.index2value(int(image.shape[0]*0.1))
-        y = signal_ax1.index2value(int(image.shape[1]*0.1))
+        x = signal_ax0.index2value(int(image.shape[0] * 0.1))
+        y = signal_ax1.index2value(int(image.shape[1] * 0.1))
         text_marker_list = _make_zone_vector_text_marker_list(
-                zone_vector_list, x=x, y=y)
+            zone_vector_list, x=x, y=y)
         add_marker(signal, text_marker_list, permanent=True, plot_marker=False)
         return signal
 
@@ -1532,7 +1531,7 @@ class Sublattice():
 
         Examples
         --------
-        >>> import atomap.api as am
+        >>> import atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> sublattice.construct_zone_axes()
         >>> s = sublattice.get_atom_list_on_image()
@@ -1563,11 +1562,11 @@ class Sublattice():
         if atom_list is None:
             atom_list = self.atom_list
         marker_list = _make_atom_position_marker_list(
-                atom_list,
-                scale=self.pixel_size,
-                color=color,
-                markersize=markersize,
-                add_numbers=add_numbers)
+            atom_list,
+            scale=self.pixel_size,
+            color=color,
+            markersize=markersize,
+            add_numbers=add_numbers)
         '''
         element_list = _make_atom_position_element_list(
                 atom_list,
@@ -1576,7 +1575,7 @@ class Sublattice():
                 markersize=markersize,
                 add_element=add_element)
                 '''
-        
+
         signal = at.array2signal2d(image, self.pixel_size)
         add_marker(signal, marker_list, permanent=True, plot_marker=False)
         return signal
@@ -1628,7 +1627,7 @@ class Sublattice():
 
         Examples
         --------
-        >>> import atomap.api as am
+        >>> import atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> for atom in sublattice.atom_list:
         ...     atom.sigma_x, atom.sigma_y = 1., 1.2
@@ -1641,19 +1640,19 @@ class Sublattice():
         for atom in self.atom_list:
             elli_rot = atom.get_ellipticity_vector()
             elli_list.append([
-                    atom.pixel_x,
-                    atom.pixel_y,
-                    elli_rot[0]*vector_scale,
-                    elli_rot[1]*vector_scale,
-                    ])
+                atom.pixel_x,
+                atom.pixel_y,
+                elli_rot[0] * vector_scale,
+                elli_rot[1] * vector_scale,
+            ])
         signal = at.array2signal2d(image, self.pixel_size)
         marker_list = _make_arrow_marker_list(
-                elli_list,
-                scale=self.pixel_size,
-                color=color)
+            elli_list,
+            scale=self.pixel_size,
+            color=color)
         if atom_plane_list is not None:
             marker_list.extend(_make_atom_planes_marker_list(
-                    atom_plane_list, scale=self.pixel_size, add_numbers=False))
+                atom_plane_list, scale=self.pixel_size, add_numbers=False))
         add_marker(signal, marker_list, permanent=True, plot_marker=False)
         return signal
 
@@ -1666,7 +1665,7 @@ class Sublattice():
         To get the integrated intensity for all the sublattices, use the
         integrate_column_intensity in the Atom_Lattice object.
 
-        See atomap.tools.integrate for more information about the parameters.
+        See atomap_devel_012.tools.integrate for more information about the parameters.
 
         Parameters
         ----------
@@ -1683,7 +1682,7 @@ class Sublattice():
 
         Examples
         --------
-        >>> import atomap.api as am
+        >>> import atomap_devel_012.api as am
         >>> sl = am.dummy_data.get_simple_cubic_sublattice(image_noise=True)
         >>> i_points, i_record, p_record = sl.integrate_column_intensity()
 
@@ -1695,8 +1694,8 @@ class Sublattice():
         if data_to_integrate is None:
             data_to_integrate = self.image
         i_points, i_record, p_record = at.integrate(
-                data_to_integrate, self.x_position, self.y_position,
-                method=method, max_radius=max_radius)
+            data_to_integrate, self.x_position, self.y_position,
+            method=method, max_radius=max_radius)
         return(i_points, i_record, p_record)
 
     def get_atom_column_amplitude_max_intensity(
@@ -1723,7 +1722,7 @@ class Sublattice():
 
         Example
         -------
-        >>> import atomap.api as am
+        >>> import atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> sublattice.find_nearest_neighbors()
         >>> sublattice.get_atom_column_amplitude_max_intensity()
@@ -1738,17 +1737,17 @@ class Sublattice():
             percent_distance = percent_to_nn
             for atom in self.atom_list:
                 atom.calculate_max_intensity(
-                        image,
-                        percent_to_nn=percent_distance,
-                        mask_radius=mask_radius)
+                    image,
+                    percent_to_nn=percent_distance,
+                    mask_radius=mask_radius)
 
         elif mask_radius is not None:
 
             for atom in self.atom_list:
                 atom.calculate_max_intensity(
-                        image,
-                        percent_to_nn=percent_to_nn,
-                        mask_radius=mask_radius)
+                    image,
+                    percent_to_nn=percent_to_nn,
+                    mask_radius=mask_radius)
 ####
 
     def get_atom_column_amplitude_mean_intensity(
@@ -1775,7 +1774,7 @@ class Sublattice():
 
         Example
         -------
-        >>> import atomap.api as am
+        >>> import atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> sublattice.find_nearest_neighbors()
         >>> sublattice.get_atom_column_amplitude_mean_intensity()
@@ -1790,19 +1789,18 @@ class Sublattice():
             percent_distance = percent_to_nn
             for atom in self.atom_list:
                 atom.calculate_mean_intensity(
-                        image,
-                        percent_to_nn=percent_distance,
-                        mask_radius=mask_radius)
+                    image,
+                    percent_to_nn=percent_distance,
+                    mask_radius=mask_radius)
 
         elif mask_radius is not None:
 
             for atom in self.atom_list:
                 atom.calculate_mean_intensity(
-                        image,
-                        percent_to_nn=percent_to_nn,
-                        mask_radius=mask_radius)
+                    image,
+                    percent_to_nn=percent_to_nn,
+                    mask_radius=mask_radius)
 ####
-
 
     def get_atom_column_amplitude_min_intensity(
             self,
@@ -1828,7 +1826,7 @@ class Sublattice():
 
         Example
         -------
-        >>> import atomap.api as am
+        >>> import atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> sublattice.find_nearest_neighbors()
         >>> sublattice.get_atom_column_amplitude_min_intensity()
@@ -1843,17 +1841,17 @@ class Sublattice():
             percent_distance = percent_to_nn
             for atom in self.atom_list:
                 atom.calculate_min_intensity(
-                        image,
-                        percent_to_nn=percent_distance,
-                        mask_radius=None)
+                    image,
+                    percent_to_nn=percent_distance,
+                    mask_radius=None)
 
         elif mask_radius is not None:
 
             for atom in self.atom_list:
                 atom.calculate_min_intensity(
-                        image,
-                        percent_to_nn=percent_to_nn,
-                        mask_radius=mask_radius)
+                    image,
+                    percent_to_nn=percent_to_nn,
+                    mask_radius=mask_radius)
 ####
 
     def get_atom_column_amplitude_total_intensity(
@@ -1870,19 +1868,18 @@ class Sublattice():
             percent_distance = percent_to_nn
             for atom in self.atom_list:
                 atom.calculate_total_intensity(
-                        image,
-                        percent_to_nn=percent_distance,
-                        mask_radius=mask_radius)
+                    image,
+                    percent_to_nn=percent_distance,
+                    mask_radius=mask_radius)
 
         elif mask_radius is not None:
 
             for atom in self.atom_list:
                 atom.calculate_total_intensity(
-                        image,
-                        percent_to_nn=percent_to_nn,
-                        mask_radius=mask_radius)
+                    image,
+                    percent_to_nn=percent_to_nn,
+                    mask_radius=mask_radius)
 ####
-
 
     def get_atom_list_atom_amplitude_gauss2d_range(
             self,
@@ -1905,8 +1902,8 @@ class Sublattice():
         im = hs.signals.Signal2D(data_list[2])
         x_scale = data_list[0][1][0] - data_list[0][0][0]
         y_scale = data_list[1][0][1] - data_list[1][0][0]
-        im.axes_manager[0].scale = x_scale*data_scale
-        im.axes_manager[1].scale = y_scale*data_scale
+        im.axes_manager[0].scale = x_scale * data_scale
+        im.axes_manager[1].scale = y_scale * data_scale
         im.change_dtype('float32')
         if not (atom_plane is None):
             im.metadata.add_node('marker.atom_plane.x')
@@ -1924,11 +1921,11 @@ class Sublattice():
         list_x, list_y, list_z = [], [], []
         for atom in atom_plane0.atom_list:
             pos_x, pos_y = atom_plane1.get_closest_position_to_point(
-                    (atom.pixel_x, atom.pixel_y), extend_line=True)
+                (atom.pixel_x, atom.pixel_y), extend_line=True)
             distance = atom.pixel_distance_from_point(
-                    point=(pos_x, pos_y))
-            list_x.append((pos_x + atom.pixel_x)*0.5)
-            list_y.append((pos_y + atom.pixel_y)*0.5)
+                point=(pos_x, pos_y))
+            list_x.append((pos_x + atom.pixel_x) * 0.5)
+            list_y.append((pos_y + atom.pixel_y) * 0.5)
             list_z.append(distance)
         data_list = np.array([list_x, list_y, list_z])
         return(data_list)
@@ -1963,7 +1960,7 @@ class Sublattice():
 
         Example
         -------
-        >>> import atomap.api as am
+        >>> import atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> sublattice.construct_zone_axes()
         >>> zone = sublattice.zones_axis_average_distances[1]
@@ -1993,7 +1990,7 @@ class Sublattice():
         ----------
         upscale_map : number, default 2.0
             Amount of upscaling compared to the original image given
-            to Atomap. Note, a high value here can greatly increase
+            to atomap_devel_012. Note, a high value here can greatly increase
             the memory use for large images.
         atom_plane_list : List of Atomap AtomPlane object, optional
             If a list of AtomPlanes are given, the plane positions
@@ -2008,7 +2005,7 @@ class Sublattice():
         Examples
         --------
         >>> from numpy.random import random
-        >>> import atomap.api as am
+        >>> import atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> for atom in sublattice.atom_list:
         ...     atom.sigma_x, atom.sigma_y = 0.5*random()+1, 0.5*random()+1
@@ -2069,7 +2066,7 @@ class Sublattice():
         Example
         -------
         >>> from numpy.random import random
-        >>> import atomap.api as am
+        >>> import atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> for atom in sublattice.atom_list:
         ...     atom.sigma_x, atom.sigma_y = 0.5*random()+1, 0.5*random()+1
@@ -2079,16 +2076,16 @@ class Sublattice():
         >>> s = sublattice.get_monolayer_distance_line_profile(zone,plane)
         """
         data_list = self.get_monolayer_distance_list_from_zone_vector(
-                zone_vector)
+            zone_vector)
         signal = self._get_property_line_profile(
-                data_list[0],
-                data_list[1],
-                data_list[2],
-                atom_plane,
-                data_scale_xy=self.pixel_size,
-                data_scale_z=self.pixel_size,
-                invert_line_profile=invert_line_profile,
-                interpolate_value=interpolate_value)
+            data_list[0],
+            data_list[1],
+            data_list[2],
+            atom_plane,
+            data_scale_xy=self.pixel_size,
+            data_scale_z=self.pixel_size,
+            invert_line_profile=invert_line_profile,
+            interpolate_value=interpolate_value)
         return signal
 
     def get_monolayer_distance_map(
@@ -2097,13 +2094,13 @@ class Sublattice():
             atom_plane_list=None,
             upscale_map=2):
         zone_vector_index_list = self._get_zone_vector_index_list(
-                zone_vector_list)
+            zone_vector_list)
         zone_vector_list = []
         signal_list = []
         for zone_index, zone_vector in zone_vector_index_list:
             signal_title = 'Monolayer distance {}'.format(zone_index)
             data_list = self.get_monolayer_distance_list_from_zone_vector(
-                    zone_vector)
+                zone_vector)
             signal = self.get_property_map(
                 data_list[0],
                 data_list[1],
@@ -2119,14 +2116,14 @@ class Sublattice():
             signal = hs.stack(signal_list)
         if atom_plane_list is not None:
             marker_list = _make_atom_planes_marker_list(
-                    atom_plane_list, scale=self.pixel_size, add_numbers=False)
+                atom_plane_list, scale=self.pixel_size, add_numbers=False)
             add_marker(signal, marker_list, permanent=True, plot_marker=False)
         signal_ax0 = signal.axes_manager.signal_axes[0]
         signal_ax1 = signal.axes_manager.signal_axes[1]
-        x = signal_ax0.index2value(int(signal_ax0.high_index*0.1))
-        y = signal_ax1.index2value(int(signal_ax1.high_index*0.1))
+        x = signal_ax0.index2value(int(signal_ax0.high_index * 0.1))
+        y = signal_ax1.index2value(int(signal_ax1.high_index * 0.1))
         text_marker_list = _make_zone_vector_text_marker_list(
-                zone_vector_list, x=x, y=y)
+            zone_vector_list, x=x, y=y)
         add_marker(signal, text_marker_list, permanent=True, plot_marker=False)
         title = 'Sublattice {} monolayer distance'.format(self.name)
         signal.metadata.General.title = title
@@ -2142,14 +2139,14 @@ class Sublattice():
             upscale_map=2):
 
         zone_vector_index_list = self._get_zone_vector_index_list(
-                zone_vector_list)
+            zone_vector_list)
 
         signal_list = []
         zone_vector_list = []
         for zone_index, zone_vector in zone_vector_index_list:
             signal_title = 'Atom distance {}'.format(zone_index)
             data_list = self.get_atom_distance_list_from_zone_vector(
-                    zone_vector)
+                zone_vector)
 
             signal = self.get_property_map(
                 data_list[0],
@@ -2167,14 +2164,14 @@ class Sublattice():
             signal = hs.stack(signal_list)
         if atom_plane_list is not None:
             marker_list = _make_atom_planes_marker_list(
-                    atom_plane_list, scale=self.pixel_size, add_numbers=False)
+                atom_plane_list, scale=self.pixel_size, add_numbers=False)
             add_marker(signal, marker_list, permanent=True, plot_marker=False)
         signal_ax0 = signal.axes_manager.signal_axes[0]
         signal_ax1 = signal.axes_manager.signal_axes[1]
-        x = signal_ax0.index2value(int(signal_ax0.high_index*0.1))
-        y = signal_ax1.index2value(int(signal_ax1.high_index*0.1))
+        x = signal_ax0.index2value(int(signal_ax0.high_index * 0.1))
+        y = signal_ax1.index2value(int(signal_ax1.high_index * 0.1))
         text_marker_list = _make_zone_vector_text_marker_list(
-                zone_vector_list, x=x, y=y)
+            zone_vector_list, x=x, y=y)
         add_marker(signal, text_marker_list, permanent=True, plot_marker=False)
         title = 'Sublattice {} atom distance'.format(self.name)
         signal.metadata.General.title = title
@@ -2187,16 +2184,16 @@ class Sublattice():
             invert_line_profile=False,
             interpolate_value=50):
         data_list = self.get_atom_distance_difference_from_zone_vector(
-                zone_vector)
+            zone_vector)
         signal = self._get_property_line_profile(
-                data_list[0],
-                data_list[1],
-                data_list[2],
-                atom_plane,
-                data_scale_xy=self.pixel_size,
-                data_scale_z=self.pixel_size,
-                invert_line_profile=invert_line_profile,
-                interpolate_value=interpolate_value)
+            data_list[0],
+            data_list[1],
+            data_list[2],
+            atom_plane,
+            data_scale_xy=self.pixel_size,
+            data_scale_z=self.pixel_size,
+            invert_line_profile=invert_line_profile,
+            interpolate_value=interpolate_value)
         return signal
 
     def get_atom_distance_difference_map(
@@ -2208,12 +2205,12 @@ class Sublattice():
             add_zero_value_sublattice=None,
             upscale_map=2):
         zone_vector_index_list = self._get_zone_vector_index_list(
-                zone_vector_list)
+            zone_vector_list)
         zone_vector_list = []
         signal_list = []
         for zone_index, zone_vector in zone_vector_index_list:
             data_list = self.get_atom_distance_difference_from_zone_vector(
-                    zone_vector)
+                zone_vector)
             if len(data_list[2]) is not 0:
                 signal = self.get_property_map(
                     data_list[0],
@@ -2230,14 +2227,14 @@ class Sublattice():
             signal = hs.stack(signal_list)
         if atom_plane_list is not None:
             marker_list = _make_atom_planes_marker_list(
-                    atom_plane_list, scale=self.pixel_size, add_numbers=False)
+                atom_plane_list, scale=self.pixel_size, add_numbers=False)
             add_marker(signal, marker_list, permanent=True, plot_marker=False)
         signal_ax0 = signal.axes_manager.signal_axes[0]
         signal_ax1 = signal.axes_manager.signal_axes[1]
-        x = signal_ax0.index2value(int(signal_ax0.high_index*0.1))
-        y = signal_ax1.index2value(int(signal_ax1.high_index*0.1))
+        x = signal_ax0.index2value(int(signal_ax0.high_index * 0.1))
+        y = signal_ax1.index2value(int(signal_ax1.high_index * 0.1))
         text_marker_list = _make_zone_vector_text_marker_list(
-                zone_vector_list, x=x, y=y)
+            zone_vector_list, x=x, y=y)
         add_marker(signal, text_marker_list, permanent=True, plot_marker=False)
         title = 'Sublattice {} atom distance difference'.format(self.name)
         signal.metadata.General.title = title
@@ -2311,29 +2308,29 @@ class Sublattice():
             for atom_index, atom in enumerate(self.atom_list):
                 if zone_vector in atom._start_atom:
                     ax.plot(
-                            atom.pixel_x,
-                            atom.pixel_y,
-                            'o', color='blue')
+                        atom.pixel_x,
+                        atom.pixel_y,
+                        'o', color='blue')
                     ax.text(
-                            atom.pixel_x,
-                            atom.pixel_y,
-                            str(atom_index))
+                        atom.pixel_x,
+                        atom.pixel_y,
+                        str(atom_index))
             for atom_index, atom in enumerate(self.atom_list):
                 if zone_vector in atom._end_atom:
                     ax.plot(
-                            atom.pixel_x,
-                            atom.pixel_y,
-                            'o', color='green')
+                        atom.pixel_x,
+                        atom.pixel_y,
+                        'o', color='green')
                     ax.text(
-                            atom.pixel_x,
-                            atom.pixel_y,
-                            str(atom_index))
+                        atom.pixel_x,
+                        atom.pixel_y,
+                        str(atom_index))
             ax.set_ylim(0, self.image.shape[0])
             ax.set_xlim(0, self.image.shape[1])
             fig.tight_layout()
             fig.savefig(
-                    "debug_plot_start_end_atoms_zone" +
-                    str(zone_index) + ".jpg")
+                "debug_plot_start_end_atoms_zone" +
+                str(zone_index) + ".jpg")
 
     def _plot_atom_position_convergence(
             self, figname='atom_position_convergence.jpg'):
@@ -2341,15 +2338,15 @@ class Sublattice():
         position_jump_convergence = []
         for atom in self.atom_list:
             dist0 = atom.get_position_convergence(
-                    distance_to_first_position=True)
+                distance_to_first_position=True)
             dist1 = atom.get_position_convergence()
             position_absolute_convergence.append(dist0)
             position_jump_convergence.append(dist1)
 
         absolute_convergence = np.array(
-                position_absolute_convergence).mean(axis=0)
+            position_absolute_convergence).mean(axis=0)
         relative_convergence = np.array(
-                position_jump_convergence).mean(axis=0)
+            position_jump_convergence).mean(axis=0)
 
         fig, axarr = plt.subplots(2, 1, sharex=True)
         absolute_ax = axarr[0]
@@ -2402,12 +2399,12 @@ class Sublattice():
             "split".
         zone_axis_para_list : parameter list or bool, default False
             A zone axes parameter list is used to name and index the zone
-            axes. See atomap.process_parameters for more info. Useful for
+            axes. See atomap_devel_012.process_parameters for more info. Useful for
             automation.
 
         Example
         -------
-        >>> import atomap.api as am
+        >>> import atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> sublattice
         <Sublattice,  (atoms:400,planes:0)>
@@ -2421,8 +2418,8 @@ class Sublattice():
 
         """
         construct_zone_axes_from_sublattice(
-                self, atom_plane_tolerance=atom_plane_tolerance,
-                zone_axis_para_list=zone_axis_para_list)
+            self, atom_plane_tolerance=atom_plane_tolerance,
+            zone_axis_para_list=zone_axis_para_list)
 
     def _get_fingerprint(self, pixel_radius=100):
         """
@@ -2430,7 +2427,7 @@ class Sublattice():
 
         Example
         -------
-        >>> import atomap.api as am
+        >>> import atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> fp = sublattice._get_fingerprint()
         >>> fp_distance = fp.fingerprint_
@@ -2444,11 +2441,11 @@ class Sublattice():
 
         # Assert statements here are just to help the reader understand the
         # algorithm by keeping track of the shapes of arrays used.
-        assert x_pos.shape == y_pos.shape == (n_atoms*(n_atoms-1),)
+        assert x_pos.shape == y_pos.shape == (n_atoms * (n_atoms - 1),)
 
         # Produce a mask that only select vectors that are shorter than radius
         mask = (x_pos**2 + y_pos**2) < pixel_radius**2
-        assert mask.shape == (n_atoms*(n_atoms-1),)
+        assert mask.shape == (n_atoms * (n_atoms - 1),)
         n_atoms_closer_than_radius = mask.sum()
 
         # Apply mask to get nearest neighbours
@@ -2475,7 +2472,7 @@ class Sublattice():
 
         Example
         -------
-        >>> import atomap.api as am
+        >>> import atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> fp = sublattice.get_fingerprint_2d()
         >>> import matplotlib.pyplot as plt
@@ -2491,7 +2488,7 @@ class Sublattice():
 
         Example
         -------
-        >>> import atomap.api as am
+        >>> import atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> fp = sublattice.get_fingerprint_1d()
         >>> import matplotlib.pyplot as plt
@@ -2552,10 +2549,10 @@ class Sublattice():
                 peak_list[-1, i, 1] = atom.pixel_y
 
         signal = Signal2D(image)
-        s = hs.stack([signal]*pos_num)
+        s = hs.stack([signal] * pos_num)
 
-        marker_list_x = np.ones((len(peak_list), atom_num))*-100
-        marker_list_y = np.ones((len(peak_list), atom_num))*-100
+        marker_list_x = np.ones((len(peak_list), atom_num)) * -100
+        marker_list_y = np.ones((len(peak_list), atom_num)) * -100
 
         for index, peaks in enumerate(peak_list):
             marker_list_x[index, 0:len(peaks)] = peaks[:, 0]
@@ -2564,7 +2561,7 @@ class Sublattice():
         marker_list = []
         for i in trange(marker_list_x.shape[1], disable=not show_progressbar):
             m = hs.markers.point(
-                    x=marker_list_x[:, i], y=marker_list_y[:, i], color='red')
+                x=marker_list_x[:, i], y=marker_list_y[:, i], color='red')
             marker_list.append(m)
 
         s.add_marker(marker_list, permanent=True, plot_marker=False)
@@ -2596,8 +2593,8 @@ class Sublattice():
         for atom in self.atom_list:
             centerX, centerY = atom.pixel_x, atom.pixel_y
             temp_mask = _make_circular_mask(
-                        centerY, centerX, image_data.shape[0],
-                        image_data.shape[1], radius)
+                centerY, centerX, image_data.shape[0],
+                image_data.shape[1], radius)
             indices = np.where(temp_mask)
             mask_list.append(indices)
         return(mask_list)
@@ -2625,7 +2622,7 @@ class Sublattice():
 
         Examples
         --------
-        >>> import atomap.api as am
+        >>> import atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> s = sublattice.mask_image_around_sublattice(radius=3)
         >>> s.plot()
@@ -2637,14 +2634,14 @@ class Sublattice():
         for atom in self.atom_list:
             centerX, centerY = atom.pixel_x, atom.pixel_y
             temp_mask = _make_circular_mask(
-                        centerY, centerX, image_data.shape[0],
-                        image_data.shape[1], radius)
+                centerY, centerX, image_data.shape[0],
+                image_data.shape[1], radius)
             mask[np.where(temp_mask)] = True
-        s = hs.signals.Signal2D(mask*image_data)
+        s = hs.signals.Signal2D(mask * image_data)
         return(s)
 
     def find_sublattice_intensity_from_masked_image(
-                            self, image_data=None, radius=2):
+            self, image_data=None, radius=2):
         """Find the image intensity of each atomic column in the sublattice.
 
         The intensity of the atomic column is given by the average intensity
@@ -2663,7 +2660,7 @@ class Sublattice():
 
         Examples
         --------
-        >>> import atomap.api as am
+        >>> import atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> sublattice.find_sublattice_intensity_from_masked_image(
         ...     sublattice.image, 3)
@@ -2696,7 +2693,7 @@ class Sublattice():
 
         Examples
         --------
-        >>> import atomap.api as am
+        >>> import atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> sublattice.plot()
 
@@ -2732,17 +2729,17 @@ class Sublattice():
 
         Examples
         --------
-        >>> import atomap.api as am
+        >>> import atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> sublattice.construct_zone_axes()
         >>> sublattice.plot_planes()
         """
 
         signal = self.get_all_atom_planes_by_zone_vector(
-                      zone_vector_list=None,
-                      image=image,
-                      add_numbers=add_numbers,
-                      color=color)
+            zone_vector_list=None,
+            image=image,
+            add_numbers=add_numbers,
+            color=color)
         signal.plot(**kwargs)
 
     def plot_ellipticity_vectors(self, save=False):
@@ -2764,7 +2761,7 @@ class Sublattice():
 
         Examples
         --------
-        >>> import atomap.api as am
+        >>> import atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_fantasite_sublattice()
         >>> sublattice.construct_zone_axes()
         >>> sublattice.refine_atom_positions_using_2d_gaussian()
@@ -2773,16 +2770,16 @@ class Sublattice():
         """
         ellipticity = np.asarray(self.ellipticity) - 1
         rot = -np.asarray(self.rotation_ellipticity)
-        u_quiver = ellipticity*np.cos(rot)
-        v_quiver = ellipticity*np.sin(rot)
+        u_quiver = ellipticity * np.cos(rot)
+        v_quiver = ellipticity * np.sin(rot)
         u_quiver *= -1
 
         plot_vector_field(
-                self.x_position,
-                self.y_position,
-                u_quiver,
-                v_quiver,
-                save=save)
+            self.x_position,
+            self.y_position,
+            u_quiver,
+            v_quiver,
+            save=save)
 
     def plot_ellipticity_map(self, **kwargs):
         """
@@ -2795,7 +2792,7 @@ class Sublattice():
 
         Examples
         --------
-        >>> import atomap.api as am
+        >>> import atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_fantasite_sublattice()
         >>> sublattice.construct_zone_axes()
         >>> sublattice.refine_atom_positions_using_2d_gaussian()
@@ -2825,7 +2822,7 @@ class Sublattice():
 
         Examples
         --------
-        >>> import atomap.analysis_tools as an
+        >>> import atomap_devel_012.analysis_tools as an
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> sublattice.construct_zone_axes()
         >>> za0 = sublattice.zones_axis_average_distances[0]
@@ -2835,9 +2832,8 @@ class Sublattice():
 
         """
         middle_position_list = an.get_middle_position_list(
-                self, zone_axis0, zone_axis1)
+            self, zone_axis0, zone_axis1)
         return middle_position_list
-
 
     def get_polarization_from_second_sublattice(
             self, zone_axis0, zone_axis1, sublattice, color='cyan'):
@@ -2871,10 +2867,10 @@ class Sublattice():
 
         """
         middle_pos_list = self.get_middle_position_list(
-                zone_axis0, zone_axis1)
+            zone_axis0, zone_axis1)
         vector_list = an.get_vector_shift_list(sublattice, middle_pos_list)
         marker_list = vector_list_to_marker_list(
-                vector_list, color=color, scale=self.pixel_size)
+            vector_list, color=color, scale=self.pixel_size)
         signal = at.array2signal2d(self.image, self.pixel_size)
         signal.add_marker(marker_list, permanent=True, plot_marker=False)
         signal.metadata.add_node('vector_list')

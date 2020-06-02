@@ -3,14 +3,13 @@ import math
 from tqdm import tqdm
 import numpy as np
 import matplotlib.pyplot as plt
-from atomap.atom_finding_refining import get_atom_positions
-from atomap.tools import _get_n_nearest_neighbors, Fingerprinter
-from atomap.atom_finding_refining import _make_circular_mask, do_pca_on_signal
-from atomap.sublattice import Sublattice
-from atomap.atom_lattice import Dumbbell_Lattice
+from atomap_devel_012.atom_finding_refining import get_atom_positions
+from atomap_devel_012.tools import _get_n_nearest_neighbors, Fingerprinter
+from atomap_devel_012.atom_finding_refining import _make_circular_mask, do_pca_on_signal
+from atomap_devel_012.sublattice import Sublattice
+from atomap_devel_012.atom_lattice import Dumbbell_Lattice
 from operator import itemgetter
 from matplotlib.colors import LogNorm
-
 
 
 def find_dumbbell_vector(s, separation):
@@ -30,8 +29,8 @@ def find_dumbbell_vector(s, separation):
 
     Examples
     --------
-    >>> import atomap.api as am
-    >>> from atomap.initial_position_finding import find_dumbbell_vector
+    >>> import atomap_devel_012.api as am
+    >>> from atomap_devel_012.initial_position_finding import find_dumbbell_vector
     >>> s = am.dummy_data.get_dumbbell_signal()
     >>> dumbbell_vector = find_dumbbell_vector(s, 4)
     """
@@ -40,17 +39,17 @@ def find_dumbbell_vector(s, separation):
     fp = Fingerprinter()
     fp.fit(test)
     clusters = fp.cluster_centers_
-    clusters_dist = (clusters[:, 0]**2+clusters[:, 1]**2)**0.5
+    clusters_dist = (clusters[:, 0]**2 + clusters[:, 1]**2)**0.5
     sort_zip = zip(list(clusters_dist), clusters[:, 0], clusters[:, 1])
     cluster_dist, cluster_x, cluster_y = zip(
-            *sorted(sort_zip, key=itemgetter(0)))
+        *sorted(sort_zip, key=itemgetter(0)))
     vec0 = cluster_x[0], cluster_y[0]
     vec1 = cluster_x[1], cluster_y[1]
 
-    if (abs(vec0[0]+vec1[0]) > 0.1) or (abs(vec0[1]+vec1[1]) > 0.1):
+    if (abs(vec0[0] + vec1[0]) > 0.1) or (abs(vec0[1] + vec1[1]) > 0.1):
         raise ValueError(
-                "Dumbbell vectors should be antiparallel, but are %r and %r"
-                % (vec0, vec1))
+            "Dumbbell vectors should be antiparallel, but are %r and %r"
+            % (vec0, vec1))
     return(vec0)
 
 
@@ -71,10 +70,10 @@ def _get_dumbbell_arrays(
 
     Examples
     --------
-    >>> import atomap.api as am
-    >>> from atomap.initial_position_finding import find_dumbbell_vector
-    >>> from atomap.initial_position_finding import _get_dumbbell_arrays
-    >>> from atomap.atom_finding_refining import get_atom_positions
+    >>> import atomap_devel_012.api as am
+    >>> from atomap_devel_012.initial_position_finding import find_dumbbell_vector
+    >>> from atomap_devel_012.initial_position_finding import _get_dumbbell_arrays
+    >>> from atomap_devel_012.atom_finding_refining import get_atom_positions
     >>> s = am.dummy_data.get_dumbbell_signal()
     >>> position_list = get_atom_positions(s, separation=16)
     >>> dumbbell_vector = find_dumbbell_vector(s, 4)
@@ -83,31 +82,32 @@ def _get_dumbbell_arrays(
     next_pos_list0 = []
     next_pos_list1 = []
     for x, y in zip(position_list[:, 0], position_list[:, 1]):
-        next_pos_list0.append([dumbbell_vector[0]+x, dumbbell_vector[1]+y])
-        next_pos_list1.append([-dumbbell_vector[0]+x, -dumbbell_vector[1]+y])
+        next_pos_list0.append([dumbbell_vector[0] + x, dumbbell_vector[1] + y])
+        next_pos_list1.append(
+            [-dumbbell_vector[0] + x, -dumbbell_vector[1] + y])
     next_pos_list0 = np.array(next_pos_list0)
     next_pos_list1 = np.array(next_pos_list1)
 
-    mask_radius = 0.5*(dumbbell_vector[0]**2+dumbbell_vector[1]**2)**0.5
+    mask_radius = 0.5 * (dumbbell_vector[0]**2 + dumbbell_vector[1]**2)**0.5
 
     iterator = zip(
-            position_list[:, 0], position_list[:, 1],
-            next_pos_list0, next_pos_list1)
+        position_list[:, 0], position_list[:, 1],
+        next_pos_list0, next_pos_list1)
     total_num = len(next_pos_list0)
     dumbbell_list0, dumbbell_list1 = [], []
     for x, y, next_pos0, next_pos1 in tqdm(
             iterator, total=total_num, desc="Finding dumbbells",
             disable=not show_progressbar):
         mask1 = _make_circular_mask(
-                next_pos0[1], next_pos0[0],
-                s.data.shape[0], s.data.shape[1],
-                mask_radius)
+            next_pos0[1], next_pos0[0],
+            s.data.shape[0], s.data.shape[1],
+            mask_radius)
         mask2 = _make_circular_mask(
-                next_pos1[1], next_pos1[0],
-                s.data.shape[0], s.data.shape[1],
-                mask_radius)
-        pos1_sum = (s.data*mask1).sum()
-        pos2_sum = (s.data*mask2).sum()
+            next_pos1[1], next_pos1[0],
+            s.data.shape[0], s.data.shape[1],
+            mask_radius)
+        pos1_sum = (s.data * mask1).sum()
+        pos2_sum = (s.data * mask2).sum()
         if pos1_sum > pos2_sum:
             dumbbell_list0.append([x, y])
             dumbbell_list1.append(next_pos0)
@@ -138,9 +138,9 @@ def make_atom_lattice_dumbbell_structure(
 
     Examples
     --------
-    >>> import atomap.api as am
-    >>> import atomap.initial_position_finding as ipf
-    >>> from atomap.atom_finding_refining import get_atom_positions
+    >>> import atomap_devel_012.api as am
+    >>> import atomap_devel_012.initial_position_finding as ipf
+    >>> from atomap_devel_012.atom_finding_refining import get_atom_positions
     >>> s = am.dummy_data.get_dumbbell_signal()
     >>> position_list = get_atom_positions(s, separation=16)
     >>> dumbbell_vector = ipf.find_dumbbell_vector(s, 4)
@@ -148,25 +148,25 @@ def make_atom_lattice_dumbbell_structure(
     ...     s, position_list, dumbbell_vector)
     """
     dumbbell_list0, dumbbell_list1 = _get_dumbbell_arrays(
-            s, position_list, dumbbell_vector,
-            show_progressbar=show_progressbar)
+        s, position_list, dumbbell_vector,
+        show_progressbar=show_progressbar)
     s_modified = do_pca_on_signal(s)
     sublattice0 = Sublattice(
-            atom_position_list=dumbbell_list0,
-            original_image=s.data,
-            image=s_modified.data,
-            color='blue')
+        atom_position_list=dumbbell_list0,
+        original_image=s.data,
+        image=s_modified.data,
+        color='blue')
     sublattice1 = Sublattice(
-            atom_position_list=dumbbell_list1,
-            original_image=s.data,
-            image=s_modified.data,
-            color='red')
+        atom_position_list=dumbbell_list1,
+        original_image=s.data,
+        image=s_modified.data,
+        color='red')
     sublattice0.find_nearest_neighbors()
     sublattice1.find_nearest_neighbors()
     atom_lattice = Dumbbell_Lattice(
-            image=sublattice0.image,
-            name="Dumbbell structure",
-            sublattice_list=[sublattice0, sublattice1])
+        image=sublattice0.image,
+        name="Dumbbell structure",
+        sublattice_list=[sublattice0, sublattice1])
     return(atom_lattice)
 
 
@@ -174,6 +174,8 @@ def make_atom_lattice_dumbbell_structure(
 The log and norm functionality has been added to the atomap 
 upstream master
 '''
+
+
 class AtomAdderRemover:
 
     def __init__(self, image, atom_list=None, distance_threshold=4,
@@ -263,7 +265,7 @@ def add_atoms_with_gui(image, atom_list=None, distance_threshold=4,
         The list can be updated until the figure is closed.
     Examples
     --------
-    >>> import atomap.api as am
+    >>> import atomap_devel_012.api as am
     >>> s = am.dummy_data.get_simple_cubic_signal()
     >>> peaks = am.get_atom_positions(s, separation=9)
     >>> peaks_new = am.add_atoms_with_gui(peaks, s)

@@ -1,5 +1,6 @@
 import numpy as np
-import atomap.tools as to
+import atomap_devel_012.tools as to
+
 
 def get_neighbor_middle_position(atom, za0, za1):
     """Find the middle point between four neighboring atoms.
@@ -23,7 +24,7 @@ def get_neighbor_middle_position(atom, za0, za1):
 
     Examples
     --------
-    >>> import atomap.analysis_tools as an
+    >>> import atomap_devel_012.analysis_tools as an
     >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
     >>> sublattice.construct_zone_axes()
     >>> za0 = sublattice.zones_axis_average_distances[0]
@@ -41,7 +42,7 @@ def get_neighbor_middle_position(atom, za0, za1):
             atom11 = atom10.get_next_atom_in_zone_vector(za0)
             if not (atom11 is False):
                 middle_position = to.get_point_between_four_atoms((
-                        atom00, atom01, atom10, atom11))
+                    atom00, atom01, atom10, atom11))
     return middle_position
 
 
@@ -65,7 +66,7 @@ def get_middle_position_list(sublattice, za0, za1):
 
     Examples
     --------
-    >>> import atomap.analysis_tools as an
+    >>> import atomap_devel_012.analysis_tools as an
     >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
     >>> sublattice.construct_zone_axes()
     >>> za0 = sublattice.zones_axis_average_distances[0]
@@ -100,7 +101,7 @@ def get_vector_shift_list(sublattice, position_list):
 
     Example
     -------
-    >>> import atomap.analysis_tools as an
+    >>> import atomap_devel_012.analysis_tools as an
     >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
     >>> sublattice.construct_zone_axes()
     >>> za0 = sublattice.zones_axis_average_distances[0]
@@ -114,8 +115,8 @@ def get_vector_shift_list(sublattice, position_list):
     vector_list = []
     for position in position_list:
         dist = np.hypot(
-                np.array(sublattice.x_position) - position[0],
-                np.array(sublattice.y_position) - position[1])
+            np.array(sublattice.x_position) - position[0],
+            np.array(sublattice.y_position) - position[1])
         atom_b = sublattice.atom_list[dist.argmin()]
         vector = (position[0], position[1],
                   position[0] - atom_b.pixel_x,

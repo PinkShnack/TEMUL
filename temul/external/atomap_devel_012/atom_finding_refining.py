@@ -6,7 +6,7 @@ import numpy as np
 from skimage.feature import peak_local_max
 import math
 
-from atomap.external.gaussian2d import Gaussian2D
+from atomap_devel_012.external.gaussian2d import Gaussian2D
 
 
 ####
@@ -47,9 +47,9 @@ def get_atom_positions_in_difference_image(
     Example
     -------
     >>> import numpy as np
-    >>> import atomap.api as am
+    >>> import atomap_devel_012.api as am
     >>> s = am.dummy_data.get_simple_cubic_signal()
-    >>> from atomap.atom_finding_refining import get_atom_positions
+    >>> from atomap_devel_012.atom_finding_refining import get_atom_positions
     >>> atom_positions = get_atom_positions(s, 5)
     >>> peak_x = atom_positions[:,0]
     >>> peak_y = atom_positions[:,1]
@@ -72,18 +72,18 @@ def get_atom_positions_in_difference_image(
         image_data = image_data.astype('int32')
 
     temp_positions = peak_local_max(
-            image=image_data,
-            min_distance=int(separation),
-            threshold_rel=threshold_rel,
-            indices=True,
-            num_peaks=num_peaks)
+        image=image_data,
+        min_distance=int(separation),
+        threshold_rel=threshold_rel,
+        indices=True,
+        num_peaks=num_peaks)
 
     # The X- and Y-axes are switched in HyperSpy compared to NumPy
     # so we need to flip them here
     atom_positions = np.fliplr(temp_positions)
     if remove_too_close_atoms:
         atom_positions = _remove_too_close_atoms(
-                atom_positions, int(separation)/2)
+            atom_positions, int(separation) / 2)
     return(atom_positions)
 
 ####
@@ -124,9 +124,9 @@ def get_atom_positions(
     Example
     -------
     >>> import numpy as np
-    >>> import atomap.api as am
+    >>> import atomap_devel_012.api as am
     >>> s = am.dummy_data.get_simple_cubic_signal()
-    >>> from atomap.atom_finding_refining import get_atom_positions
+    >>> from atomap_devel_012.atom_finding_refining import get_atom_positions
     >>> atom_positions = get_atom_positions(s, 5)
     >>> peak_x = atom_positions[:,0]
     >>> peak_y = atom_positions[:,1]
@@ -149,17 +149,17 @@ def get_atom_positions(
         image_data = image_data.astype('int32')
 
     temp_positions = peak_local_max(
-            image=image_data,
-            min_distance=int(separation),
-            threshold_rel=threshold_rel,
-            indices=True)
+        image=image_data,
+        min_distance=int(separation),
+        threshold_rel=threshold_rel,
+        indices=True)
 
     # The X- and Y-axes are switched in HyperSpy compared to NumPy
     # so we need to flip them here
     atom_positions = np.fliplr(temp_positions)
     if remove_too_close_atoms:
         atom_positions = _remove_too_close_atoms(
-                atom_positions, int(separation)/2)
+            atom_positions, int(separation) / 2)
     return(atom_positions)
 
 
@@ -168,7 +168,7 @@ def _remove_too_close_atoms(atom_positions, pixel_separation_tolerance):
     for index0, atom0 in enumerate(atom_positions):
         for index1, atom1 in enumerate(atom_positions):
             if not ((atom0[0] == atom1[0]) and (atom0[1] == atom1[1])):
-                dist = math.hypot(atom0[0]-atom1[0], atom0[1]-atom1[1])
+                dist = math.hypot(atom0[0] - atom1[0], atom0[1] - atom1[1])
                 if pixel_separation_tolerance > dist:
                     if not (index0 in index_list):
                         index_list.append(index1)
@@ -189,7 +189,7 @@ def find_features_by_separation(
         subtract_background=False,
         normalize_intensity=False,
         show_progressbar=True,
-        ):
+):
     """
     Do peak finding with a varying amount of peak separation
     constrained.
@@ -211,20 +211,20 @@ def find_features_by_separation(
 
     """
     separation_list = range(
-            separation_range[0],
-            separation_range[1],
-            separation_step)
+        separation_range[0],
+        separation_range[1],
+        separation_step)
 
     separation_value_list = []
     peak_list = []
     for separation in tqdm(separation_list, disable=not show_progressbar):
         peaks = get_atom_positions(
-                signal,
-                separation=separation,
-                threshold_rel=threshold_rel,
-                pca=pca,
-                normalize_intensity=normalize_intensity,
-                subtract_background=subtract_background)
+            signal,
+            separation=separation,
+            threshold_rel=threshold_rel,
+            pca=pca,
+            normalize_intensity=normalize_intensity,
+            subtract_background=subtract_background)
 
         separation_value_list.append(separation)
         peak_list.append(peaks)
@@ -241,7 +241,7 @@ def get_feature_separation(
         normalize_intensity=False,
         threshold_rel=0.02,
         show_progressbar=True,
-        ):
+):
     """
     Plot the peak positions on in a HyperSpy signal, as a function
     of peak separation.
@@ -261,41 +261,41 @@ def get_feature_separation(
     -------
     >>> import numpy as np
     >>> import hyperspy.api as hs
-    >>> from atomap.atom_finding_refining import get_feature_separation
+    >>> from atomap_devel_012.atom_finding_refining import get_feature_separation
     >>> s = hs.signals.Signal2D(np.random.random((500, 500)))
     >>> s1 = get_feature_separation(s)
 
     """
     if separation_range[0] > separation_range[1]:
         raise ValueError(
-                "The lower range of the separation_range ({0}) can not be "
-                "smaller than the upper range ({1})".format(
-                    separation_range[0], separation_range[0]))
+            "The lower range of the separation_range ({0}) can not be "
+            "smaller than the upper range ({1})".format(
+                separation_range[0], separation_range[0]))
     if separation_range[0] < 1:
         raise ValueError(
-                "The lower range of the separation_range can not be below 1. "
-                "Current value: {0}".format(separation_range[0]))
+            "The lower range of the separation_range can not be below 1. "
+            "Current value: {0}".format(separation_range[0]))
 
     if signal.data.dtype is np.dtype('float16'):
         raise ValueError(
-                "signal has dtype float16, which is not supported "
-                "use signal.change_dtype('float32') to change it")
+            "signal has dtype float16, which is not supported "
+            "use signal.change_dtype('float32') to change it")
 
     separation_list, peak_list = find_features_by_separation(
-            signal=signal,
-            separation_range=separation_range,
-            separation_step=separation_step,
-            threshold_rel=threshold_rel,
-            pca=pca,
-            normalize_intensity=normalize_intensity,
-            subtract_background=subtract_background)
+        signal=signal,
+        separation_range=separation_range,
+        separation_step=separation_step,
+        threshold_rel=threshold_rel,
+        pca=pca,
+        normalize_intensity=normalize_intensity,
+        subtract_background=subtract_background)
 
     scale_x = signal.axes_manager[0].scale
     scale_y = signal.axes_manager[1].scale
     offset_x = signal.axes_manager[0].offset
     offset_y = signal.axes_manager[1].offset
 
-    s = hs.stack([signal]*len(separation_list))
+    s = hs.stack([signal] * len(separation_list))
     s.axes_manager.navigation_axes[0].offset = separation_list[0]
     s.axes_manager.navigation_axes[0].scale = separation_step
     s.axes_manager.navigation_axes[0].name = "Feature separation, [Pixels]"
@@ -306,17 +306,17 @@ def get_feature_separation(
         if len(peaks) > max_peaks:
             max_peaks = len(peaks)
 
-    marker_list_x = np.ones((len(peak_list), max_peaks))*-100
-    marker_list_y = np.ones((len(peak_list), max_peaks))*-100
+    marker_list_x = np.ones((len(peak_list), max_peaks)) * -100
+    marker_list_y = np.ones((len(peak_list), max_peaks)) * -100
 
     for index, peaks in enumerate(peak_list):
-        marker_list_x[index, 0:len(peaks)] = (peaks[:, 0]*scale_x)+offset_x
-        marker_list_y[index, 0:len(peaks)] = (peaks[:, 1]*scale_y)+offset_y
+        marker_list_x[index, 0:len(peaks)] = (peaks[:, 0] * scale_x) + offset_x
+        marker_list_y[index, 0:len(peaks)] = (peaks[:, 1] * scale_y) + offset_y
 
     marker_list = []
     for i in trange(marker_list_x.shape[1], disable=not show_progressbar):
         m = hs.markers.point(
-                x=marker_list_x[:, i], y=marker_list_y[:, i], color='red')
+            x=marker_list_x[:, i], y=marker_list_y[:, i], color='red')
         marker_list.append(m)
 
     s.add_marker(marker_list, permanent=True, plot_marker=False)
@@ -339,9 +339,9 @@ def find_feature_density(
     """
 
     separation_list, peak_list = find_features_by_separation(
-            image_data=image_data,
-            separation_range=separation_range,
-            separation_step=separation_step)
+        image_data=image_data,
+        separation_range=separation_range,
+        separation_step=separation_step)
     peakN_list = []
     for peaks in peak_list:
         peakN_list.append(len(peaks))
@@ -369,15 +369,15 @@ def construct_zone_axes_from_sublattice(
         should be increased the atomic planes are non-continuous and "split".
     zone_axis_para_list : parameter list or bool, default False
         A zone axes parameter list is used to name and index the zone axes.
-        See atomap.process_parameters for more info. Useful for automation.
+        See atomap_devel_012.process_parameters for more info. Useful for automation.
 
     Example
     -------
-    >>> import atomap.api as am
+    >>> import atomap_devel_012.api as am
     >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
     >>> sublattice
     <Sublattice,  (atoms:400,planes:0)>
-    >>> import atomap.atom_finding_refining as afr
+    >>> import atomap_devel_012.atom_finding_refining as afr
     >>> afr.construct_zone_axes_from_sublattice(sublattice)
     >>> sublattice
     <Sublattice,  (atoms:400,planes:4)>
@@ -387,7 +387,7 @@ def construct_zone_axes_from_sublattice(
     sublattice._make_translation_symmetry : How unique zone axes are found
     sublattice._remove_bad_zone_vectors : How fragmented ("bad zone axis")
         are identified and removed.
-    atomap.process_parameters : more info on zone axes parameter list
+    atomap_devel_012.process_parameters : more info on zone axes parameter list
 
     """
     if sublattice._pixel_separation == 0.0:
@@ -403,14 +403,14 @@ def construct_zone_axes_from_sublattice(
                     sublattice.zones_axis_average_distances):
                 index = zone_axis_para['number']
                 zone_axes.append(
-                        sublattice.zones_axis_average_distances[index])
+                    sublattice.zones_axis_average_distances[index])
                 zone_axes_names.append(
-                        zone_axis_para['name'])
+                    zone_axis_para['name'])
         sublattice.zones_axis_average_distances = zone_axes
         sublattice.zones_axis_average_distances_names = zone_axes_names
 
     sublattice._generate_all_atom_plane_list(
-            atom_plane_tolerance=atom_plane_tolerance)
+        atom_plane_tolerance=atom_plane_tolerance)
     sublattice._sort_atom_planes_by_zone_vector()
     sublattice._remove_bad_zone_vectors()
 
@@ -440,15 +440,16 @@ def _make_circular_mask(centerX, centerY, imageSizeX, imageSizeY, radius):
     Examples
     --------
     >>> import numpy as np
-    >>> from atomap.atom_finding_refining import _make_circular_mask
+    >>> from atomap_devel_012.atom_finding_refining import _make_circular_mask
     >>> image = np.ones((9, 9))
     >>> mask = _make_circular_mask(4, 4, 9, 9, 2)
     >>> image_masked = image*mask
     >>> import matplotlib.pyplot as plt
     >>> cax = plt.imshow(image_masked)
     """
-    y, x = np.ogrid[-centerX:imageSizeX-centerX, -centerY:imageSizeY-centerY]
-    mask = x*x + y*y <= radius*radius
+    y, x = np.ogrid[-centerX:imageSizeX -
+                    centerX, -centerY:imageSizeY - centerY]
+    mask = x * x + y * y <= radius * radius
     return(mask)
 
 
@@ -466,20 +467,20 @@ def _make_mask_from_positions(
 
     Examples
     --------
-    >>> from atomap.atom_finding_refining import _make_mask_from_positions
+    >>> from atomap_devel_012.atom_finding_refining import _make_mask_from_positions
     >>> pos = [[10, 20], [25, 10]]
     >>> radius = [2, 1]
     >>> mask = _make_mask_from_positions(pos, radius, (40, 40))
     """
     if len(position_list) != len(radius_list):
         raise ValueError(
-                "position_list and radius_list must be the same length")
+            "position_list and radius_list must be the same length")
     mask = np.zeros(data_shape, dtype=np.bool)
     for position, radius in zip(position_list, radius_list):
         mask += _make_circular_mask(
-                position[0], position[1],
-                data_shape[0], data_shape[1],
-                radius)
+            position[0], position[1],
+            data_shape[0], data_shape[1],
+            radius)
     return(mask)
 
 
@@ -489,16 +490,16 @@ def _crop_mask_slice_indices(mask):
 
     Examples
     --------
-    >>> from atomap.atom_finding_refining import _make_mask_from_positions
-    >>> from atomap.atom_finding_refining import _crop_mask_slice_indices
+    >>> from atomap_devel_012.atom_finding_refining import _make_mask_from_positions
+    >>> from atomap_devel_012.atom_finding_refining import _crop_mask_slice_indices
     >>> mask = _make_mask_from_positions([[10, 20]], [1], (40, 40))
     >>> x0, x1, y0, y1 = _crop_mask_slice_indices(mask)
     >>> mask_crop = mask[x0:x1, y0:y1]
     """
     x0 = np.nonzero(mask)[0].min()
-    x1 = np.nonzero(mask)[0].max()+1
+    x1 = np.nonzero(mask)[0].max() + 1
     y0 = np.nonzero(mask)[1].min()
-    y1 = np.nonzero(mask)[1].max()+1
+    y1 = np.nonzero(mask)[1].max() + 1
     return(x0, x1, y0, y1)
 
 
@@ -533,7 +534,7 @@ def _find_background_value(data, method='median', lowest_percentile=0.1):
     if method == 'minimum':
         background_value = data.min()
     else:
-        amount = int(lowest_percentile*data.size)
+        amount = int(lowest_percentile * data.size)
         if amount == 0:
             amount = 1
         lowest_values = np.sort(data.flatten())[:amount]
@@ -543,7 +544,7 @@ def _find_background_value(data, method='median', lowest_percentile=0.1):
             background_value = np.mean(lowest_values)
         else:
             raise ValueError(
-                    "method must be 'minimum', 'median' or 'mean'")
+                "method must be 'minimum', 'median' or 'mean'")
     return(background_value)
 
 
@@ -568,7 +569,7 @@ def _find_median_upper_percentile(data, upper_percentile=0.1):
     """
     if not ((upper_percentile >= 0.01) and (upper_percentile <= 1.0)):
         raise ValueError("lowest_percentile must be between 0.01 and 1.0")
-    amount = int(upper_percentile*data.size)
+    amount = int(upper_percentile * data.size)
     if amount == 0:
         amount = 1
     high_value = np.median(np.sort(data.flatten())[-amount:])
@@ -589,17 +590,17 @@ def _atom_to_gaussian_component(atom):
 
     Example
     -------
-    >>> from atomap.atom_position import Atom_Position
-    >>> from atomap.atom_finding_refining import _atom_to_gaussian_component
+    >>> from atomap_devel_012.atom_position import Atom_Position
+    >>> from atomap_devel_012.atom_finding_refining import _atom_to_gaussian_component
     >>> atom = Atom_Position(x=5.2, y=7.7, sigma_x=2.1, sigma_y=1.1)
     >>> gaussian = _atom_to_gaussian_component(atom)
     """
     g = Gaussian2D(
-            centre_x=atom.pixel_x,
-            centre_y=atom.pixel_y,
-            sigma_x=atom.sigma_x,
-            sigma_y=atom.sigma_y,
-            rotation=atom.rotation)
+        centre_x=atom.pixel_x,
+        centre_y=atom.pixel_y,
+        sigma_x=atom.sigma_x,
+        sigma_y=atom.sigma_y,
+        rotation=atom.rotation)
     return(g)
 
 
@@ -638,8 +639,8 @@ def _make_model_from_atom_list(
     Examples
     --------
     >>> import numpy as np
-    >>> from atomap.atom_position import Atom_Position
-    >>> from atomap.atom_finding_refining import _make_model_from_atom_list
+    >>> from atomap_devel_012.atom_position import Atom_Position
+    >>> from atomap_devel_012.atom_finding_refining import _make_model_from_atom_list
     >>> atom_list = [Atom_Position(2, 2), Atom_Position(4, 4)]
     >>> image = np.random.random((100, 100))
     >>> m, mask = _make_model_from_atom_list(
@@ -657,15 +658,15 @@ def _make_model_from_atom_list(
             mask_radius = atom.get_closest_neighbor() * percent_to_nn
         radius_list.append(mask_radius)
     mask = _make_mask_from_positions(
-            position_list, radius_list, image_data.shape)
+        position_list, radius_list, image_data.shape)
     x0, x1, y0, y1 = _crop_mask_slice_indices(mask)
     mask_crop = mask[x0:x1, y0:y1].astype('bool')
-    data_mask_crop = (image_data*mask)[x0:x1, y0:y1]
+    data_mask_crop = (image_data * mask)[x0:x1, y0:y1]
 
     upper_value = _find_median_upper_percentile(
-            data_mask_crop[mask_crop], upper_percentile=0.03)
+        data_mask_crop[mask_crop], upper_percentile=0.03)
     lower_value = _find_background_value(
-            data_mask_crop[mask_crop], lowest_percentile=0.03)
+        data_mask_crop[mask_crop], lowest_percentile=0.03)
     data_mask_crop -= lower_value
     data_mask_crop[data_mask_crop < 0] = 0.
 
@@ -676,7 +677,7 @@ def _make_model_from_atom_list(
         if atom._gaussian_fitted:
             gaussian.A.value = atom.amplitude_gaussian
         else:
-            gaussian.A.value = upper_value*10
+            gaussian.A.value = upper_value * 10
         gaussian_list.append(gaussian)
 
     s.axes_manager[0].offset = y0
@@ -729,8 +730,8 @@ def _fit_atom_positions_with_gaussian_model(
     Examples
     --------
     >>> import numpy as np
-    >>> from atomap.atom_position import Atom_Position
-    >>> import atomap.atom_finding_refining as afr
+    >>> from atomap_devel_012.atom_position import Atom_Position
+    >>> import atomap_devel_012.atom_finding_refining as afr
     >>> atom_list = [Atom_Position(2, 2), Atom_Position(4, 4)]
     >>> image = np.zeros((9, 9))
     >>> image[2, 2] = 1.
@@ -744,10 +745,10 @@ def _fit_atom_positions_with_gaussian_model(
             "atom_list argument must be a list of Atom_Position objects")
 
     model, mask = _make_model_from_atom_list(
-                                atom_list,
-                                image_data,
-                                mask_radius=mask_radius,
-                                percent_to_nn=percent_to_nn)
+        atom_list,
+        image_data,
+        mask_radius=mask_radius,
+        percent_to_nn=percent_to_nn)
     x0, x1, y0, y1 = model.axes_manager.signal_extent
 
     if centre_free is False:
@@ -782,7 +783,7 @@ def _fit_atom_positions_with_gaussian_model(
         # If sigma aspect ratio is too large, assume the fitting is bad
         max_sigma = max((abs(g.sigma_x.value), abs(g.sigma_y.value)))
         min_sigma = min((abs(g.sigma_x.value), abs(g.sigma_y.value)))
-        sigma_ratio = max_sigma/min_sigma
+        sigma_ratio = max_sigma / min_sigma
         if sigma_ratio > 4:
             return(False)
         gaussian_list.append(g)
@@ -845,8 +846,8 @@ def fit_atom_positions_gaussian(
     Examples
     --------
     >>> import numpy as np
-    >>> from atomap.atom_position import Atom_Position
-    >>> from atomap.atom_finding_refining import fit_atom_positions_gaussian
+    >>> from atomap_devel_012.atom_position import Atom_Position
+    >>> from atomap_devel_012.atom_finding_refining import fit_atom_positions_gaussian
 
     Fitting atomic columns one-by-one
 
@@ -879,8 +880,8 @@ def fit_atom_positions_gaussian(
     """
     if (mask_radius is None) and (percent_to_nn is None):
         raise ValueError(
-                "Both mask_radius and percent_to_nn is None, one of them must "
-                "be set")
+            "Both mask_radius and percent_to_nn is None, one of them must "
+            "be set")
     if (not hasattr(atom_list[0], 'pixel_x')) or hasattr(atom_list, 'pixel_x'):
         raise TypeError(
             "atom_list argument must be a list of Atom_Position objects")
@@ -889,21 +890,21 @@ def fit_atom_positions_gaussian(
         temp_mask_radius = mask_radius
         temp_percent_to_nn = percent_to_nn
         g_list = _fit_atom_positions_with_gaussian_model(
-                atom_list,
-                image_data,
-                rotation_enabled=rotation_enabled,
-                mask_radius=temp_mask_radius,
-                percent_to_nn=temp_percent_to_nn,
-                centre_free=centre_free)
+            atom_list,
+            image_data,
+            rotation_enabled=rotation_enabled,
+            mask_radius=temp_mask_radius,
+            percent_to_nn=temp_percent_to_nn,
+            centre_free=centre_free)
         if g_list is False:
             if i == 9:
                 for atom in atom_list:
                     atom.old_pixel_x_list.append(atom.pixel_x)
                     atom.old_pixel_y_list.append(atom.pixel_y)
                     atom.pixel_x, atom.pixel_y = atom.get_center_position_com(
-                            image_data,
-                            percent_to_nn=temp_percent_to_nn,
-                            mask_radius=temp_mask_radius)
+                        image_data,
+                        percent_to_nn=temp_percent_to_nn,
+                        mask_radius=temp_mask_radius)
                     atom.amplitude_gaussian = 0.0
                 break
             else:
@@ -941,23 +942,23 @@ def refine_sublattice(
         image = refinement_config[0]
         number_of_refinements = refinement_config[1]
         refinement_type = refinement_config[2]
-        for index in range(1, number_of_refinements+1):
+        for index in range(1, number_of_refinements + 1):
             print(
-                    str(current_counts) + "/" + str(
-                        total_number_of_refinements))
+                str(current_counts) + "/" + str(
+                    total_number_of_refinements))
             if refinement_type == 'gaussian':
                 sublattice.refine_atom_positions_using_2d_gaussian(
-                        image,
-                        rotation_enabled=False,
-                        percent_to_nn=percent_to_nn)
+                    image,
+                    rotation_enabled=False,
+                    percent_to_nn=percent_to_nn)
                 sublattice.refine_atom_positions_using_2d_gaussian(
-                        image,
-                        rotation_enabled=True,
-                        percent_to_nn=percent_to_nn)
+                    image,
+                    rotation_enabled=True,
+                    percent_to_nn=percent_to_nn)
             elif refinement_type == 'center_of_mass':
                 sublattice.refine_atom_positions_using_center_of_mass(
-                        image,
-                        percent_to_nn=percent_to_nn)
+                    image,
+                    percent_to_nn=percent_to_nn)
             current_counts += 1
 
 
@@ -976,11 +977,11 @@ def subtract_average_background(signal, gaussian_blur=30):
     signal.change_dtype('float64')
     temp_signal = signal.deepcopy()
     average_background_data = gaussian_filter(
-            temp_signal.data, gaussian_blur, mode='nearest')
+        temp_signal.data, gaussian_blur, mode='nearest')
     background_subtracted = signal.deepcopy().data -\
         average_background_data
     temp_signal = hs.signals.Signal1D(
-            background_subtracted-background_subtracted.min())
+        background_subtracted - background_subtracted.min())
     temp_signal.axes_manager[0].scale = signal.axes_manager[0].scale
     temp_signal.axes_manager[1].scale = signal.axes_manager[1].scale
     return(temp_signal)
@@ -989,10 +990,10 @@ def subtract_average_background(signal, gaussian_blur=30):
 def normalize_signal(signal, invert_signal=False):
     temp_signal = signal.deepcopy()
     if invert_signal:
-        temp_signal_data = 1./temp_signal.data
+        temp_signal_data = 1. / temp_signal.data
     else:
         temp_signal_data = temp_signal.data
-    temp_signal_data = temp_signal_data/temp_signal_data.max()
+    temp_signal_data = temp_signal_data / temp_signal_data.max()
     temp_signal = Signal2D(temp_signal_data)
     temp_signal.axes_manager[0].scale = signal.axes_manager[0].scale
     temp_signal.axes_manager[1].scale = signal.axes_manager[1].scale

@@ -1,4 +1,4 @@
-import atomap.example_data as ed
+import atomap_devel_012.example_data as ed
 
 
 class TestExampleData:

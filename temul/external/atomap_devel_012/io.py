@@ -1,13 +1,14 @@
 """Module containing functions to save and load Atom_Lattice objects."""
 import h5py
 import os
-from atomap.atom_lattice import Atom_Lattice
-from atomap.sublattice import Sublattice
-from atomap.atom_finding_refining import construct_zone_axes_from_sublattice
+from atomap_devel_012.atom_lattice import Atom_Lattice
+from atomap_devel_012.sublattice import Sublattice
+from atomap_devel_012.atom_finding_refining import construct_zone_axes_from_sublattice
 import numpy as np
 ####
 import ast
 ####
+
 
 def load_atom_lattice_from_hdf5(filename, construct_zone_axes=True):
     """
@@ -39,7 +40,7 @@ def load_atom_lattice_from_hdf5(filename, construct_zone_axes=True):
 
             if 'sublattice_index' in sublattice_set.attrs.keys():
                 sublattice_index_list.append(
-                        sublattice_set.attrs['sublattice_index'])
+                    sublattice_set.attrs['sublattice_index'])
 
             sublattice = Sublattice(
                 atom_position_array,
@@ -102,10 +103,10 @@ def load_atom_lattice_from_hdf5(filename, construct_zone_axes=True):
 
             if 'z_height' in sublattice_set.keys():
                 z_height_array = sublattice_set['z_height'][:]
-                #z_height_array_2 = [] # first loop needed because i can't eval() the z_height itself, don't really know why
-                #for i in range(0, len(z_height_array)):
-                 #   z_h = ast.literal_eval(z_height_array[i])
-                  #  z_height_array_2.append(z_h)
+                # z_height_array_2 = [] # first loop needed because i can't eval() the z_height itself, don't really know why
+                # for i in range(0, len(z_height_array)):
+                #   z_h = ast.literal_eval(z_height_array[i])
+                #  z_height_array_2.append(z_h)
                 for atom, z_height in zip(
                         sublattice.atom_list,
                         z_height_array):
@@ -130,7 +131,7 @@ def load_atom_lattice_from_hdf5(filename, construct_zone_axes=True):
 
             if 'pixel_separation' in sublattice_set.attrs.keys():
                 sublattice._pixel_separation = sublattice_set.attrs[
-                        'pixel_separation']
+                    'pixel_separation']
             else:
                 sublattice._pixel_separation = 0.0
 
@@ -139,7 +140,7 @@ def load_atom_lattice_from_hdf5(filename, construct_zone_axes=True):
 
             if 'zone_axis_names_byte' in sublattice_set.keys():
                 zone_axis_list_byte = sublattice_set.attrs[
-                        'zone_axis_names_byte']
+                    'zone_axis_names_byte']
                 zone_axis_list = []
                 for zone_axis_name_byte in zone_axis_list_byte:
                     zone_axis_list.append(zone_axis_name_byte.decode())
@@ -166,7 +167,7 @@ def load_atom_lattice_from_hdf5(filename, construct_zone_axes=True):
     if 'pixel_separation' in h5f.attrs.keys():
         atom_lattice._pixel_separation = h5f.attrs['pixel_separation']
     else:
-        atom_lattice._pixel_separation = 0.8/sublattice.pixel_size
+        atom_lattice._pixel_separation = 0.8 / sublattice.pixel_size
     if type(atom_lattice.name) == bytes:
         atom_lattice.name = atom_lattice.name.decode()
     h5f.close()
@@ -185,8 +186,8 @@ def save_atom_lattice_to_hdf5(atom_lattice, filename, overwrite=False):
     """
     if os.path.isfile(filename) and not overwrite:
         raise FileExistsError(
-                "The file %s already exist, either change the name or "
-                "use overwrite=True")
+            "The file %s already exist, either change the name or "
+            "use overwrite=True")
     elif os.path.isfile(filename) and overwrite:
         os.remove(filename)
 
@@ -209,82 +210,86 @@ def save_atom_lattice_to_hdf5(atom_lattice, filename, overwrite=False):
         sigma_y = np.array(sublattice.sigma_y)
         rotation = np.array(sublattice.rotation)
 ####
-        amplitude_max_intensity = np.array(sublattice.atom_amplitude_max_intensity)
-        amplitude_mean_intensity = np.array(sublattice.atom_amplitude_mean_intensity)
-        amplitude_min_intensity = np.array(sublattice.atom_amplitude_min_intensity)
-        amplitude_total_intensity = np.array(sublattice.atom_amplitude_total_intensity)
+        amplitude_max_intensity = np.array(
+            sublattice.atom_amplitude_max_intensity)
+        amplitude_mean_intensity = np.array(
+            sublattice.atom_amplitude_mean_intensity)
+        amplitude_min_intensity = np.array(
+            sublattice.atom_amplitude_min_intensity)
+        amplitude_total_intensity = np.array(
+            sublattice.atom_amplitude_total_intensity)
         elements = np.array(sublattice.elements, dtype=np.dtype('O'))
         z_height = np.array(sublattice.z_height, dtype=np.dtype('O'))
 
 ####
         h5f.create_dataset(
-                subgroup_name + "/modified_image_data",
-                data=modified_image_data,
-                chunks=True,
-                compression='gzip')
+            subgroup_name + "/modified_image_data",
+            data=modified_image_data,
+            chunks=True,
+            compression='gzip')
         h5f.create_dataset(
-                subgroup_name + "/original_image_data",
-                data=original_image_data,
-                chunks=True,
-                compression='gzip')
+            subgroup_name + "/original_image_data",
+            data=original_image_data,
+            chunks=True,
+            compression='gzip')
 
         h5f.create_dataset(
-                subgroup_name + "/atom_positions",
-                data=atom_positions,
-                chunks=True,
-                compression='gzip')
+            subgroup_name + "/atom_positions",
+            data=atom_positions,
+            chunks=True,
+            compression='gzip')
         h5f.create_dataset(
-                subgroup_name + "/sigma_x",
-                data=sigma_x,
-                chunks=True,
-                compression='gzip')
+            subgroup_name + "/sigma_x",
+            data=sigma_x,
+            chunks=True,
+            compression='gzip')
         h5f.create_dataset(
-                subgroup_name + "/sigma_y",
-                data=sigma_y,
-                chunks=True,
-                compression='gzip')
+            subgroup_name + "/sigma_y",
+            data=sigma_y,
+            chunks=True,
+            compression='gzip')
         h5f.create_dataset(
-                subgroup_name + "/rotation",
-                data=rotation,
-                chunks=True,
-                compression='gzip')
+            subgroup_name + "/rotation",
+            data=rotation,
+            chunks=True,
+            compression='gzip')
 ####
         h5f.create_dataset(
-                subgroup_name + "/amplitude_max_intensity",
-                data=amplitude_max_intensity,
-                chunks=True,
-                compression='gzip')
+            subgroup_name + "/amplitude_max_intensity",
+            data=amplitude_max_intensity,
+            chunks=True,
+            compression='gzip')
         h5f.create_dataset(
-                subgroup_name + "/amplitude_mean_intensity",
-                data=amplitude_mean_intensity,
-                chunks=True,
-                compression='gzip')
+            subgroup_name + "/amplitude_mean_intensity",
+            data=amplitude_mean_intensity,
+            chunks=True,
+            compression='gzip')
         h5f.create_dataset(
-                subgroup_name + "/amplitude_min_intensity",
-                data=amplitude_min_intensity,
-                chunks=True,
-                compression='gzip')
+            subgroup_name + "/amplitude_min_intensity",
+            data=amplitude_min_intensity,
+            chunks=True,
+            compression='gzip')
         h5f.create_dataset(
-                subgroup_name + "/amplitude_total_intensity",
-                data=amplitude_total_intensity,
-                chunks=True,
-                compression='gzip')
+            subgroup_name + "/amplitude_total_intensity",
+            data=amplitude_total_intensity,
+            chunks=True,
+            compression='gzip')
         h5f.create_dataset(
-                subgroup_name + "/elements",
-                data=elements,
-                chunks=True,
-                compression='gzip',
-                dtype=h5py.special_dtype(vlen=str))
+            subgroup_name + "/elements",
+            data=elements,
+            chunks=True,
+            compression='gzip',
+            dtype=h5py.special_dtype(vlen=str))
         h5f.create_dataset(
-                subgroup_name + "/z_height",
-                data=z_height,
-                chunks=True,
-                compression='gzip',
-                dtype=h5py.special_dtype(vlen=str))
+            subgroup_name + "/z_height",
+            data=z_height,
+            chunks=True,
+            compression='gzip',
+            dtype=h5py.special_dtype(vlen=str))
 ####
         h5f[subgroup_name].attrs['pixel_size'] = sublattice.pixel_size
         h5f[subgroup_name].attrs[
-                'pixel_separation'] = sublattice._pixel_separation
+            'pixel_separation'] = sublattice._pixel_separation
         h5f[subgroup_name].attrs['name'] = sublattice.name
         h5f[subgroup_name].attrs['plot_color'] = sublattice._plot_color
         h5f[subgroup_name].attrs['sublattice_index'] = index
@@ -296,7 +301,7 @@ def save_atom_lattice_to_hdf5(atom_lattice, filename, overwrite=False):
         for zone_axis_name in zone_axis_names:
             zone_axis_names_byte.append(zone_axis_name.encode())
         h5f[subgroup_name].attrs[
-                'zone_axis_names_byte'] = zone_axis_names_byte
+            'zone_axis_names_byte'] = zone_axis_names_byte
 
     h5f.create_dataset(
         "image_data0",

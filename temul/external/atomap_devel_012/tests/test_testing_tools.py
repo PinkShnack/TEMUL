@@ -2,7 +2,7 @@ import unittest
 import pytest
 from pytest import approx
 import numpy as np
-import atomap.testing_tools as tt
+import atomap_devel_012.testing_tools as tt
 
 
 class TestMakeTestData:
@@ -83,7 +83,7 @@ class TestMakeTestData:
         sx, sy, A, r = 2.1, 1.3, 9.5, 1.4
         td = tt.MakeTestData(100, 100)
         td.add_atom_list(
-                x=x, y=y, sigma_x=sx, sigma_y=sy, amplitude=A, rotation=r)
+            x=x, y=y, sigma_x=sx, sigma_y=sy, amplitude=A, rotation=r)
         atom_list = td.sublattice.atom_list
         assert len(atom_list) == len(x)
         for tx, ty, atom in zip(x, y, atom_list):
@@ -103,7 +103,7 @@ class TestMakeTestData:
         r = np.random.random_sample(size=len(x))
         td = tt.MakeTestData(100, 100)
         td.add_atom_list(
-                x=x, y=y, sigma_x=sx, sigma_y=sy, amplitude=A, rotation=r)
+            x=x, y=y, sigma_x=sx, sigma_y=sy, amplitude=A, rotation=r)
         atom_list = td.sublattice.atom_list
         assert len(atom_list) == len(x)
 
@@ -148,7 +148,7 @@ class TestMakeTestData:
         r = np.random.random_sample(size=len(x))
         td = tt.MakeTestData(100, 100)
         td.add_atom_list(
-                x=x, y=y, sigma_x=sx, sigma_y=sy, amplitude=A, rotation=r)
+            x=x, y=y, sigma_x=sx, sigma_y=sy, amplitude=A, rotation=r)
         gaussian_list = td.gaussian_list
         assert len(gaussian_list) == len(x)
 
@@ -168,14 +168,14 @@ class TestMakeTestData:
         testdata.add_atom_list(x, y)
         sublattice = testdata.sublattice
         assert (sublattice.image == 0).all()
-        assert len(sublattice.atom_list) == 150*150
+        assert len(sublattice.atom_list) == 150 * 150
 
 
 class TestMakeVectorTestGaussian(unittest.TestCase):
     def test_running(self):
         x, y, std, n = 10, 5, 0.5, 5000
         point_list = tt.make_vector_test_gaussian(
-                x, y, standard_deviation=std, n=n)
+            x, y, standard_deviation=std, n=n)
         point_list_meanX = point_list[:, 0].mean()
         point_list_meanY = point_list[:, 1].mean()
         point_list_stdX = point_list[:, 0].std()
@@ -193,5 +193,5 @@ class TestMakeNnTestDataset(unittest.TestCase):
         xN, yN, n = 4, 4, 60
         point_list = tt.make_nn_test_dataset(xN=xN, yN=yN, n=n)
 
-        total_point = n*(((2*xN)+1)*((2*yN)+1)-1)
+        total_point = n * (((2 * xN) + 1) * ((2 * yN) + 1) - 1)
         assert point_list.shape[0] == total_point

@@ -5,7 +5,7 @@ from scipy.stats import linregress
 from scipy import interpolate
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-from atomap.fitting_tools import (
+from atomap_devel_012.fitting_tools import (
     ODR_linear_fitter, linear_fit_func, get_shortest_distance_point_to_line)
 
 
@@ -36,7 +36,7 @@ class Atom_Plane():
         self._find_start_atom()
         self._find_end_atom()
         self.sort_atoms_by_distance_to_point(
-                self.start_atom.get_pixel_position())
+            self.start_atom.get_pixel_position())
 
         self.atom_distance_list = self.get_atom_distance_list()
         self._link_atom_to_atom_plane()
@@ -46,7 +46,7 @@ class Atom_Plane():
             self.__class__.__name__,
             self.zone_vector,
             len(self.atom_list),
-            )
+        )
 
     @property
     def x_position(self):
@@ -78,7 +78,7 @@ class Atom_Plane():
 
     @property
     def sigma_average(self):
-        sigma = np.array(self.sigma_x)+np.array(self.sigma_y)
+        sigma = np.array(self.sigma_x) + np.array(self.sigma_y)
         sigma *= 0.5
         return(sigma.tolist())
 
@@ -153,8 +153,8 @@ class Atom_Plane():
 
     def sort_atoms_by_distance_to_point(self, point=(0, 0)):
         self.atom_list.sort(
-                key=operator.methodcaller(
-                    'pixel_distance_from_point', point))
+            key=operator.methodcaller(
+                'pixel_distance_from_point', point))
 
     def get_slice_between_two_atoms(self, atom1, atom2):
         if not(atom1 in self.atom_list) and not(atom2 in self.atom_list):
@@ -182,7 +182,7 @@ class Atom_Plane():
         for atom_index, atom in enumerate(self.atom_list):
             if not (atom_index == 0):
                 distance = atom.get_pixel_distance_from_another_atom(
-                        self.atom_list[atom_index-1])
+                    self.atom_list[atom_index - 1])
                 atom_distances.append(distance)
         return(atom_distances)
 
@@ -198,7 +198,7 @@ class Atom_Plane():
         Example
         -------
         >>> from numpy.random import random
-        >>> from atomap.sublattice import Sublattice
+        >>> from atomap_devel_012.sublattice import Sublattice
         >>> pos = [[x, y] for x in range(9) for y in range(9)]
         >>> sublattice = Sublattice(pos, random((9, 9)))
         >>> sublattice.construct_zone_axes()
@@ -213,12 +213,12 @@ class Atom_Plane():
             return(None)
         for atom_index, atom in enumerate(self.atom_list):
             if not (atom_index == 0):
-                previous_atom = self.atom_list[atom_index-1]
+                previous_atom = self.atom_list[atom_index - 1]
                 difference_vector = previous_atom.get_pixel_difference(atom)
-                pixel_x = previous_atom.pixel_x - difference_vector[0]/2
-                pixel_y = previous_atom.pixel_y - difference_vector[1]/2
+                pixel_x = previous_atom.pixel_x - difference_vector[0] / 2
+                pixel_y = previous_atom.pixel_y - difference_vector[1] / 2
                 distance = atom.get_pixel_distance_from_another_atom(
-                        previous_atom)
+                    previous_atom)
                 atom_distances.append([pixel_x, pixel_y, distance])
         atom_distances = np.array(atom_distances)
         return(atom_distances)
@@ -246,7 +246,7 @@ class Atom_Plane():
         atom = self.start_atom
         while start_orthogonal_atom_plane is None:
             temp_plane = atom.can_atom_plane_be_reached_through_zone_vector(
-                    atom_plane, zone_vector)
+                atom_plane, zone_vector)
             if temp_plane is False:
                 atom = atom.get_next_atom_in_atom_plane(self)
                 if atom is False:
@@ -258,10 +258,10 @@ class Atom_Plane():
         atom = self.end_atom
         while end_orthogonal_atom_plane is None:
             temp_plane = atom.can_atom_plane_be_reached_through_zone_vector(
-                    atom_plane, zone_vector)
+                atom_plane, zone_vector)
             if temp_plane is False:
                 atom = atom.get_previous_atom_in_atom_plane(
-                        self)
+                    self)
                 if atom is False:
                     break
             else:
@@ -281,12 +281,12 @@ class Atom_Plane():
         for index, (x_pos, y_pos, z_pos) in enumerate(
                 zip(x_pos_list, y_pos_list, z_pos_list)):
             if not (index == 0):
-                previous_x_pos = x_pos_list[index-1]
-                previous_y_pos = y_pos_list[index-1]
-                previous_z_pos = z_pos_list[index-1]
+                previous_x_pos = x_pos_list[index - 1]
+                previous_y_pos = y_pos_list[index - 1]
+                previous_z_pos = z_pos_list[index - 1]
 
-                new_x_pos = (x_pos + previous_x_pos)*0.5
-                new_y_pos = (y_pos + previous_y_pos)*0.5
+                new_x_pos = (x_pos + previous_x_pos) * 0.5
+                new_y_pos = (y_pos + previous_y_pos) * 0.5
                 new_z_pos = (z_pos - previous_z_pos)
                 new_data_list.append([new_x_pos, new_y_pos, new_z_pos])
         new_data_list = np.array(new_data_list)
@@ -304,7 +304,7 @@ class Atom_Plane():
         x_pos = self.get_x_position_list()
         y_pos = self.get_y_position_list()
 
-        if (max(x_pos)-min(x_pos)) > (max(y_pos)-min(y_pos)):
+        if (max(x_pos) - min(x_pos)) > (max(y_pos) - min(y_pos)):
             pos_list0 = copy.deepcopy(x_pos)
             pos_list1 = copy.deepcopy(y_pos)
         else:
@@ -315,8 +315,8 @@ class Atom_Plane():
             reg_results = linregress(pos_list0[:4], pos_list1[:4])
             delta_0 = np.mean((
                 np.array(pos_list0[0:3]) -
-                np.array(pos_list0[1:4]).mean()))*40
-            delta_1 = reg_results[0]*delta_0
+                np.array(pos_list0[1:4]).mean())) * 40
+            delta_1 = reg_results[0] * delta_0
             start_0 = delta_0 + pos_list0[0]
             start_1 = delta_1 + pos_list1[0]
             pos_list0.insert(0, start_0)
@@ -324,9 +324,9 @@ class Atom_Plane():
 
             reg_results = linregress(pos_list0[-4:], pos_list1[-4:])
             delta_0 = np.mean((
-                        np.array(pos_list0[-3:]) -
-                        np.array(pos_list0[-4:-1]).mean()))*40
-            delta_1 = reg_results[0]*delta_0
+                np.array(pos_list0[-3:]) -
+                np.array(pos_list0[-4:-1]).mean())) * 40
+            delta_1 = reg_results[0] * delta_0
             end_0 = delta_0 + pos_list0[-1]
             end_1 = delta_1 + pos_list1[-1]
             pos_list0.append(end_0)
@@ -337,10 +337,10 @@ class Atom_Plane():
             pos_list1)
 
         new_pos_list0 = np.linspace(
-                pos_list0[0], pos_list0[-1], len(pos_list0)*100)
+            pos_list0[0], pos_list0[-1], len(pos_list0) * 100)
         new_pos_list1 = f(new_pos_list0)
 
-        if (max(x_pos)-min(x_pos)) > (max(y_pos)-min(y_pos)):
+        if (max(x_pos) - min(x_pos)) > (max(y_pos) - min(y_pos)):
             new_x = new_pos_list0
             new_y = new_pos_list1
         else:

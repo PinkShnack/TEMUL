@@ -10,7 +10,7 @@ import hyperspy.api as hs
 from hyperspy.signals import Signal1D, Signal2D
 from skimage.morphology import watershed
 
-from atomap.atom_finding_refining import (
+from atomap_devel_012.atom_finding_refining import (
     _fit_atom_positions_with_gaussian_model)
 from sklearn.cluster import DBSCAN
 import logging
@@ -93,7 +93,7 @@ def remove_atoms_from_image_using_2d_gaussian(
     >>> atom_lattice = am.dummy_data.get_simple_atom_lattice_two_sublattices()
     >>> sublattice0 = atom_lattice.sublattice_list[0]
     >>> sublattice0.find_nearest_neighbors()
-    >>> import atomap.tools as at
+    >>> import atomap_devel_012.tools as at
     >>> image_subtracted = at.remove_atoms_from_image_using_2d_gaussian(
     ...        image=atom_lattice.image, sublattice=sublattice0,
     ...        show_progressbar=False)
@@ -112,9 +112,9 @@ def remove_atoms_from_image_using_2d_gaussian(
     """
     if sublattice.atom_list[0].nearest_neighbor_list is None:
         raise ValueError(
-                "The atom_position objects does not seem to have a "
-                "populated nearest neighbor list. "
-                "Has sublattice.find_nearest_neighbors() been called?")
+            "The atom_position objects does not seem to have a "
+            "populated nearest neighbor list. "
+            "Has sublattice.find_nearest_neighbors() been called?")
 
     model_image = np.zeros(image.shape)
     X, Y = np.meshgrid(np.arange(
@@ -432,8 +432,8 @@ def get_point_between_four_atoms(atom_list):
 
     Example
     -------
-    >>> import atomap.tools as at
-    >>> import atomap.atom_position as ap
+    >>> import atomap_devel_012.tools as at
+    >>> import atomap_devel_012.atom_position as ap
     >>> atom0, atom1 = ap.Atom_Position(10, 30), ap.Atom_Position(20, 30)
     >>> atom2, atom3 = ap.Atom_Position(10, 40), ap.Atom_Position(20, 40)
     >>> mid_pos = at.get_point_between_four_atoms((atom0, atom1, atom2, atom3))
@@ -755,14 +755,14 @@ def project_position_property_sum_planes(
     Example
     -------
     >>> from numpy.random import random
-    >>> from atomap.sublattice import Sublattice
+    >>> from atomap_devel_012.sublattice import Sublattice
     >>> pos = [[x, y] for x in range(9) for y in range(9)]
     >>> sublattice = Sublattice(pos, random((9, 9)))
     >>> sublattice.construct_zone_axes()
     >>> x, y = sublattice.x_position, sublattice.y_position
     >>> z = sublattice.ellipticity
     >>> input_data_list = np.array([x, y, z]).swapaxes(0, 1)
-    >>> from atomap.tools import project_position_property_sum_planes
+    >>> from atomap_devel_012.tools import project_position_property_sum_planes
     >>> plane = sublattice.atom_plane_list[10]
     >>> data = project_position_property_sum_planes(input_data_list, plane)
     >>> positions = data[:,0]
@@ -993,7 +993,6 @@ class Fingerprinter:
 
 def integrate(s, points_x, points_y, method='Voronoi', max_radius='Auto',
               show_progressbar=True):
-
     """Given a spectrum image a set of points and a maximum outer radius,
     this function integrates around each point in an image, using either
     Voronoi cell or watershed segmentation methods.
@@ -1033,8 +1032,8 @@ def integrate(s, points_x, points_y, method='Voronoi', max_radius='Auto',
     Examples
     --------
 
-    >>> import atomap.api as am
-    >>> from atomap.tools import integrate
+    >>> import atomap_devel_012.api as am
+    >>> from atomap_devel_012.tools import integrate
     >>> import hyperspy.api as hs
     >>> sublattice = am.dummy_data.get_simple_cubic_sublattice(
     ...        image_noise=True)
@@ -1106,7 +1105,7 @@ def integrate(s, points_x, points_y, method='Voronoi', max_radius='Auto',
 
     else:
         raise NotImplementedError(
-                "Oops! You have asked for an unimplemented method.")
+            "Oops! You have asked for an unimplemented method.")
     point_record -= 1
     for point in trange(points[0].shape[0], desc='Integrating',
                         disable=not show_progressbar):
@@ -1150,8 +1149,8 @@ def fliplr_points_and_signal(signal, x_array, y_array):
 
     Examples
     --------
-    >>> import atomap.api as am
-    >>> import atomap.tools as to
+    >>> import atomap_devel_012.api as am
+    >>> import atomap_devel_012.tools as to
     >>> sublattice = am.dummy_data.get_distorted_cubic_sublattice()
     >>> s = sublattice.get_atom_list_on_image()
     >>> x, y = sublattice.x_position, sublattice.y_position
@@ -1188,8 +1187,8 @@ def fliplr_points_around_signal_centre(signal, x_array, y_array):
 
     Examples
     --------
-    >>> import atomap.api as am
-    >>> import atomap.tools as to
+    >>> import atomap_devel_012.api as am
+    >>> import atomap_devel_012.tools as to
     >>> sublattice = am.dummy_data.get_distorted_cubic_sublattice()
     >>> s = sublattice.get_atom_list_on_image()
     >>> x, y = sublattice.x_position, sublattice.y_position
@@ -1224,8 +1223,8 @@ def rotate_points_and_signal(signal, x_array, y_array, rotation):
 
     Examples
     --------
-    >>> import atomap.api as am
-    >>> import atomap.tools as to
+    >>> import atomap_devel_012.api as am
+    >>> import atomap_devel_012.tools as to
     >>> sublattice = am.dummy_data.get_distorted_cubic_sublattice()
     >>> s = sublattice.get_atom_list_on_image()
     >>> x, y = sublattice.x_position, sublattice.y_position
@@ -1262,8 +1261,8 @@ def rotate_points_around_signal_centre(signal, x_array, y_array, rotation):
 
     Examples
     --------
-    >>> import atomap.api as am
-    >>> import atomap.tools as to
+    >>> import atomap_devel_012.api as am
+    >>> import atomap_devel_012.tools as to
     >>> sublattice = am.dummy_data.get_distorted_cubic_sublattice()
     >>> s = sublattice.get_atom_list_on_image()
     >>> x, y = sublattice.x_position, sublattice.y_position
@@ -1328,14 +1327,14 @@ def _draw_cursor(ax, x, y, xd=10, yd=-30):
     >>> import matplotlib.pyplot as plt
     >>> fig, ax = plt.subplots()
     >>> cax = ax.imshow(np.random.random((100, 100)))
-    >>> from atomap.tools import _draw_cursor
+    >>> from atomap_devel_012.tools import _draw_cursor
     >>> _draw_cursor(ax, 20, 50)
 
     """
     xd, yd = 10, -30
     arrowprops = dict(
-            width=2.9, headwidth=10.3, headlength=15.06,
-            edgecolor='white', facecolor='black')
+        width=2.9, headwidth=10.3, headlength=15.06,
+        edgecolor='white', facecolor='black')
     ax.annotate('', xy=(x, y), xytext=(xd, yd),
                 xycoords='data', textcoords='offset pixels',
                 arrowprops=arrowprops, annotation_clip=False)
@@ -1365,6 +1364,7 @@ def _update_frame(pos, fig):
     fig.canvas.draw()
     fig.canvas.flush_events()
 
+
 def _generate_frames_position_list(position_list, num=10):
     """
     Parameters
@@ -1381,7 +1381,7 @@ def _generate_frames_position_list(position_list, num=10):
 
     Example
     -------
-    >>> from atomap.tools import _generate_frames_position_list
+    >>> from atomap_devel_012.tools import _generate_frames_position_list
     >>> pos_list = [[10, 20], [65, 10], [31, 71]]
     >>> frames = _generate_frames_position_list(pos_list, num=20)
 

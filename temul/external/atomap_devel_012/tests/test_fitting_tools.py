@@ -1,6 +1,6 @@
 from pytest import approx
 import numpy as np
-import atomap.fitting_tools as ft
+import atomap_devel_012.fitting_tools as ft
 
 
 class TestODRFitter:
@@ -60,7 +60,7 @@ class TestFindDistancePointLine:
         x_list, y_list = [0], [0]
         line = [1, -3]
         d = ft.get_shortest_distance_point_to_line(x_list, y_list, line)
-        assert approx(d[0], rel=1e-12) == -3*np.sin(np.radians(45))
+        assert approx(d[0], rel=1e-12) == -3 * np.sin(np.radians(45))
 
     def test_on_line(self):
         x_list, y_list = [1], [1]

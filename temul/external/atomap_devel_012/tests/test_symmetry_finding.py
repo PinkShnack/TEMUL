@@ -1,4 +1,4 @@
-import atomap.symmetry_finding as sf
+import atomap_devel_012.symmetry_finding as sf
 
 
 class TestSortVectorsByLength:
