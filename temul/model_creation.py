@@ -1,8 +1,7 @@
 from temul.intensity_tools import get_sublattice_intensity
 from temul.element_tools import split_and_sort_element
 
-import atomap.api as am
-import temul.external.atomap_devel_012 as am_dev
+import temul.external.atomap_devel_012.api as am_dev
 from temul.external.atomap_devel_012.atom_finding_refining import (
     get_atom_positions_in_difference_image)
 
@@ -739,8 +738,8 @@ def image_difference_position_new_sub(sublattice_list,
 
     # sublattice.plot()
 
-    diff_image_sub_inverse = am_dev.Sublattice(atom_positions_diff_image_inverse,
-                                               diff_image_inverse)
+    diff_image_sub_inverse = am_dev.Sublattice(
+        atom_positions_diff_image_inverse, diff_image_inverse)
     # diff_image_sub_inverse.find_nearest_neighbors()
     # diff_image_sub_inverse.refine_atom_positions_using_center_of_mass(
     #     percent_to_nn=percent_to_nn, mask_radius=mask_radius)

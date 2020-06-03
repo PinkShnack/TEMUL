@@ -1,9 +1,6 @@
 
 from atomap.testing_tools import MakeTestData
 import numpy as np
-import atomap.api as am
-import hyperspy
-from temul.element_tools import split_and_sort_element
 import matplotlib.pyplot as plt
 import colorcet as cc
 

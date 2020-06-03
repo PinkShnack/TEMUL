@@ -1,6 +1,5 @@
 
 from temul.element_tools import split_and_sort_element
-from temul.io import save_individual_images_from_image_stack
 from temul.external.atomap_devel_012.initial_position_finding import (
     add_atoms_with_gui as choose_points_on_image)
 
@@ -11,7 +10,6 @@ import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib import gridspec
 
-from tifffile import imread
 from skimage.metrics import structural_similarity as ssm
 import scipy
 from scipy.ndimage.filters import gaussian_filter

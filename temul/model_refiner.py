@@ -33,8 +33,7 @@ from temul.dummy_data import (
 import numpy as np
 import pandas as pd
 import hyperspy
-import atomap.api as am
-import temul.external.atomap_devel_012 as am_dev
+import temul.external.atomap_devel_012.api as am_dev
 from temul.external.atomap_devel_012.initial_position_finding import (
     add_atoms_with_gui as choose_points_on_image)
 import matplotlib.pyplot as plt
@@ -999,7 +998,8 @@ def get_model_refiner_with_12_vacancies_refined(
 def get_model_refiner_with_3_vacancies_refined(
         image_noise=True, test_element='Ti_2', filename=None):
     '''
-    >>> from temul.model_refiner import get_model_refiner_with_3_vacancies_refined
+    >>> from temul.model_refiner import (
+    ...     get_model_refiner_with_3_vacancies_refined)
     >>> refiner = get_model_refiner_with_3_vacancies_refined()
     3 new atoms found! Adding new atom positions.
     Changing some atoms
