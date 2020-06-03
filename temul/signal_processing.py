@@ -1173,7 +1173,8 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
     Example
     -------
 
-    >>> image = am.dummy_data.get_simple_cubic_with_vacancies_signal()
+    >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
+    >>> image = dummy_data.get_simple_cubic_with_vacancies_signal()
     >>> # image.plot()
     >>> cropping_area = [[10,10],[100,100]]
     >>> # cropping_area = choose_points_on_image(image.data) # manually
@@ -1290,7 +1291,8 @@ def toggle_atom_refine_position_automatically(sublattice,
 
     >>> min_cut_off_percent = 0.75
     >>> max_cut_off_percent = 1.25
-    >>> sublattice = am.dummy_data.get_simple_cubic_with_vacancies_sublattice(
+    >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
+    >>> sublattice = dummy_data.get_simple_cubic_with_vacancies_sublattice(
     ...     image_noise=True)
     >>> sublattice.find_nearest_neighbors()
     >>> sublattice.plot()

@@ -1798,7 +1798,7 @@ def change_sublattice_pseudo_inplace(new_atom_positions, old_sublattice):
     Examples
     --------
     >>> from temul.model_creation import change_sublattice_pseudo_inplace
-    >>> from atomap.sublattice import Sublattice
+    >>> from temul.external.atomap_devel_012 import Sublattice
     >>> import numpy as np
     >>> atom_positions = [[1, 5], [2, 4]]
     >>> image_data = np.random.random((7, 7))

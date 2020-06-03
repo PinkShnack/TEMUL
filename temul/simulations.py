@@ -305,7 +305,7 @@ def simulate_with_prismatic(xyz_filename,
 
     >>> from temul.simulations import simulate_with_prismatic
     >>> simulate_with_prismatic(
-    ...     xyz_filename="example_data/prismatic/"
+    ...     xyz_filename="temul/example_data/prismatic/"
     ...         "MoS2_hex_prismatic.xyz",
     ...     filename='prismatic_simulation',
     ...     probeStep=1.0, reference_image=None, E0=60e3,
