@@ -8,9 +8,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import ndimage
 import math
-from atomap_devel_012.atom_finding_refining import _make_circular_mask
-from atomap_devel_012.atom_finding_refining import fit_atom_positions_gaussian
-from atomap_devel_012.atom_finding_refining import _atom_to_gaussian_component
+from temul.external.atomap_devel_012.atom_finding_refining import _make_circular_mask
+from temul.external.atomap_devel_012.atom_finding_refining import fit_atom_positions_gaussian
+from temul.external.atomap_devel_012.atom_finding_refining import _atom_to_gaussian_component
 
 
 class Atom_Position:
@@ -86,7 +86,7 @@ class Atom_Position:
 
         Examples
         --------
-        >>> from atomap_devel_012.atom_position import Atom_Position
+        >>> from temul.external.atomap_devel_012.atom_position import Atom_Position
         >>> atom_position = Atom_Position(10, 5)
 
         POSSIBLE:
@@ -220,7 +220,7 @@ class Atom_Position:
 
         Examples
         --------
-        >>> from atomap_devel_012.atom_position import Atom_Position
+        >>> from temul.external.atomap_devel_012.atom_position import Atom_Position
         >>> atom0 = Atom_Position(0, 0)
         >>> atom1 = Atom_Position(1, 1)
         >>> atom2 = Atom_Position(-1, 1)

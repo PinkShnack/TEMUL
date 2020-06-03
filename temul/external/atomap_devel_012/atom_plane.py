@@ -5,7 +5,7 @@ from scipy.stats import linregress
 from scipy import interpolate
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-from atomap_devel_012.fitting_tools import (
+from temul.external.atomap_devel_012.fitting_tools import (
     ODR_linear_fitter, linear_fit_func, get_shortest_distance_point_to_line)
 
 
@@ -198,7 +198,7 @@ class Atom_Plane():
         Example
         -------
         >>> from numpy.random import random
-        >>> from atomap_devel_012.sublattice import Sublattice
+        >>> from temul.external.atomap_devel_012.sublattice import Sublattice
         >>> pos = [[x, y] for x in range(9) for y in range(9)]
         >>> sublattice = Sublattice(pos, random((9, 9)))
         >>> sublattice.construct_zone_axes()

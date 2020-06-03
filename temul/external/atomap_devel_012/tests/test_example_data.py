@@ -1,4 +1,4 @@
-import atomap_devel_012.example_data as ed
+import temul.external.atomap_devel_012.example_data as ed
 
 
 class TestExampleData:

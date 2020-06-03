@@ -29,7 +29,7 @@ def _remove_parallel_vectors(vector_list, distance_tolerance):
     --------
     Remove vectors which have the same direction, but different length
 
-    >>> import atomap_devel_012.symmetry_finding as sf
+    >>> import temul.external.atomap_devel_012.symmetry_finding as sf
     >>> vector_list = [(10, 10), (20, 20)]
     >>> sf._remove_parallel_vectors(vector_list, distance_tolerance=2)
     [(10, 10)]
@@ -119,14 +119,14 @@ def _remove_duplicate_vectors(vector_list, distance_tolerance):
     Examples
     --------
     >>> vector_list = [(20, 10), (20, 10)]
-    >>> import atomap_devel_012.symmetry_finding as sf
+    >>> import temul.external.atomap_devel_012.symmetry_finding as sf
     >>> sf._remove_duplicate_vectors(vector_list, distance_tolerance=1)
     [(20, 10)]
 
     Changing distance_tolerance
 
     >>> vector_list = [(20, 12), (20, 10)]
-    >>> import atomap_devel_012.symmetry_finding as sf
+    >>> import temul.external.atomap_devel_012.symmetry_finding as sf
     >>> sf._remove_duplicate_vectors(vector_list, distance_tolerance=1)
     [(20, 10), (20, 12)]
     >>> sf._remove_duplicate_vectors(vector_list, distance_tolerance=3)
@@ -162,7 +162,7 @@ def _sort_vectors_by_length(vector_list):
     Examples
     --------
     >>> vector_list = [(20, 10), (0, 10), (10, -10)]
-    >>> import atomap_devel_012.symmetry_finding as sf
+    >>> import temul.external.atomap_devel_012.symmetry_finding as sf
     >>> sf._sort_vectors_by_length(vector_list)
     [(0, 10), (10, -10), (20, 10)]
 

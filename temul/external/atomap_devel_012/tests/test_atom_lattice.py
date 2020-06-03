@@ -1,13 +1,13 @@
 import pytest
 import numpy as np
 from numpy.testing import assert_array_equal
-from atomap_devel_012.atom_lattice import Atom_Lattice
-from atomap_devel_012.sublattice import Sublattice
-from atomap_devel_012.testing_tools import MakeTestData
-import atomap_devel_012.initial_position_finding as ipf
-from atomap_devel_012.atom_finding_refining import get_atom_positions
-import atomap_devel_012.testing_tools as tt
-import atomap_devel_012.dummy_data as dd
+from temul.external.atomap_devel_012.atom_lattice import Atom_Lattice
+from temul.external.atomap_devel_012.sublattice import Sublattice
+from temul.external.atomap_devel_012.testing_tools import MakeTestData
+import temul.external.atomap_devel_012.initial_position_finding as ipf
+from temul.external.atomap_devel_012.atom_finding_refining import get_atom_positions
+import temul.external.atomap_devel_012.testing_tools as tt
+import temul.external.atomap_devel_012.dummy_data as dd
 
 
 class TestCreateAtomLatticeObject:

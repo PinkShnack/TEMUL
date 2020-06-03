@@ -2,9 +2,9 @@ import math
 import numpy as np
 from numpy.random import normal
 from hyperspy.misc.utils import isiterable
-from atomap_devel_012.sublattice import Sublattice
-from atomap_devel_012.atom_position import Atom_Position
-from atomap_devel_012.atom_lattice import Atom_Lattice
+from temul.external.atomap_devel_012.sublattice import Sublattice
+from temul.external.atomap_devel_012.atom_position import Atom_Position
+from temul.external.atomap_devel_012.atom_lattice import Atom_Lattice
 
 
 class MakeTestData(object):
@@ -35,7 +35,7 @@ class MakeTestData(object):
 
         Examples
         --------
-        >>> from atomap_devel_012.testing_tools import MakeTestData
+        >>> from temul.external.atomap_devel_012.testing_tools import MakeTestData
         >>> test_data = MakeTestData(200, 200)
         >>> test_data.add_atom(x=10, y=20)
         >>> test_data.signal.plot()
@@ -145,7 +145,7 @@ class MakeTestData(object):
 
         Examples
         --------
-        >>> from atomap_devel_012.testing_tools import MakeTestData
+        >>> from temul.external.atomap_devel_012.testing_tools import MakeTestData
         >>> test_data = MakeTestData(200, 200)
         >>> test_data.add_atom(x=10, y=20)
         >>> test_data.signal.plot()
@@ -179,7 +179,7 @@ class MakeTestData(object):
 
         Examples
         --------
-        >>> from atomap_devel_012.testing_tools import MakeTestData
+        >>> from temul.external.atomap_devel_012.testing_tools import MakeTestData
         >>> test_data = MakeTestData(200, 200)
         >>> import numpy as np
         >>> x, y = np.mgrid[0:200:10j, 0:200:10j]
@@ -245,7 +245,7 @@ class MakeTestData(object):
 
         Example
         -------
-        >>> from atomap_devel_012.testing_tools import MakeTestData
+        >>> from temul.external.atomap_devel_012.testing_tools import MakeTestData
         >>> test_data = MakeTestData(300, 300)
         >>> import numpy as np
         >>> x, y = np.mgrid[10:290:15j, 10:290:15j]

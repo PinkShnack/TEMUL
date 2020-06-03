@@ -1,6 +1,6 @@
 from pytest import approx
 import numpy as np
-import atomap_devel_012.fitting_tools as ft
+import temul.external.atomap_devel_012.fitting_tools as ft
 
 
 class TestODRFitter:

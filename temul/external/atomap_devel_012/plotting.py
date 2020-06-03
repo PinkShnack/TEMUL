@@ -9,7 +9,7 @@ from hyperspy.drawing._markers.line_segment import LineSegment
 from hyperspy.drawing._markers.point import Point
 from hyperspy.drawing._markers.text import Text
 
-from atomap_devel_012.tools import\
+from temul.external.atomap_devel_012.tools import\
     _get_clim_from_data,\
     project_position_property_sum_planes
 
@@ -816,7 +816,7 @@ def vector_list_to_marker_list(vector_list, color='red', scale=1.):
 
     Examples
     --------
-    >>> import atomap_devel_012.plotting as pl
+    >>> import temul.external.atomap_devel_012.plotting as pl
     >>> vector_list = [[13, 11, -2, 1], [20, 12, 2, -3]]
     >>> marker_list = pl.vector_list_to_marker_list(
     ...     vector_list, color='red', scale=1.)

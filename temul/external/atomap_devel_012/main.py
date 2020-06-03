@@ -1,4 +1,4 @@
-from atomap_devel_012.atom_finding_refining import\
+from temul.external.atomap_devel_012.atom_finding_refining import\
     subtract_average_background,\
     do_pca_on_signal,\
     refine_sublattice,\
@@ -6,12 +6,12 @@ from atomap_devel_012.atom_finding_refining import\
     get_atom_positions,\
     normalize_signal
 
-from atomap_devel_012.tools import\
+from temul.external.atomap_devel_012.tools import\
     remove_atoms_from_image_using_2d_gaussian
 
-from atomap_devel_012.atom_lattice import Atom_Lattice
-from atomap_devel_012.sublattice import Sublattice
-import atomap_devel_012.process_parameters as pp
+from temul.external.atomap_devel_012.atom_lattice import Atom_Lattice
+from temul.external.atomap_devel_012.sublattice import Sublattice
+import temul.external.atomap_devel_012.process_parameters as pp
 
 
 def run_image_filtering(signal, invert_signal=False):
@@ -29,9 +29,9 @@ def run_image_filtering(signal, invert_signal=False):
 
     Example
     -------
-    >>> import atomap_devel_012.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> s = am.dummy_data.get_simple_cubic_signal()
-    >>> from atomap_devel_012.main import run_image_filtering
+    >>> from temul.external.atomap_devel_012.main import run_image_filtering
     >>> s_new = run_image_filtering(s)
 
     """

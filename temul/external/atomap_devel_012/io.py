@@ -1,9 +1,9 @@
 """Module containing functions to save and load Atom_Lattice objects."""
 import h5py
 import os
-from atomap_devel_012.atom_lattice import Atom_Lattice
-from atomap_devel_012.sublattice import Sublattice
-from atomap_devel_012.atom_finding_refining import construct_zone_axes_from_sublattice
+from temul.external.atomap_devel_012.atom_lattice import Atom_Lattice
+from temul.external.atomap_devel_012.sublattice import Sublattice
+from temul.external.atomap_devel_012.atom_finding_refining import construct_zone_axes_from_sublattice
 import numpy as np
 ####
 import ast

@@ -1,8 +1,8 @@
 import numpy as np
 import math
-import atomap_devel_012.quantification as quant
-from atomap_devel_012.example_data import get_detector_image_signal
-from atomap_devel_012.dummy_data import get_simple_cubic_signal
+import temul.external.atomap_devel_012.quantification as quant
+from temul.external.atomap_devel_012.example_data import get_detector_image_signal
+from temul.external.atomap_devel_012.dummy_data import get_simple_cubic_signal
 
 
 class TestDetectorNormalisation:

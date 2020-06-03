@@ -2,9 +2,9 @@ import os
 import tempfile
 import pytest
 import numpy as np
-from atomap_devel_012.atom_lattice import Atom_Lattice
-from atomap_devel_012.sublattice import Sublattice
-from atomap_devel_012.io import load_atom_lattice_from_hdf5
+from temul.external.atomap_devel_012.atom_lattice import Atom_Lattice
+from temul.external.atomap_devel_012.sublattice import Sublattice
+from temul.external.atomap_devel_012.io import load_atom_lattice_from_hdf5
 
 
 class TestAtomLatticeInputOutput:

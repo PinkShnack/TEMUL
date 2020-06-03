@@ -46,7 +46,7 @@ class GenericSublattice(SublatticeParameterBase):
 
     Examples
     --------
-    >>> import atomap_devel_012.process_parameters as pp
+    >>> import temul.external.atomap_devel_012.process_parameters as pp
     >>> generic_sublattice = pp.GenericSublattice()
 
     """

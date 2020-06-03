@@ -11,7 +11,7 @@ def get_detector_image_signal():
 
     Example
     -------
-    >>> import atomap_devel_012.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> s = am.example_data.get_detector_image_signal()
 
     """

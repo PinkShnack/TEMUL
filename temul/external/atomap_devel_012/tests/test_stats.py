@@ -1,6 +1,6 @@
 import numpy as np
-from atomap_devel_012.sublattice import Sublattice
-import atomap_devel_012.stats as st
+from temul.external.atomap_devel_012.sublattice import Sublattice
+import temul.external.atomap_devel_012.stats as st
 
 
 class TestStats:

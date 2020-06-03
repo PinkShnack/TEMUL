@@ -2,8 +2,8 @@ import numpy as np
 import hyperspy.api as hs
 from hyperspy import components1d
 from hyperspy.signals import EELSSpectrum
-from atomap_devel_012.testing_tools import MakeTestData
-from atomap_devel_012.atom_lattice import Atom_Lattice
+from temul.external.atomap_devel_012.testing_tools import MakeTestData
+from temul.external.atomap_devel_012.atom_lattice import Atom_Lattice
 
 
 def _make_hexagonal_two_sublattice_testdata(image_noise=False):
@@ -94,7 +94,7 @@ def get_simple_cubic_with_vacancies_signal(image_noise=False):
 
     Examples
     --------
-    >>> import atomap_devel_012.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> s = am.dummy_data.get_simple_cubic_with_vacancies_signal()
     >>> s.plot()
 
@@ -126,7 +126,7 @@ def get_simple_cubic_with_vacancies_sublattice(image_noise=False):
 
     Examples
     --------
-    >>> import atomap_devel_012.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> s = am.dummy_data.get_simple_cubic_with_vacancies_sublattice()
     >>> s.plot()
 
@@ -203,7 +203,7 @@ def get_polarization_film_signal(image_noise=False):
 
     Examples
     --------
-    >>> import atomap_devel_012.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> s = am.dummy_data.get_polarization_film_signal()
     >>> s.plot()
 
@@ -235,7 +235,7 @@ def get_polarization_film_atom_lattice(image_noise=False):
 
     Examples
     --------
-    >>> import atomap_devel_012.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
     >>> atom_lattice.plot()
 
@@ -286,7 +286,7 @@ def get_simple_cubic_signal(image_noise=False):
 
     Examples
     --------
-    >>> import atomap_devel_012.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> s = am.dummy_data.get_simple_cubic_signal()
     >>> s.plot()
 
@@ -309,7 +309,7 @@ def get_simple_cubic_sublattice(image_noise=False):
 
     Examples
     --------
-    >>> import atomap_devel_012.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
     >>> sublattice.plot()
 
@@ -348,7 +348,7 @@ def get_distorted_cubic_signal(image_noise=False):
 
     Examples
     --------
-    >>> import atomap_devel_012.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> s = am.dummy_data.get_distorted_cubic_signal()
     >>> s.plot()
 
@@ -371,7 +371,7 @@ def get_distorted_cubic_sublattice(image_noise=False):
 
     Examples
     --------
-    >>> import atomap_devel_012.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> sublattice = am.dummy_data.get_distorted_cubic_sublattice()
     >>> sublattice.plot()
 
@@ -420,7 +420,7 @@ def get_simple_atom_lattice_two_sublattices(image_noise=False):
 
     Examples
     --------
-    >>> import atomap_devel_012.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> al = am.dummy_data.get_simple_atom_lattice_two_sublattices()
     >>> al.plot()
 
@@ -557,7 +557,7 @@ def get_fantasite():
 
     Examples
     --------
-    >>> import atomap_devel_012.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> s = am.dummy_data.get_fantasite()
     >>> s.plot()
 
@@ -587,7 +587,7 @@ def get_fantasite_sublattice():
 
     Examples
     --------
-    >>> import atomap_devel_012.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> sublattice = am.dummy_data.get_fantasite_sublattice()
     >>> sublattice.plot()
 
@@ -612,7 +612,7 @@ def get_fantasite_atom_lattice():
 
     Examples
     --------
-    >>> import atomap_devel_012.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> atom_lattice = am.dummy_data.get_fantasite_atom_lattice()
     >>> atom_lattice.plot()
 
@@ -635,7 +635,7 @@ def get_perovskite110_ABF_signal(image_noise=False):
 
     Examples
     --------
-    >>> import atomap_devel_012.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> s_ABF = am.dummy_data.get_perovskite110_ABF_signal()
 
     """
@@ -716,7 +716,7 @@ def get_eels_spectrum_survey_image():
 
     Example
     -------
-    >>> import atomap_devel_012.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> s = am.dummy_data.get_eels_spectrum_survey_image()
     >>> s.plot()
 
@@ -747,7 +747,7 @@ def get_eels_spectrum_map(add_noise=True):
 
     Example
     -------
-    >>> import atomap_devel_012.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> s_eels_map = am.dummy_data.get_eels_spectrum_map()
     >>> s_eels_map.plot()
 

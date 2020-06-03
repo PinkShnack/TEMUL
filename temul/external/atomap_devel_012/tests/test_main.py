@@ -1,9 +1,9 @@
 import os
 from hyperspy.io import load
 from hyperspy.signals import Signal2D
-import atomap_devel_012.main as amm
-import atomap_devel_012.dummy_data as dd
-from atomap_devel_012.process_parameters import PerovskiteOxide110
+import temul.external.atomap_devel_012.main as amm
+import temul.external.atomap_devel_012.dummy_data as dd
+from temul.external.atomap_devel_012.process_parameters import PerovskiteOxide110
 
 my_path = os.path.dirname(__file__)
 

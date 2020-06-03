@@ -1,11 +1,11 @@
 import pytest
 import numpy as np
 from numpy.testing import assert_allclose
-from atomap_devel_012.atom_position import Atom_Position
-from atomap_devel_012.sublattice import Sublattice
-from atomap_devel_012.testing_tools import MakeTestData
-import atomap_devel_012.dummy_data as dd
-import atomap_devel_012.atom_finding_refining as afr
+from temul.external.atomap_devel_012.atom_position import Atom_Position
+from temul.external.atomap_devel_012.sublattice import Sublattice
+from temul.external.atomap_devel_012.testing_tools import MakeTestData
+import temul.external.atomap_devel_012.dummy_data as dd
+import temul.external.atomap_devel_012.atom_finding_refining as afr
 
 
 class TestMakeMaskFromPositions:

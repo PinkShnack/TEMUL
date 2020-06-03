@@ -2,7 +2,7 @@ import unittest
 import pytest
 from pytest import approx
 import numpy as np
-import atomap_devel_012.testing_tools as tt
+import temul.external.atomap_devel_012.testing_tools as tt
 
 
 class TestMakeTestData:

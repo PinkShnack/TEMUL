@@ -1,9 +1,9 @@
 import os
 import numpy as np
 from hyperspy.api import load
-import atomap_devel_012.atom_finding_refining as afr
-from atomap_devel_012.sublattice import Sublattice
-from atomap_devel_012.atom_lattice import Atom_Lattice
+import temul.external.atomap_devel_012.atom_finding_refining as afr
+from temul.external.atomap_devel_012.sublattice import Sublattice
+from temul.external.atomap_devel_012.atom_lattice import Atom_Lattice
 
 my_path = os.path.dirname(__file__)
 

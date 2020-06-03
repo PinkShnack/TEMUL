@@ -1,4 +1,4 @@
-import atomap_devel_012.symmetry_finding as sf
+import temul.external.atomap_devel_012.symmetry_finding as sf
 
 
 class TestSortVectorsByLength:

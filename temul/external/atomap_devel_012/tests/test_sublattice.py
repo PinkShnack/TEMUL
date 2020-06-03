@@ -2,10 +2,10 @@ import pytest
 import numpy as np
 from numpy.testing import assert_allclose, assert_array_equal
 from hyperspy.signals import Signal2D
-import atomap_devel_012.atom_finding_refining as afr
-from atomap_devel_012.sublattice import Sublattice
-import atomap_devel_012.testing_tools as tt
-import atomap_devel_012.dummy_data as dd
+import temul.external.atomap_devel_012.atom_finding_refining as afr
+from temul.external.atomap_devel_012.sublattice import Sublattice
+import temul.external.atomap_devel_012.testing_tools as tt
+import temul.external.atomap_devel_012.dummy_data as dd
 
 
 class TestMakeSimpleSublattice:

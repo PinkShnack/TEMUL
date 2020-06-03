@@ -1,14 +1,14 @@
 import pytest
 from pytest import approx
 import numpy as np
-import atomap_devel_012.api as am
-import atomap_devel_012.tools as to
+import temul.external.atomap_devel_012.api as am
+import temul.external.atomap_devel_012.tools as to
 from hyperspy.signals import Signal2D
-from atomap_devel_012.tools import array2signal1d, array2signal2d, Fingerprinter
-from atomap_devel_012.tools import remove_atoms_from_image_using_2d_gaussian
-import atomap_devel_012.dummy_data as dd
-from atomap_devel_012.tools import integrate
-import atomap_devel_012.testing_tools as tt
+from temul.external.atomap_devel_012.tools import array2signal1d, array2signal2d, Fingerprinter
+from temul.external.atomap_devel_012.tools import remove_atoms_from_image_using_2d_gaussian
+import temul.external.atomap_devel_012.dummy_data as dd
+from temul.external.atomap_devel_012.tools import integrate
+import temul.external.atomap_devel_012.testing_tools as tt
 import hyperspy as hs
 
 

@@ -28,7 +28,7 @@ def ODR_linear_fitter(x, y):
 
     Example
     --------
-    >>> import atomap_devel_012.fitting_tools as ft
+    >>> import temul.external.atomap_devel_012.fitting_tools as ft
     >>> x, y = [0, 1, 2, 3], [1, 0, -1, -2]
     >>> ft.ODR_linear_fitter(x, y)
     array([-1.,  1.])
@@ -59,7 +59,7 @@ def get_shortest_distance_point_to_line(x_list, y_list, line):
     -------
     Horizontal line, and points horizontal
 
-    >>> import atomap_devel_012.fitting_tools as ft
+    >>> import temul.external.atomap_devel_012.fitting_tools as ft
     >>> x_list, y_list = [0, 1, 2, 3], [1, 1, 1, 1]
     >>> ft.get_shortest_distance_point_to_line(x_list, y_list, [0, 0])
     array([-1., -1., -1., -1.])

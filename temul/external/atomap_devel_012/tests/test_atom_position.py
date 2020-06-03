@@ -1,7 +1,7 @@
 from pytest import approx
 from numpy import pi
 import math
-from atomap_devel_012.atom_position import Atom_Position
+from temul.external.atomap_devel_012.atom_position import Atom_Position
 
 
 class TestCreateAtomPositionObject:

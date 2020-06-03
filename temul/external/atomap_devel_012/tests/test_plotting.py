@@ -1,8 +1,8 @@
-from atomap_devel_012.plotting import _make_atom_position_marker_list
-from atomap_devel_012.atom_position import Atom_Position
-from atomap_devel_012.atom_plane import Atom_Plane
-from atomap_devel_012.atom_lattice import Atom_Lattice
-from atomap_devel_012.plotting import (
+from temul.external.atomap_devel_012.plotting import _make_atom_position_marker_list
+from temul.external.atomap_devel_012.atom_position import Atom_Position
+from temul.external.atomap_devel_012.atom_plane import Atom_Plane
+from temul.external.atomap_devel_012.atom_lattice import Atom_Lattice
+from temul.external.atomap_devel_012.plotting import (
     _make_single_atom_plane_marker_list,
     _make_atom_planes_marker_list)
 

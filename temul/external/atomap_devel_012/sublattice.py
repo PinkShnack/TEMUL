@@ -7,23 +7,23 @@ import hyperspy.api as hs
 from hyperspy.signals import Signal2D
 from hyperspy.drawing._markers.point import Point
 
-import atomap_devel_012.tools as at
-import atomap_devel_012.analysis_tools as an
-from atomap_devel_012.plotting import (
+import temul.external.atomap_devel_012.tools as at
+import temul.external.atomap_devel_012.analysis_tools as an
+from temul.external.atomap_devel_012.plotting import (
     _make_atom_planes_marker_list, _make_atom_position_marker_list,
     _make_arrow_marker_list, _make_multidim_atom_plane_marker_list,
     _make_zone_vector_text_marker_list, plot_vector_field,
     vector_list_to_marker_list)
-from atomap_devel_012.atom_finding_refining import construct_zone_axes_from_sublattice
-from atomap_devel_012.atom_finding_refining import _make_circular_mask
+from temul.external.atomap_devel_012.atom_finding_refining import construct_zone_axes_from_sublattice
+from temul.external.atomap_devel_012.atom_finding_refining import _make_circular_mask
 
-from atomap_devel_012.atom_position import Atom_Position
-from atomap_devel_012.atom_plane import Atom_Plane
-from atomap_devel_012.symmetry_finding import _remove_parallel_vectors
-import atomap_devel_012.gui_classes as gui
+from temul.external.atomap_devel_012.atom_position import Atom_Position
+from temul.external.atomap_devel_012.atom_plane import Atom_Plane
+from temul.external.atomap_devel_012.symmetry_finding import _remove_parallel_vectors
+import temul.external.atomap_devel_012.gui_classes as gui
 
-from atomap_devel_012.external.add_marker import add_marker
-from atomap_devel_012.external.gaussian2d import Gaussian2D
+from temul.external.atomap_devel_012.external.add_marker import add_marker
+from temul.external.atomap_devel_012.external.gaussian2d import Gaussian2D
 
 
 class Sublattice():
@@ -72,7 +72,7 @@ class Sublattice():
         Examples
         --------
         >>> import numpy as np
-        >>> from atomap_devel_012.sublattice import Sublattice
+        >>> from temul.external.atomap_devel_012.sublattice import Sublattice
         >>> atom_positions = [[2, 2], [2, 4], [4, 2], [4, 4]]
         >>> image_data = np.random.random((7, 7))
         >>> sublattice = Sublattice(atom_positions, image_data)
@@ -539,7 +539,7 @@ class Sublattice():
 
         Example with ellipticity as property.
 
-        >>> import atomap_devel_012.api as am
+        >>> import temul.external.atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> s = sublattice.get_property_map(
         ...                    sublattice.x_position,
@@ -613,7 +613,7 @@ class Sublattice():
         Example
         -------
         >>> from numpy.random import random
-        >>> import atomap_devel_012.api as am
+        >>> import temul.external.atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> for atom in sublattice.atom_list:
         ...     atom.sigma_x, atom.sigma_y = 0.5*random()+1, 0.5*random()+1
@@ -943,7 +943,7 @@ class Sublattice():
 
         Example
         -------
-        >>> import atomap_devel_012.api as am
+        >>> import temul.external.atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> sublattice.find_nearest_neighbors()
         >>> sublattice.refine_atom_positions_using_2d_gaussian()
@@ -1000,7 +1000,7 @@ class Sublattice():
 
         Example
         -------
-        >>> import atomap_devel_012.api as am
+        >>> import temul.external.atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> sublattice.find_nearest_neighbors()
         >>> sublattice.refine_atom_positions_using_center_of_mass()
@@ -1062,7 +1062,7 @@ class Sublattice():
 
         Examples
         --------
-        >>> import atomap_devel_012.api as am
+        >>> import temul.external.atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> sublattice.construct_zone_axes()
         >>> x_pos, y_pos = sublattice.get_nearest_neighbor_directions()
@@ -1122,7 +1122,7 @@ class Sublattice():
         Examples
         --------
         >>> import numpy as np
-        >>> import atomap_devel_012.api as am
+        >>> import temul.external.atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> x_pos, y_pos = sublattice.get_nearest_neighbor_directions_all()
         >>> mask = np.sqrt(x_pos**2 + y_pos**2) < 3
@@ -1180,7 +1180,7 @@ class Sublattice():
 
         Example
         -------
-        >>> import atomap_devel_012.dummy_data as dd
+        >>> import temul.external.atomap_devel_012.dummy_data as dd
         >>> sublattice = dd.get_simple_cubic_sublattice()
         >>> sublattice._pixel_separation = sublattice._get_pixel_separation()
         >>> sublattice._make_translation_symmetry()
@@ -1313,7 +1313,7 @@ class Sublattice():
 
         Example
         -------
-        >>> import atomap_devel_012.api as am
+        >>> import temul.external.atomap_devel_012.api as am
         >>> sublattice_A = am.dummy_data.get_simple_cubic_sublattice()
         >>> sublattice_A.construct_zone_axes()
         >>> zone_axis = sublattice_A.zones_axis_average_distances[0]
@@ -1398,7 +1398,7 @@ class Sublattice():
 
         Examples
         --------
-        >>> import atomap_devel_012.api as am
+        >>> import temul.external.atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> sublattice.construct_zone_axes()
         >>> zone_vector = sublattice.zones_axis_average_distances[0]
@@ -1449,7 +1449,7 @@ class Sublattice():
         Getting a list signals showing the atomic planes for all the
         zone vectors
 
-        >>> import atomap_devel_012.api as am
+        >>> import temul.external.atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> sublattice.construct_zone_axes()
         >>> s = sublattice.get_all_atom_planes_by_zone_vector()
@@ -1531,7 +1531,7 @@ class Sublattice():
 
         Examples
         --------
-        >>> import atomap_devel_012.api as am
+        >>> import temul.external.atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> sublattice.construct_zone_axes()
         >>> s = sublattice.get_atom_list_on_image()
@@ -1627,7 +1627,7 @@ class Sublattice():
 
         Examples
         --------
-        >>> import atomap_devel_012.api as am
+        >>> import temul.external.atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> for atom in sublattice.atom_list:
         ...     atom.sigma_x, atom.sigma_y = 1., 1.2
@@ -1665,7 +1665,7 @@ class Sublattice():
         To get the integrated intensity for all the sublattices, use the
         integrate_column_intensity in the Atom_Lattice object.
 
-        See atomap_devel_012.tools.integrate for more information about the parameters.
+        See temul.external.atomap_devel_012.tools.integrate for more information about the parameters.
 
         Parameters
         ----------
@@ -1682,7 +1682,7 @@ class Sublattice():
 
         Examples
         --------
-        >>> import atomap_devel_012.api as am
+        >>> import temul.external.atomap_devel_012.api as am
         >>> sl = am.dummy_data.get_simple_cubic_sublattice(image_noise=True)
         >>> i_points, i_record, p_record = sl.integrate_column_intensity()
 
@@ -1722,7 +1722,7 @@ class Sublattice():
 
         Example
         -------
-        >>> import atomap_devel_012.api as am
+        >>> import temul.external.atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> sublattice.find_nearest_neighbors()
         >>> sublattice.get_atom_column_amplitude_max_intensity()
@@ -1774,7 +1774,7 @@ class Sublattice():
 
         Example
         -------
-        >>> import atomap_devel_012.api as am
+        >>> import temul.external.atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> sublattice.find_nearest_neighbors()
         >>> sublattice.get_atom_column_amplitude_mean_intensity()
@@ -1826,7 +1826,7 @@ class Sublattice():
 
         Example
         -------
-        >>> import atomap_devel_012.api as am
+        >>> import temul.external.atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> sublattice.find_nearest_neighbors()
         >>> sublattice.get_atom_column_amplitude_min_intensity()
@@ -1960,7 +1960,7 @@ class Sublattice():
 
         Example
         -------
-        >>> import atomap_devel_012.api as am
+        >>> import temul.external.atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> sublattice.construct_zone_axes()
         >>> zone = sublattice.zones_axis_average_distances[1]
@@ -1990,7 +1990,7 @@ class Sublattice():
         ----------
         upscale_map : number, default 2.0
             Amount of upscaling compared to the original image given
-            to atomap_devel_012. Note, a high value here can greatly increase
+            to temul.external.atomap_devel_012. Note, a high value here can greatly increase
             the memory use for large images.
         atom_plane_list : List of Atomap AtomPlane object, optional
             If a list of AtomPlanes are given, the plane positions
@@ -2005,7 +2005,7 @@ class Sublattice():
         Examples
         --------
         >>> from numpy.random import random
-        >>> import atomap_devel_012.api as am
+        >>> import temul.external.atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> for atom in sublattice.atom_list:
         ...     atom.sigma_x, atom.sigma_y = 0.5*random()+1, 0.5*random()+1
@@ -2066,7 +2066,7 @@ class Sublattice():
         Example
         -------
         >>> from numpy.random import random
-        >>> import atomap_devel_012.api as am
+        >>> import temul.external.atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> for atom in sublattice.atom_list:
         ...     atom.sigma_x, atom.sigma_y = 0.5*random()+1, 0.5*random()+1
@@ -2399,12 +2399,12 @@ class Sublattice():
             "split".
         zone_axis_para_list : parameter list or bool, default False
             A zone axes parameter list is used to name and index the zone
-            axes. See atomap_devel_012.process_parameters for more info. Useful for
+            axes. See temul.external.atomap_devel_012.process_parameters for more info. Useful for
             automation.
 
         Example
         -------
-        >>> import atomap_devel_012.api as am
+        >>> import temul.external.atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> sublattice
         <Sublattice,  (atoms:400,planes:0)>
@@ -2427,7 +2427,7 @@ class Sublattice():
 
         Example
         -------
-        >>> import atomap_devel_012.api as am
+        >>> import temul.external.atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> fp = sublattice._get_fingerprint()
         >>> fp_distance = fp.fingerprint_
@@ -2472,7 +2472,7 @@ class Sublattice():
 
         Example
         -------
-        >>> import atomap_devel_012.api as am
+        >>> import temul.external.atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> fp = sublattice.get_fingerprint_2d()
         >>> import matplotlib.pyplot as plt
@@ -2488,7 +2488,7 @@ class Sublattice():
 
         Example
         -------
-        >>> import atomap_devel_012.api as am
+        >>> import temul.external.atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> fp = sublattice.get_fingerprint_1d()
         >>> import matplotlib.pyplot as plt
@@ -2622,7 +2622,7 @@ class Sublattice():
 
         Examples
         --------
-        >>> import atomap_devel_012.api as am
+        >>> import temul.external.atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> s = sublattice.mask_image_around_sublattice(radius=3)
         >>> s.plot()
@@ -2660,7 +2660,7 @@ class Sublattice():
 
         Examples
         --------
-        >>> import atomap_devel_012.api as am
+        >>> import temul.external.atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> sublattice.find_sublattice_intensity_from_masked_image(
         ...     sublattice.image, 3)
@@ -2693,7 +2693,7 @@ class Sublattice():
 
         Examples
         --------
-        >>> import atomap_devel_012.api as am
+        >>> import temul.external.atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> sublattice.plot()
 
@@ -2729,7 +2729,7 @@ class Sublattice():
 
         Examples
         --------
-        >>> import atomap_devel_012.api as am
+        >>> import temul.external.atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> sublattice.construct_zone_axes()
         >>> sublattice.plot_planes()
@@ -2761,7 +2761,7 @@ class Sublattice():
 
         Examples
         --------
-        >>> import atomap_devel_012.api as am
+        >>> import temul.external.atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_fantasite_sublattice()
         >>> sublattice.construct_zone_axes()
         >>> sublattice.refine_atom_positions_using_2d_gaussian()
@@ -2792,7 +2792,7 @@ class Sublattice():
 
         Examples
         --------
-        >>> import atomap_devel_012.api as am
+        >>> import temul.external.atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_fantasite_sublattice()
         >>> sublattice.construct_zone_axes()
         >>> sublattice.refine_atom_positions_using_2d_gaussian()
@@ -2822,7 +2822,7 @@ class Sublattice():
 
         Examples
         --------
-        >>> import atomap_devel_012.analysis_tools as an
+        >>> import temul.external.atomap_devel_012.analysis_tools as an
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> sublattice.construct_zone_axes()
         >>> za0 = sublattice.zones_axis_average_distances[0]

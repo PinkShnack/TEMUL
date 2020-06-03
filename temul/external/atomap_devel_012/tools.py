@@ -10,7 +10,7 @@ import hyperspy.api as hs
 from hyperspy.signals import Signal1D, Signal2D
 from skimage.morphology import watershed
 
-from atomap_devel_012.atom_finding_refining import (
+from temul.external.atomap_devel_012.atom_finding_refining import (
     _fit_atom_positions_with_gaussian_model)
 from sklearn.cluster import DBSCAN
 import logging
@@ -93,7 +93,7 @@ def remove_atoms_from_image_using_2d_gaussian(
     >>> atom_lattice = am.dummy_data.get_simple_atom_lattice_two_sublattices()
     >>> sublattice0 = atom_lattice.sublattice_list[0]
     >>> sublattice0.find_nearest_neighbors()
-    >>> import atomap_devel_012.tools as at
+    >>> import temul.external.atomap_devel_012.tools as at
     >>> image_subtracted = at.remove_atoms_from_image_using_2d_gaussian(
     ...        image=atom_lattice.image, sublattice=sublattice0,
     ...        show_progressbar=False)
@@ -432,8 +432,8 @@ def get_point_between_four_atoms(atom_list):
 
     Example
     -------
-    >>> import atomap_devel_012.tools as at
-    >>> import atomap_devel_012.atom_position as ap
+    >>> import temul.external.atomap_devel_012.tools as at
+    >>> import temul.external.atomap_devel_012.atom_position as ap
     >>> atom0, atom1 = ap.Atom_Position(10, 30), ap.Atom_Position(20, 30)
     >>> atom2, atom3 = ap.Atom_Position(10, 40), ap.Atom_Position(20, 40)
     >>> mid_pos = at.get_point_between_four_atoms((atom0, atom1, atom2, atom3))
@@ -755,14 +755,14 @@ def project_position_property_sum_planes(
     Example
     -------
     >>> from numpy.random import random
-    >>> from atomap_devel_012.sublattice import Sublattice
+    >>> from temul.external.atomap_devel_012.sublattice import Sublattice
     >>> pos = [[x, y] for x in range(9) for y in range(9)]
     >>> sublattice = Sublattice(pos, random((9, 9)))
     >>> sublattice.construct_zone_axes()
     >>> x, y = sublattice.x_position, sublattice.y_position
     >>> z = sublattice.ellipticity
     >>> input_data_list = np.array([x, y, z]).swapaxes(0, 1)
-    >>> from atomap_devel_012.tools import project_position_property_sum_planes
+    >>> from temul.external.atomap_devel_012.tools import project_position_property_sum_planes
     >>> plane = sublattice.atom_plane_list[10]
     >>> data = project_position_property_sum_planes(input_data_list, plane)
     >>> positions = data[:,0]
@@ -1032,8 +1032,8 @@ def integrate(s, points_x, points_y, method='Voronoi', max_radius='Auto',
     Examples
     --------
 
-    >>> import atomap_devel_012.api as am
-    >>> from atomap_devel_012.tools import integrate
+    >>> import temul.external.atomap_devel_012.api as am
+    >>> from temul.external.atomap_devel_012.tools import integrate
     >>> import hyperspy.api as hs
     >>> sublattice = am.dummy_data.get_simple_cubic_sublattice(
     ...        image_noise=True)
@@ -1149,8 +1149,8 @@ def fliplr_points_and_signal(signal, x_array, y_array):
 
     Examples
     --------
-    >>> import atomap_devel_012.api as am
-    >>> import atomap_devel_012.tools as to
+    >>> import temul.external.atomap_devel_012.api as am
+    >>> import temul.external.atomap_devel_012.tools as to
     >>> sublattice = am.dummy_data.get_distorted_cubic_sublattice()
     >>> s = sublattice.get_atom_list_on_image()
     >>> x, y = sublattice.x_position, sublattice.y_position
@@ -1187,8 +1187,8 @@ def fliplr_points_around_signal_centre(signal, x_array, y_array):
 
     Examples
     --------
-    >>> import atomap_devel_012.api as am
-    >>> import atomap_devel_012.tools as to
+    >>> import temul.external.atomap_devel_012.api as am
+    >>> import temul.external.atomap_devel_012.tools as to
     >>> sublattice = am.dummy_data.get_distorted_cubic_sublattice()
     >>> s = sublattice.get_atom_list_on_image()
     >>> x, y = sublattice.x_position, sublattice.y_position
@@ -1223,8 +1223,8 @@ def rotate_points_and_signal(signal, x_array, y_array, rotation):
 
     Examples
     --------
-    >>> import atomap_devel_012.api as am
-    >>> import atomap_devel_012.tools as to
+    >>> import temul.external.atomap_devel_012.api as am
+    >>> import temul.external.atomap_devel_012.tools as to
     >>> sublattice = am.dummy_data.get_distorted_cubic_sublattice()
     >>> s = sublattice.get_atom_list_on_image()
     >>> x, y = sublattice.x_position, sublattice.y_position
@@ -1261,8 +1261,8 @@ def rotate_points_around_signal_centre(signal, x_array, y_array, rotation):
 
     Examples
     --------
-    >>> import atomap_devel_012.api as am
-    >>> import atomap_devel_012.tools as to
+    >>> import temul.external.atomap_devel_012.api as am
+    >>> import temul.external.atomap_devel_012.tools as to
     >>> sublattice = am.dummy_data.get_distorted_cubic_sublattice()
     >>> s = sublattice.get_atom_list_on_image()
     >>> x, y = sublattice.x_position, sublattice.y_position
@@ -1327,7 +1327,7 @@ def _draw_cursor(ax, x, y, xd=10, yd=-30):
     >>> import matplotlib.pyplot as plt
     >>> fig, ax = plt.subplots()
     >>> cax = ax.imshow(np.random.random((100, 100)))
-    >>> from atomap_devel_012.tools import _draw_cursor
+    >>> from temul.external.atomap_devel_012.tools import _draw_cursor
     >>> _draw_cursor(ax, 20, 50)
 
     """
@@ -1381,7 +1381,7 @@ def _generate_frames_position_list(position_list, num=10):
 
     Example
     -------
-    >>> from atomap_devel_012.tools import _generate_frames_position_list
+    >>> from temul.external.atomap_devel_012.tools import _generate_frames_position_list
     >>> pos_list = [[10, 20], [65, 10], [31, 71]]
     >>> frames = _generate_frames_position_list(pos_list, num=20)
 

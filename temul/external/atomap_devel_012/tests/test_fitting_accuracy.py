@@ -1,9 +1,9 @@
 from pytest import approx
 import numpy as np
-from atomap_devel_012.testing_tools import MakeTestData
-from atomap_devel_012.testing_tools import find_atom_position_match
-from atomap_devel_012.testing_tools import get_fit_miss_array
-import atomap_devel_012.api as am
+from temul.external.atomap_devel_012.testing_tools import MakeTestData
+from temul.external.atomap_devel_012.testing_tools import find_atom_position_match
+from temul.external.atomap_devel_012.testing_tools import get_fit_miss_array
+import temul.external.atomap_devel_012.api as am
 
 
 class TestFittingAccuracy:

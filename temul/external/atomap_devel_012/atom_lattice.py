@@ -1,10 +1,10 @@
 from tqdm import trange
 import numpy as np
 from hyperspy.signals import Signal2D
-from atomap_devel_012.atom_finding_refining import\
+from temul.external.atomap_devel_012.atom_finding_refining import\
     construct_zone_axes_from_sublattice, fit_atom_positions_gaussian
-from atomap_devel_012.plotting import _make_atom_position_marker_list
-import atomap_devel_012.tools as at
+from temul.external.atomap_devel_012.plotting import _make_atom_position_marker_list
+import temul.external.atomap_devel_012.tools as at
 
 
 class Atom_Lattice():
@@ -102,7 +102,7 @@ class Atom_Lattice():
             show_progressbar=True):
         """Integrate signal around the atoms in the atom lattice.
 
-        See atomap_devel_012.tools.integrate for more information about the parameters.
+        See temul.external.atomap_devel_012.tools.integrate for more information about the parameters.
 
         Parameters
         ----------
@@ -119,7 +119,7 @@ class Atom_Lattice():
 
         Examples
         --------
-        >>> import atomap_devel_012.api as am
+        >>> import temul.external.atomap_devel_012.api as am
         >>> al = am.dummy_data.get_simple_atom_lattice_two_sublattices()
         >>> i_points, i_record, p_record = al.integrate_column_intensity()
 
@@ -172,17 +172,17 @@ class Atom_Lattice():
         Examples
         --------
         >>> from numpy.random import random
-        >>> import atomap_devel_012.api as am
+        >>> import temul.external.atomap_devel_012.api as am
         >>> sl = am.dummy_data.get_simple_cubic_sublattice()
         >>> atom_lattice = am.Atom_Lattice(random((9, 9)), "test", [sl])
         >>> atom_lattice.save("test.hdf5", overwrite=True)
 
         Loading the atom lattice:
 
-        >>> import atomap_devel_012.api as am
+        >>> import temul.external.atomap_devel_012.api as am
         >>> atom_lattice1 = am.load_atom_lattice_from_hdf5("test.hdf5")
         """
-        from atomap_devel_012.io import save_atom_lattice_to_hdf5
+        from temul.external.atomap_devel_012.io import save_atom_lattice_to_hdf5
         if filename is None:
             filename = self.name + "_atom_lattice.hdf5"
         save_atom_lattice_to_hdf5(self, filename=filename, overwrite=overwrite)
@@ -212,8 +212,8 @@ class Atom_Lattice():
 
         Examples
         --------
-        >>> import atomap_devel_012.api as am
-        >>> import atomap_devel_012.testing_tools as tt
+        >>> import temul.external.atomap_devel_012.api as am
+        >>> import temul.external.atomap_devel_012.testing_tools as tt
         >>> test_data = tt.MakeTestData(50, 50)
         >>> import numpy as np
         >>> test_data.add_atom_list(np.arange(5, 45, 5), np.arange(5, 45, 5))

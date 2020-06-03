@@ -6,7 +6,7 @@ import numpy as np
 from skimage.feature import peak_local_max
 import math
 
-from atomap_devel_012.external.gaussian2d import Gaussian2D
+from temul.external.atomap_devel_012.external.gaussian2d import Gaussian2D
 
 
 ####
@@ -47,9 +47,9 @@ def get_atom_positions_in_difference_image(
     Example
     -------
     >>> import numpy as np
-    >>> import atomap_devel_012.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> s = am.dummy_data.get_simple_cubic_signal()
-    >>> from atomap_devel_012.atom_finding_refining import get_atom_positions
+    >>> from temul.external.atomap_devel_012.atom_finding_refining import get_atom_positions
     >>> atom_positions = get_atom_positions(s, 5)
     >>> peak_x = atom_positions[:,0]
     >>> peak_y = atom_positions[:,1]
@@ -124,9 +124,9 @@ def get_atom_positions(
     Example
     -------
     >>> import numpy as np
-    >>> import atomap_devel_012.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> s = am.dummy_data.get_simple_cubic_signal()
-    >>> from atomap_devel_012.atom_finding_refining import get_atom_positions
+    >>> from temul.external.atomap_devel_012.atom_finding_refining import get_atom_positions
     >>> atom_positions = get_atom_positions(s, 5)
     >>> peak_x = atom_positions[:,0]
     >>> peak_y = atom_positions[:,1]
@@ -261,7 +261,7 @@ def get_feature_separation(
     -------
     >>> import numpy as np
     >>> import hyperspy.api as hs
-    >>> from atomap_devel_012.atom_finding_refining import get_feature_separation
+    >>> from temul.external.atomap_devel_012.atom_finding_refining import get_feature_separation
     >>> s = hs.signals.Signal2D(np.random.random((500, 500)))
     >>> s1 = get_feature_separation(s)
 
@@ -369,15 +369,15 @@ def construct_zone_axes_from_sublattice(
         should be increased the atomic planes are non-continuous and "split".
     zone_axis_para_list : parameter list or bool, default False
         A zone axes parameter list is used to name and index the zone axes.
-        See atomap_devel_012.process_parameters for more info. Useful for automation.
+        See temul.external.atomap_devel_012.process_parameters for more info. Useful for automation.
 
     Example
     -------
-    >>> import atomap_devel_012.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
     >>> sublattice
     <Sublattice,  (atoms:400,planes:0)>
-    >>> import atomap_devel_012.atom_finding_refining as afr
+    >>> import temul.external.atomap_devel_012.atom_finding_refining as afr
     >>> afr.construct_zone_axes_from_sublattice(sublattice)
     >>> sublattice
     <Sublattice,  (atoms:400,planes:4)>
@@ -387,7 +387,7 @@ def construct_zone_axes_from_sublattice(
     sublattice._make_translation_symmetry : How unique zone axes are found
     sublattice._remove_bad_zone_vectors : How fragmented ("bad zone axis")
         are identified and removed.
-    atomap_devel_012.process_parameters : more info on zone axes parameter list
+    temul.external.atomap_devel_012.process_parameters : more info on zone axes parameter list
 
     """
     if sublattice._pixel_separation == 0.0:
@@ -440,7 +440,7 @@ def _make_circular_mask(centerX, centerY, imageSizeX, imageSizeY, radius):
     Examples
     --------
     >>> import numpy as np
-    >>> from atomap_devel_012.atom_finding_refining import _make_circular_mask
+    >>> from temul.external.atomap_devel_012.atom_finding_refining import _make_circular_mask
     >>> image = np.ones((9, 9))
     >>> mask = _make_circular_mask(4, 4, 9, 9, 2)
     >>> image_masked = image*mask
@@ -467,7 +467,7 @@ def _make_mask_from_positions(
 
     Examples
     --------
-    >>> from atomap_devel_012.atom_finding_refining import _make_mask_from_positions
+    >>> from temul.external.atomap_devel_012.atom_finding_refining import _make_mask_from_positions
     >>> pos = [[10, 20], [25, 10]]
     >>> radius = [2, 1]
     >>> mask = _make_mask_from_positions(pos, radius, (40, 40))
@@ -490,8 +490,8 @@ def _crop_mask_slice_indices(mask):
 
     Examples
     --------
-    >>> from atomap_devel_012.atom_finding_refining import _make_mask_from_positions
-    >>> from atomap_devel_012.atom_finding_refining import _crop_mask_slice_indices
+    >>> from temul.external.atomap_devel_012.atom_finding_refining import _make_mask_from_positions
+    >>> from temul.external.atomap_devel_012.atom_finding_refining import _crop_mask_slice_indices
     >>> mask = _make_mask_from_positions([[10, 20]], [1], (40, 40))
     >>> x0, x1, y0, y1 = _crop_mask_slice_indices(mask)
     >>> mask_crop = mask[x0:x1, y0:y1]
@@ -590,8 +590,8 @@ def _atom_to_gaussian_component(atom):
 
     Example
     -------
-    >>> from atomap_devel_012.atom_position import Atom_Position
-    >>> from atomap_devel_012.atom_finding_refining import _atom_to_gaussian_component
+    >>> from temul.external.atomap_devel_012.atom_position import Atom_Position
+    >>> from temul.external.atomap_devel_012.atom_finding_refining import _atom_to_gaussian_component
     >>> atom = Atom_Position(x=5.2, y=7.7, sigma_x=2.1, sigma_y=1.1)
     >>> gaussian = _atom_to_gaussian_component(atom)
     """
@@ -639,8 +639,8 @@ def _make_model_from_atom_list(
     Examples
     --------
     >>> import numpy as np
-    >>> from atomap_devel_012.atom_position import Atom_Position
-    >>> from atomap_devel_012.atom_finding_refining import _make_model_from_atom_list
+    >>> from temul.external.atomap_devel_012.atom_position import Atom_Position
+    >>> from temul.external.atomap_devel_012.atom_finding_refining import _make_model_from_atom_list
     >>> atom_list = [Atom_Position(2, 2), Atom_Position(4, 4)]
     >>> image = np.random.random((100, 100))
     >>> m, mask = _make_model_from_atom_list(
@@ -730,8 +730,8 @@ def _fit_atom_positions_with_gaussian_model(
     Examples
     --------
     >>> import numpy as np
-    >>> from atomap_devel_012.atom_position import Atom_Position
-    >>> import atomap_devel_012.atom_finding_refining as afr
+    >>> from temul.external.atomap_devel_012.atom_position import Atom_Position
+    >>> import temul.external.atomap_devel_012.atom_finding_refining as afr
     >>> atom_list = [Atom_Position(2, 2), Atom_Position(4, 4)]
     >>> image = np.zeros((9, 9))
     >>> image[2, 2] = 1.
@@ -846,8 +846,8 @@ def fit_atom_positions_gaussian(
     Examples
     --------
     >>> import numpy as np
-    >>> from atomap_devel_012.atom_position import Atom_Position
-    >>> from atomap_devel_012.atom_finding_refining import fit_atom_positions_gaussian
+    >>> from temul.external.atomap_devel_012.atom_position import Atom_Position
+    >>> from temul.external.atomap_devel_012.atom_finding_refining import fit_atom_positions_gaussian
 
     Fitting atomic columns one-by-one
 

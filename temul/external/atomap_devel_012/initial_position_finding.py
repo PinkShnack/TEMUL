@@ -3,11 +3,11 @@ import math
 from tqdm import tqdm
 import numpy as np
 import matplotlib.pyplot as plt
-from atomap_devel_012.atom_finding_refining import get_atom_positions
-from atomap_devel_012.tools import _get_n_nearest_neighbors, Fingerprinter
-from atomap_devel_012.atom_finding_refining import _make_circular_mask, do_pca_on_signal
-from atomap_devel_012.sublattice import Sublattice
-from atomap_devel_012.atom_lattice import Dumbbell_Lattice
+from temul.external.atomap_devel_012.atom_finding_refining import get_atom_positions
+from temul.external.atomap_devel_012.tools import _get_n_nearest_neighbors, Fingerprinter
+from temul.external.atomap_devel_012.atom_finding_refining import _make_circular_mask, do_pca_on_signal
+from temul.external.atomap_devel_012.sublattice import Sublattice
+from temul.external.atomap_devel_012.atom_lattice import Dumbbell_Lattice
 from operator import itemgetter
 from matplotlib.colors import LogNorm
 
@@ -29,8 +29,8 @@ def find_dumbbell_vector(s, separation):
 
     Examples
     --------
-    >>> import atomap_devel_012.api as am
-    >>> from atomap_devel_012.initial_position_finding import find_dumbbell_vector
+    >>> import temul.external.atomap_devel_012.api as am
+    >>> from temul.external.atomap_devel_012.initial_position_finding import find_dumbbell_vector
     >>> s = am.dummy_data.get_dumbbell_signal()
     >>> dumbbell_vector = find_dumbbell_vector(s, 4)
     """
@@ -70,10 +70,10 @@ def _get_dumbbell_arrays(
 
     Examples
     --------
-    >>> import atomap_devel_012.api as am
-    >>> from atomap_devel_012.initial_position_finding import find_dumbbell_vector
-    >>> from atomap_devel_012.initial_position_finding import _get_dumbbell_arrays
-    >>> from atomap_devel_012.atom_finding_refining import get_atom_positions
+    >>> import temul.external.atomap_devel_012.api as am
+    >>> from temul.external.atomap_devel_012.initial_position_finding import find_dumbbell_vector
+    >>> from temul.external.atomap_devel_012.initial_position_finding import _get_dumbbell_arrays
+    >>> from temul.external.atomap_devel_012.atom_finding_refining import get_atom_positions
     >>> s = am.dummy_data.get_dumbbell_signal()
     >>> position_list = get_atom_positions(s, separation=16)
     >>> dumbbell_vector = find_dumbbell_vector(s, 4)
@@ -138,9 +138,9 @@ def make_atom_lattice_dumbbell_structure(
 
     Examples
     --------
-    >>> import atomap_devel_012.api as am
-    >>> import atomap_devel_012.initial_position_finding as ipf
-    >>> from atomap_devel_012.atom_finding_refining import get_atom_positions
+    >>> import temul.external.atomap_devel_012.api as am
+    >>> import temul.external.atomap_devel_012.initial_position_finding as ipf
+    >>> from temul.external.atomap_devel_012.atom_finding_refining import get_atom_positions
     >>> s = am.dummy_data.get_dumbbell_signal()
     >>> position_list = get_atom_positions(s, separation=16)
     >>> dumbbell_vector = ipf.find_dumbbell_vector(s, 4)
@@ -265,7 +265,7 @@ def add_atoms_with_gui(image, atom_list=None, distance_threshold=4,
         The list can be updated until the figure is closed.
     Examples
     --------
-    >>> import atomap_devel_012.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> s = am.dummy_data.get_simple_cubic_signal()
     >>> peaks = am.get_atom_positions(s, separation=9)
     >>> peaks_new = am.add_atoms_with_gui(peaks, s)

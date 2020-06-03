@@ -21,7 +21,7 @@ def centered_distance_matrix(centre, det_image):
     Example
     -------
     >>> import hyperspy.api as hs
-    >>> import atomap_devel_012.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> s = am.example_data.get_detector_image_signal()
     >>> centered_matrix = am.quant.centered_distance_matrix((256, 256), s.data)
 
@@ -47,7 +47,7 @@ def _detector_threshold(det_image):
 
     Example
     -------
-    >>> import atomap_devel_012.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> s_det_image = am.example_data.get_detector_image_signal()
     >>> threshold_image = am.quant._detector_threshold(s_det_image.data)
 
@@ -77,7 +77,7 @@ def _radial_profile(data, centre):
 
     Example
     -------
-    >>> import atomap_devel_012.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> s_det_image = am.example_data.get_detector_image_signal()
     >>> radial_profile = am.quant._radial_profile(s_det_image.data, (256, 256))
 

@@ -1,5 +1,5 @@
 import os
-from atomap_devel_012.atom_finding_refining import get_feature_separation
+from temul.external.atomap_devel_012.atom_finding_refining import get_feature_separation
 from hyperspy.api import load
 
 my_path = os.path.dirname(__file__)

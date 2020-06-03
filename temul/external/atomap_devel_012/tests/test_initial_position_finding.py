@@ -1,10 +1,10 @@
 from pytest import approx
 import numpy as np
-from atomap_devel_012.testing_tools import MakeTestData
-from atomap_devel_012.initial_position_finding import (
+from temul.external.atomap_devel_012.testing_tools import MakeTestData
+from temul.external.atomap_devel_012.initial_position_finding import (
     find_dumbbell_vector, _get_dumbbell_arrays,
     make_atom_lattice_dumbbell_structure)
-from atomap_devel_012.atom_finding_refining import get_atom_positions
+from temul.external.atomap_devel_012.atom_finding_refining import get_atom_positions
 
 
 class TestFindDumbbellVector:

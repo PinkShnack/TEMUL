@@ -1,5 +1,5 @@
 import numpy as np
-import atomap_devel_012.tools as to
+import temul.external.atomap_devel_012.tools as to
 
 
 def get_neighbor_middle_position(atom, za0, za1):
@@ -24,7 +24,7 @@ def get_neighbor_middle_position(atom, za0, za1):
 
     Examples
     --------
-    >>> import atomap_devel_012.analysis_tools as an
+    >>> import temul.external.atomap_devel_012.analysis_tools as an
     >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
     >>> sublattice.construct_zone_axes()
     >>> za0 = sublattice.zones_axis_average_distances[0]
@@ -66,7 +66,7 @@ def get_middle_position_list(sublattice, za0, za1):
 
     Examples
     --------
-    >>> import atomap_devel_012.analysis_tools as an
+    >>> import temul.external.atomap_devel_012.analysis_tools as an
     >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
     >>> sublattice.construct_zone_axes()
     >>> za0 = sublattice.zones_axis_average_distances[0]
@@ -101,7 +101,7 @@ def get_vector_shift_list(sublattice, position_list):
 
     Example
     -------
-    >>> import atomap_devel_012.analysis_tools as an
+    >>> import temul.external.atomap_devel_012.analysis_tools as an
     >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
     >>> sublattice.construct_zone_axes()
     >>> za0 = sublattice.zones_axis_average_distances[0]
