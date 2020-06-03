@@ -1,8 +1,8 @@
 
 import numpy as np
 import hyperspy.api as hs
-from skimage.measure import profile_line
-
+# newest version not working with hspy
+from temul.external.skimage_devel_0162.profile import profile_line
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import subplots_adjust
 # from matplotlib.text import TextPath

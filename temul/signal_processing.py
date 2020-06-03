@@ -3,7 +3,7 @@ from temul.element_tools import split_and_sort_element
 from temul.external.atomap_devel_012.initial_position_finding import (
     add_atoms_with_gui as choose_points_on_image)
 
-import atomap.api as am
+import temul.external.atomap_devel_012.api as am_dev
 from atomap.atom_finding_refining import _make_circular_mask
 
 import matplotlib
@@ -506,14 +506,14 @@ def measure_image_errors(imageA, imageB, filename=None):
     -------
 
     >>> import atomap.api as am
-    >>> imageA = am.dummy_data.get_simple_cubic_signal().data
-    >>> imageB = am.dummy_data.get_simple_cubic_with_vacancies_signal().data
+    >>> imageA = am_dev.dummy_data.get_simple_cubic_signal().data
+    >>> imageB = am_dev.dummy_data.get_simple_cubic_with_vacancies_signal().data
     >>> mse_number, ssm_number = measure_image_errors(imageA, imageB,
     ...                                               filename=None)
 
     Showing the ideal case of both images being exactly equal
-    >>> imageA = am.dummy_data.get_simple_cubic_signal().data
-    >>> imageB = am.dummy_data.get_simple_cubic_signal().data
+    >>> imageA = am_dev.dummy_data.get_simple_cubic_signal().data
+    >>> imageB = am_dev.dummy_data.get_simple_cubic_signal().data
     >>> mse_number, ssm_number = measure_image_errors(imageA, imageA,
     ...                                               filename=None)
 
@@ -561,8 +561,8 @@ def measure_image_errors(imageA, imageB, filename=None):
     return(mse_number, ssm_number)
 
 
-# imageA = am.dummy_data.get_simple_cubic_signal().data
-# imageB = am.dummy_data.get_simple_cubic_with_vacancies_signal().data
+# imageA = am_dev.dummy_data.get_simple_cubic_signal().data
+# imageB = am_dev.dummy_data.get_simple_cubic_with_vacancies_signal().data
 # mse_number, ssm_number = measure_image_errors(imageA, imageB,
 
 
@@ -586,8 +586,8 @@ def load_and_compare_images(imageA, imageB, filename=None):
     Examples
     --------
     # >>> # has to be a name for hyperspy to open with hs.load!!!
-    # >>> imageA = am.dummy_data.get_simple_cubic_signal(image_noise=True)
-    # >>> imageB = am.dummy_data.get_simple_cubic_signal()
+    # >>> imageA = am_dev.dummy_data.get_simple_cubic_signal(image_noise=True)
+    # >>> imageB = am_dev.dummy_data.get_simple_cubic_signal()
     # >>> load_and_compare_images(imageA, imageB, filename=None)
 
     '''
@@ -1046,7 +1046,7 @@ def crop_image_hs(image, cropping_area, save_image=True, save_variables=True,
     Example
     -------
 
-    >>> image = am.dummy_data.get_simple_cubic_with_vacancies_signal()
+    >>> image = am_dev.dummy_data.get_simple_cubic_with_vacancies_signal()
     >>> image.plot()
     >>> cropping_area = choose_points_on_image(image.data) # choose two points
     '''
@@ -1199,10 +1199,10 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
 
     cal_area = hs.roi.RectangularROI(
         left=llim, right=rlim, top=tlim, bottom=blim)(image)
-    atom_positions = am.get_atom_positions(
+    atom_positions = am_dev.get_atom_positions(
         cal_area, separation=separation, pca=True)
-    # atom_positions = am.add_atoms_with_gui(cal_area, atom_positions)
-    calib_sub = am.Sublattice(atom_positions, cal_area, color='r')
+    # atom_positions = am_dev.add_atoms_with_gui(cal_area, atom_positions)
+    calib_sub = am_dev.Sublattice(atom_positions, cal_area, color='r')
     # calib_sub.plot()
     if refine is True:
         calib_sub.find_nearest_neighbors()
