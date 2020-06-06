@@ -12,10 +12,11 @@ from temul.model_creation import (count_atoms_in_sublattice_list,
                                   assign_z_height)
 from temul.io import (create_dataframe_for_xyz,
                       write_cif_from_dataframe,
-                      create_new_folder)
+                      create_new_folder,
+                      load_prismatic_mrc_with_hyperspy)
 
+import temul.external.atomap_devel_012.api as am_dev
 import pyprismatic as pr
-import atomap.api as am
 import matplotlib.pyplot as plt
 import hyperspy.api as hs
 import pandas as pd
@@ -304,7 +305,7 @@ def simulate_with_prismatic(xyz_filename,
 
     >>> from temul.simulations import simulate_with_prismatic
     >>> simulate_with_prismatic(
-    ...     xyz_filename="example_data/prismatic/"
+    ...     xyz_filename="temul/example_data/prismatic/"
     ...         "MoS2_hex_prismatic.xyz",
     ...     filename='prismatic_simulation',
     ...     probeStep=1.0, reference_image=None, E0=60e3,
@@ -388,59 +389,6 @@ def simulate_with_prismatic(xyz_filename,
     pr_sim.numThreads = numThreads
     pr_sim.filenameOutput = filename + '.mrc'
     pr_sim.go()
-
-
-def load_prismatic_mrc_with_hyperspy(
-        prismatic_mrc_filename,
-        save_name='calibrated_data_'):
-    '''
-    Open a prismatic .mrc file and save as a hyperspy object.
-    Also plots save saves a png.
-
-    Parameters
-    ----------
-
-    prismatic_mrc_filename : string
-        name of the outputted prismatic .mrc file.
-
-    Returns
-    -------
-    Hyperspy Signal 2D of the simulation
-
-    Examples
-    --------
-
-    >>> from temul.simulations import load_prismatic_mrc_with_hyperspy
-    >>> load_prismatic_mrc_with_hyperspy(
-    ...     prismatic_mrc_filename="example_data/prismatic/"
-    ...         "prism_2Doutput_prismatic_simulation.mrc",
-    ...     save_name='calibrated_data_')
-    <Signal2D, title: , dimensions: (|1182, 773)>
-
-    '''
-
-    # if '.mrc' not in prismatic_mrc_filename:
-    #     prismatic_mrc_filename = prismatic_mrc_filename + 'mrc'
-    # if 'prism_2Doutput_' not in prismatic_mrc_filename:
-    #     prismatic_mrc_filename = 'prism_2Doutput' + prismatic_mrc_filename
-
-    simulation = hs.load(prismatic_mrc_filename)
-    simulation.axes_manager[0].name = 'extra_dimension'
-    simulation = simulation.sum('extra_dimension')
-
-    if save_name is not None:
-        simulation.save(save_name, overwrite=True)
-        simulation.plot()
-        plt.title(save_name, fontsize=20)
-        plt.gca().axes.get_xaxis().set_visible(False)
-        plt.gca().axes.get_yaxis().set_visible(False)
-        plt.tight_layout()
-        plt.savefig(fname=save_name + '.png',
-                    transparent=True, frameon=False, bbox_inches='tight',
-                    pad_inches=None, dpi=300, labels=False)
-        # plt.close()
-
-    return simulation
 
 
 # -*- coding: utf-8 -*-
@@ -793,7 +741,7 @@ def image_refine_via_intensity_loop(atom_lattice,
     atom_lattice_int_ref_name = 'Atom_Lattice_' + \
         intensity_type + '_refined' + saving_suffix
 
-    atom_lattice_int_ref = am.Atom_Lattice(
+    atom_lattice_int_ref = am_dev.Atom_Lattice(
         image=atom_lattice_signal,
         name=atom_lattice_int_ref_name,
         sublattice_list=atom_lattice.sublattice_list)
@@ -1037,9 +985,9 @@ def image_refine_via_position_loop(image,
     df_position_refine.to_csv(filename + '.csv', sep=',', index=False)
 
     '''Save Atom Lattice Object'''
-    atom_lattice = am.Atom_Lattice(image=image.data,
-                                   name='All Sublattices ' + filename,
-                                   sublattice_list=sublattice_list)
+    atom_lattice = am_dev.Atom_Lattice(image=image.data,
+                                       name='All Sublattices ' + filename,
+                                       sublattice_list=sublattice_list)
     atom_lattice.save(filename="Atom_Lattice_" +
                       filename + ".hdf5", overwrite=True)
 

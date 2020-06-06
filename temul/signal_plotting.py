@@ -1,13 +1,13 @@
 
 import numpy as np
 import hyperspy.api as hs
-from skimage.measure import profile_line
-
+# newest version not working with hspy
+from temul.external.skimage_devel_0162.profile import profile_line
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import subplots_adjust
-from matplotlib.text import TextPath
+# from matplotlib.text import TextPath
 
-import datetime as DT
+# import datetime as DT
 import matplotlib.dates as mdates
 import scipy.spatial as spatial
 from temul.intensity_tools import get_sublattice_intensity
@@ -284,8 +284,9 @@ def compare_images_line_profile_two_images(imageA, imageB,
 
     ''' Simulation '''
 
-    profile_y_sim = profile_line(image=imageB.data, src=[y0, x0], dst=[y1, x1],
-                                 linewidth=linewidth, reduce_func=reduce_func) + imageB_intensity_offset
+    profile_y_sim = profile_line(
+        image=imageB.data, src=[y0, x0], dst=[y1, x1], linewidth=linewidth,
+        reduce_func=reduce_func) + imageB_intensity_offset
     profile_x_sim = np.arange(0, len(profile_y_sim), 1)
     profile_x_sim = profile_x_sim * image_sampling
 
@@ -336,12 +337,11 @@ def compare_images_line_profile_two_images(imageA, imageB,
                     pad_inches=None, dpi=300)
 
 
-
 def get_cropping_area(line_profile_positions, crop_offset=20):
 
     x0, y0 = line_profile_positions[0]
     x1, y1 = line_profile_positions[1]
-    
+
     crop_left, crop_right = x0 - crop_offset, x1 + crop_offset
     crop_top, crop_bot = y0 - crop_offset, y1 + crop_offset
 
@@ -351,81 +351,82 @@ def get_cropping_area(line_profile_positions, crop_offset=20):
 def plot_atom_energies(sublattice_list, image=None, vac_or_implants=None,
                        elements_dict_other=None, filename='energy_map',
                        cmap='plasma', levels=20, colorbar_fontsize=16):
-
     '''
     vac_or_implants options are 'implants' and 'vac'
-    
-    Returns the x and y coordinates of the atom positions and the 
+
+    Returns the x and y coordinates of the atom positions and the
     atom energy.
-    
-    >>> import os
-    >>> import atomap.api as am
-    >>> from temul.signal_plotting import plot_atom_energies
-    
-    >>> base_directory = ('C:/Users/Eoghan.OConnell/Documents/Documents/Eoghan UL/PHD'
-    ...               '/Thesis_Eoghan/Images/Results/Chapter 1/Part 1 - Se/'
-    ...               'Spectroscopy/EELS/Core Loss/Image simulations/020_EELS-SI-During_HAADF')
-    >>> os.chdir(base_directory)
-    >>> atom_lattice = am.load_atom_lattice_from_hdf5('Atom_Lattice_Refiner_max.hdf5')
-    
-    >>> x,y,energy = plot_atom_energies(sublattice_list=[atom_lattice.sublattice_list[1]], vac_or_implants='implants')
+
+    import os
+    import atomap.api as am
+    from temul.signal_plotting import plot_atom_energies
+     Make a test dataset
+    base_directory = (
+        'C:/Users/Eoghan.OConnell/Documents/Documents/Eoghan UL/PHD'
+        '/Thesis_Eoghan/Images/Results/Chapter 1/Part 1 - Se/'
+        'Spectroscopy/EELS/Core Loss/Image simulations/'
+        '020_EELS-SI-During_HAADF')
+    os.chdir(base_directory)
+    atom_lattice = am.load_atom_lattice_from_hdf5(
+        'Atom_Lattice_Refiner_max.hdf5')
+    x,y,energy = plot_atom_energies(sublattice_list=[
+        atom_lattice.sublattice_list[1]], vac_or_implants='implants')
 
     '''
-    
+
     if elements_dict_other is None:
-        energies_dict = {'S_0': 2*5.9,
+        energies_dict = {'S_0': 2 * 5.9,
                          'S_1': 5.9,
                          'S_2': 0.0,
-                         'Se_1': (2*5.9) - 5.1,
+                         'Se_1': (2 * 5.9) - 5.1,
                          'Se_1.S_1': 5.9 - 5.1,
-                         'Se_2': (2*5.9) - (2*5.1)}
-        
+                         'Se_2': (2 * 5.9) - (2 * 5.1)}
+
         energies_dict['Se_1.S_1'] = round(energies_dict['Se_1.S_1'], 2)
         energies_dict['Se_1'] = round(energies_dict['Se_1'], 2)
         energies_dict['Se_2'] = round(energies_dict['Se_2'], 2)
-        
+
     elif elements_dict_other is not None and vac_or_implants is not None:
-        
+
         raise ValueError("both elements_dict_other and vac_or_implants"
                          " were set to None. If you are using your own"
                          " elements_dict_other then set vac_or_implants=None")
 
     if vac_or_implants == 'implants':
-        energies_dict_implants = {k: energies_dict[k] for k in list(energies_dict)[-3:]}
+        energies_dict_implants = {
+            k: energies_dict[k] for k in list(energies_dict)[-3:]}
         energies_dict = energies_dict_implants
     elif vac_or_implants == 'vac':
-        energies_dict_vac = {k: energies_dict[k] for k in list(energies_dict)[:3]}
+        energies_dict_vac = {k: energies_dict[k]
+                             for k in list(energies_dict)[:3]}
         energies_dict = energies_dict_vac
     else:
         pass
-    
-    
-    for key, value in energies_dict.items():  
+
+    for key, value in energies_dict.items():
         for sub in sublattice_list:
             for atom in sub.atom_list:
                 if atom.elements == key:
-                    atom.atom_energy = value                        
-                        
+                    atom.atom_energy = value
+
     x, y, energy = [], [], []
-        
+
     for sub in sublattice_list:
         for atom in sub.atom_list:
             x.append(atom.pixel_x)
             y.append(atom.pixel_y)
             energy.append(atom.atom_energy)
-            
-#            print(atom.elements, atom.atom_energy)
-    
 
-        
-    levels = np.arange(-0.5, np.max(energy), np.max(energy)/levels)
+#            print(atom.elements, atom.atom_energy)
+
+    levels = np.arange(-0.5, np.max(energy), np.max(energy) / levels)
 
     if image is None:
         image = sublattice_list[0].image
     # plot the contour map
     plt.figure()
     plt.imshow(image)
-    plt.tricontour(x,y,energy, cmap=cmap, levels=levels)
+    plt.tricontour(x, y, energy, cmap=cmap, levels=levels)
     m = plt.cm.ScalarMappable(cmap=cmap)
     m.set_array(energy)
     cbar = plt.colorbar(m)
@@ -436,12 +437,12 @@ def plot_atom_energies(sublattice_list, image=None, vac_or_implants=None,
 
     if filename is not None:
         plt.savefig(fname=sub.name + '_contour_energy_map.png',
-                transparent=True, frameon=False, bbox_inches='tight',
-                pad_inches=None, dpi=100, labels=False)
+                    transparent=True, frameon=False, bbox_inches='tight',
+                    pad_inches=None, dpi=100, labels=False)
 
     plt.figure()
     plt.imshow(image)
-    plt.tricontourf(x,y,energy, cmap=cmap, levels=levels)
+    plt.tricontourf(x, y, energy, cmap=cmap, levels=levels)
     m = plt.cm.ScalarMappable(cmap=cmap)
     m.set_array(energy)
     cbar = plt.colorbar(m)
@@ -449,25 +450,33 @@ def plot_atom_energies(sublattice_list, image=None, vac_or_implants=None,
     plt.gca().axes.get_xaxis().set_visible(False)
     plt.gca().axes.get_yaxis().set_visible(False)
     plt.tight_layout()
-        
+
     if filename is not None:
         plt.savefig(fname=sub.name + '_contourf_energy_map.png',
-                transparent=True, frameon=False, bbox_inches='tight',
-                pad_inches=None, dpi=100, labels=False)
+                    transparent=True, frameon=False, bbox_inches='tight',
+                    pad_inches=None, dpi=100, labels=False)
 
     return(x, y, energy)
 
 
 class Sublattice_Hover_Intensity(object):
 
-    """User can hover over sublattice overlaid on STEM image to display the x,y location and intensity of that point."""
-    def __init__(self, image, sublattice, sublattice_positions, background_sublattice):    #formatter=fmt,
-        
-        #create intensity list from sublattice and bg sublattice
-        intensity_list = get_sublattice_intensity(sublattice=sublattice, intensity_type='max', remove_background_method='local', background_sub=background_sublattice)
-        intensity_list_norm = intensity_list/max(intensity_list)
+    """
+    User can hover over sublattice overlaid on STEM image to display the
+    x,y location and intensity of that point.
+    """
 
-        #split sublattice positions into x and y
+    def __init__(self, image, sublattice, sublattice_positions,
+                 background_sublattice):  # formatter=fmt,
+
+        # create intensity list from sublattice and bg sublattice
+        intensity_list = get_sublattice_intensity(
+            sublattice=sublattice, intensity_type='max',
+            remove_background_method='local',
+            background_sub=background_sublattice)
+        intensity_list_norm = intensity_list / max(intensity_list)
+
+        # split sublattice positions into x and y
         sublattice_position_x = []
         sublattice_position_y = []
 
@@ -477,37 +486,44 @@ class Sublattice_Hover_Intensity(object):
             sublattice_position_y.append(sublattice_positions[i][1])
             i += 1
 
-        #plot image and scatter plot of sublattice positions
+        # plot image and scatter plot of sublattice positions
         fig = plt.figure()
         subplot1 = fig.add_subplot(1, 1, 1)
 
         subplot1.set_title('STEM image')
-        img = plt.imshow(image)
-        scatter = plt.scatter(sublattice_position_x, sublattice_position_y, cmap='inferno', c=intensity_list_norm)    #c=t_metal_intensity_list, cmap='viridis', alpha=0.5
+        _ = plt.imshow(image)
+        # c=t_metal_intensity_list, cmap='viridis', alpha=0.5
+        _ = plt.scatter(
+            sublattice_position_x, sublattice_position_y, cmap='inferno',
+            c=intensity_list_norm)
         plt.colorbar()
 
-        #x_point and y_point are individual points, determined by where the cursor is hovering
-        #x and y in fmt function are the lists of x and y components fed into cursor_hover_int
+        # x_point and y_point are individual points, determined by where the
+        # cursor is hovering x and y in fmt function are the lists of x and y
+        # components fed into cursor_hover_int
         def fmt(x_hover, y_hover, is_date):
-            
+
             x_rounded = [round(num, 4) for num in sublattice_position_x]
             point_index = x_rounded.index(round(x_hover, 4))
             intensity_at_point = intensity_list_norm[point_index]
 
             if is_date:
                 x_hover = mdates.num2date(x_hover).strftime("%Y-%m-%d")
-                return 'x: {x}\ny: {y}\nint: {i}'.format(x=x_hover, y=y_hover, i=intensity_at_point)
+                return 'x: {x}\ny: {y}\nint: {i}'.format(x=x_hover, y=y_hover,
+                                                         i=intensity_at_point)
 
             else:
-                return 'x: {x:0.2f}\ny: {y:0.2f}\nint: {i:0.3f}'.format(x=x_hover, y=y_hover, i=intensity_at_point)
+                return 'x: {x:0.2f}\ny: {y:0.2f}\nint: {i:0.3f}'.format(
+                    x=x_hover, y=y_hover, i=intensity_at_point)
 
         try:
             x = np.asarray(sublattice_position_x, dtype='float')
             self.is_date = False
         except (TypeError, ValueError):
-            x = np.asarray(mdates.date2num(sublattice_position_x), dtype='float')
+            x = np.asarray(mdates.date2num(
+                sublattice_position_x), dtype='float')
             self.is_date = True
-          
+
         y = np.asarray(sublattice_position_y, dtype='float')
         self._points = np.column_stack((x, y))
         self.offsets = (0, 15)
@@ -517,23 +533,21 @@ class Sublattice_Hover_Intensity(object):
         self.formatter = fmt
         self.tolerance = 0.5
         self.ax1 = subplot1
-        self.fig = fig  #ax.figure
+        self.fig = fig  # ax.figure
         self.ax1.xaxis.set_label_position('top')
         self.dot = subplot1.scatter(
             [x.min()], [y.min()], s=130, color='white', alpha=0.5)
         self.annotation = self.setup_annotation()
         plt.connect('motion_notify_event', self)
 
-
     def scaled(self, points):
         points = np.asarray(points)
         return points * (self.scale, 1)
 
-
     def __call__(self, event):
         ax1 = self.ax1
-        # event.inaxes is always the current axis. If you use twinx, ax could be
-        # a different axis.
+        # event.inaxes is always the current axis. If you use twinx, ax could
+        # be a different axis.
         if event.inaxes == ax1:
             x, y = event.xdata, event.ydata
         elif event.inaxes is None:
@@ -541,29 +555,29 @@ class Sublattice_Hover_Intensity(object):
         else:
             inv = ax1.transData.inverted()
             x, y = inv.transform([(event.x, event.y)]).ravel()
-        
+
         annotation = self.annotation
         x, y = self.snap(x, y)
         annotation.xy = x, y
         annotation.set_text(self.formatter(x, y, self.is_date))
         self.dot.set_offsets((x, y))
-        bbox = ax1.viewLim
-        #ax2.axvline(x=self.formatter(x, y, self.is_date).intensity_at_point)
+        _ = ax1.viewLim
+        # ax2.axvline(x=self.formatter(x, y, self.is_date).intensity_at_point)
 
         event.canvas.draw()
 
     def setup_annotation(self):
         """Draw and hide the annotation box."""
         annotation = self.ax1.annotate(
-            '', xy=(0, 0), ha = 'center',
-            xytext = self.offsets, textcoords = 'offset points', va = 'bottom',
-            bbox = dict(
+            '', xy=(0, 0), ha='center',
+            xytext=self.offsets, textcoords='offset points', va='bottom',
+            bbox=dict(
                 boxstyle='square, pad=0.5', fc='white', alpha=0.5))
         return annotation
 
     def snap(self, x, y):
         """Return the value in self.tree closest to x, y."""
-        dist, idx = self.tree.query(self.scaled((x, y)), k=1, p=1)        
+        dist, idx = self.tree.query(self.scaled((x, y)), k=1, p=1)
         try:
             return self._points[idx]
         except IndexError:

@@ -1,17 +1,15 @@
 
 from temul.element_tools import split_and_sort_element
-from temul.io import save_individual_images_from_image_stack
-from temul.atomap_devel_temp import add_atoms_with_gui
+from temul.external.atomap_devel_012.initial_position_finding import (
+    add_atoms_with_gui as choose_points_on_image)
 
-import atomap.api as am
+import temul.external.atomap_devel_012.api as am_dev
 from atomap.atom_finding_refining import _make_circular_mask
 
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib import gridspec
 
-import rigidregistration
-from tifffile import imread
 from skimage.metrics import structural_similarity as ssm
 import scipy
 from scipy.ndimage.filters import gaussian_filter
@@ -63,8 +61,8 @@ def get_xydata_from_list_of_intensities(
     x_array = np.delete(x_array, [0])
 
     # set the x_ values so that they are at the middle of each hist bin
-    x_separation = (x_array.max()-x_array.min())/hist_bins
-    x_array = x_array - (x_separation/2)
+    x_separation = (x_array.max() - x_array.min()) / hist_bins
+    x_array = x_array - (x_separation / 2)
 
     return(x_array, y_array)
 
@@ -105,9 +103,8 @@ def fit_1D_gaussian_to_data(xdata, amp, mu, sigma):
     >>> gauss_fit_01 = fit_1D_gaussian_to_data(xdata, amp, mu, sigma)
     '''
 
-    return(amp*(1/(sigma*(np.sqrt(2*np.pi))))*(np.exp(-((xdata-mu)**2) /
-                                                      ((2*sigma)**2)))
-           )
+    return(amp * (1 / (sigma * (np.sqrt(2 * np.pi)))) * (
+        np.exp(-((xdata - mu)**2) / ((2 * sigma)**2))))
 
 
 # Fit gaussian to element
@@ -226,10 +223,10 @@ def get_scaled_middle_limit_intensity_list(sublattice,
     limit_intensity_list_real = []
 
     for middle in middle_intensity_list:
-        middle_real = middle*sublattice_scalar
+        middle_real = middle * sublattice_scalar
         middle_intensity_list_real.append(middle_real)
     for limit in limit_intensity_list:
-        limit_real = limit*sublattice_scalar
+        limit_real = limit * sublattice_scalar
         limit_intensity_list_real.append(limit_real)
 
     return(middle_intensity_list_real, limit_intensity_list_real)
@@ -246,7 +243,8 @@ def get_fitting_tools_for_plotting_gaussians(element_list,
     sublattice with multiple Gaussians.
     '''
 
-    if len(scaled_middle_intensity_list)+1 != len(scaled_limit_intensity_list):
+    if len(scaled_middle_intensity_list) + 1 != len(
+            scaled_limit_intensity_list):
         raise ValueError(
             "limit list must have a length one greater than middle list")
 
@@ -260,10 +258,10 @@ def get_fitting_tools_for_plotting_gaussians(element_list,
         element_name = element
         middle_int = middle
         lower_int = scaled_limit_intensity_list[i]
-        upper_int = scaled_limit_intensity_list[i+1]
+        upper_int = scaled_limit_intensity_list[i + 1]
         gauss_amp = gaussian_amp
         gauss_mu = middle
-        gauss_sigma = (upper_int - lower_int)/gauss_sigma_division
+        gauss_sigma = (upper_int - lower_int) / gauss_sigma_division
         fitting_tools.append([element_name, middle_int, lower_int, upper_int,
                               gauss_amp, gauss_mu, gauss_sigma])
 
@@ -290,19 +288,21 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
     sub_ints_all = [sub1_ints, sub2_ints]
     marker_list = [['Sub1', '.'],['Sub2', 'x']]
 
-    middle_intensity_list_real_sub1, limit_intensity_list_real_sub1 = make_middle_limit_intensity_list_real(
-                                        sublattice=sub1,
-                                        middle_intensity_list=middle_intensity_list_sub1,
-                                        limit_intensity_list=limit_intensity_list_sub1,
-                                        method=method,
-                                        sublattice_scalar=sub1_mode)
+    middle_intensity_list_real_sub1, limit_intensity_list_real_sub1 = \
+        make_middle_limit_intensity_list_real(
+            sublattice=sub1,
+            middle_intensity_list=middle_intensity_list_sub1,
+            limit_intensity_list=limit_intensity_list_sub1,
+            method=method,
+            sublattice_scalar=sub1_mode)
 
-    middle_intensity_list_real_sub2, limit_intensity_list_real_sub2 = make_middle_limit_intensity_list_real(
-                                        sublattice=sub2,
-                                        middle_intensity_list=middle_intensity_list_sub2,
-                                        limit_intensity_list=limit_intensity_list_sub2,
-                                        method=method,
-                                        sublattice_scalar=sub2_mode)
+    middle_intensity_list_real_sub2, limit_intensity_list_real_sub2 = \
+        make_middle_limit_intensity_list_real(
+            sublattice=sub2,
+            middle_intensity_list=middle_intensity_list_sub2,
+            limit_intensity_list=limit_intensity_list_sub2,
+            method=method,
+            sublattice_scalar=sub2_mode)
 
 
     element_list_all_subs = [element_list_sub1, element_list_sub2]
@@ -336,7 +336,7 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
         mpl_cmap = matplotlib.cm.get_cmap(mpl_cmaps_list[i])
         colormap_list = []
         linestyle_list = []
-        for j in np.arange(0, 1, 1/len(element_list_all_subs[0])):
+        for j in np.arange(0, 1, 1 / len(element_list_all_subs[0])):
             colormap_list.append(mpl_cmap(j))
             linestyle_list.append('-')
 
@@ -369,9 +369,9 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
 
     # fig.suptitle("Fit of all Elements with Residuals", family="serif",
     # fontsize=20)
-    ax2.set_xlabel("Intensity (a.u.)", family="serif",  fontsize=20)
-    ax1.set_ylabel("Counts", family="serif",  fontsize=20)
-    ax2.set_ylabel("Res.", family="serif",  fontsize=20)
+    ax2.set_xlabel("Intensity (a.u.)", family="serif", fontsize=20)
+    ax1.set_ylabel("Counts", family="serif", fontsize=20)
+    ax2.set_ylabel("Res.", family="serif", fontsize=20)
 
     sub_residual_gauss_list = []
     for sublattice_array, fitting_tools_sub, cycler_sub, marker, in zip(
@@ -417,16 +417,16 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
                         p0=[fitting_tools[4], fitting_tools[5],
                             fitting_tools[6]])
                     individual_gauss = fit_1D_gaussian_to_data(x, *popt_gauss)
-                    sub_gauss = ax1.plot(x, individual_gauss, **kwargs)
-                    sub_gauss_fill = ax1.fill_between(x,
-                                                      individual_gauss.min(),
-                                                      individual_gauss,
-                                                      facecolor=kwargs['c'],
-                                                      alpha=0.5)
+                    _ = ax1.plot(x, individual_gauss, **kwargs)
+                    _ = ax1.fill_between(x,
+                                         individual_gauss.min(),
+                                         individual_gauss,
+                                         facecolor=kwargs['c'],
+                                         alpha=0.5)
 
                     sub_residual_gauss = abs(
                         y - (fit_1D_gaussian_to_data(x, *popt_gauss)))
-                    sub_gauss_hl = ax1.plot(
+                    _ = ax1.plot(
                         x, fit_1D_gaussian_to_data(x, *popt_gauss),
                         label=r"$\bf{%s}$ : " % label_name +
                         str(round(
@@ -436,7 +436,7 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
 
                     sub_residual_gauss_list.append([fitting_tools[0],
                                                     sub_residual_gauss])
-                    sub_resid = ax2.plot(
+                    _ = ax2.plot(
                         x, sub_residual_gauss, marker=marker[1],
                         color='grey',
                         linestyle='',
@@ -469,103 +469,6 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
         plt.savefig(fname=filename + '.png',
                     transparent=True, frameon=False, bbox_inches='tight',
                     pad_inches=None, dpi=900, labels=False)
-
-
-'''
-Image Registration
-'''
-
-
-def rigid_registration(file, masktype='hann', n=4, findMaxima='gf'):
-    '''
-    Perform image registraion with the rigid registration package
-
-    Parameters
-    ----------
-
-    file : stack of tiff images
-
-    masktype : filtering method, default 'hann'
-        See https://github.com/bsavitzky/rigidRegistration for
-        more information
-
-    n : width of filter, default 4
-        larger numbers mean smaller filter width
-        See https://github.com/bsavitzky/rigidRegistration for
-        more information
-
-    findMaxima : image matching method, default 'gf'
-        'pixel' and 'gf' options, See
-        https://github.com/bsavitzky/rigidRegistration for
-        more information
-
-    Returns
-    -------
-    Outputs of
-    report of the image registration
-    aligned and stacked image with and without crop
-    creates a folder and places all uncropped aligned images in it
-
-
-    Examples
-    --------
-
-    >>>
-
-
-    '''
-
-    # Read tiff file. Rearrange axes so final axis iterates over images
-    stack = np.rollaxis(imread(file), 0, 3)
-    stack = stack[:, :, :]/float(2**16)        # Normalize data between 0 and 1
-
-    s = rigidregistration.stackregistration.imstack(stack)
-    s.getFFTs()
-
-    # Choose Mask and cutoff frequency
-    s.makeFourierMask(mask=masktype, n=n)     # Set the selected Fourier mask
-    # s.show_Fourier_mask(i=0,j=5)             # Display the results
-
-    # Calculate image shifts using gaussian fitting
-    findMaxima = findMaxima
-    s.setGaussianFitParams(num_peaks=3, sigma_guess=3, window_radius=4)
-
-    # Find shifts.  Set verbose=True to print the correlation status to screen
-    s.findImageShifts(findMaxima=findMaxima, verbose=False)
-
-    # Identify outliers using nearest neighbors to enforce "smoothness"
-    s.set_nz(0, s.nz)
-    s.get_outliers_NN(max_shift=8)
-    # s.show_Rij(mask=True)
-
-    s.make_corrected_Rij()
-    # Correct outliers using the transitivity relations
-    # s.show_Rij_c()
-    # Display the corrected shift matrix
-    # Create registered image stack and average
-    # To skip calculation of image shifts, or correcting the shift matrix, pass
-    # the function
-    s.get_averaged_image()
-    # get_shifts=False, or correct_Rij=False
-
-    s.get_all_aligned_images()
-    # s.show()
-
-    # Display report of registration procedure
-    # s.show_report()
-
-    # Save report of registration procedure
-    s.save_report("registration_report.pdf")
-
-    # Save the average image
-    s.save("average_image.tif")
-
-    # Save the average image, including outer areas. Be careful when analysis
-    # outer regions of this file
-    s.save("average_image_no_crop.tif", crop=False)
-
-    # creates a folder and put all the individual images in there
-    save_individual_images_from_image_stack(image_stack=s.stack_registered)
 
 
 '''
@@ -602,14 +505,15 @@ def measure_image_errors(imageA, imageB, filename=None):
     Example
     -------
 
-    >>> imageA = am.dummy_data.get_simple_cubic_signal().data
-    >>> imageB = am.dummy_data.get_simple_cubic_with_vacancies_signal().data
+    >>> import atomap.api as am
+    >>> imageA = am_dev.dummy_data.get_simple_cubic_signal().data
+    >>> imageB = am_dev.dummy_data.get_simple_cubic_with_vacancies_signal().data
     >>> mse_number, ssm_number = measure_image_errors(imageA, imageB,
     ...                                               filename=None)
 
     Showing the ideal case of both images being exactly equal
-    >>> imageA = am.dummy_data.get_simple_cubic_signal().data
-    >>> imageB = am.dummy_data.get_simple_cubic_signal().data
+    >>> imageA = am_dev.dummy_data.get_simple_cubic_signal().data
+    >>> imageB = am_dev.dummy_data.get_simple_cubic_signal().data
     >>> mse_number, ssm_number = measure_image_errors(imageA, imageA,
     ...                                               filename=None)
 
@@ -657,8 +561,8 @@ def measure_image_errors(imageA, imageB, filename=None):
     return(mse_number, ssm_number)
 
 
-# imageA = am.dummy_data.get_simple_cubic_signal().data
-# imageB = am.dummy_data.get_simple_cubic_with_vacancies_signal().data
+# imageA = am_dev.dummy_data.get_simple_cubic_signal().data
+# imageB = am_dev.dummy_data.get_simple_cubic_with_vacancies_signal().data
 # mse_number, ssm_number = measure_image_errors(imageA, imageB,
 
 
@@ -682,8 +586,8 @@ def load_and_compare_images(imageA, imageB, filename=None):
     Examples
     --------
     # >>> # has to be a name for hyperspy to open with hs.load!!!
-    # >>> imageA = am.dummy_data.get_simple_cubic_signal(image_noise=True)
-    # >>> imageB = am.dummy_data.get_simple_cubic_signal()
+    # >>> imageA = am_dev.dummy_data.get_simple_cubic_signal(image_noise=True)
+    # >>> imageB = am_dev.dummy_data.get_simple_cubic_signal()
     # >>> load_and_compare_images(imageA, imageB, filename=None)
 
     '''
@@ -722,10 +626,12 @@ def compare_two_image_and_create_filtered_image(
     ...     compare_two_image_and_create_filtered_image)
     >>> import temul.example_data as example_data
     >>> experiment = example_data.load_Se_implanted_MoS2_data()
-    >>> simulation = example_data.load_Se_implanted_MoS2_simulation()
-    >>> filtered_image = compare_two_image_and_create_filtered_image(
-    ...     simulation, experiment, 0.5, cropping_area=[[5,5], [20, 20]],
-    ...     separation=15, mask_radius=4, percent_to_nn=None)
+
+    # get a simulation from desktop
+    #>>> simulation = example_data.load_Se_implanted_MoS2_simulation()
+    #>>> filtered_image = compare_two_image_and_create_filtered_image(
+    #...     simulation, experiment, 0.5, cropping_area=[[5,5], [20, 20]],
+    #...     separation=15, mask_radius=4, percent_to_nn=None)
 
     '''
     image_to_filter_data = image_to_filter.data
@@ -734,7 +640,7 @@ def compare_two_image_and_create_filtered_image(
     mse_number_list = []
     ssm_number_list = []
 
-    for i in np.arange(0, max_sigma+delta_image_filter, delta_image_filter):
+    for i in np.arange(0, max_sigma + delta_image_filter, delta_image_filter):
 
         image_to_filter_data_filtered = gaussian_filter(image_to_filter_data,
                                                         sigma=i)
@@ -772,8 +678,8 @@ def compare_two_image_and_create_filtered_image(
         format(ssm_number_list[ideal_ssm_number_index][1], '.1f'))
 
     # ideal is halway between mse and ssm indices
-    ideal_sigma = (ideal_mse_number + ideal_ssm_number)/2
-    ideal_sigma_y_coord = (float(min(mse)[0]) + float(max(ssm)[0]))/2
+    ideal_sigma = (ideal_mse_number + ideal_ssm_number) / 2
+    ideal_sigma_y_coord = (float(min(mse)[0]) + float(max(ssm)[0])) / 2
 
     image_to_filter_filtered = gaussian_filter(image_to_filter_data,
                                                sigma=ideal_sigma)
@@ -833,7 +739,7 @@ def make_gaussian(size, fwhm, center):
         x0 = center[0]
         y0 = center[1]
 
-    arr.append(np.exp(-4*np.log(2) * ((x-x0)**2 + (y-y0)**2) / fwhm**2))
+    arr.append(np.exp(-4 * np.log(2) * ((x - x0)**2 + (y - y0)**2) / fwhm**2))
 
     return(arr)
 
@@ -841,7 +747,8 @@ def make_gaussian(size, fwhm, center):
 def double_gaussian_fft_filter(image, filename,
                                d_inner, d_outer, real_space_sampling,
                                delta=0.05, units='nm'):
-    # Folder: G:/SuperStem visit/Feb 2019 data/2019_02_18_QMR_S1574_MoS2-Se-15eV
+    # Folder: G:/SuperStem visit/Feb 2019 data/2019_02_18_QMR_S1574_MoS2-
+    # Se-15eV
 
     # Accuracy of calculation. Smaller = more accurate.
     #   0.01 means it will fit until intensity is 0.01 away from 0
@@ -864,13 +771,13 @@ def double_gaussian_fft_filter(image, filename,
     '''
 
     physical_image_size = real_space_sampling * len(image.data)
-    reciprocal_sampling = 1/physical_image_size
+    reciprocal_sampling = 1 / physical_image_size
 
     # Get radius
-    reciprocal_d_inner = (d_inner/2)
-    reciprocal_d_outer = (d_outer/2)
-    reciprocal_d_inner_pix = reciprocal_d_inner/reciprocal_sampling
-    reciprocal_d_outer_pix = reciprocal_d_outer/reciprocal_sampling
+    reciprocal_d_inner = (d_inner / 2)
+    reciprocal_d_outer = (d_outer / 2)
+    reciprocal_d_inner_pix = reciprocal_d_inner / reciprocal_sampling
+    reciprocal_d_outer_pix = reciprocal_d_outer / reciprocal_sampling
 
     fwhm_neg_gaus = reciprocal_d_inner_pix
     fwhm_pos_gaus = reciprocal_d_outer_pix
@@ -925,10 +832,10 @@ def double_gaussian_fft_filter(image, filename,
     neg_gauss_amplitude = 0.0
     int_and_gauss_array = []
 
-    for neg_gauss_amplitude in np.arange(0, 1+delta, delta):
+    for neg_gauss_amplitude in np.arange(0, 1 + delta, delta):
 
         # while neg_gauss_amplitude <= 1:
-        nD_Gaussian_neg_scaled = nD_Gaussian_neg*-1 * \
+        nD_Gaussian_neg_scaled = nD_Gaussian_neg * -1 * \
             neg_gauss_amplitude  # NEED TO FIGURE out best number here!
         # nD_Gaussian_neg.plot()
         # plt.close()
@@ -945,7 +852,7 @@ def double_gaussian_fft_filter(image, filename,
         '''
         # Multiply the 2-D Gaussian with the FFT. This low pass filters the
         # FFT.
-        convolution = image_fft*DGFilter
+        convolution = image_fft * DGFilter
         # convolution.plot(norm='log')
         # convolution_amp = convolution.amplitude
         # convolution_amp.plot(norm='log')
@@ -965,7 +872,7 @@ def double_gaussian_fft_filter(image, filename,
     x_axis = np_arr_2[:, 0]
     y_axis = np_arr_2[:, 1]
     zero_line = np.zeros_like(x_axis)
-    idx = np.argwhere(np.diff(np.sign(zero_line-y_axis))).flatten()
+    idx = np.argwhere(np.diff(np.sign(zero_line - y_axis))).flatten()
     neg_gauss_amplitude_calculated = x_axis[idx][0]
 
     ''' Filtering the Image with the Chosen Negative Amplitude '''
@@ -976,7 +883,7 @@ def double_gaussian_fft_filter(image, filename,
     nD_Gaussian.axes_manager[1].units = '1/' + units
 
     # negative gauss
-    nD_Gaussian_neg_used = nD_Gaussian_neg*-1 * \
+    nD_Gaussian_neg_used = nD_Gaussian_neg * -1 * \
         neg_gauss_amplitude_calculated  # NEED TO FIGURE out best number here!
     nD_Gaussian_neg_used.axes_manager[0].scale = reciprocal_sampling
     nD_Gaussian_neg_used.axes_manager[1].scale = reciprocal_sampling
@@ -1130,7 +1037,7 @@ Cropping and Calibrating
 '''
 
 # cropping done in the scale, so nm, pixel, or whatever you have
-# cropping_area = am.add_atoms_with_gui(image.data)
+# cropping_area = choose_points_on_image(image.data)
 
 
 def crop_image_hs(image, cropping_area, save_image=True, save_variables=True,
@@ -1139,9 +1046,9 @@ def crop_image_hs(image, cropping_area, save_image=True, save_variables=True,
     Example
     -------
 
-    >>> image = am.dummy_data.get_simple_cubic_with_vacancies_signal()
+    >>> image = am_dev.dummy_data.get_simple_cubic_with_vacancies_signal()
     >>> image.plot()
-    >>> cropping_area = am.add_atoms_with_gui(image.data) # choose two points
+    >>> cropping_area = choose_points_on_image(image.data) # choose two points
     '''
 
     llim, tlim = cropping_area[0]
@@ -1224,7 +1131,7 @@ def crop_image_hs(image, cropping_area, save_image=True, save_variables=True,
     return image_crop
 
 
-# cropping_area = am.add_atoms_with_gui(image.data)
+# cropping_area = choose_points_on_image(image.data)
 
 
 def calibrate_intensity_distance_with_sublattice_roi(image,
@@ -1247,8 +1154,8 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
         The signal can be distance calibrated. If it is, set
         scalebar_true=True
     cropping_area : list of 2 floats, default None
-        The best method of choosing the area is by using the atomap
-        function "add_atoms_with_gui(image.data)". Choose two points on the
+        The best method of choosing the area is by using the function
+        "choose_points_on_image(image.data)". Choose two points on the
         image. First point is top left of area, second point is bottom right.
     percent_to_nn : float, default 0.40
         Determines the boundary of the area surrounding each atomic
@@ -1266,10 +1173,11 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
     Example
     -------
 
-    >>> image = am.dummy_data.get_simple_cubic_with_vacancies_signal()
+    >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
+    >>> image = dummy_data.get_simple_cubic_with_vacancies_signal()
     >>> # image.plot()
     >>> cropping_area = [[10,10],[100,100]]
-    >>> # cropping_area = am.add_atoms_with_gui(image.data) # manually
+    >>> # cropping_area = choose_points_on_image(image.data) # manually
     >>> calibrate_intensity_distance_with_sublattice_roi(image,
     ...             cropping_area, separation=10)
     >>> # image.plot()
@@ -1291,10 +1199,10 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
 
     cal_area = hs.roi.RectangularROI(
         left=llim, right=rlim, top=tlim, bottom=blim)(image)
-    atom_positions = am.get_atom_positions(
+    atom_positions = am_dev.get_atom_positions(
         cal_area, separation=separation, pca=True)
-    # atom_positions = am.add_atoms_with_gui(cal_area, atom_positions)
-    calib_sub = am.Sublattice(atom_positions, cal_area, color='r')
+    # atom_positions = am_dev.add_atoms_with_gui(cal_area, atom_positions)
+    calib_sub = am_dev.Sublattice(atom_positions, cal_area, color='r')
     # calib_sub.plot()
     if refine is True:
         calib_sub.find_nearest_neighbors()
@@ -1311,7 +1219,7 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
         percent_to_nn=percent_to_nn, mask_radius=mask_radius)
     calib_sub_max_list = calib_sub.atom_amplitude_max_intensity
     calib_sub_scalar = mean(a=calib_sub_max_list)
-    image.data = image.data/calib_sub_scalar
+    image.data = image.data / calib_sub_scalar
 
     if reference_image is not None:
         image.axes_manager = reference_image.axes_manager
@@ -1383,7 +1291,8 @@ def toggle_atom_refine_position_automatically(sublattice,
 
     >>> min_cut_off_percent = 0.75
     >>> max_cut_off_percent = 1.25
-    >>> sublattice = am.dummy_data.get_simple_cubic_with_vacancies_sublattice(
+    >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
+    >>> sublattice = dummy_data.get_simple_cubic_with_vacancies_sublattice(
     ...     image_noise=True)
     >>> sublattice.find_nearest_neighbors()
     >>> sublattice.plot()
@@ -1409,20 +1318,24 @@ def toggle_atom_refine_position_automatically(sublattice,
     elif method == 'mean':
         sublattice_scalar = np.mean(sublattice_vacancy_check_list)
 
-    sublattice_min_cut_off = min_cut_off_percent*sublattice_scalar
-    sublattice_max_cut_off = max_cut_off_percent*sublattice_scalar
+    sublattice_min_cut_off = min_cut_off_percent * sublattice_scalar
+    sublattice_max_cut_off = max_cut_off_percent * sublattice_scalar
 
     if range_type == 'internal':
 
         for i in range(0, len(sublattice.atom_list)):
-            if sublattice_min_cut_off < sublattice.atom_amplitude_max_intensity[i] < sublattice_max_cut_off:
+            if sublattice_min_cut_off < \
+                sublattice.atom_amplitude_max_intensity[
+                    i] < sublattice_max_cut_off:
                 sublattice.atom_list[i].refine_position = True
             else:
                 sublattice.atom_list[i].refine_position = False
 
     elif range_type == 'external':
         for i in range(0, len(sublattice.atom_list)):
-            if sublattice.atom_amplitude_max_intensity[i] > sublattice_max_cut_off or sublattice_min_cut_off > sublattice.atom_amplitude_max_intensity[i]:
+            if sublattice.atom_amplitude_max_intensity[
+                i] > sublattice_max_cut_off or sublattice_min_cut_off > \
+                    sublattice.atom_amplitude_max_intensity[i]:
                 sublattice.atom_list[i].refine_position = True
             else:
                 sublattice.atom_list[i].refine_position = False
@@ -1492,10 +1405,10 @@ def _remove_image_slice_around_atom(
     2D numpy array
 
     """
-    x0 = self.pixel_x - slice_size/2
-    x1 = self.pixel_x + slice_size/2
-    y0 = self.pixel_y - slice_size/2
-    y1 = self.pixel_y + slice_size/2
+    x0 = self.pixel_x - slice_size / 2
+    x1 = self.pixel_x + slice_size / 2
+    y0 = self.pixel_y - slice_size / 2
+    y1 = self.pixel_y + slice_size / 2
 
     if x0 < 0.0:
         x0 = 0
@@ -1603,7 +1516,7 @@ def get_cell_image(s, points_x, points_y, method='Voronoi', max_radius='Auto',
 
 
 def distance_vector(x1, y1, x2, y2):
-    distance_vector = sqrt(pow(x2-x1, 2) + pow(y2-y1, 2))
+    distance_vector = sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2))
     return(distance_vector)
 
 
@@ -1657,7 +1570,7 @@ def mean_and_std_nearest_neighbour_distances(sublattice,
             distance = distance_vector(x1, y1, x2, y2)
             distance_list.append(distance)
 
-        mean_distance = sum(distance_list)/len(distance_list)
+        mean_distance = sum(distance_list) / len(distance_list)
         mean_list.append(mean_distance)
         std_dev = np.std(distance_list, dtype=np.float64)
         std_dev_list.append(std_dev)
@@ -1665,18 +1578,16 @@ def mean_and_std_nearest_neighbour_distances(sublattice,
         # variance_list.append(variance)
 
     if sampling is not None:
-        mean_list = [k*sampling for k in mean_list]
-        std_dev_list = [k*sampling for k in std_dev_list]
+        mean_list = [k * sampling for k in mean_list]
+        std_dev_list = [k * sampling for k in std_dev_list]
 
     return(mean_list, std_dev_list)
 
 
 def choose_mask_coordinates(image, norm='log'):
     '''
-    Pick the mask locations for an FFT.
-    See get_masked_ifft() and
-    atomap.initial_position_finding.add_atoms_with_gui() for more details.
-    Commit 5ba307b5af0b598bedc0284aa989d44e23fdde4d on Atomap
+    Pick the mask locations for an FFT. See get_masked_ifft() and
+    commit 5ba307b5af0b598bedc0284aa989d44e23fdde4d on Atomap
 
     Parameters
     ----------
@@ -1697,11 +1608,8 @@ def choose_mask_coordinates(image, norm='log'):
     fft = image.fft(shift=True)
     fft_amp = fft.amplitude
 
-    mask_coords = add_atoms_with_gui(
+    mask_coords = choose_points_on_image(
         fft_amp.data, norm=norm)
-
-    # mask_coords = am.add_atoms_with_gui(
-    #     fft_amp.data, norm=norm)
 
     return(mask_coords)
 

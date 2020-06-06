@@ -6,7 +6,8 @@ from temul.model_creation import (
     image_difference_position,
     count_all_individual_elements,
     get_positions_from_sublattices,
-    get_most_common_sublattice_element
+    get_most_common_sublattice_element,
+    auto_generate_sublattice_element_list
 )
 from temul.element_tools import (
     get_individual_elements_from_element_list,
@@ -14,22 +15,30 @@ from temul.element_tools import (
     split_and_sort_element,
     atomic_radii_in_pixels
 )
-from temul.io import create_dataframe_for_xyz
+from temul.io import (create_dataframe_for_xyz,
+                      load_prismatic_mrc_with_hyperspy
+                      )
 from temul.signal_processing import (
     compare_two_image_and_create_filtered_image,
     calibrate_intensity_distance_with_sublattice_roi,
     measure_image_errors
 )
 from temul.simulations import (
-    simulate_with_prismatic,
-    load_prismatic_mrc_with_hyperspy
+    simulate_with_prismatic
+)
+from temul.dummy_data import (
+    get_simple_cubic_sublattice,
+    get_simple_cubic_signal
 )
 import numpy as np
 import pandas as pd
 import hyperspy
-from atomap.initial_position_finding import add_atoms_with_gui
+import temul.external.atomap_devel_012.api as am_dev
+from temul.external.atomap_devel_012.initial_position_finding import (
+    add_atoms_with_gui as choose_points_on_image)
 import matplotlib.pyplot as plt
 import copy
+from scipy.ndimage import gaussian_filter
 
 
 class Model_Refiner():
@@ -45,28 +54,29 @@ class Model_Refiner():
         Parameters
         ----------
         sublattice_and_elements_dict : dictionary
-            A dictionary of the structure `{sublattice: element_list,}` where each
-            sublattice is an Atomap sublattice object and each element_list is
-            a list of elements of the form given in the examples of
-            `get_individual_elements_from_element_list` in the element_tools.py
-            module. 
+            A dictionary of the structure `{sublattice: element_list,}` where
+            each sublattice is an Atomap sublattice object and each
+            element_list is a list of elements of the form given in the
+            examples of `get_individual_elements_from_element_list` in the
+            element_tools.py module.
         comparison_image : Hyperspy Signal2D, default None
             This is the image with which the first `sublattice` image will be
             compared to refine the list of sublattices' elements.
             If None is given when the Model Refiner is created, or if the
-            `comparison_image` is not the same shape as the first sublattice image,
-            a warning will be returned.
+            `comparison_image` is not the same shape as the first sublattice
+            image, a warning will be returned.
             To set a `comparison_image`, you can either use
             `model_refiner.create_simulation` or by setting the
             `model_refiner.comparison_image` to an image.
         sampling : float, default None
-            The real space sampling of the `sublattice` images in Angstrom. The
-            sampling is defined as: sampling = angstrom/pixel. This sampling will
-            be identical for the `comparison_image`. If it is set to None, the
-            sampling will automatically be set by the `sublattice.signal` object. 
+            The real space sampling of the `sublattice` images in Angstrom.
+            The sampling is defined as: sampling = angstrom/pixel. This
+            sampling will be identical for the `comparison_image`. If it is set
+            to None, the sampling will automatically be set by the
+            `sublattice.signal` object.
         thickness : float, default 10
-            Physical thickness of the sample in Angstrom. This will be used for the
-            simulation.
+            Physical thickness of the sample in Angstrom. This will be used for
+            the simulation.
         name : string, default ''
             Name of the Model Refiner.
 
@@ -102,6 +112,8 @@ class Model_Refiner():
         self.element_list = list(sublattice_and_elements_dict.values())
         self.flattened_element_list = combine_element_lists(
             self.element_list)
+
+        self.reference_image = self.sublattice_list[0].signal
         self._comparison_image_init(comparison_image)
         self.name = name
         self._element_count = count_atoms_in_sublattice_list(
@@ -114,14 +126,17 @@ class Model_Refiner():
         if len(self.refinement_history) == 0:
             self.refinement_history.append("Initial State")
 
-        self.reference_image = self.sublattice_list[0].signal
         self.calibration_area = [[1, 1],
                                  [self.reference_image.data.shape[-1] - 1,
                                   self.reference_image.data.shape[-2] - 1]]
         self.calibration_separation = 12
         # maybe have a _sampling_init function
         if sampling is None:
-            self.sampling = self.reference_image.axes_manager[-1].scale
+            if sampling == 1:
+                print("Sampling (axes_manager.scale) is 1, you may need to "
+                      "set this.")
+            else:
+                self.sampling = self.reference_image.axes_manager[-1].scale
         else:
             self.sampling = sampling
         if self.reference_image.axes_manager[-1].units == 'nm':
@@ -163,16 +178,16 @@ class Model_Refiner():
                               hyperspy._signals.signal2d.Signal2D):
                 raise ValueError(
                     "comparison_image must be a 2D Hyperspy signal of type "
-                    "hyperspy._signals.signal2d.Signal2D. The current incorrect "
-                    "type is {}".format(str(type(comparison_image))))
+                    "hyperspy._signals.signal2d.Signal2D. The current "
+                    "incorrect type is {}".format(str(type(comparison_image))))
 
             for sublattice in self.sublattice_list:
                 if not comparison_image.data.shape == sublattice.image.shape:
                     print("Warning: "
                           "comparison_image must have the same shape as each "
                           "sublattice image. comparison_image shape is {}, "
-                          "while sublattice '{}' is {}. This will stop you from "
-                          "refining your model.".format(
+                          "while sublattice '{}' is {}. This will stop you "
+                          "from refining your model.".format(
                               comparison_image.data.shape,
                               sublattice.name,
                               sublattice.image.data))
@@ -187,13 +202,14 @@ class Model_Refiner():
                 raise ValueError(
                     "The comparison_image attribute has not been "
                     "set. You will not be able to "
-                    "refine the model until a comparison_image is set. You can "
-                    "do this via Model_refiner.create_simulation() or by "
+                    "refine the model until a comparison_image is set. You "
+                    "can do this via Model_refiner.create_simulation() or by "
                     "setting the Model_Refiner.comparison_image to an image.")
 
         if 'wrong_size' in error_message:
             for sublattice in self.sublattice_list:
-                if not self.comparison_image.data.shape == sublattice.image.shape:
+                if not self.comparison_image.data.shape == \
+                        sublattice.image.shape:
                     raise ValueError(
                         "comparison_image must have the same shape as each "
                         "sublattice image. comparison_image shape is {}, "
@@ -341,7 +357,8 @@ class Model_Refiner():
         if isinstance(manual_list, list):
             self.calibration_area = manual_list
         else:
-            self.calibration_area = add_atoms_with_gui(self.reference_image)
+            self.calibration_area = choose_points_on_image(
+                self.reference_image)
 
     def set_calibration_separation(self, pixel_separation):
         self.calibration_separation = pixel_separation
@@ -428,7 +445,7 @@ class Model_Refiner():
 
         Examples
         --------
-        >>> from temul.dummy_data import (
+        >>> from temul.model_refiner import (
         ...     get_model_refiner_with_12_vacancies_refined)
         >>> refiner = get_model_refiner_with_12_vacancies_refined(
         ...     image_noise=True)
@@ -509,6 +526,8 @@ class Model_Refiner():
                           .format(i + 1))
                     break
 
+    # chosen_sublattice should be less ambiguous
+
     def image_difference_position_model_refiner(
             self,
             chosen_sublattice,
@@ -535,13 +554,14 @@ class Model_Refiner():
 
         Examples
         --------
-        >>> from temul.dummy_data import (
+        >>> from temul.model_refiner import (
         ...     get_model_refiner_one_sublattice_3_vacancies)
         >>> refiner = get_model_refiner_one_sublattice_3_vacancies()
         >>> refiner.sublattice_list[0].plot()
         >>> refiner.comparison_image.plot()
         >>> refiner.image_difference_position_model_refiner(
-        ...     pixel_threshold=10)
+        ...     pixel_threshold=10,
+        ...     chosen_sublattice=refiner.sublattice_list[0])
         3 new atoms found! Adding new atom positions.
         >>> refiner.sublattice_list[0].plot()
 
@@ -659,7 +679,7 @@ class Model_Refiner():
             If set to 'all', sublattices that exist in the `Model_Refiner` will
             all be used. The `sublattice` indexes can be specified in a list.
             For example [0, 2] will select the first and third sublattices.
-            A list of `sublattice` objects can instead be used. 
+            A list of `sublattice` objects can instead be used.
         filter_image : Bool, default False
             Choose whether to filter the simulation with a Gaussian to match
             the `reference_image`.
@@ -838,3 +858,163 @@ class Model_Refiner():
 # for i, b in enumerate(b_list):
 #     df.rename(index={i: b}, inplace=True)
 # df
+
+
+''' Model Refiner Dummy Data examples '''
+
+
+def get_model_refiner_two_sublattices():
+
+    atom_lattice = am_dev.dummy_data.get_simple_atom_lattice_two_sublattices()
+    sub1 = atom_lattice.sublattice_list[0]
+    sub2 = atom_lattice.sublattice_list[1]
+    for i in range(0, len(sub1.atom_list)):
+        if i // 2 == 0:
+            sub1.atom_list[i].elements = 'Ti_2'
+        else:
+            sub1.atom_list[i].elements = 'Ti_1'
+    for i in range(0, len(sub2.atom_list)):
+        if i // 2 == 0:
+            sub2.atom_list[i].elements = 'Cl_2'
+        else:
+            sub1.atom_list[i].elements = 'Cl_3'
+
+    sub1.atom_list[2].elements = 'Ti_3'
+    sub1.atom_list[5].elements = 'Ti_3'
+    sub2.atom_list[3].elements = 'Cl_1'
+    sub2.atom_list[4].elements = 'Cl_1'
+    sub1_element_list = ['Ti_0', 'Ti_1', 'Ti_2', 'Ti_3']
+    sub2_element_list = ['Cl_0', 'Cl_1', 'Cl_2', 'Cl_3']
+
+    refiner_dict = {sub1: sub1_element_list,
+                    sub2: sub2_element_list}
+    blurred_image = hyperspy._signals.signal2d.Signal2D(
+        gaussian_filter(atom_lattice.image, 3))
+    atom_lattice_refiner = Model_Refiner(refiner_dict, blurred_image)
+    return atom_lattice_refiner
+
+
+def get_model_refiner_two_sublattices_refined(n=4):
+
+    refined_model = get_model_refiner_two_sublattices()
+    refined_model.repeating_intensity_refinement(
+        n=n,
+        ignore_element_count_comparison=True)
+
+    return refined_model
+
+
+def get_model_refiner_one_sublattice_varying_amp(
+        image_noise=False, amplitude=[0, 5],
+        test_element='Ti_2'):
+
+    sub1 = get_simple_cubic_sublattice(image_noise=image_noise,
+                                       amplitude=amplitude)
+    for i in range(0, len(sub1.atom_list)):
+        sub1.atom_list[i].elements = test_element
+
+    test_element_info = split_and_sort_element(test_element)
+    sub1_element_list = auto_generate_sublattice_element_list(
+        material_type='single_element_column',
+        elements=test_element_info[0][1],
+        max_number_atoms_z=np.max(amplitude))
+
+    refiner_dict = {sub1: sub1_element_list}
+    comparison_image = get_simple_cubic_signal(
+        image_noise=image_noise,
+        amplitude=test_element_info[0][2])
+    refiner = Model_Refiner(refiner_dict, comparison_image)
+    return refiner
+
+
+def get_model_refiner_one_sublattice_3_vacancies(
+        image_noise=True, test_element='Ti_2'):
+
+    # make one with more vacancies maybe
+    sub1 = am_dev.dummy_data.get_simple_cubic_with_vacancies_sublattice(
+        image_noise=image_noise)
+    for i in range(0, len(sub1.atom_list)):
+        sub1.atom_list[i].elements = test_element
+
+    test_element_info = split_and_sort_element(test_element)
+    sub1_element_list = auto_generate_sublattice_element_list(
+        material_type='single_element_column',
+        elements=test_element_info[0][1],
+        max_number_atoms_z=test_element_info[0][2] + 3)
+
+    refiner_dict = {sub1: sub1_element_list}
+    comparison_image = am_dev.dummy_data.get_simple_cubic_signal(
+        image_noise=image_noise)
+    refiner = Model_Refiner(refiner_dict, comparison_image)
+    refiner.auto_mask_radius = [4]
+
+    return refiner
+
+
+def get_model_refiner_one_sublattice_12_vacancies(
+        image_noise=True, test_element='Ti_2'):
+
+    # make one with more vacancies maybe
+    sublattice = get_simple_cubic_sublattice(
+        image_noise=image_noise,
+        with_vacancies=False)
+    sub1_atom_positions = np.array(sublattice.atom_positions).T
+    sub1_image = get_simple_cubic_signal(
+        image_noise=image_noise,
+        with_vacancies=True)
+    sub1 = am_dev.Sublattice(sub1_atom_positions, sub1_image)
+    for i in range(0, len(sub1.atom_list)):
+        sub1.atom_list[i].elements = test_element
+
+    test_element_info = split_and_sort_element(test_element)
+    sub1_element_list = auto_generate_sublattice_element_list(
+        material_type='single_element_column',
+        elements=test_element_info[0][1],
+        max_number_atoms_z=test_element_info[0][2] + 3)
+
+    refiner_dict = {sub1: sub1_element_list}
+    comparison_image = sublattice.signal
+    refiner = Model_Refiner(refiner_dict, comparison_image)
+    return refiner
+
+
+def get_model_refiner_with_12_vacancies_refined(
+        image_noise=True, test_element='Ti_2', filename=None):
+
+    refined_model = get_model_refiner_one_sublattice_12_vacancies(
+        image_noise=image_noise, test_element=test_element)
+    refined_model.auto_mask_radius = [4]
+    refined_model.image_difference_intensity_model_refiner(filename=filename)
+    refined_model.image_difference_intensity_model_refiner(filename=filename)
+
+    # now that the vacancies are correctly labelled as Ti_0, we should use
+    # a comparison image that actually represents what might be simulated.
+    refined_model.comparison_image = refined_model.sublattice_list[0].signal
+    refined_model.image_difference_intensity_model_refiner(filename=filename)
+
+    return refined_model
+
+
+def get_model_refiner_with_3_vacancies_refined(
+        image_noise=True, test_element='Ti_2', filename=None):
+    '''
+    >>> from temul.model_refiner import (
+    ...     get_model_refiner_with_3_vacancies_refined)
+    >>> refiner = get_model_refiner_with_3_vacancies_refined()
+    3 new atoms found! Adding new atom positions.
+    Changing some atoms
+    Changing some atoms
+    >>> history = refiner.get_element_count_as_dataframe()
+    '''
+    refiner = get_model_refiner_one_sublattice_3_vacancies(
+        image_noise=image_noise, test_element=test_element)
+    refiner.auto_mask_radius = [4]
+
+    refiner.image_difference_position_model_refiner(
+        pixel_threshold=10, filename=filename,
+        chosen_sublattice=refiner.sublattice_list[0])
+
+    refiner.image_difference_intensity_model_refiner(filename=filename)
+    refiner.image_difference_intensity_model_refiner(filename=filename)
+
+    return refiner

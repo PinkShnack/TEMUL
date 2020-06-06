@@ -1,4 +1,7 @@
 """
+
+NOTHING IMPLEMENTED YET
+
 from atomap.atom_finding_refining import _make_circular_mask
 from matplotlib import gridspec
 import rigidregistration
@@ -11,7 +14,7 @@ from atomap.atom_finding_refining import normalize_signal
 from atomap.tools import remove_atoms_from_image_using_2d_gaussian
 import os
 from skimage.measure import compare_ssim as ssm
-# from atomap.atom_finding_refining import get_atom_positions_in_difference_image
+from atomap.atom_finding_refining import get_atom_positions_in_difference_image
 from scipy.ndimage.filters import gaussian_filter
 import collections
 from atomap.atom_finding_refining import subtract_average_background
@@ -30,18 +33,21 @@ import matplotlib
 
 
 def Eff_Beta(E_0, E_p, alpha, beta):
-    '''This function is adapted from the MATLAB code at the back of Egerton's book
+    '''This function is adapted from the MATLAB code at the back of
+    Egerton's book.
     it calculates:
     - effective collection angle as a function of the collection semi-angle,
     convergence angle and excitation energy. B*, bstar
-    - Bethe-Ridge Angle, the angle beyond which the dipole approximation is no longer applicable. Theta_Br
+    - Bethe-Ridge Angle, the angle beyond which the dipole approximation is no
+    longer applicable. Theta_Br
     - plasmon mean free path length (pmfp)
     - inelastic mean free path length (imfp)
     - total mean free path length (tmfp)
 
     *kw arguments
     E_0 = The microscope High Tension or electron accelerating voltage. (keV)
-    E_p = The excitation energy of the plasmon in the sample, or another excitation. (eV)
+    E_p = The excitation energy of the plasmon in the sample, or another
+    excitation. (eV)
     alpha = probe convergence semi-angle. 0 for TEM mode, parallel beam (mrad)
     beta = detector collection semi-angle. (mrad)
     '''
@@ -80,14 +86,19 @@ def Eff_Beta(E_0, E_p, alpha, beta):
         return bstar, theta_br, tmfp, x
 
 
-def sum_spectra(s, xrange=[0, s.axes_manager[1].size-1], yrange=[0, s.axes_manager[1].size-1]):
+def sum_spectra(s, xrange=[0, s.axes_manager[1].size-1], yrange=[
+    0, s.axes_manager[1].size-1]):
     '''
-    Sums spectra in spectrum image together using the inputs xrange and y range. If these inputs are left
+    Sums spectra in spectrum image together using the inputs xrange and y
+    range. If these inputs are left
     blank then the all the spectra in the SI will be summed.
-    If you want to sum SI along a navigational Axis you can use the function hs.
+    If you want to sum SI along a navigational Axis you can use the function
+    hs.
     kw arguments
-        xrange: from the hyperspy spectrum imaging tool pick the starting and ending index and write as [start,end]
-        yrange: from the hyperspy spectrum imaging tool pick the starting and ending index and write as [start,end]
+        xrange: from the hyperspy spectrum imaging tool pick the starting and
+        ending index and write as [start,end]
+        yrange: from the hyperspy spectrum imaging tool pick the starting and
+        ending index and write as [start,end]
 
         i.e. x = sum_spectra(s,xrange[2,5],yrange=[0,8])
 
@@ -103,8 +114,11 @@ def sum_spectra(s, xrange=[0, s.axes_manager[1].size-1], yrange=[0, s.axes_manag
             spectrum[yrange[0]:yrange[1]+1, xrange[0]:xrange[1]+1, x])
     '''write the summed spectrum back as a hyperspy signal'''
     sample_s = s.inav[0, 0]
-    spectrum_sum = hs.signals.EELSSpectrum(summed_spectrum, axes=[
-                                           {'name': 'Energy Loss', 'size': sample_s.axes_manager[0].size, 'units':'eV', 'scale':sample_s.axes_manager[0].scale, 'offset':sample_s.axes_manager[0].offset}])
+    spectrum_sum = hs.signals.EELSSpectrum(
+        summed_spectrum, axes=[
+            {'name': 'Energy Loss','size':sample_s.axes_manager[0].size,
+            'units':'eV', 'scale':sample_s.axes_manager[0].scale,
+            'offset':sample_s.axes_manager[0].offset}])
     spectrum_sum.original_metadata = s.original_metadata
     return spectrum_sum
 
