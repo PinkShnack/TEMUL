@@ -9,3 +9,4 @@ scikit-image==0.16.2
 scipy
 PyCifRW==4.3
 pandas==0.24.2 
+sphinx_rtd_theme
