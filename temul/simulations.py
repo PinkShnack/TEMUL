@@ -625,7 +625,7 @@ def image_refine_via_intensity_loop(atom_lattice,
                 # .diff(periods=2) gets the difference between each row,
                 # and the row two above it [-4:] slices this new difference
                 # df to get the final four rows # .all(axis=1) checks if
-                # all row elements are zero or NaN and returns False
+                # all row elements are zero or NaN and gives back False
                 # .all() check if all four of these results are False
                 # Basically checking that the intensity refinement is
                 # repeating every second iteration

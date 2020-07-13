@@ -354,7 +354,9 @@ def plot_atom_energies(sublattice_list, image=None, vac_or_implants=None,
     '''
     vac_or_implants options are 'implants' and 'vac'
 
-    Returns the x and y coordinates of the atom positions and the
+    Returns
+    -------
+    the x and y coordinates of the atom positions and the
     atom energy.
 
     import os

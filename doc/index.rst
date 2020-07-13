@@ -47,6 +47,14 @@ The easiest way to use the TEMUL Toolkit is to place the TEMUL/temul folder into
    * This development version is slowly being folded into the master branch here: https://gitlab.com/PinkShnack/atomap/-/tree/chemical_info.
    * The original issue can be found here: https://gitlab.com/atomap/atomap/-/issues/93 and any help or tips on implementation are welcome!
 
+
+
+Documentation
+-------------
+
+See the :ref:`Documentation <api_doc>`_ for examples and a full list of modules and functions.
+
+
 Contribute
 ----------
 

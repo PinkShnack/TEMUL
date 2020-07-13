@@ -46,7 +46,7 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.coverage',
     'sphinx.ext.imgmath',
-    'sphinx.ext.viewcode',
+    'numpydoc', # https://numpydoc.readthedocs.io/en/latest/
     'sphinx_rtd_theme',
 ]
 
