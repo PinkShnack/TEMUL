@@ -8,7 +8,7 @@ Element and radius calibration
 
 def get_and_return_element(element_symbol):
     '''
-    From the elemental symbol, e.g., 'H' for Hydrogen, returns Hydrogen as
+    From the elemental symbol, e.g., 'H' for Hydrogen, provides Hydrogen as
     a periodictable.core.Element object for further use.
 
     Parameters

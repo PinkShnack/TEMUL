@@ -1268,11 +1268,11 @@ def toggle_atom_refine_position_automatically(sublattice,
         max_cut_off_percent * modal value of max intensity list of
         sublattice.
     range_type : string, default 'internal'
-        'internal' returns the 'refine_position' attribute for each
+        'internal' provides the 'refine_position' attribute for each
         Atom Position as True if the intensity of that Atom Position
         lies between the lower and upper limits defined by min_cut_off_percent
         and max_cut_off_percent.
-        'external' returns the 'refine_position' attribute for each
+        'external' provides the 'refine_position' attribute for each
         Atom Position as True if the intensity of that Atom Position
         lies outside the lower and upper limits defined by min_cut_off_percent
         and max_cut_off_percent.
@@ -1621,7 +1621,7 @@ def get_masked_ifft(image, mask_coords, mask_radius=10, space="real",
     an ifft of the image.
     To Do: calibration of units automatically.
 
-    Masks a fast Fourier transform (FFT) and returns the inverse FFT.
+    Masks a fast Fourier transform (FFT) and provides the inverse FFT.
     Use choose_mask_coordinates() to manually choose mask coordinates in the
     FFT.
 
