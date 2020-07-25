@@ -3,19 +3,20 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to TEMUL Toolkit's documentation!
-=========================================
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
 .. role:: bash(code)
    :language: bash
 
 .. role:: python(code)
    :language: python
 
+Welcome to TEMUL Toolkit's documentation!
+=========================================
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents
+
+   api_doc
 
 The TEMUL Toolkit is a suit of functions and classes for analysis and visualisation of
 atomic resolution images. It is mostly built upon the data structure of 
@@ -52,7 +53,7 @@ The easiest way to use the TEMUL Toolkit is to place the TEMUL/temul folder into
 Documentation
 -------------
 
-See the :ref:`Documentation <api_doc>`_ for examples and a full list of modules and functions.
+See the :ref:`api_doc` for examples and a full list of modules and functions.
 
 
 Contribute

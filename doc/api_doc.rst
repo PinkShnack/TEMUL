@@ -1,4 +1,4 @@
-.. _api:
+.. _api_doc:
 
 =================
 API documentation
