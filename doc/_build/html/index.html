@@ -36,7 +36,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="API documentation" href="api_doc.html" /> 
+    <link rel="next" title="Installation" href="install.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -87,6 +87,8 @@
             
               <p class="caption"><span class="caption-text">Contents</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_temul.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_doc.html">API documentation</a></li>
 </ul>
 
@@ -155,9 +157,17 @@
             
   <div class="section" id="welcome-to-temul-toolkit-s-documentation">
 <h1>Welcome to TEMUL Toolkit’s documentation!<a class="headerlink" href="#welcome-to-temul-toolkit-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>The TEMUL Toolkit is a suit of functions and classes for analysis and visualisation of
+atomic resolution images. It is mostly built upon the data structure of
+<a class="reference external" href="https://hyperspy.org/">HyperSpy</a> and <a class="reference external" href="https://atomap.org/">Atomap</a>.</p>
+<div class="section" id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<p>See the <a class="reference internal" href="api_doc.html#api-doc"><span class="std std-ref">API documentation</span></a> for examples and a full list of modules and functions.</p>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Contents</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_temul.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_doc.html">API documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api_doc.html#classes">Classes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api_doc.html#modules">Modules</a></li>
@@ -165,13 +175,15 @@
 </li>
 </ul>
 </div>
-<p>The TEMUL Toolkit is a suit of functions and classes for analysis and visualisation of
-atomic resolution images. It is mostly built upon the data structure of
-<a class="reference external" href="https://hyperspy.org/">HyperSpy</a> and <a class="reference external" href="https://atomap.org/">Atomap</a>.</p>
+</div>
 <div class="section" id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<p>The easiest way to use the TEMUL Toolkit is to place the TEMUL/temul folder into your Python packages directory as follows:</p>
+<span id="install"></span><h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>TLDR: Place the temul folder into your site packages folder.
+Now that PyPrismatic can be installed via conda, we hope to have a pip or conda
+installation available for the TEMUL Toolkit soon.</p>
+<p>The easiest way to use the TEMUL Toolkit is to place the temul folder (lowercase) into your Python packages directory as follows:</p>
 <ol class="arabic simple">
+<li>Go to the <a class="reference external" href="https://github.com/PinkShnack/TEMUL">TEMUL Toolkit source code</a>.</li>
 <li>Click on the green “Code” button. Git clone or Download the ZIP to download the TEMUL package.</li>
 <li>Navigate into the TEMUL folder, copy the “temul” folder.</li>
 <li>Navigate to your python packages directory and paste the “temul” folder there. In an Anaconda installation, this can be found at “anaconda3/Lib/site-packages”</li>
@@ -185,21 +197,23 @@ atomic resolution images. It is mostly built upon the data structure of
 </li>
 </ol>
 </div>
-<div class="section" id="documentation">
-<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
-<p>See the <a class="reference internal" href="api_doc.html#api-doc"><span class="std std-ref">API documentation</span></a> for examples and a full list of modules and functions.</p>
+<div class="section" id="getting-started">
+<span id="using-temul"></span><h2>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
+<p>There are many aspects to the TEMUL Toolkit, such as polarisation analysis,
+element quantification, and automatic image simulation (through pyprismatic).</p>
+<p>These each have their own dedicated pages, which can be found in the table of contents (coming soon).</p>
 </div>
 <div class="section" id="contribute">
 <h2>Contribute<a class="headerlink" href="#contribute" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><a class="reference external" href="github.com/PinkShnack/TEMUL/issues">Issue Tracker</a></li>
-<li><a class="reference external" href="github.com/PinkShnack/TEMUL">Source Code</a></li>
+<li><a class="reference external" href="https://github.com/PinkShnack/TEMUL/issues">Issue Tracker</a></li>
+<li><a class="reference external" href="https://github.com/PinkShnack/TEMUL">Source Code</a></li>
 </ul>
 </div>
 <div class="section" id="support">
 <h2>Support<a class="headerlink" href="#support" title="Permalink to this headline">¶</a></h2>
 <p>If you are having issues, please let us know in the issue tracker on
-<a class="reference external" href="github.com/PinkShnack/TEMUL/issues">GitHub</a>.</p>
+<a class="reference external" href="https://github.com/PinkShnack/TEMUL/issues">GitHub</a>.</p>
 </div>
 <div class="section" id="license">
 <h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
@@ -223,7 +237,7 @@ atomic resolution images. It is mostly built upon the data structure of
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="api_doc.html" class="btn btn-neutral float-right" title="API documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="install.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
     </div>
