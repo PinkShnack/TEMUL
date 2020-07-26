@@ -87,7 +87,7 @@ def plot_polarisation_vectors(x, y, u, v, image,
     units : string, default "pix"
         Units used to display the magnitude of the vectors.
     plot_style : string, default "vector"
-        Options are "vector", "colormap", "contour", "colorwheel"
+        Options are "vector", "colormap", "contour", "colorwheel".
     overlay : Bool, default True
         If set to True, the `image` will be plotting behind the arrows
     normalise : Bool, default False

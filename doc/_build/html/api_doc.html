@@ -36,7 +36,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Welcome to TEMUL Toolkit’s documentation!" href="index.html" /> 
+    <link rel="prev" title="Getting started" href="using_temul.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -87,11 +87,11 @@
             
               <p class="caption"><span class="caption-text">Contents</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_temul.html">Getting started</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#classes">Classes</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#model-refiner">Model Refiner</a><ul class="simple">
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#model-refiner">Model Refiner</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#modules">Modules</a><ul>
@@ -181,102 +181,7 @@
 <dl class="class">
 <dt id="temul.model_refiner.Model_Refiner">
 <em class="property">class </em><code class="descclassname">temul.model_refiner.</code><code class="descname">Model_Refiner</code><span class="sig-paren">(</span><em>sublattice_and_elements_dict</em>, <em>comparison_image=None</em>, <em>sampling=None</em>, <em>thickness=10</em>, <em>name=''</em><span class="sig-paren">)</span><a class="headerlink" href="#temul.model_refiner.Model_Refiner" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>element_count</strong></dt>
-<dd></dd>
-</dl>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Methods</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#temul.model_refiner.Model_Refiner.create_simulation" title="temul.model_refiner.Model_Refiner.create_simulation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_simulation</span></code></a>([sublattices,&nbsp;…])</td>
-<td>Create and simulate a .xyz file from the sublattice information.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="#temul.model_refiner.Model_Refiner.image_difference_intensity_model_refiner" title="temul.model_refiner.Model_Refiner.image_difference_intensity_model_refiner"><code class="xref py py-obj docutils literal notranslate"><span class="pre">image_difference_intensity_model_refiner</span></code></a>([…])</td>
-<td>Change the elements for sublattice atom positions that don’t match with comparison_image.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="#temul.model_refiner.Model_Refiner.image_difference_position_model_refiner" title="temul.model_refiner.Model_Refiner.image_difference_position_model_refiner"><code class="xref py py-obj docutils literal notranslate"><span class="pre">image_difference_position_model_refiner</span></code></a>([…])</td>
-<td>Find new atom positions that were perhaps missed by the initial position finding steps.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="#temul.model_refiner.Model_Refiner.set_calibration_area" title="temul.model_refiner.Model_Refiner.set_calibration_area"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_calibration_area</span></code></a>([manual_list])</td>
-<td>Area that will be used to calibrate a simulation.</td>
-</tr>
-</tbody>
-</table>
-<table border="1" class="docutils">
-<colgroup>
-<col width="85%" />
-<col width="15%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><strong>calibrate_comparison_image</strong></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td><strong>combine_individual_and_element_counts_as_dataframe</strong></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td><strong>compare_latest_element_counts</strong></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td><strong>get_element_count_as_dataframe</strong></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td><strong>get_individual_elements_as_dataframe</strong></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td><strong>plot_element_count_as_bar_chart</strong></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td><strong>plot_error_between_comparison_and_reference_image</strong></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td><strong>plot_reference_and_comparison_images</strong></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td><strong>repeating_intensity_refinement</strong></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td><strong>revert_to_previous_refiner_instance</strong></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td><strong>set_calibration_separation</strong></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td><strong>set_image_xyz_sizes</strong></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td><strong>set_thickness</strong></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td><strong>update_element_count_and_refinement_history</strong></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td><strong>update_element_count_history</strong></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td><strong>update_error_between_comparison_and_reference_image</strong></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td><strong>update_refinement_history</strong></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td><strong>update_sublattices_positions</strong></td>
-<td>&#160;</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
+<dd><dl class="method">
 <dt id="temul.model_refiner.Model_Refiner.calibrate_comparison_image">
 <code class="descname">calibrate_comparison_image</code><span class="sig-paren">(</span><em>filename=None</em>, <em>percent_to_nn=None</em>, <em>mask_radius='auto'</em>, <em>refine=True</em><span class="sig-paren">)</span><a class="headerlink" href="#temul.model_refiner.Model_Refiner.calibrate_comparison_image" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -303,64 +208,45 @@ Error is: “TypeError: ‘NoneType’ object is not iterable”</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>sublattices</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Atomap Sublattices, default ‘all’</span></dt>
-<dd><p class="first last">If set to ‘all’, sublattices that exist in the <cite>Model_Refiner</cite> will
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>sublattices</strong> (<em>Atomap Sublattices</em><em>, </em><em>default 'all'</em>) – If set to ‘all’, sublattices that exist in the <cite>Model_Refiner</cite> will
 all be used. The <cite>sublattice</cite> indexes can be specified in a list.
 For example [0, 2] will select the first and third sublattices.
-A list of <cite>sublattice</cite> objects can instead be used.</p>
-</dd>
-<dt><strong>filter_image</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool, default False</span></dt>
-<dd><p class="first last">Choose whether to filter the simulation with a Gaussian to match
-the <cite>reference_image</cite>.</p>
-</dd>
-<dt><strong>calibrate_image</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool, default True</span></dt>
-<dd><p class="first last">Choose whether to calibrate the simulation with a set
-<cite>calibration_area</cite> and <cite>calibration_separation</cite>.</p>
-</dd>
-<dt><strong>xyz_sizes</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list, default None</span></dt>
-<dd><p class="first last">List of the x, y, z physical size of the reference_image in
+A list of <cite>sublattice</cite> objects can instead be used.</li>
+<li><strong>filter_image</strong> (<em>Bool</em><em>, </em><em>default False</em>) – Choose whether to filter the simulation with a Gaussian to match
+the <cite>reference_image</cite>.</li>
+<li><strong>calibrate_image</strong> (<em>Bool</em><em>, </em><em>default True</em>) – Choose whether to calibrate the simulation with a set
+<cite>calibration_area</cite> and <cite>calibration_separation</cite>.</li>
+<li><strong>xyz_sizes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a><em>, </em><em>default None</em>) – List of the x, y, z physical size of the reference_image in
 angstrom. If None is set, the sizes will be automatically taken
-from the <cite>image_xyz_sizes</cite> attribute.</p>
-</dd>
-<dt><strong>header_comment</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, default ‘example’</span></dt>
-<dd><p class="first last">The first line comment for the .xyz file.</p>
-</dd>
-<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, default ‘refiner_simulation’</span></dt>
-<dd><p class="first last">filename with which the .xyz file and simulated .mrc file will be
-saved.</p>
-</dd>
-<dt><strong>delta_image_filter</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, default 0.5</span></dt>
-<dd><p class="first last">The change in sigma for the <cite>filter</cite> Gaussian filter. Small values
-will slow the <cite>filter</cite> down.</p>
-</dd>
-<dt><strong>max_sigma</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, default 6</span></dt>
-<dd><p class="first last">The maximum sigma used for the <cite>filter</cite> Gaussian filter. Large
-values will slow the <cite>filter</cite> down.</p>
-</dd>
-<dt><strong>percent_to_nn</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, default None</span></dt>
-<dd><p class="first last">The percentage distance to the nearest neighbour atom used for
-atomap atom position refinement.</p>
-</dd>
-<dt><strong>mask_radius</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, default ‘auto’</span></dt>
-<dd><p class="first last">The pixel distance to the nearest neighbour atom used for atomap
-atom position refinement</p>
-</dd>
-<dt><strong>refine</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool, default True</span></dt>
-<dd><p class="first last">Whether to refine the atom positions for the <cite>calibrate</cite> parameter.</p>
-</dd>
-<dt><strong>Note: The error resulting from filter=True with percent_to_nn set can</strong></dt>
-<dd></dd>
-<dt><strong>be fixed by setting mask_radius instead of percent_to_nn.</strong></dt>
-<dd></dd>
-</dl>
+from the <cite>image_xyz_sizes</cite> attribute.</li>
+<li><strong>header_comment</strong> (<em>string</em><em>, </em><em>default 'example'</em>) – The first line comment for the .xyz file.</li>
+<li><strong>filename</strong> (<em>string</em><em>, </em><em>default 'refiner_simulation'</em>) – filename with which the .xyz file and simulated .mrc file will be
+saved.</li>
+<li><strong>delta_image_filter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>default 0.5</em>) – The change in sigma for the <cite>filter</cite> Gaussian filter. Small values
+will slow the <cite>filter</cite> down.</li>
+<li><strong>max_sigma</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>default 6</em>) – The maximum sigma used for the <cite>filter</cite> Gaussian filter. Large
+values will slow the <cite>filter</cite> down.</li>
+<li><strong>percent_to_nn</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>default None</em>) – The percentage distance to the nearest neighbour atom used for
+atomap atom position refinement.</li>
+<li><strong>mask_radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>default 'auto'</em>) – The pixel distance to the nearest neighbour atom used for atomap
+atom position refinement</li>
+<li><strong>refine</strong> (<em>Bool</em><em>, </em><em>default True</em>) – Whether to refine the atom positions for the <cite>calibrate</cite> parameter.</li>
+<li><strong>Note</strong> (<em>The error resulting from filter=True with percent_to_nn set can</em>) – </li>
+<li><strong>fixed by setting mask_radius instead of percent_to_nn.</strong> (<em>be</em>) – </li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>Updates the comparison_image attribute with the newly simulated model.</strong></dt>
-<dd></dd>
-</dl>
-</td>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">Updates the comparison_image attribute with the newly simulated model.</td>
 </tr>
 </tbody>
 </table>
@@ -391,13 +277,10 @@ comparison_image.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>See image_difference_intensity for parameter information.</strong></dt>
-<dd></dd>
-<dt><strong>refinement_method</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, default “Intensity”</span></dt>
-<dd><p class="first last">Name passed to self.refinement_history for tracking purposes.</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>image_difference_intensity for parameter information.</strong> (<em>See</em>) – </li>
+<li><strong>refinement_method</strong> (<em>string</em><em>, </em><em>default &quot;Intensity&quot;</em>) – Name passed to self.refinement_history for tracking purposes.</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -437,13 +320,10 @@ positions if new atom positions are found.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>See image_difference_position for parameter information.</strong></dt>
-<dd></dd>
-<dt><strong>refinement_method</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, default “Position”</span></dt>
-<dd><p class="first last">Name passed to self.refinement_history for tracking purposes.</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>image_difference_position for parameter information.</strong> (<em>See</em>) – </li>
+<li><strong>refinement_method</strong> (<em>string</em><em>, </em><em>default &quot;Position&quot;</em>) – Name passed to self.refinement_history for tracking purposes.</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -569,29 +449,21 @@ every second, third etc., and the offset from the zero index.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>sublattice</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Atomap Sublattice object</span></dt>
-<dd></dd>
-<dt><strong>axis_number</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, default 0</span></dt>
-<dd><p class="first last">The index of the zone axis (translation symmetry) found by the Atomap
-function <cite>construct_zone_axes()</cite>.</p>
-</dd>
-<dt><strong>save</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, default ‘’</span></dt>
-<dd><p class="first last">If set to <cite>save=None</cite>, the array will not be saved.</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sublattice</strong> (<em>Atomap Sublattice object</em>) – </li>
+<li><strong>axis_number</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>default 0</em>) – The index of the zone axis (translation symmetry) found by the Atomap
+function <cite>construct_zone_axes()</cite>.</li>
+<li><strong>save</strong> (<em>string</em><em>, </em><em>default ''</em>) – If set to <cite>save=None</cite>, the array will not be saved.</li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>Four lists: x, y, u, and v where x,y are the original atom position</strong></dt>
-<dd></dd>
-<dt><strong>coordinates (simply sublattice.x_position, sublattice.y_position) and</strong></dt>
-<dd></dd>
-<dt><strong>u,v are the polarisation vector components pointing to the new coordinate.</strong></dt>
-<dd></dd>
-<dt><strong>These can be input to `plot_polarisation_vectors()` for visualisation.</strong></dt>
-<dd></dd>
-</dl>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>Four lists</strong> (<em>x, y, u, and v where x,y are the original atom position</em>)</li>
+<li><em>coordinates (simply sublattice.x_position, sublattice.y_position) and</em></li>
+<li><em>u,v are the polarisation vector components pointing to the new coordinate.</em></li>
+<li>These can be input to <cite>plot_polarisation_vectors()</cite> for visualisation.</li>
+</ul>
+</p>
 </td>
 </tr>
 </tbody>
@@ -620,24 +492,19 @@ perfect structure.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>sublattice</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Atomap Sublattice object</span></dt>
-<dd></dd>
-<dt><strong>For the remaining parameters see `plot_polarisation_vectors()`.</strong></dt>
-<dd></dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sublattice</strong> (<em>Atomap Sublattice object</em>) – </li>
+<li><strong>the remaining parameters see plot_polarisation_vectors</strong><strong>(</strong><strong>)</strong><strong></strong> (<em>For</em>) – </li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>Four lists: x, y, u, and v where x,y are the original atom position</strong></dt>
-<dd></dd>
-<dt><strong>coordinates (simply sublattice.x_position, sublattice.y_position) and</strong></dt>
-<dd></dd>
-<dt><strong>u,v are the polarisation vector components pointing to the new coordinate.</strong></dt>
-<dd></dd>
-<dt><strong>These can be input to `plot_polarisation_vectors()` for visualisation.</strong></dt>
-<dd></dd>
-</dl>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>Four lists</strong> (<em>x, y, u, and v where x,y are the original atom position</em>)</li>
+<li><em>coordinates (simply sublattice.x_position, sublattice.y_position) and</em></li>
+<li><em>u,v are the polarisation vector components pointing to the new coordinate.</em></li>
+<li>These can be input to <cite>plot_polarisation_vectors()</cite> for visualisation.</li>
+</ul>
+</p>
 </td>
 </tr>
 </tbody>
@@ -673,31 +540,20 @@ every second, third etc., and the offset from the zero index.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>sublattice</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Atomap Sublattice object</span></dt>
-<dd></dd>
-<dt><strong>zone_axis_index</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, default 0</span></dt>
-<dd><p class="first last">The zone axis you wish to specify. You are indexing
-sublattice.zones_axis_average_distances[zone_axis_index]</p>
-</dd>
-<dt><strong>atom_plane_tolerance</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, default 0.5</span></dt>
-<dd><p class="first last">float between 0.0 and 1.0. Closer to 1 means it will find more zones.
-See sublattice.construct_zone_axes() for more information.</p>
-</dd>
-<dt><strong>divisible_by</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, default 3</span></dt>
-<dd><p class="first last">If divisible_by is 2, every second atom_plane is deleted,
-If divisible_by is 4, every fourth atom_plane is deleted, etc.</p>
-</dd>
-<dt><strong>offset_from_zero</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, default 0</span></dt>
-<dd><p class="first last">The atom_plane from which you start deleting.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>sublattice</strong> (<em>Atomap Sublattice object</em>) – </li>
+<li><strong>zone_axis_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>default 0</em>) – The zone axis you wish to specify. You are indexing
+sublattice.zones_axis_average_distances[zone_axis_index]</li>
+<li><strong>atom_plane_tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>default 0.5</em>) – float between 0.0 and 1.0. Closer to 1 means it will find more zones.
+See sublattice.construct_zone_axes() for more information.</li>
+<li><strong>divisible_by</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>default 3</em>) – If divisible_by is 2, every second atom_plane is deleted,
+If divisible_by is 4, every fourth atom_plane is deleted, etc.</li>
+<li><strong>offset_from_zero</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>default 0</em>) – The atom_plane from which you start deleting.
 If offset_from_zero is 4, the fourth atom_plane will be
-the first deleted.</p>
-</dd>
-<dt><strong>opposite</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool, default False</span></dt>
-<dd><p class="first last">If this is set to True, the atom_plane specified by divisible_by
-will be kept and all others deleted.</p>
-</dd>
-</dl>
+the first deleted.</li>
+<li><strong>opposite</strong> (<em>Bool</em><em>, </em><em>default False</em>) – If this is set to True, the atom_plane specified by divisible_by
+will be kept and all others deleted.</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -723,24 +579,21 @@ will be kept and all others deleted.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>atom_positions_A, atom_positions_B</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
-<dd><p class="first last">Atom positions list in the form [[x1,y1], [x2,y2], [x3,y3]…].</p>
-</dd>
-<dt><strong>save</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, default ‘uv_vectors_array’</span></dt>
-<dd><p class="first last">If set to <cite>save=None</cite>, the array will not be saved.</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>atom_positions_B</strong> (<em>atom_positions_A</em><em>,</em>) – Atom positions list in the form [[x1,y1], [x2,y2], [x3,y3]…].</li>
+<li><strong>save</strong> (<em>string</em><em>, </em><em>default 'uv_vectors_array'</em>) – If set to <cite>save=None</cite>, the array will not be saved.</li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>two lists: u components and v components.</strong></dt>
-<dd></dd>
-</dl>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>two lists</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">u components and v components.</p>
 </td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Examples</p>
 </dd></dl>
 
 <dl class="function">
@@ -752,30 +605,21 @@ averages and plots the polarisation vectors in those regions.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>x, y</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or 1D NumPy array</span></dt>
-<dd><p class="first last">xy coordinates on the image</p>
-</dd>
-<dt><strong>u, v</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or 1D NumPy array</span></dt>
-<dd><p class="first last">uv vector components</p>
-</dd>
-<dt><strong>image</strong> <span class="classifier-delimiter">:</span> <span class="classifier">2D NumPy array</span></dt>
-<dd></dd>
-<dt><strong>divide_into</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, default 8</span></dt>
-<dd><p class="first last">The number used to divide the image up. If 8, then the image will be
-split into an 8x8 grid.</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>y</strong> (<em>x</em><em>,</em>) – xy coordinates on the image</li>
+<li><strong>v</strong> (<em>u</em><em>,</em>) – uv vector components</li>
+<li><strong>image</strong> (<em>2D NumPy array</em>) – </li>
+<li><strong>divide_into</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>default 8</em>) – The number used to divide the image up. If 8, then the image will be
+split into an 8x8 grid.</li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>Four lists: x_new, y_new, u_new, v_new.</strong></dt>
-<dd></dd>
-<dt><strong>x_new and y_new are the certain coordinates of the regions.</strong></dt>
-<dd></dd>
-<dt><strong>u_new and v_new are the averaged polarisation vectors.</strong></dt>
-<dd></dd>
-</dl>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>Four lists</strong> (<em>x_new, y_new, u_new, v_new.</em>)</li>
+<li><em>x_new and y_new are the certain coordinates of the regions.</em></li>
+<li><em>u_new and v_new are the averaged polarisation vectors.</em></li>
+</ul>
+</p>
 </td>
 </tr>
 </tbody>
@@ -825,20 +669,17 @@ split into an 8x8 grid.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>u,v</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or 1D NumPy array</span></dt>
-<dd></dd>
-<dt><strong>sampling</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, default None</span></dt>
-<dd><p class="first last">If sampling is set, the vector magnitudes (in pix) will be scaled
-by sampling (nm/pix).</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>u</strong><strong>,</strong><strong>v</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a><em> or </em><em>1D NumPy array</em>) – </li>
+<li><strong>sampling</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>default None</em>) – If sampling is set, the vector magnitudes (in pix) will be scaled
+by sampling (nm/pix).</li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>1D NumPy array</strong></dt>
-<dd></dd>
-</dl>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">1D NumPy array</p>
 </td>
 </tr>
 </tbody>
@@ -865,12 +706,10 @@ constructed by an Atomap sublattice object.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>sublattice</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Atomap Sublattice object</span></dt>
-<dd></dd>
-<dt><strong>For all other parameters see plot_polarisation_vectors()</strong></dt>
-<dd></dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>sublattice</strong> (<em>Atomap Sublattice object</em>) – </li>
+<li><strong>all other parameters see plot_polarisation_vectors</strong><strong>(</strong><strong>)</strong> (<em>For</em>) – </li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -897,52 +736,26 @@ constructed by an Atomap sublattice object.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>See matplotlib’s quiver() function for more details.</strong></dt>
-<dd></dd>
-<dt><strong>x, y</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or 1D NumPy array</span></dt>
-<dd><p class="first last">xy coordinates on the image</p>
-</dd>
-<dt><strong>u, v</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list or 1D NumPy array</span></dt>
-<dd><p class="first last">uv vector components</p>
-</dd>
-<dt><strong>image</strong> <span class="classifier-delimiter">:</span> <span class="classifier">2D NumPy array</span></dt>
-<dd></dd>
-<dt><strong>sampling</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, default None</span></dt>
-<dd><p class="first last">Pixel sampling of the image for calibration.</p>
-</dd>
-<dt><strong>units</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, default “pix”</span></dt>
-<dd><p class="first last">Units used to display the magnitude of the vectors.</p>
-</dd>
-<dt><strong>plot_style</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, default “vector”</span></dt>
-<dd><p class="first last">Options are “vector”, “colormap”, “contour”</p>
-</dd>
-<dt><strong>overlay</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool, default True</span></dt>
-<dd><p class="first last">If set to True, the <cite>image</cite> will be plotting behind the arrows</p>
-</dd>
-<dt><strong>normalise</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool, default False</span></dt>
-<dd><p class="first last">Normalise the vectors to unit vectors for plotting purposes.
-Magnitude will still be displayed correctly.</p>
-</dd>
-<dt><strong>save</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, default “polarisation_image”</span></dt>
-<dd><p class="first last">If set to <cite>save=None</cite>, the array will not be saved.</p>
-</dd>
-<dt><strong>title</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, default “”</span></dt>
-<dd><p class="first last">Title of the plot.</p>
-</dd>
-<dt><strong>color</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, default “r”</span></dt>
-<dd><p class="first last">Color of the arrows when <a href="#id1"><span class="problematic" id="id2">`</span></a>plot_style=”vector” or “contour”.</p>
-</dd>
-<dt><strong>cmap</strong> <span class="classifier-delimiter">:</span> <span class="classifier">matplotlib colormap, default “viridis”</span></dt>
-<dd></dd>
-<dt><strong>monitor_dpi</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, default 96</span></dt>
-<dd><p class="first last">The DPI of the monitor, generally 96 pixels. Used to scale the image
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>matplotlib's quiver</strong><strong>(</strong><strong>) </strong><strong>function for more details.</strong> (<em>See</em>) – </li>
+<li><strong>y</strong> (<em>x</em><em>,</em>) – xy coordinates on the image</li>
+<li><strong>v</strong> (<em>u</em><em>,</em>) – uv vector components</li>
+<li><strong>image</strong> (<em>2D NumPy array</em>) – </li>
+<li><strong>sampling</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>default None</em>) – Pixel sampling of the image for calibration.</li>
+<li><strong>units</strong> (<em>string</em><em>, </em><em>default &quot;pix&quot;</em>) – Units used to display the magnitude of the vectors.</li>
+<li><strong>plot_style</strong> (<em>string</em><em>, </em><em>default &quot;vector&quot;</em>) – Options are “vector”, “colormap”, “contour”</li>
+<li><strong>overlay</strong> (<em>Bool</em><em>, </em><em>default True</em>) – If set to True, the <cite>image</cite> will be plotting behind the arrows</li>
+<li><strong>normalise</strong> (<em>Bool</em><em>, </em><em>default False</em>) – Normalise the vectors to unit vectors for plotting purposes.
+Magnitude will still be displayed correctly.</li>
+<li><strong>save</strong> (<em>string</em><em>, </em><em>default &quot;polarisation_image&quot;</em>) – If set to <cite>save=None</cite>, the array will not be saved.</li>
+<li><strong>title</strong> (<em>string</em><em>, </em><em>default &quot;&quot;</em>) – Title of the plot.</li>
+<li><strong>color</strong> (<em>string</em><em>, </em><em>default &quot;r&quot;</em>) – Color of the arrows when <a href="#id1"><span class="problematic" id="id2">`</span></a>plot_style=”vector” or “contour”.</li>
+<li><strong>cmap</strong> (<em>matplotlib colormap</em><em>, </em><em>default &quot;viridis&quot;</em>) – </li>
+<li><strong>monitor_dpi</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>default 96</em>) – The DPI of the monitor, generally 96 pixels. Used to scale the image
 so that large images render correctly. Use a smaller value or
-<cite>monitor_dpi=None</cite> to enlarge too-small images.</p>
-</dd>
-<dt><strong>See matplotlib’s quiver function for the remaining parameters.</strong></dt>
-<dd></dd>
-</dl>
+<cite>monitor_dpi=None</cite> to enlarge too-small images.</li>
+<li><strong>matplotlib's quiver function for the remaining parameters.</strong> (<em>See</em>) – </li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -1024,20 +837,16 @@ so that large images render correctly. Use a smaller value or
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>sampling</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, default None</span></dt>
-<dd><p class="first last">sampling of an image in units of nm/pix</p>
-</dd>
-<dt><strong>element_symbol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, default None</span></dt>
-<dd><p class="first last">Symbol of an element from the periodic table of elements</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sampling</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>default None</em>) – sampling of an image in units of nm/pix</li>
+<li><strong>element_symbol</strong> (<em>string</em><em>, </em><em>default None</em>) – Symbol of an element from the periodic table of elements</li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>Half the colavent radius of the input element in pixels</strong></dt>
-<dd></dd>
-</dl>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Half the colavent radius of the input element in pixels</p>
 </td>
 </tr>
 </tbody>
@@ -1068,18 +877,11 @@ a periodictable.core.Element object for further use.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>element_symbol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, default None</span></dt>
-<dd><p class="first last">Symbol of an element from the periodic table of elements</p>
-</dd>
-</dl>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>element_symbol</strong> (<em>string</em><em>, </em><em>default None</em>) – Symbol of an element from the periodic table of elements</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>A periodictable.core.Element object</strong></dt>
-<dd></dd>
-</dl>
-</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">A periodictable.core.Element object</td>
 </tr>
 </tbody>
 </table>
@@ -1132,32 +934,26 @@ use with other functions.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>element</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, default None</span></dt>
-<dd><p class="first last">element species and count must be separated by the
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>element</strong> (<em>string</em><em>, </em><em>default None</em>) – element species and count must be separated by the
 first string in the split_symbol list.
 separate elements must be separated by the second
-string in the split_symbol list.</p>
-</dd>
-<dt><strong>split_symbol</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of strings, default [‘_’, ‘.’]</span></dt>
-<dd><p class="first last">The symbols used to split the element into its name
+string in the split_symbol list.</li>
+<li><strong>split_symbol</strong> (<em>list of strings</em><em>, </em><em>default</em><em> [</em><em>'_'</em><em>, </em><em>'.'</em><em>]</em>) – The symbols used to split the element into its name
 and count.
 The first string ‘_’ is used to split the name and count
 of the element.
 The second string is used to split different elements in
-an atomic column configuration.</p>
-</dd>
-</dl>
+an atomic column configuration.</li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>list of a list with element_split, element_name, element_count, and</strong></dt>
-<dd></dd>
-<dt><strong>element_atomic_number.</strong></dt>
-<dd></dd>
-<dt><strong>See examples below</strong></dt>
-<dd></dd>
-</dl>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>list of a list with element_split, element_name, element_count, and</em></li>
+<li><em>element_atomic_number.</em></li>
+<li><em>See examples below</em></li>
+</ul>
+</p>
 </td>
 </tr>
 </tbody>
@@ -1189,20 +985,17 @@ _get_image_slice_around_atom()</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>image_data</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Numpy 2D array</span></dt>
-<dd></dd>
-<dt><strong>percent_to_nn</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, default 0.40</span></dt>
-<dd><p class="first last">Determines the boundary of the area surrounding each atomic
-column, as fraction of the distance to the nearest neighbour.</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>image_data</strong> (<em>Numpy 2D array</em>) – </li>
+<li><strong>percent_to_nn</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>default 0.40</em>) – Determines the boundary of the area surrounding each atomic
+column, as fraction of the distance to the nearest neighbour.</li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>The number of pixels in the image_slice</strong></dt>
-<dd></dd>
-</dl>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">The number of pixels in the image_slice</p>
 </td>
 </tr>
 </tbody>
@@ -1234,37 +1027,25 @@ See the examples in get_atom_column_amplitude_max_intensity.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>sublattice</strong> <span class="classifier-delimiter">:</span> <span class="classifier">sublattice object</span></dt>
-<dd><p class="first last">The sublattice whose intensities you are finding.</p>
-</dd>
-<dt><strong>intensity_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, default ‘max’</span></dt>
-<dd><p class="first last">Determines the method used to find the sublattice intensities.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sublattice</strong> (<em>sublattice object</em>) – The sublattice whose intensities you are finding.</li>
+<li><strong>intensity_type</strong> (<em>string</em><em>, </em><em>default 'max'</em>) – Determines the method used to find the sublattice intensities.
 The available methods are ‘max’, ‘mean’, ‘min’, ‘total’ and
-‘all’.</p>
-</dd>
-<dt><strong>remove_background_method</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, default None</span></dt>
-<dd><p class="first last">Determines the method used to remove the background_sub
-intensities from the image. Options are ‘average’ and ‘local’.</p>
-</dd>
-<dt><strong>background_sub</strong> <span class="classifier-delimiter">:</span> <span class="classifier">sublattice object, default None</span></dt>
-<dd><p class="first last">The sublattice used if remove_background_method is used.</p>
-</dd>
-<dt><strong>num_points</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, default 3</span></dt>
-<dd><p class="first last">If remove_background_method=’local’, num_points is the number
-of nearest neighbour values averaged from background_sub</p>
-</dd>
-<dt><strong>percent_to_nn</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, default 0.40</span></dt>
-<dd><p class="first last">Determines the boundary of the area surrounding each atomic
-column, as fraction of the distance to the nearest neighbour.</p>
-</dd>
-</dl>
+‘all’.</li>
+<li><strong>remove_background_method</strong> (<em>string</em><em>, </em><em>default None</em>) – Determines the method used to remove the background_sub
+intensities from the image. Options are ‘average’ and ‘local’.</li>
+<li><strong>background_sub</strong> (<em>sublattice object</em><em>, </em><em>default None</em>) – The sublattice used if remove_background_method is used.</li>
+<li><strong>num_points</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>default 3</em>) – If remove_background_method=’local’, num_points is the number
+of nearest neighbour values averaged from background_sub</li>
+<li><strong>percent_to_nn</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>default 0.40</em>) – Determines the boundary of the area surrounding each atomic
+column, as fraction of the distance to the nearest neighbour.</li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>2D numpy array</strong></dt>
-<dd></dd>
-</dl>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">2D numpy array</p>
 </td>
 </tr>
 </tbody>
@@ -1313,28 +1094,20 @@ a background sublattice.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>sublattice</strong> <span class="classifier-delimiter">:</span> <span class="classifier">sublattice object</span></dt>
-<dd><p class="first last">The sublattice whose intensities are of interest.</p>
-</dd>
-<dt><strong>intensity_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first last">Determines the method used to find the sublattice intensities.
-The available methods are ‘max’, ‘mean’, ‘min’ and ‘all’.</p>
-</dd>
-<dt><strong>background_sub</strong> <span class="classifier-delimiter">:</span> <span class="classifier">sublattice object</span></dt>
-<dd><p class="first last">The sublattice used to find the average background.</p>
-</dd>
-<dt><strong>percent_to_nn</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, default 0.4</span></dt>
-<dd><p class="first last">Determines the boundary of the area surrounding each atomic
-column, as fraction of the distance to the nearest neighbour.</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sublattice</strong> (<em>sublattice object</em>) – The sublattice whose intensities are of interest.</li>
+<li><strong>intensity_type</strong> (<em>string</em>) – Determines the method used to find the sublattice intensities.
+The available methods are ‘max’, ‘mean’, ‘min’ and ‘all’.</li>
+<li><strong>background_sub</strong> (<em>sublattice object</em>) – The sublattice used to find the average background.</li>
+<li><strong>percent_to_nn</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>default 0.4</em>) – Determines the boundary of the area surrounding each atomic
+column, as fraction of the distance to the nearest neighbour.</li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>2D numpy array</strong></dt>
-<dd></dd>
-</dl>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">2D numpy array</p>
 </td>
 </tr>
 </tbody>
@@ -1363,32 +1136,22 @@ a background sublattice.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>sublattice</strong> <span class="classifier-delimiter">:</span> <span class="classifier">sublattice object</span></dt>
-<dd><p class="first last">The sublattice whose intensities are of interest.</p>
-</dd>
-<dt><strong>intensity_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first last">Determines the method used to find the sublattice intensities.
-The available methods are ‘max’, ‘mean’, ‘min’, ‘total’ and ‘all’.</p>
-</dd>
-<dt><strong>background_sub</strong> <span class="classifier-delimiter">:</span> <span class="classifier">sublattice object</span></dt>
-<dd><p class="first last">The sublattice used to find the local backgrounds.</p>
-</dd>
-<dt><strong>num_points</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, default 3</span></dt>
-<dd><p class="first last">The number of nearest neighbour values averaged from
-background_sub</p>
-</dd>
-<dt><strong>percent_to_nn</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, default 0.40</span></dt>
-<dd><p class="first last">Determines the boundary of the area surrounding each atomic
-column, as fraction of the distance to the nearest neighbour.</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sublattice</strong> (<em>sublattice object</em>) – The sublattice whose intensities are of interest.</li>
+<li><strong>intensity_type</strong> (<em>string</em>) – Determines the method used to find the sublattice intensities.
+The available methods are ‘max’, ‘mean’, ‘min’, ‘total’ and ‘all’.</li>
+<li><strong>background_sub</strong> (<em>sublattice object</em>) – The sublattice used to find the local backgrounds.</li>
+<li><strong>num_points</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>default 3</em>) – The number of nearest neighbour values averaged from
+background_sub</li>
+<li><strong>percent_to_nn</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>default 0.40</em>) – Determines the boundary of the area surrounding each atomic
+column, as fraction of the distance to the nearest neighbour.</li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>2D numpy array</strong></dt>
-<dd></dd>
-</dl>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">2D numpy array</p>
 </td>
 </tr>
 </tbody>
@@ -1431,18 +1194,11 @@ Also plots save saves a png.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>prismatic_mrc_filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first last">name of the outputted prismatic .mrc file.</p>
-</dd>
-</dl>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>prismatic_mrc_filename</strong> (<em>string</em>) – name of the outputted prismatic .mrc file.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>Hyperspy Signal 2D of the simulation</strong></dt>
-<dd></dd>
-</dl>
-</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Hyperspy Signal 2D of the simulation</td>
 </tr>
 </tbody>
 </table>
@@ -1466,51 +1222,33 @@ fast simulation software.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>xyz_filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first last">filename of the xyz coordinate model. Must be in the prismatic format.
-See <a class="reference external" href="http://prism-em.com/docs-inputs/">http://prism-em.com/docs-inputs/</a> for more information.</p>
-</dd>
-<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, default None</span></dt>
-<dd><p class="first last">name with which the image will be saved</p>
-</dd>
-<dt><strong>reference_image</strong> <span class="classifier-delimiter">:</span> <span class="classifier">hyperspy signal 2D</span></dt>
-<dd><p class="first last">image from which calibration information is taken, such
-as sampling, pixel height and pixel width</p>
-</dd>
-<dt><strong>calibration_area</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
-<dd><p class="first last">xy pixel coordinates of the image area to be used to calibrate
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>xyz_filename</strong> (<em>string</em>) – filename of the xyz coordinate model. Must be in the prismatic format.
+See <a class="reference external" href="http://prism-em.com/docs-inputs/">http://prism-em.com/docs-inputs/</a> for more information.</li>
+<li><strong>filename</strong> (<em>string</em><em>, </em><em>default None</em>) – name with which the image will be saved</li>
+<li><strong>reference_image</strong> (<em>hyperspy signal 2D</em>) – image from which calibration information is taken, such
+as sampling, pixel height and pixel width</li>
+<li><strong>calibration_area</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – xy pixel coordinates of the image area to be used to calibrate
 the intensity. In the form [[0,0], [512,512]]
-See calibrate_intensity_distance_with_sublattice_roi()</p>
-</dd>
-<dt><strong>calibration_separation</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd><p class="first last">pixel separation used for the intensity calibration.
-See calibrate_intensity_distance_with_sublattice_roi()</p>
-</dd>
-<dt><strong>percent_to_nn</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, default 0.40</span></dt>
-<dd><p class="first last">Determines the boundary of the area surrounding each atomic
-column, as fraction of the distance to the nearest neighbour.</p>
-</dd>
-<dt><strong>mask_radius</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, default None</span></dt>
-<dd><p class="first last">Radius of the mask around each atom. If this is not set,
+See calibrate_intensity_distance_with_sublattice_roi()</li>
+<li><strong>calibration_separation</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – pixel separation used for the intensity calibration.
+See calibrate_intensity_distance_with_sublattice_roi()</li>
+<li><strong>percent_to_nn</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>default 0.40</em>) – Determines the boundary of the area surrounding each atomic
+column, as fraction of the distance to the nearest neighbour.</li>
+<li><strong>mask_radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>default None</em>) – Radius of the mask around each atom. If this is not set,
 the radius will be the distance to the nearest atom in the
 same sublattice times the <cite>percent_to_nn</cite> value.
 Note: if <cite>mask_radius</cite> is not specified, the Atom_Position objects
-must have a populated nearest_neighbor_list.</p>
-</dd>
-<dt><strong>refine, scalebar_true</strong></dt>
-<dd><p class="first last">See function calibrate_intensity_distance_with_sublattice_roi()</p>
-</dd>
-<dt><strong>probeStep, E0 … etc.</strong></dt>
-<dd><p class="first last">See function simulate_with_prismatic()</p>
-</dd>
-</dl>
+must have a populated nearest_neighbor_list.</li>
+<li><strong>scalebar_true</strong> (<em>refine</em><em>,</em>) – See function calibrate_intensity_distance_with_sublattice_roi()</li>
+<li><strong>E0 ... etc.</strong> (<em>probeStep</em><em>,</em>) – See function simulate_with_prismatic()</li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>Simulated image as a hyperspy object</strong></dt>
-<dd></dd>
-</dl>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Simulated image as a hyperspy object</p>
 </td>
 </tr>
 </tbody>
@@ -1529,51 +1267,33 @@ fast simulation software.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>xyz_filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first last">filename of the xyz coordinate model. Must be in the prismatic format.
-See <a class="reference external" href="http://prism-em.com/docs-inputs/">http://prism-em.com/docs-inputs/</a> for more information.</p>
-</dd>
-<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, default None</span></dt>
-<dd><p class="first last">name with which the image will be saved</p>
-</dd>
-<dt><strong>reference_image</strong> <span class="classifier-delimiter">:</span> <span class="classifier">hyperspy signal 2D</span></dt>
-<dd><p class="first last">image from which calibration information is taken, such
-as sampling, pixel height and pixel width</p>
-</dd>
-<dt><strong>calibration_area</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
-<dd><p class="first last">xy pixel coordinates of the image area to be used to calibrate
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>xyz_filename</strong> (<em>string</em>) – filename of the xyz coordinate model. Must be in the prismatic format.
+See <a class="reference external" href="http://prism-em.com/docs-inputs/">http://prism-em.com/docs-inputs/</a> for more information.</li>
+<li><strong>filename</strong> (<em>string</em><em>, </em><em>default None</em>) – name with which the image will be saved</li>
+<li><strong>reference_image</strong> (<em>hyperspy signal 2D</em>) – image from which calibration information is taken, such
+as sampling, pixel height and pixel width</li>
+<li><strong>calibration_area</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – xy pixel coordinates of the image area to be used to calibrate
 the intensity. In the form [[0,0], [512,512]]
-See calibrate_intensity_distance_with_sublattice_roi()</p>
-</dd>
-<dt><strong>calibration_separation</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd><p class="first last">pixel separation used for the intensity calibration.
-See calibrate_intensity_distance_with_sublattice_roi()</p>
-</dd>
-<dt><strong>percent_to_nn</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, default 0.40</span></dt>
-<dd><p class="first last">Determines the boundary of the area surrounding each atomic
-column, as fraction of the distance to the nearest neighbour.</p>
-</dd>
-<dt><strong>mask_radius</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, default None</span></dt>
-<dd><p class="first last">Radius of the mask around each atom. If this is not set,
+See calibrate_intensity_distance_with_sublattice_roi()</li>
+<li><strong>calibration_separation</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – pixel separation used for the intensity calibration.
+See calibrate_intensity_distance_with_sublattice_roi()</li>
+<li><strong>percent_to_nn</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>default 0.40</em>) – Determines the boundary of the area surrounding each atomic
+column, as fraction of the distance to the nearest neighbour.</li>
+<li><strong>mask_radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>default None</em>) – Radius of the mask around each atom. If this is not set,
 the radius will be the distance to the nearest atom in the
 same sublattice times the <cite>percent_to_nn</cite> value.
 Note: if <cite>mask_radius</cite> is not specified, the Atom_Position objects
-must have a populated nearest_neighbor_list.</p>
-</dd>
-<dt><strong>refine, scalebar_true</strong></dt>
-<dd><p class="first last">See function calibrate_intensity_distance_with_sublattice_roi()</p>
-</dd>
-<dt><strong>probeStep, E0 … etc.</strong></dt>
-<dd><p class="first last">See function simulate_with_prismatic()</p>
-</dd>
-</dl>
+must have a populated nearest_neighbor_list.</li>
+<li><strong>scalebar_true</strong> (<em>refine</em><em>,</em>) – See function calibrate_intensity_distance_with_sublattice_roi()</li>
+<li><strong>E0 ... etc.</strong> (<em>probeStep</em><em>,</em>) – See function simulate_with_prismatic()</li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>Simulated image as a hyperspy object</strong></dt>
-<dd></dd>
-</dl>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Simulated image as a hyperspy object</p>
 </td>
 </tr>
 </tbody>
@@ -1592,45 +1312,31 @@ fast simulation software.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>xyz_filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first last">filename of the xyz coordinate model. Must be in the prismatic format.
-See <a class="reference external" href="http://prism-em.com/docs-inputs/">http://prism-em.com/docs-inputs/</a> for more information.</p>
-</dd>
-<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, default None</span></dt>
-<dd><p class="first last">name with which the image will be saved</p>
-</dd>
-<dt><strong>reference_image</strong> <span class="classifier-delimiter">:</span> <span class="classifier">hyperspy signal 2D</span></dt>
-<dd><p class="first last">image from which calibration information is taken, such
-as sampling, pixel height and pixel width</p>
-</dd>
-<dt><strong>probeStep</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, default 1.0</span></dt>
-<dd><p class="first last">Should be the sampling of the image, where
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>xyz_filename</strong> (<em>string</em>) – filename of the xyz coordinate model. Must be in the prismatic format.
+See <a class="reference external" href="http://prism-em.com/docs-inputs/">http://prism-em.com/docs-inputs/</a> for more information.</li>
+<li><strong>filename</strong> (<em>string</em><em>, </em><em>default None</em>) – name with which the image will be saved</li>
+<li><strong>reference_image</strong> (<em>hyperspy signal 2D</em>) – image from which calibration information is taken, such
+as sampling, pixel height and pixel width</li>
+<li><strong>probeStep</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>default 1.0</em>) – Should be the sampling of the image, where
 sampling = length (in angstrom)/pixels
 If you want the probeStep to be calculated from the reference image,
-set this to None.</p>
-</dd>
-<dt><strong>E0, numThreads etc.,</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Prismatic parameters</span></dt>
-<dd><p class="first last">See <a class="reference external" href="http://prism-em.com/docs-params/">http://prism-em.com/docs-params/</a></p>
-</dd>
-<dt><strong>cellDimXYZ</strong> <span class="classifier-delimiter">:</span> <span class="classifier">tuple, default None</span></dt>
-<dd><p class="first last">A tuple of length 3. Example (2.3, 4.5, 5.6).
+set this to None.</li>
+<li><strong>numThreads etc.</strong><strong>,</strong> (<em>E0</em><em>,</em>) – See <a class="reference external" href="http://prism-em.com/docs-params/">http://prism-em.com/docs-params/</a></li>
+<li><strong>cellDimXYZ</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a><em>, </em><em>default None</em>) – A tuple of length 3. Example (2.3, 4.5, 5.6).
 If this is set to None, the cell dimension values from the .xyz file
 will be used (default). If it is specified, it will overwrite the .xyz
-file values.</p>
-</dd>
-<dt><strong>tileXYZ</strong> <span class="classifier-delimiter">:</span> <span class="classifier">tuple, deault None</span></dt>
-<dd><p class="first last">A tuple of length 3. Example (5, 5, 2) would multiply the model in x
+file values.</li>
+<li><strong>tileXYZ</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a><em>, </em><em>deault None</em>) – A tuple of length 3. Example (5, 5, 2) would multiply the model in x
 and y by 5, and z by 2.
-Default of None is just set to (1, 1, 1)</p>
-</dd>
-</dl>
+Default of None is just set to (1, 1, 1)</li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>Simulated image as a 2D mrc file</strong></dt>
-<dd></dd>
-</dl>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Simulated image as a 2D mrc file</p>
 </td>
 </tr>
 </tbody>
@@ -1665,37 +1371,39 @@ atomap functions. The mean intensity of that sublattice is set to 1</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>image</strong> <span class="classifier-delimiter">:</span> <span class="classifier">HyperSpy 2D signal, default None</span></dt>
-<dd><p class="first last">The signal can be distance calibrated. If it is, set
-scalebar_true=True</p>
-</dd>
-<dt><strong>cropping_area</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of 2 floats, default None</span></dt>
-<dd><p class="first last">The best method of choosing the area is by using the atomap
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>image</strong> (<em>HyperSpy 2D signal</em><em>, </em><em>default None</em>) – The signal can be distance calibrated. If it is, set
+scalebar_true=True</li>
+<li><strong>cropping_area</strong> (<em>list of 2 floats</em><em>, </em><em>default None</em>) – The best method of choosing the area is by using the atomap
 function “add_atoms_with_gui(image.data)”. Choose two points on the
-image. First point is top left of area, second point is bottom right.</p>
-</dd>
-<dt><strong>percent_to_nn</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, default 0.40</span></dt>
-<dd><p class="first last">Determines the boundary of the area surrounding each atomic
-column, as fraction of the distance to the nearest neighbour.</p>
-</dd>
-<dt><strong>scalebar_true</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool, default False</span></dt>
-<dd><p class="first last">Set to True if the scale of the image is calibrated to a distance unit.
+image. First point is top left of area, second point is bottom right.</li>
+<li><strong>percent_to_nn</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>default 0.40</em>) – Determines the boundary of the area surrounding each atomic
+column, as fraction of the distance to the nearest neighbour.</li>
+<li><strong>scalebar_true</strong> (<em>Bool</em><em>, </em><em>default False</em>) – Set to True if the scale of the image is calibrated to a distance unit.
 <strong>* is there any point to this? if scale=1, then multiplying has no
 *</strong> effect, and if it is scaled to nm or angstrom, multiplying is
-<a href="#id3"><span class="problematic" id="id4">**</span></a>* good. so keep the code, remove the parameter option!</p>
-</dd>
-</dl>
+<a href="#id3"><span class="problematic" id="id4">**</span></a>* good. so keep the code, remove the parameter option!</li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>calibrated image data</strong></dt>
-<dd></dd>
-</dl>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">calibrated image data</p>
 </td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">image</span> <span class="o">=</span> <span class="n">am</span><span class="o">.</span><span class="n">dummy_data</span><span class="o">.</span><span class="n">get_simple_cubic_with_vacancies_signal</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># image.plot()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cropping_area</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">],[</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># cropping_area = am.add_atoms_with_gui(image.data) # manually</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">calibrate_intensity_distance_with_sublattice_roi</span><span class="p">(</span><span class="n">image</span><span class="p">,</span>
+<span class="gp">... </span>            <span class="n">cropping_area</span><span class="p">,</span> <span class="n">separation</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># image.plot()</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -1709,20 +1417,17 @@ Commit 5ba307b5af0b598bedc0284aa989d44e23fdde4d on Atomap</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>image</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Hyperspy 2D Signal</span></dt>
-<dd></dd>
-<dt><strong>norm</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, default ‘log’</span></dt>
-<dd><p class="first last">How to scale the intensity value for the displayed image.
-Options are ‘linear’ and ‘log’</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>image</strong> (<em>Hyperspy 2D Signal</em>) – </li>
+<li><strong>norm</strong> (<em>string</em><em>, </em><em>default 'log'</em>) – How to scale the intensity value for the displayed image.
+Options are ‘linear’ and ‘log’</li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>mask_coords</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of pixel coordinates</span></dt>
-<dd></dd>
-</dl>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>mask_coords</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list of pixel coordinates</p>
 </td>
 </tr>
 </tbody>
@@ -1754,7 +1459,13 @@ See measure_image_errors() and load_and_compare_images()</p>
 <dl class="function">
 <dt id="temul.signal_processing.crop_image_hs">
 <code class="descclassname">temul.signal_processing.</code><code class="descname">crop_image_hs</code><span class="sig-paren">(</span><em>image</em>, <em>cropping_area</em>, <em>save_image=True</em>, <em>save_variables=True</em>, <em>scalebar_true=True</em><span class="sig-paren">)</span><a class="headerlink" href="#temul.signal_processing.crop_image_hs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p class="rubric">Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">image</span> <span class="o">=</span> <span class="n">am</span><span class="o">.</span><span class="n">dummy_data</span><span class="o">.</span><span class="n">get_simple_cubic_with_vacancies_signal</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cropping_area</span> <span class="o">=</span> <span class="n">am</span><span class="o">.</span><span class="n">add_atoms_with_gui</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="c1"># choose two points</span>
+</pre></div>
+</div>
+</dd></dl>
 
 <dl class="function">
 <dt id="temul.signal_processing.distance_vector">
@@ -1776,27 +1487,19 @@ MoS2: d_1 = 7.7, d_2 = 14</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>xdata</strong> <span class="classifier-delimiter">:</span> <span class="classifier">numpy 1D array</span></dt>
-<dd><p class="first last">values input as the x coordinates of the gaussian distribution</p>
-</dd>
-<dt><strong>amp</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">amplitude of the gaussian in y-axis</p>
-</dd>
-<dt><strong>mu</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">mean value of the gaussianin x-axis, corresponding to y-axis
-amplitude.</p>
-</dd>
-<dt><strong>sigma</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">standard deviation of the gaussian distribution</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>xdata</strong> (<em>numpy 1D array</em>) – values input as the x coordinates of the gaussian distribution</li>
+<li><strong>amp</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – amplitude of the gaussian in y-axis</li>
+<li><strong>mu</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – mean value of the gaussianin x-axis, corresponding to y-axis
+amplitude.</li>
+<li><strong>sigma</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – standard deviation of the gaussian distribution</li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>gaussian distibution of xdata array</strong></dt>
-<dd></dd>
-</dl>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">gaussian distibution of xdata array</p>
 </td>
 </tr>
 </tbody>
@@ -1826,26 +1529,27 @@ by setting reduce_func=np.min.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>See atomap’s integrate function.</strong></dt>
-<dd></dd>
-<dt><strong>reduce_func</strong> <span class="classifier-delimiter">:</span> <span class="classifier">ufunc, default np.min</span></dt>
-<dd><p class="first last">function used to reduce the pixel values around each atom
-to a float.</p>
-</dd>
-</dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>Numpy array with the same shape as s</strong></dt>
-<dd></dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>atomap's integrate function.</strong> (<em>See</em>) – </li>
+<li><strong>reduce_func</strong> (<em>ufunc</em><em>, </em><em>default np.min</em>) – function used to reduce the pixel values around each atom
+to a float.</li>
+</ul>
 </td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
 <p>#### add PTO example from paper</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">Numpy array with the same shape as s</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -1868,35 +1572,24 @@ FFT.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>image</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Hyperspy 2D Signal</span></dt>
-<dd></dd>
-<dt><strong>mask_coords</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of lists</span></dt>
-<dd><p class="first last">Pixel coordinates of the masking locations. See the example below for
-two simple coordinates.</p>
-</dd>
-<dt><strong>mask_radius</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, default 10</span></dt>
-<dd><p class="first last">Radius in pixels of the mask.</p>
-</dd>
-<dt><strong>space</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, default “real”</span></dt>
-<dd><p class="first last">If the input image is a Fourier transform already, set space=”fourier”</p>
-</dd>
-<dt><strong>keep_masked_area</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool, default True</span></dt>
-<dd><p class="first last">If True, this will set the mask at the mask_coords.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>image</strong> (<em>Hyperspy 2D Signal</em>) – </li>
+<li><strong>mask_coords</strong> (<em>list of lists</em>) – Pixel coordinates of the masking locations. See the example below for
+two simple coordinates.</li>
+<li><strong>mask_radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>default 10</em>) – Radius in pixels of the mask.</li>
+<li><strong>space</strong> (<em>string</em><em>, </em><em>default &quot;real&quot;</em>) – If the input image is a Fourier transform already, set space=”fourier”</li>
+<li><strong>keep_masked_area</strong> (<em>Bool</em><em>, </em><em>default True</em>) – If True, this will set the mask at the mask_coords.
 If False, this will set the mask as everything other than the
-mask_coords.</p>
-</dd>
-<dt><strong>plot_masked_fft</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool, default False</span></dt>
-<dd><p class="first last">If True, the mask used to filter the FFT will be plotted. Good for
-checking that the mask is doing what you want.</p>
-</dd>
-</dl>
+mask_coords.</li>
+<li><strong>plot_masked_fft</strong> (<em>Bool</em><em>, </em><em>default False</em>) – If True, the mask used to filter the FFT will be plotted. Good for
+checking that the mask is doing what you want.</li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>Inverse FFT as a Hyperspy 2D Signal</strong></dt>
-<dd></dd>
-</dl>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Inverse FFT as a Hyperspy 2D Signal</p>
 </td>
 </tr>
 </tbody>
@@ -1954,23 +1647,18 @@ sublattice. Useful for get_fitting_tools_for_plotting_gaussians().</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>sublattice_intensity_list</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
-<dd><p class="first last">See get_subattice_intensity() for more information</p>
-</dd>
-<dt><strong>hist_bins</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, default 100</span></dt>
-<dd><p class="first last">number of bins to sort the intensities into
-must be a better way of doing this? maybe automate the binning choice</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sublattice_intensity_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – See get_subattice_intensity() for more information</li>
+<li><strong>hist_bins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>default 100</em>) – number of bins to sort the intensities into
+must be a better way of doing this? maybe automate the binning choice</li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>Two numpy 1D arrays corressponding to the x and y values of a histogram</strong></dt>
-<dd></dd>
-<dt><strong>of the sublattice intensities.</strong></dt>
-<dd></dd>
-</dl>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>Two numpy 1D arrays corressponding to the x and y values of a histogram</em></li>
+<li><em>of the sublattice intensities.</em></li>
+</ul>
+</p>
 </td>
 </tr>
 </tbody>
@@ -1994,20 +1682,16 @@ simularity index.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>imageA, imageB</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first last">filename of the images to be loaded and compared</p>
-</dd>
-<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, default None</span></dt>
-<dd><p class="first last">name with which the image will be saved</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>imageB</strong> (<em>imageA</em><em>,</em>) – filename of the images to be loaded and compared</li>
+<li><strong>filename</strong> (<em>string</em><em>, </em><em>default None</em>) – name with which the image will be saved</li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>mean standard error and structural simularity index</strong></dt>
-<dd></dd>
-</dl>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">mean standard error and structural simularity index</p>
 </td>
 </tr>
 </tbody>
@@ -2037,21 +1721,18 @@ its nearest neighbours.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>sublattice</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Atomap Sublattice object</span></dt>
-<dd></dd>
-<dt><strong>nearest_neighbours</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, default 5</span></dt>
-<dd><p class="first last">The number of nearest neighbours used to calculate the mean distance
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sublattice</strong> (<em>Atomap Sublattice object</em>) – </li>
+<li><strong>nearest_neighbours</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>default 5</em>) – The number of nearest neighbours used to calculate the mean distance
 from an atom. As in atomap, choosing 5 gets the 4 nearest
-neighbours.</p>
-</dd>
-</dl>
+neighbours.</li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>2 lists: list of mean distances, list of standard deviations.</strong></dt>
-<dd></dd>
-</dl>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>2 lists</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list of mean distances, list of standard deviations.</p>
 </td>
 </tr>
 </tbody>
@@ -2077,26 +1758,33 @@ between two images.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>imageA, imageB</strong> <span class="classifier-delimiter">:</span> <span class="classifier">2D NumPy array, default None</span></dt>
-<dd><p class="first last">Two images between which to measure mse and ssm</p>
-</dd>
-<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, default None</span></dt>
-<dd><p class="first last">name with which the image will be saved</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>imageB</strong> (<em>imageA</em><em>,</em>) – Two images between which to measure mse and ssm</li>
+<li><strong>filename</strong> (<em>string</em><em>, </em><em>default None</em>) – name with which the image will be saved</li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>mse_number, ssm_number</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd></dd>
-<dt><strong>returned subtracted image is imageA - imageB</strong></dt>
-<dd></dd>
-</dl>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>mse_number, ssm_number</strong> (<em>float</em>)</li>
+<li><em>returned subtracted image is imageA - imageB</em></li>
+</ul>
+</p>
 </td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">imageA</span> <span class="o">=</span> <span class="n">am</span><span class="o">.</span><span class="n">dummy_data</span><span class="o">.</span><span class="n">get_simple_cubic_signal</span><span class="p">()</span><span class="o">.</span><span class="n">data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">imageB</span> <span class="o">=</span> <span class="n">am</span><span class="o">.</span><span class="n">dummy_data</span><span class="o">.</span><span class="n">get_simple_cubic_with_vacancies_signal</span><span class="p">()</span><span class="o">.</span><span class="n">data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mse_number</span><span class="p">,</span> <span class="n">ssm_number</span> <span class="o">=</span> <span class="n">measure_image_errors</span><span class="p">(</span><span class="n">imageA</span><span class="p">,</span> <span class="n">imageB</span><span class="p">,</span>
+<span class="gp">... </span>                                              <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Showing the ideal case of both images being exactly equal
+&gt;&gt;&gt; imageA = am.dummy_data.get_simple_cubic_signal().data
+&gt;&gt;&gt; imageB = am.dummy_data.get_simple_cubic_signal().data
+&gt;&gt;&gt; mse_number, ssm_number = measure_image_errors(imageA, imageA,
+…                                               filename=None)</p>
 </dd></dl>
 
 <dl class="function">
@@ -2131,6 +1819,45 @@ between two images.</p>
 <code class="descclassname">temul.signal_processing.</code><code class="descname">plot_gaussian_fitting_for_multiple_fits</code><span class="sig-paren">(</span><em>sub_ints_all, fitting_tools_all_subs, element_list_all_subs, marker_list, hist_bins=150, plotting_style='hist', filename='Fit of Intensities', mpl_cmaps_list=['viridis']</em><span class="sig-paren">)</span><a class="headerlink" href="#temul.signal_processing.plot_gaussian_fitting_for_multiple_fits" title="Permalink to this definition">¶</a></dt>
 <dd><p>plots Gaussian distributions for intensities of a sublattice, over the
 given parameters (fitting tools).</p>
+<p class="rubric">Example</p>
+<p>sub_ints_all = [sub1_ints, sub2_ints]
+marker_list = [[‘Sub1’, ‘.’],[‘Sub2’, ‘x’]]</p>
+<dl class="docutils">
+<dt>middle_intensity_list_real_sub1, limit_intensity_list_real_sub1 = make_middle_limit_intensity_list_real(</dt>
+<dd>sublattice=sub1,
+middle_intensity_list=middle_intensity_list_sub1,
+limit_intensity_list=limit_intensity_list_sub1,
+method=method,
+sublattice_scalar=sub1_mode)</dd>
+<dt>middle_intensity_list_real_sub2, limit_intensity_list_real_sub2 = make_middle_limit_intensity_list_real(</dt>
+<dd>sublattice=sub2,
+middle_intensity_list=middle_intensity_list_sub2,
+limit_intensity_list=limit_intensity_list_sub2,
+method=method,
+sublattice_scalar=sub2_mode)</dd>
+</dl>
+<p>element_list_all_subs = [element_list_sub1, element_list_sub2]</p>
+<dl class="docutils">
+<dt>fitting_tools_all_subs = [</dt>
+<dd><dl class="first last docutils">
+<dt>get_fitting_tools_for_plotting_gaussians(</dt>
+<dd>element_list_sub1,
+middle_intensity_list_real_sub1,
+limit_intensity_list_real_sub1),</dd>
+<dt>get_fitting_tools_for_plotting_gaussians(</dt>
+<dd>element_list_sub2,
+middle_intensity_list_real_sub2,
+limit_intensity_list_real_sub2)
+]</dd>
+</dl>
+</dd>
+<dt>plot_gaussian_fitting_for_multiple_fits(sub_ints_all,</dt>
+<dd>fitting_tools_all_subs,
+element_list_all_subs,
+marker_list,
+hist_bins=500,
+filename=’Fit of Intensities900’)</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
@@ -2144,29 +1871,30 @@ sublattice</p>
 <dt id="temul.signal_processing.return_fitting_of_1D_gaussian">
 <code class="descclassname">temul.signal_processing.</code><code class="descname">return_fitting_of_1D_gaussian</code><span class="sig-paren">(</span><em>function</em>, <em>xdata</em>, <em>ydata</em>, <em>amp</em>, <em>mu</em>, <em>sigma</em><span class="sig-paren">)</span><a class="headerlink" href="#temul.signal_processing.return_fitting_of_1D_gaussian" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
-<div>Use the initially found centre (mean/mode) value of a sublattice
+<div><p>Use the initially found centre (mean/mode) value of a sublattice
 histogram (e.g., Mo_1 in an Mo sublattice) as an input mean for a
-gaussian fit of the data.</div></blockquote>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>xdata, ydata</strong> <span class="classifier-delimiter">:</span> <span class="classifier">see scipy.optimize.curve_fit</span></dt>
-<dd><p class="first last">amp, mu, sigma : see fit_1D_gaussian_to_data() for more details</p>
-</dd>
-</dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>optimised parameters (popt) and estimated covariance (pcov) of the</strong></dt>
-<dd><p class="first last">fitted gaussian function.</p>
-</dd>
-</dl>
-</td>
-</tr>
-</tbody>
-</table>
+gaussian fit of the data.</p>
+<p>xdata, ydata : see scipy.optimize.curve_fit
+amp, mu, sigma : see fit_1D_gaussian_to_data() for more details</p>
+<p>optimised parameters (popt) and estimated covariance (pcov) of the
+fitted gaussian function.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_processing</span> <span class="k">import</span> <span class="p">(</span>
+<span class="gp">... </span>    <span class="n">get_xydata_from_list_of_intensities</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">return_fitting_of_1D_gaussian</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">fit_1D_gaussian_to_data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">amp</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sub1_inten</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span> <span class="o">=</span> <span class="n">get_xydata_from_list_of_intensities</span><span class="p">(</span><span class="n">sub1_inten</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">hist_bins</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">popt_gauss</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">return_fitting_of_1D_gaussian</span><span class="p">(</span>
+<span class="gp">... </span>                    <span class="n">fit_1D_gaussian_to_data</span><span class="p">,</span>
+<span class="gp">... </span>                    <span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span><span class="p">,</span>
+<span class="gp">... </span>                    <span class="n">amp</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span>
+</pre></div>
+</div>
+<p># print(“Calculated Mean: ” + str(round(np.mean(xdata),3))
+# + “</p>
+</div></blockquote>
 <p>Fitted Mean: ” + str(round(popt_gauss[1],3)))</p>
 </dd></dl>
 
@@ -2178,36 +1906,26 @@ gaussian fit of the data.</div></blockquote>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>file</strong> <span class="classifier-delimiter">:</span> <span class="classifier">stack of tiff images</span></dt>
-<dd></dd>
-<dt><strong>masktype</strong> <span class="classifier-delimiter">:</span> <span class="classifier">filtering method, default ‘hann’</span></dt>
-<dd><p class="first last">See <a class="reference external" href="https://github.com/bsavitzky/rigidRegistration">https://github.com/bsavitzky/rigidRegistration</a> for
-more information</p>
-</dd>
-<dt><strong>n</strong> <span class="classifier-delimiter">:</span> <span class="classifier">width of filter, default 4</span></dt>
-<dd><p class="first last">larger numbers mean smaller filter width
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>file</strong> (<em>stack of tiff images</em>) – </li>
+<li><strong>masktype</strong> (<em>filtering method</em><em>, </em><em>default 'hann'</em>) – See <a class="reference external" href="https://github.com/bsavitzky/rigidRegistration">https://github.com/bsavitzky/rigidRegistration</a> for
+more information</li>
+<li><strong>n</strong> (<em>width of filter</em><em>, </em><em>default 4</em>) – larger numbers mean smaller filter width
 See <a class="reference external" href="https://github.com/bsavitzky/rigidRegistration">https://github.com/bsavitzky/rigidRegistration</a> for
-more information</p>
-</dd>
-<dt><strong>findMaxima</strong> <span class="classifier-delimiter">:</span> <span class="classifier">image matching method, default ‘gf’</span></dt>
-<dd><p class="first last">‘pixel’ and ‘gf’ options, See
+more information</li>
+<li><strong>findMaxima</strong> (<em>image matching method</em><em>, </em><em>default 'gf'</em>) – ‘pixel’ and ‘gf’ options, See
 <a class="reference external" href="https://github.com/bsavitzky/rigidRegistration">https://github.com/bsavitzky/rigidRegistration</a> for
-more information</p>
-</dd>
-</dl>
+more information</li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>Outputs of</strong></dt>
-<dd></dd>
-<dt><strong>report of the image registration</strong></dt>
-<dd></dd>
-<dt><strong>aligned and stacked image with and without crop</strong></dt>
-<dd></dd>
-<dt><strong>creates a folder and places all uncropped aligned images in it</strong></dt>
-<dd></dd>
-</dl>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>Outputs of</em></li>
+<li><em>report of the image registration</em></li>
+<li><em>aligned and stacked image with and without crop</em></li>
+<li><em>creates a folder and places all uncropped aligned images in it</em></li>
+</ul>
+</p>
 </td>
 </tr>
 </tbody>
@@ -2227,82 +1945,57 @@ sublattice using a range of intensities.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>sublattice</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Atomap Sublattice object, default None</span></dt>
-<dd></dd>
-<dt><strong>min_cut_off_percent</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, default None</span></dt>
-<dd><p class="first last">The lower end of the intensity range is defined as
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sublattice</strong> (<em>Atomap Sublattice object</em><em>, </em><em>default None</em>) – </li>
+<li><strong>min_cut_off_percent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>default None</em>) – The lower end of the intensity range is defined as
 min_cut_off_percent * modal value of max intensity list of
-sublattice.</p>
-</dd>
-<dt><strong>max_cut_off_percent</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, default None</span></dt>
-<dd><p class="first last">The upper end of the intensity range is defined as
+sublattice.</li>
+<li><strong>max_cut_off_percent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>default None</em>) – The upper end of the intensity range is defined as
 max_cut_off_percent * modal value of max intensity list of
-sublattice.</p>
-</dd>
-<dt><strong>range_type</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, default ‘internal’</span></dt>
-<dd><p class="first last">‘internal’ returns the ‘refine_position’ attribute for each
+sublattice.</li>
+<li><strong>range_type</strong> (<em>string</em><em>, </em><em>default 'internal'</em>) – ‘internal’ returns the ‘refine_position’ attribute for each
 Atom Position as True if the intensity of that Atom Position
 lies between the lower and upper limits defined by min_cut_off_percent
 and max_cut_off_percent.
 ‘external’ returns the ‘refine_position’ attribute for each
 Atom Position as True if the intensity of that Atom Position
 lies outside the lower and upper limits defined by min_cut_off_percent
-and max_cut_off_percent.</p>
-</dd>
-<dt><strong>save_image</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool, default False</span></dt>
-<dd><p class="first last">Save the ‘sublattice.toggle_atom_refine_position_with_gui()’
-image.</p>
-</dd>
-<dt><strong>percent_to_nn</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, default 0.40</span></dt>
-<dd><p class="first last">Determines the boundary of the area surrounding each atomic
-column, as fraction of the distance to the nearest neighbour.</p>
-</dd>
-</dl>
+and max_cut_off_percent.</li>
+<li><strong>save_image</strong> (<em>Bool</em><em>, </em><em>default False</em>) – Save the ‘sublattice.toggle_atom_refine_position_with_gui()’
+image.</li>
+<li><strong>percent_to_nn</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>default 0.40</em>) – Determines the boundary of the area surrounding each atomic
+column, as fraction of the distance to the nearest neighbour.</li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>calibrated image data</strong></dt>
-<dd></dd>
-<dt><strong>Example</strong></dt>
-<dd></dd>
-<dt><strong>——-</strong></dt>
-<dd></dd>
-<dt><strong>&gt;&gt;&gt; min_cut_off_percent = 0.75</strong></dt>
-<dd></dd>
-<dt><strong>&gt;&gt;&gt; max_cut_off_percent = 1.25</strong></dt>
-<dd></dd>
-<dt><strong>&gt;&gt;&gt; sublattice = am.dummy_data.get_simple_cubic_with_vacancies_sublattice(</strong></dt>
-<dd></dd>
-<dt><strong>…     image_noise=True)</strong></dt>
-<dd></dd>
-<dt><strong>&gt;&gt;&gt; sublattice.find_nearest_neighbors()</strong></dt>
-<dd></dd>
-<dt><strong>&gt;&gt;&gt; sublattice.plot()</strong></dt>
-<dd></dd>
-<dt><strong>&gt;&gt;&gt; false_list_sublattice =  toggle_atom_refine_position_automatically(</strong></dt>
-<dd></dd>
-<dt><strong>…                             sublattice=sublattice,</strong></dt>
-<dd></dd>
-<dt><strong>…                             min_cut_off_percent=min_cut_off_percent,</strong></dt>
-<dd></dd>
-<dt><strong>…                             max_cut_off_percent=max_cut_off_percent,</strong></dt>
-<dd></dd>
-<dt><strong>…                             range_type=’internal’,</strong></dt>
-<dd></dd>
-<dt><strong>…                             method=’mode’,</strong></dt>
-<dd></dd>
-<dt><strong>…                             percent_to_nn=0.05)</strong></dt>
-<dd></dd>
-<dt><strong>&gt;&gt;&gt; # Check which atoms will not be refined (red dots)</strong></dt>
-<dd></dd>
-<dt><strong>&gt;&gt;&gt; sublattice.toggle_atom_refine_position_with_gui()</strong></dt>
-<dd></dd>
-</dl>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">calibrated image data</p>
 </td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">min_cut_off_percent</span> <span class="o">=</span> <span class="mf">0.75</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">max_cut_off_percent</span> <span class="o">=</span> <span class="mf">1.25</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span> <span class="o">=</span> <span class="n">am</span><span class="o">.</span><span class="n">dummy_data</span><span class="o">.</span><span class="n">get_simple_cubic_with_vacancies_sublattice</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">image_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span><span class="o">.</span><span class="n">find_nearest_neighbors</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">false_list_sublattice</span> <span class="o">=</span>  <span class="n">toggle_atom_refine_position_automatically</span><span class="p">(</span>
+<span class="gp">... </span>                            <span class="n">sublattice</span><span class="o">=</span><span class="n">sublattice</span><span class="p">,</span>
+<span class="gp">... </span>                            <span class="n">min_cut_off_percent</span><span class="o">=</span><span class="n">min_cut_off_percent</span><span class="p">,</span>
+<span class="gp">... </span>                            <span class="n">max_cut_off_percent</span><span class="o">=</span><span class="n">max_cut_off_percent</span><span class="p">,</span>
+<span class="gp">... </span>                            <span class="n">range_type</span><span class="o">=</span><span class="s1">&#39;internal&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                            <span class="n">method</span><span class="o">=</span><span class="s1">&#39;mode&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                            <span class="n">percent_to_nn</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Check which atoms will not be refined (red dots)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span><span class="o">.</span><span class="n">toggle_atom_refine_position_with_gui</span><span class="p">()</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </div>
@@ -2319,36 +2012,25 @@ in skimage</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>image</strong> <span class="classifier-delimiter">:</span> <span class="classifier">2D Hyperspy signal</span></dt>
-<dd></dd>
-<dt><strong>line_profile_positions</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of lists</span></dt>
-<dd><p class="first last">two line profile coordinates. Use atomap’s am.add_atoms_with_gui()
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>image</strong> (<em>2D Hyperspy signal</em>) – </li>
+<li><strong>line_profile_positions</strong> (<em>list of lists</em>) – two line profile coordinates. Use atomap’s am.add_atoms_with_gui()
 function to get these. The first two dots will trace the first line
 profile etc.
-Could be extended to n positions with a basic loop.</p>
-</dd>
-<dt><strong>linewidth</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, default 1</span></dt>
-<dd><p class="first last">see profile_line for parameter details.</p>
-</dd>
-<dt><strong>image_sampling</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, default ‘Auto’</span></dt>
-<dd><blockquote class="first">
-<div><p>if set to ‘Auto’ the function will attempt to find the sampling of
-image from image.axes_manager[0].scale.</p>
-</div></blockquote>
-<dl class="last docutils">
+Could be extended to n positions with a basic loop.</li>
+<li><strong>linewidth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>default 1</em>) – see profile_line for parameter details.</li>
+<li><strong>image_sampling</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>default 'Auto'</em>) – <dl class="docutils">
+<dt>if set to ‘Auto’ the function will attempt to find the sampling of</dt>
+<dd>image from image.axes_manager[0].scale.</dd>
 <dt>arrow <span class="classifier-delimiter">:</span> <span class="classifier">string, default None</span></dt>
-<dd><p class="first last">If set, arrows will be plotting on the image. Options are ‘h’ and
-‘v’ for horizontal and vertical arrows, respectively.</p>
-</dd>
+<dd>If set, arrows will be plotting on the image. Options are ‘h’ and
+‘v’ for horizontal and vertical arrows, respectively.</dd>
 </dl>
-</dd>
-<dt><strong>linetrace</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, default None</span></dt>
-<dd><p class="first last">If set, the line profile will be plotted on the image.
+</li>
+<li><strong>linetrace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>default None</em>) – If set, the line profile will be plotted on the image.
 The thickness of the linetrace will be linewidth*linetrace.
-Name could be improved maybe.</p>
-</dd>
-</dl>
+Name could be improved maybe.</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -2368,32 +2050,20 @@ in skimage: <a class="reference external" href="https://github.com/scikit-image/
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>imageA, imageB</strong> <span class="classifier-delimiter">:</span> <span class="classifier">2D Hyperspy signal</span></dt>
-<dd></dd>
-<dt><strong>line_profile_positions</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list of lists</span></dt>
-<dd><p class="first last">one line profile coordinate. Use atomap’s am.add_atoms_with_gui()
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>imageB</strong> (<em>imageA</em><em>,</em>) – </li>
+<li><strong>line_profile_positions</strong> (<em>list of lists</em>) – one line profile coordinate. Use atomap’s am.add_atoms_with_gui()
 function to get these. The two dots will trace the line profile.
-See Examples below for example.</p>
-</dd>
-<dt><strong>linewidth</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, default 1</span></dt>
-<dd><p class="first last">see profile_line for parameter details.</p>
-</dd>
-<dt><strong>image_sampling</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, default ‘auto’</span></dt>
-<dd><p class="first last">if set to ‘auto’ the function will attempt to find the sampling of
-image from image.axes_manager[0].scale.</p>
-</dd>
-<dt><strong>scale_units</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, default ‘nm’</span></dt>
-<dd></dd>
-<dt><strong>crop_offset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, default 20</span></dt>
-<dd><p class="first last">number of pixels away from the <cite>line_profile_positions</cite> coordinates the
-image crop will be taken.</p>
-</dd>
-<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, default None</span></dt>
-<dd><p class="first last">If this is set to a name (string), the image will be saved with that
-name.</p>
-</dd>
-</dl>
+See Examples below for example.</li>
+<li><strong>linewidth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>default 1</em>) – see profile_line for parameter details.</li>
+<li><strong>image_sampling</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>default 'auto'</em>) – if set to ‘auto’ the function will attempt to find the sampling of
+image from image.axes_manager[0].scale.</li>
+<li><strong>scale_units</strong> (<em>string</em><em>, </em><em>default 'nm'</em>) – </li>
+<li><strong>crop_offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>default 20</em>) – number of pixels away from the <cite>line_profile_positions</cite> coordinates the
+image crop will be taken.</li>
+<li><strong>filename</strong> (<em>string</em><em>, </em><em>default None</em>) – If this is set to a name (string), the image will be saved with that
+name.</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -2446,29 +2116,27 @@ specified directory and all subdirectories.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>extension_to_save</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first last">the image file extension to be used for saving the image.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>extension_to_save</strong> (<em>string</em>) – the image file extension to be used for saving the image.
 See Hyperspy documentation for information on file writing extensions
-available: <a class="reference external" href="http://hyperspy.org/hyperspy-doc/current/user_guide/io.html">http://hyperspy.org/hyperspy-doc/current/user_guide/io.html</a></p>
-</dd>
-<dt><strong>top_level_directory</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first last">The top-level directory in which the emd files exist. The default
-glob_search will search this directory and all subdirectories.</p>
-</dd>
-<dt><strong>glob_search</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, default “<a href="#id5"><span class="problematic" id="id6">**</span></a>/<a href="#id7"><span class="problematic" id="id8">*</span></a>”</span></dt>
-<dd><p class="first last">Glob search string, see glob for more details:
+available: <a class="reference external" href="http://hyperspy.org/hyperspy-doc/current/user_guide/io.html">http://hyperspy.org/hyperspy-doc/current/user_guide/io.html</a></li>
+<li><strong>top_level_directory</strong> (<em>string</em>) – The top-level directory in which the emd files exist. The default
+glob_search will search this directory and all subdirectories.</li>
+<li><strong>glob_search</strong> (string, default “<a href="#id5"><span class="problematic" id="id6">**</span></a>/<a href="#id7"><span class="problematic" id="id8">*</span></a>”) – Glob search string, see glob for more details:
 <a class="reference external" href="https://docs.python.org/2/library/glob.html">https://docs.python.org/2/library/glob.html</a>
-Default will search this directory and all subdirectories.</p>
-</dd>
-<dt><strong>overwrite</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool, default True</span></dt>
-<dd><p class="first last">Overwrite if the extension_to_save file already exists.</p>
-</dd>
-</dl>
+Default will search this directory and all subdirectories.</li>
+<li><strong>overwrite</strong> (<em>Bool</em><em>, </em><em>default True</em>) – Overwrite if the extension_to_save file already exists.</li>
+</ul>
 </td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Example</p>
+<p># &gt;&gt;&gt; batch_convert_emd_to_image(extension_to_save=’.png’,
+# …         top_level_directory=’G:/Titan Images/
+#               08-10-19_MHEOC_SampleImaging stem’,
+# …         glob_search=”<a href="#id9"><span class="problematic" id="id10">**</span></a>/<a href="#id11"><span class="problematic" id="id12">*</span></a>”,
+# …         overwrite=True)</p>
 </dd></dl>
 
 <dl class="function">
@@ -2482,36 +2150,24 @@ Develop your own converter if you need rms and occupancy! Lots to do.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>vesta_xyz_filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first last">name of the vesta outputted xyz file. See vesta &gt; export &gt; xyz</p>
-</dd>
-<dt><strong>prismatic_xyz_filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first last">name to be given to the outputted prismatic xyz file</p>
-</dd>
-<dt><strong>delimiter, header, skiprows, engine</strong> <span class="classifier-delimiter">:</span> <span class="classifier">pandas.read_csv input parameters</span></dt>
-<dd><p class="first last">See pandas.read_csv for documentation
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>vesta_xyz_filename</strong> (<em>string</em>) – name of the vesta outputted xyz file. See vesta &gt; export &gt; xyz</li>
+<li><strong>prismatic_xyz_filename</strong> (<em>string</em>) – name to be given to the outputted prismatic xyz file</li>
+<li><strong>header</strong><strong>, </strong><strong>skiprows</strong><strong>, </strong><strong>engine</strong> (<em>delimiter</em><em>,</em>) – See pandas.read_csv for documentation
 Note that the delimiters here are only available if you use
-engine=’python’</p>
-</dd>
-<dt><strong>occupancy, rms_thermal_vib</strong> <span class="classifier-delimiter">:</span> <span class="classifier">see prismatic documentation</span></dt>
-<dd><p class="first last">if you want a file format that will retain these atomic attributes,
-use a format other than vesta xyz. Maybe .cif or .vesta keeps these?</p>
-</dd>
-<dt><strong>header_comment</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first last">header comment for the file.</p>
-</dd>
-<dt><strong>save</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Bool, default True</span></dt>
-<dd><p class="first last">whether to output the file as a prismatic formatted xyz file with the
-name of the file given by “prismatic_xyz_filename”.</p>
-</dd>
-</dl>
+engine=’python’</li>
+<li><strong>rms_thermal_vib</strong> (<em>occupancy</em><em>,</em>) – if you want a file format that will retain these atomic attributes,
+use a format other than vesta xyz. Maybe .cif or .vesta keeps these?</li>
+<li><strong>header_comment</strong> (<em>string</em>) – header comment for the file.</li>
+<li><strong>save</strong> (<em>Bool</em><em>, </em><em>default True</em>) – whether to output the file as a prismatic formatted xyz file with the
+name of the file given by “prismatic_xyz_filename”.</li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>The converted file format as a pandas dataframe</strong></dt>
-<dd></dd>
-</dl>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">The converted file format as a pandas dataframe</p>
 </td>
 </tr>
 </tbody>
@@ -2530,7 +2186,22 @@ name of the file given by “prismatic_xyz_filename”.</p>
 <dl class="function">
 <dt id="temul.io.create_dataframe_for_xyz">
 <code class="descclassname">temul.io.</code><code class="descname">create_dataframe_for_xyz</code><span class="sig-paren">(</span><em>sublattice_list</em>, <em>element_list</em>, <em>x_size</em>, <em>y_size</em>, <em>z_size</em>, <em>filename</em>, <em>header_comment='top_level_comment'</em><span class="sig-paren">)</span><a class="headerlink" href="#temul.io.create_dataframe_for_xyz" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p class="rubric">Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">atomap.api</span> <span class="k">as</span> <span class="nn">am</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span> <span class="o">=</span> <span class="n">am</span><span class="o">.</span><span class="n">dummy_data</span><span class="o">.</span><span class="n">get_simple_cubic_sublattice</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">sublattice</span><span class="o">.</span><span class="n">atom_list</span><span class="p">)):</span>
+<span class="gp">... </span>    <span class="n">sublattice</span><span class="o">.</span><span class="n">atom_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">elements</span> <span class="o">=</span> <span class="s1">&#39;Mo_1&#39;</span>
+<span class="gp">... </span>    <span class="n">sublattice</span><span class="o">.</span><span class="n">atom_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">z_height</span> <span class="o">=</span> <span class="s1">&#39;0.5&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">element_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Mo_0&#39;</span><span class="p">,</span> <span class="s1">&#39;Mo_1&#39;</span><span class="p">,</span> <span class="s1">&#39;Mo_2&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x_size</span><span class="p">,</span> <span class="n">y_size</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z_size</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataframe</span> <span class="o">=</span> <span class="n">create_dataframe_for_xyz</span><span class="p">([</span><span class="n">sublattice</span><span class="p">],</span> <span class="n">element_list</span><span class="p">,</span>
+<span class="gp">... </span>                         <span class="n">x_size</span><span class="p">,</span> <span class="n">y_size</span><span class="p">,</span> <span class="n">z_size</span><span class="p">,</span>
+<span class="gp">... </span>                         <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;dataframe&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                         <span class="n">header_comment</span><span class="o">=</span><span class="s1">&#39;Here is an Example&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
 
 <dl class="function">
 <dt id="temul.io.create_new_folder">
@@ -2540,18 +2211,11 @@ name of the file given by “prismatic_xyz_filename”.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>new_folder_name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first last">name of the new folder. It will be created in the current directory</p>
-</dd>
-</dl>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>new_folder_name</strong> (<em>string</em>) – name of the new folder. It will be created in the current directory</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>Nothing</strong></dt>
-<dd></dd>
-</dl>
-</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Nothing</td>
 </tr>
 </tbody>
 </table>
@@ -2571,30 +2235,20 @@ For example dm3 to tiff</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first last">Name of the image stack file</p>
-</dd>
-<dt><strong>loading_file_extension</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first last">file extension of the filename</p>
-</dd>
-<dt><strong>saving_file_extension</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first last">file extension you wish to save as</p>
-</dd>
-<dt><strong>crop</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, default False</span></dt>
-<dd><p class="first last">if True, the image will be cropped in the navigation space,
-defined by the frames given in crop_start and crop_end</p>
-</dd>
-<dt><strong>crop_start, crop_end</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, default 20.0, 80.0</span></dt>
-<dd><p class="first last">the start and end frame of the crop</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filename</strong> (<em>string</em>) – Name of the image stack file</li>
+<li><strong>loading_file_extension</strong> (<em>string</em>) – file extension of the filename</li>
+<li><strong>saving_file_extension</strong> (<em>string</em>) – file extension you wish to save as</li>
+<li><strong>crop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>default False</em>) – if True, the image will be cropped in the navigation space,
+defined by the frames given in crop_start and crop_end</li>
+<li><strong>crop_end</strong> (<em>crop_start</em><em>,</em>) – the start and end frame of the crop</li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>n/a</strong></dt>
-<dd></dd>
-</dl>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">n/a</p>
 </td>
 </tr>
 </tbody>
@@ -2621,24 +2275,22 @@ defined by the frames given in crop_start and crop_end</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>image_stack</strong> <span class="classifier-delimiter">:</span> <span class="classifier">rigid registration image stack object</span></dt>
-<dd></dd>
-<dt><strong>output_folder</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first last">Name of the folder in which all individual images from
-the stack will be saved.</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>image_stack</strong> (<em>rigid registration image stack object</em>) – </li>
+<li><strong>output_folder</strong> (<em>string</em>) – Name of the folder in which all individual images from
+the stack will be saved.</li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>n/a</strong></dt>
-<dd></dd>
-</dl>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">n/a</p>
 </td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Examples</p>
 </dd></dl>
 
 <dl class="function">
@@ -2648,25 +2300,14 @@ the stack will be saved.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>dataframe</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dataframe object</span></dt>
-<dd><p class="first last">pandas dataframe containing rows of atomic position information</p>
-</dd>
-<dt><strong>chemical_name_common</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first last">name of chemical</p>
-</dd>
-<dt><strong>cell_length_a, _cell_length_b, _cell_length_c</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">lattice dimensions in angstrom</p>
-</dd>
-<dt><strong>cell_angle_alpha, cell_angle_beta, cell_angle_gamma</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">lattice angles in degrees</p>
-</dd>
-<dt><strong>space_group_name_H-M_alt</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first last">space group name</p>
-</dd>
-<dt><strong>space_group_IT_number</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd></dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dataframe</strong> (<em>dataframe object</em>) – pandas dataframe containing rows of atomic position information</li>
+<li><strong>chemical_name_common</strong> (<em>string</em>) – name of chemical</li>
+<li><strong>_cell_length_b</strong><strong>, </strong><strong>_cell_length_c</strong> (<em>cell_length_a</em><em>,</em>) – lattice dimensions in angstrom</li>
+<li><strong>cell_angle_beta</strong><strong>, </strong><strong>cell_angle_gamma</strong> (<em>cell_angle_alpha</em><em>,</em>) – lattice angles in degrees</li>
+<li><strong>space_group_name_H-M_alt</strong> (<em>string</em>) – space group name</li>
+<li><strong>space_group_IT_number</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – </li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -2726,23 +2367,19 @@ the stack will be saved.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>image_noise</strong> <span class="classifier-delimiter">:</span> <span class="classifier">default False</span></dt>
-<dd><p class="first last">If True, will add Gaussian noise to the image.</p>
-</dd>
-<dt><strong>amplitude</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, list of ints, default 1</span></dt>
-<dd><p class="first last">If amplitude is set to an int, that int will be applied to all atoms in
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>image_noise</strong> (<em>default False</em>) – If True, will add Gaussian noise to the image.</li>
+<li><strong>amplitude</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>list of ints</em><em>, </em><em>default 1</em>) – If amplitude is set to an int, that int will be applied to all atoms in
 the sublattice.
 If amplitude is set to a list, the atoms will be a distribution set by
-np.random.randint between the min and max int.</p>
-</dd>
-</dl>
+np.random.randint between the min and max int.</li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>signal</strong> <span class="classifier-delimiter">:</span> <span class="classifier">HyperSpy 2D</span></dt>
-<dd></dd>
-</dl>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>signal</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">HyperSpy 2D</p>
 </td>
 </tr>
 </tbody>
@@ -2763,23 +2400,19 @@ np.random.randint between the min and max int.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>image_noise</strong> <span class="classifier-delimiter">:</span> <span class="classifier">default False</span></dt>
-<dd><p class="first last">If True, will add Gaussian noise to the image.</p>
-</dd>
-<dt><strong>amplitude</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, list of ints, default 1</span></dt>
-<dd><p class="first last">If amplitude is set to an int, that int will be applied to all atoms in
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>image_noise</strong> (<em>default False</em>) – If True, will add Gaussian noise to the image.</li>
+<li><strong>amplitude</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>list of ints</em><em>, </em><em>default 1</em>) – If amplitude is set to an int, that int will be applied to all atoms in
 the sublattice.
 If amplitude is set to a list, the atoms will be a distribution set by
-np.random.randint between the min and max int.</p>
-</dd>
-</dl>
+np.random.randint between the min and max int.</li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>sublattice</strong> <span class="classifier-delimiter">:</span> <span class="classifier">Atomap Sublattice</span></dt>
-<dd></dd>
-</dl>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>sublattice</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Atomap Sublattice</p>
 </td>
 </tr>
 </tbody>
@@ -2810,7 +2443,7 @@ sublattice = tml.dummy_data.get_simple_cubic_sublattice(</p>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
       
-        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to TEMUL Toolkit’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="using_temul.html" class="btn btn-neutral float-left" title="Getting started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

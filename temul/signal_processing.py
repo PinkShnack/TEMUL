@@ -1152,7 +1152,7 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
     ----------
     image : HyperSpy 2D signal, default None
         The signal can be distance calibrated. If it is, set
-        scalebar_true=True
+        `scalebar_true=True`.
     cropping_area : list of 2 floats, default None
         The best method of choosing the area is by using the function
         "choose_points_on_image(image.data)". Choose two points on the
