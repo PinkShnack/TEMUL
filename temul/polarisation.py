@@ -1295,32 +1295,35 @@ def ratio_of_lattice_spacings(sublattice, zone_axis_index_A, zone_axis_index_B,
     return(ratio_signal)
 
 
-def atom_to_atom_distance_grouped_mean(
-        sublattice, zone_axis_index, aggregation_axis='y', slice_thickness=10,
-        sampling=1, units='pix'):
+def atom_to_atom_distance_grouped_mean(sublattice, zone_axis_index,
+            aggregation_axis='y', slice_thickness=10, sampling=1, units='pix'):
     '''
-    average the atom to atom distances in the chosen zone_axis_index along
-    the chosen axis ('x' or 'y').
+    Average the atom to atom distances along the chosen zone_axis_index
+    parallel to the chosen axis ('x' or 'y').
 
     Example
     -------
 
-    import numpy as np
-    from atomap.dummy_data import get_distorted_cubic_sublattice
-    import matplotlib.pyplot as plt
-    from temul.polarisation import atom_to_atom_distance_grouped_mean
+    >>> import numpy as np
+    >>> from atomap.dummy_data import get_distorted_cubic_sublattice
+    >>> import matplotlib.pyplot as plt
+    >>> from temul.polarisation import atom_to_atom_distance_grouped_mean
+    >>> sublatticeA = get_distorted_cubic_sublattice()
+    >>> sublatticeA.construct_zone_axes(atom_plane_tolerance=1)
+    >>> sublatticeA.plot()
+    >>> groupings, grouped_means = atom_to_atom_distance_grouped_mean(
+    ...     sublatticeA, 0, 'y', 40)
+    >>> plt.figure()
+    >>> plt.plot(groupings, grouped_means, 'k.')
+    >>> plt.show()
 
-    sublatticeA = get_distorted_cubic_sublattice()
-    sublatticeA.construct_zone_axes(atom_plane_tolerance=1)
-    groupings, grouped_means = atom_to_atom_distance_grouped_mean(
-            sublatticeA, 0, 'y', 40)
-    plt.figure()
-    plt.plot(groupings, grouped_means, 'k.')
+    Average parallel to the x axis instead:
 
-    groupings, grouped_means = atom_to_atom_distance_grouped_mean(
-            sublatticeA, 0, 'x', 40)
-    plt.figure()
-    plt.plot(groupings, grouped_means, 'k.')
+    >>> groupings, grouped_means = atom_to_atom_distance_grouped_mean(
+    ...     sublatticeA, 0, 'x', 40)
+    >>> plt.figure()
+    >>> plt.plot(groupings, grouped_means, 'k.')
+    >>> plt.show()
 
     '''
     zone_vector_index_list = sublattice._get_zone_vector_index_list(
