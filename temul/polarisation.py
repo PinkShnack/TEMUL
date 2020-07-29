@@ -84,7 +84,8 @@ def plot_polarisation_vectors(x, y, u, v, image,
                               headaxislength=4.5, no_axis_info=True):
     '''
     Plot the polarisation vectors. These can be found with
-    `find_polarisation_vectors()`
+    `find_polarisation_vectors()` or Atomap's
+    `get_polarization_from_second_sublattice()` function.
 
     Parameters
     ----------
@@ -435,7 +436,7 @@ def delete_atom_planes_from_sublattice(sublattice,
 # sublatticeA.plot_planes()
 
 
-def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
+def _truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
     new_cmap = colors.LinearSegmentedColormap.from_list(
         'trunc({n},{a:.2f},{b:.2f})'.format(n=cmap.name, a=minval, b=maxval),
         cmap(np.linspace(minval, maxval, n)))
@@ -539,7 +540,7 @@ def atom_deviation_from_straight_line_fit(sublattice,
 
                 atoms_on_plane_list.append([x_on_plane, y_on_plane])
                 atom_dist_diff_list.append([x_diff, y_diff])
-    #            atoms_not_on_plane_list.append([original_atom])
+                # atoms_not_on_plane_list.append([original_atom])
 
             original_atom_pos_list.extend(original_atoms_list)
             new_atom_pos_list.extend(atoms_on_plane_list)
@@ -574,7 +575,6 @@ def plot_atom_deviation_from_all_zone_axes(
         pivot='middle', angles='xy', scale_units='xy', scale=None,
         headwidth=3.0, headlength=5.0, headaxislength=4.5, monitor_dpi=96):
     '''
-
     Plot the atom deviation from a straight line fit for all zone axes
     constructed by an Atomap sublattice object.
 
@@ -858,7 +858,7 @@ def get_average_polarisation_in_regions_square(x, y, u, v, image,
                                                divide_into=4):
     '''
     Same as `get_average_polarisation_in_regions()` but works for non-square
-    images.
+    (rectangular) images.
 
     Parameters
     ----------
@@ -1003,7 +1003,7 @@ def get_strain_map(sublattice, zone_axis_index, theoretical_value,
 
     zone_vector_index_list = sublattice._get_zone_vector_index_list(
         zone_vector_list=None)
-    zone_index, zone_vector = zone_vector_index_list[zone_axis_index]
+    _, zone_vector = zone_vector_index_list[zone_axis_index]
     zone_data = sublattice.get_monolayer_distance_list_from_zone_vector(
         zone_vector)
     x_position, y_position, xy_distance = zone_data
@@ -1105,8 +1105,8 @@ def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
 
     zone_vector_index_list = sublattice._get_zone_vector_index_list(
         zone_vector_list=None)
-    zone_index, zone_vector = zone_vector_index_list[zone_axis_index]
-    x_list, y_list, dist = sublattice.get_atom_distance_list_from_zone_vector(
+    _, zone_vector = zone_vector_index_list[zone_axis_index]
+    x_list, y_list, _ = sublattice.get_atom_distance_list_from_zone_vector(
         zone_vector)
 
     angles_list_rad = []
@@ -1349,7 +1349,7 @@ def atom_to_atom_distance_grouped_mean(sublattice, zone_axis_index,
     '''
     zone_vector_index_list = sublattice._get_zone_vector_index_list(
         zone_vector_list=None)
-    zone_index, zone_vector = zone_vector_index_list[zone_axis_index]
+    _, zone_vector = zone_vector_index_list[zone_axis_index]
 
     x, y, dist = sublattice.get_atom_distance_list_from_zone_vector(
         zone_vector)
@@ -1484,12 +1484,12 @@ Divergent scale beautifying:
         color_chart_downward = np.hypot(
             arrows_downward[:, 0], arrows_downward[:, 1])
         color_cmap_downward = plt.get_cmap('Blues')
-        color_cmap_downward = truncate_colormap(color_cmap_downward, 0.0, 0.75)
+        color_cmap_downward = _truncate_colormap(color_cmap_downward, 0.0, 0.75)
 
         # upward
         color_chart_upward = np.hypot(arrows_upward[:, 0], arrows_upward[:, 1])
         color_cmap_upward = plt.get_cmap('Reds')
-        color_cmap_upward = truncate_colormap(color_cmap_upward, 0.0, 0.75)
+        color_cmap_upward = _truncate_colormap(color_cmap_upward, 0.0, 0.75)
 
         fig, ax = plt.subplots(figsize=(7, 5))
         plt.title(save_name + '_%i' % axis_number)
