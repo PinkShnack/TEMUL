@@ -8,6 +8,7 @@ from decimal import Decimal
 import colorcet as cc
 
 
+# good to have an example of getting atom_positions_A and B from sublattice
 def find_polarisation_vectors(atom_positions_A, atom_positions_B,
                               save='uv_vectors_array'):
     '''
@@ -22,10 +23,21 @@ def find_polarisation_vectors(atom_positions_A, atom_positions_B,
 
     Returns
     -------
-    two lists: u components and v components.
+    two lists: u and v components of the vector from A to B
 
     Examples
     --------
+    >>> from temul.polarisation import find_polarisation_vectors
+    >>> pos_A = [[1,2], [3,4], [5,8], [5,2]]
+    >>> pos_B = [[1,1], [5,2], [3,1], [6,2]]
+    >>> u, v = find_polarisation_vectors(pos_A, pos_B, save=None)
+    >>> print() # view the u component on the vectors
+    [0, 2, -2, 1] 
+
+    convert to the [[u1,v1], [u2,v2], [u3,v3]...] format
+
+    >>> import numpy as np
+    >>> vectors = np.asarray([u, v]).T
 
     '''
     if len(atom_positions_A) != len(atom_positions_B):
