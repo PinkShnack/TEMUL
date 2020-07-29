@@ -1,9 +1,7 @@
 
 import periodictable as pt
 
-'''
-Element and radius calibration
-'''
+# Element and radius calibration
 
 
 def get_and_return_element(element_symbol):
@@ -14,8 +12,8 @@ def get_and_return_element(element_symbol):
     Parameters
     ----------
 
-    element_symbol : string, default None
-        Symbol of an element from the periodic table of elements
+    element_symbol : string
+        Symbol of an element from the periodic table of elements e.g., "C", "H"
 
     Returns
     -------
@@ -25,9 +23,14 @@ def get_and_return_element(element_symbol):
     --------
     >>> from temul.element_tools import get_and_return_element
     >>> Moly = get_and_return_element(element_symbol='Mo')
-    >>> #print(Moly.covalent_radius)
-    >>> #print(Moly.symbol)
-    >>> #print(Moly.number)
+    >>> print(Moly.symbol)
+    Mo
+
+    >>> print(Moly.covalent_radius)
+    1.54
+
+    >>> print(Moly.number)
+    42
 
     '''
 
