@@ -1296,10 +1296,31 @@ def ratio_of_lattice_spacings(sublattice, zone_axis_index_A, zone_axis_index_B,
 
 
 def atom_to_atom_distance_grouped_mean(sublattice, zone_axis_index,
-            aggregation_axis='y', slice_thickness=10, sampling=1, units='pix'):
+                                       aggregation_axis="y",
+                                       slice_thickness=10,
+                                       sampling=None, units="pix"):
     '''
     Average the atom to atom distances along the chosen zone_axis_index
     parallel to the chosen axis ('x' or 'y').
+
+    Parameters
+    ----------
+    sublattice : Atomap Sublattice object
+    zone_axis_index : int
+        The zone axes you wish to average along.
+    aggregation_axis : string, default "y"
+        Axis parallel to which the atom to atom distances will be averaged.
+    slice_thickness : float, default 10
+        thickness of the slices used for aggregation.
+    sampling : float, default None
+        Pixel sampling of the image for calibration.
+    units : string, default "pix"
+        Units of the sampling.
+
+    Returns
+    -------
+    Slice thickness groupings and means of each grouping. Groupings can be
+    thought of as bins in a histogram of grouped means.
 
     Example
     -------
