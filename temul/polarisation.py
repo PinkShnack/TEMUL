@@ -196,7 +196,7 @@ def plot_polarisation_vectors(x, y, u, v, image,
     ...                           save=None, monitor_dpi=50)
     Warning: In future, the `normalise` keyword will be `unit_vector`.
 
-    >>> plt.close('all')
+    #>>> plt.close('all')
     '''
 
     u, v = np.array(u), np.array(v)
@@ -1337,17 +1337,21 @@ def atom_to_atom_distance_grouped_mean(sublattice, zone_axis_index,
     >>> sublatticeA.plot()
     >>> groupings, grouped_means = atom_to_atom_distance_grouped_mean(
     ...     sublatticeA, 0, 'y', 40)
-    >>> plt.figure()
-    >>> plt.plot(groupings, grouped_means, 'k.')
-    >>> plt.show()
+
+    You can then plot these as below:
+    plt.figure()
+    plt.plot(groupings, grouped_means, 'k.')
+    plt.show()
 
     Average parallel to the x axis instead:
 
     >>> groupings, grouped_means = atom_to_atom_distance_grouped_mean(
     ...     sublatticeA, 0, 'x', 40)
-    >>> plt.figure()
-    >>> plt.plot(groupings, grouped_means, 'k.')
-    >>> plt.show()
+
+    You can then plot these as below:
+    plt.figure()
+    plt.plot(groupings, grouped_means, 'k.')
+    plt.show()
 
     '''
     zone_vector_index_list = sublattice._get_zone_vector_index_list(
