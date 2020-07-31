@@ -5,20 +5,23 @@ import matplotlib.pyplot as plt
 import colorcet as cc
 
 
-# adapted from Atomap:
+# some of the below have been adapted from Atomap:
 
 def _make_simple_cubic_testdata(image_noise=False, amplitude=1,
                                 with_vacancies=False):
     """
     Parameters
     ----------
-    image_noise : default False
-        If True, will add Gaussian noise to the image.
+    image_noise : Bool, default False
+        If set to True, will add Gaussian noise to the image.
     amplitude : int, list of ints, default 1
         If amplitude is set to an int, that int will be applied to all atoms in
         the sublattice.
         If amplitude is set to a list, the atoms will be a distribution set by
         np.random.randint between the min and max int.
+    with_vacancies : Bool, default False
+        If set to True, the returned signal or sublattice will have some
+        vacancies.
     """
     simple_cubic = MakeTestData(300, 300)
     x, y = np.mgrid[10:290:20j, 10:290:20j]
@@ -45,13 +48,16 @@ def get_simple_cubic_signal(image_noise=False, amplitude=1,
 
     Parameters
     ----------
-    image_noise : default False
-        If True, will add Gaussian noise to the image.
+    image_noise : Bool, default False
+        If set to True, will add Gaussian noise to the image.
     amplitude : int, list of ints, default 1
         If amplitude is set to an int, that int will be applied to all atoms in
         the sublattice.
         If amplitude is set to a list, the atoms will be a distribution set by
         np.random.randint between the min and max int.
+    with_vacancies : Bool, default False
+        If set to True, the returned signal or sublattice will have some
+        vacancies.
 
     Returns
     -------
@@ -76,17 +82,20 @@ def get_simple_cubic_sublattice(image_noise=False, amplitude=1,
 
     Parameters
     ----------
-    image_noise : default False
-        If True, will add Gaussian noise to the image.
+    image_noise : Bool, default False
+        If set to True, will add Gaussian noise to the image.
     amplitude : int, list of ints, default 1
         If amplitude is set to an int, that int will be applied to all atoms in
         the sublattice.
         If amplitude is set to a list, the atoms will be a distribution set by
         np.random.randint between the min and max int.
+    with_vacancies : Bool, default False
+        If set to True, the returned signal or sublattice will have some
+        vacancies.
 
     Returns
     -------
-    sublattice : Atomap Sublattice
+    Atomap Sublattice object
 
     Examples
     --------
@@ -94,9 +103,17 @@ def get_simple_cubic_sublattice(image_noise=False, amplitude=1,
     >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
     >>> sublattice.plot()
 
-    If the amplitude list is:
-    sublattice = tml.dummy_data.get_simple_cubic_sublattice(amplitude=[2, 3])
-    then only amplitudes of 2 will be used, see numpy.random.randint
+    If you want different atom amplitudes, use `amplitude`
+
+    >>> sublattice = tml.dummy_data.get_simple_cubic_sublattice(
+        amplitude=[1, 5])
+
+    Do not set `amplitude` to two consecutive numbers, as only amplitudes of
+    the lower number (2 below) will be set, see numpy.random.randint for info.
+
+    >>> sublattice = tml.dummy_data.get_simple_cubic_sublattice(
+        amplitude=[2,3])
+
     """
 
     test_data = _make_simple_cubic_testdata(image_noise=image_noise,
@@ -121,17 +138,19 @@ def _make_distorted_cubic_testdata_adjustable(y_offset=2, image_noise=False):
     return test_data
 
 
-def get_distorted_cubic_signal_adjustable(y_offset=2, image_noise=False):
+def get_distorted_cubic_signal_adjustable(image_noise=False, y_offset=2):
     """Generate a test image signal of a distorted cubic atomic structure.
 
     Parameters
     ----------
     image_noise : default False
         If True, will add Gaussian noise to the image.
+    y_offset : int, default 2
+        The magnitude of distortion of the cubic signal.
 
     Returns
     -------
-    signal : HyperSpy 2D
+    HyperSpy Signal2D
 
     Examples
     --------
@@ -145,17 +164,19 @@ def get_distorted_cubic_signal_adjustable(y_offset=2, image_noise=False):
     return test_data.signal
 
 
-def get_distorted_cubic_sublattice_adjustable(y_offset=2, image_noise=False):
+def get_distorted_cubic_sublattice_adjustable(image_noise=False, y_offset=2):
     """Generate a test sublattice of a distorted cubic atomic structure.
 
     Parameters
     ----------
     image_noise : default False
         If True, will add Gaussian noise to the image.
+    y_offset : int, default 2
+        The magnitude of distortion of the cubic signal.
 
     Returns
     -------
-    sublattice : Atomap Sublattice
+    Atomap Sublattice object
 
     Examples
     --------
