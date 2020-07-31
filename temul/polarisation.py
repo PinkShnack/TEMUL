@@ -1,4 +1,4 @@
- 
+
 import numpy as np
 import scipy
 import matplotlib.pyplot as plt
@@ -326,7 +326,7 @@ def get_vector_magnitudes(u, v, sampling=None):
     >>> vector_mags = get_vector_magnitudes(u,v)
     >>> u, v = np.array(u), np.array(v) # numpy input also works
     >>> vector_mags = get_vector_magnitudes(u,v)
-    >>> sampling = 0.0321 
+    >>> sampling = 0.0321
     >>> vector_mags = get_vector_magnitudes(u,v, sampling=sampling)
 
     '''
@@ -584,7 +584,7 @@ def plot_atom_deviation_from_all_zone_axes(
     Parameters
     ----------
     sublattice : Atomap Sublattice object
-    
+
     For all other parameters see `plot_polarisation_vectors()`.
 
     Examples
@@ -639,7 +639,7 @@ def combine_atom_deviations_from_zone_axes(
     Parameters
     ----------
     sublattice : Atomap Sublattice object
-    
+
     For the remaining parameters see `plot_polarisation_vectors()`.
 
     Returns
@@ -893,7 +893,7 @@ def get_average_polarisation_in_regions_square(x, y, u, v, image,
     >>> sublatticeA.construct_zone_axes()
 
     Get and plot the original polarisation vectors of a non-square image
-    
+
     >>> image = sublatticeA.image[0:200]
     >>> x, y, u, v = combine_atom_deviations_from_zone_axes(sublatticeA,
     ...     save=None)
@@ -903,8 +903,9 @@ def get_average_polarisation_in_regions_square(x, y, u, v, image,
 
     Get and plot the new, averaged polarisation vectors for a non-square image
 
-    >>> x_new, y_new, u_new, v_new = get_average_polarisation_in_regions_square(
+    >>> coords = get_average_polarisation_in_regions_square(
     ...     x, y, u, v, image=image, divide_into=8)
+    >>> x_new, y_new, u_new, v_new = coords
     >>> plot_polarisation_vectors(x_new, y_new, u_new, v_new, image=image,
     ...                   color='r', overlay=False, monitor_dpi=50,
     ...                   title='Averaged Vector Arrows', save=None)
@@ -985,7 +986,7 @@ def get_strain_map(sublattice, zone_axis_index, theoretical_value,
     title : string, default "Strain Map"
     filename : string, optional
         If filename is set, the strain signal and plot will be saved.
-    **kwargs : Matplotlib keyword arguments passed to `imshow()`. 
+    **kwargs : Matplotlib keyword arguments passed to `imshow()`.
 
     Returns
     -------
@@ -1082,7 +1083,7 @@ def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
     title : string, default "Rotation Map"
     filename : string, optional
         If filename is set, the strain signal and plot will be saved.
-    **kwargs : Matplotlib keyword arguments passed to `imshow()`. 
+    **kwargs : Matplotlib keyword arguments passed to `imshow()`.
 
     Returns
     -------
@@ -1195,7 +1196,7 @@ def ratio_of_lattice_spacings(sublattice, zone_axis_index_A, zone_axis_index_B,
     title : string, default "Spacings Map"
     filename : string, optional
         If filename is set, the strain signal and plot will be saved.
-    **kwargs : Matplotlib keyword arguments passed to `imshow()`. 
+    **kwargs : Matplotlib keyword arguments passed to `imshow()`.
 
     Returns
     -------
@@ -1213,7 +1214,7 @@ def ratio_of_lattice_spacings(sublattice, zone_axis_index_A, zone_axis_index_B,
     >>> sublatticeA.construct_zone_axes()
     >>> ratio_map = ratio_of_lattice_spacings(sublatticeA, 0, 1)
 
-    Use `ideal_ratio_one=False` to view the direction of tetragonality 
+    Use `ideal_ratio_one=False` to view the direction of tetragonality
 
     >>> ratio_map = ratio_of_lattice_spacings(sublatticeA, 0, 1,
     ...                                       ideal_ratio_one=False)
@@ -1493,7 +1494,8 @@ Divergent scale beautifying:
         color_chart_downward = np.hypot(
             arrows_downward[:, 0], arrows_downward[:, 1])
         color_cmap_downward = plt.get_cmap('Blues')
-        color_cmap_downward = _truncate_colormap(color_cmap_downward, 0.0, 0.75)
+        color_cmap_downward = _truncate_colormap(
+            color_cmap_downward, 0.0, 0.75)
 
         # upward
         color_chart_upward = np.hypot(arrows_upward[:, 0], arrows_upward[:, 1])
