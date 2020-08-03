@@ -99,20 +99,20 @@ def get_simple_cubic_sublattice(image_noise=False, amplitude=1,
 
     Examples
     --------
-    >>> import atomap.api as am
-    >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
+    >>> from temul.dummy_data import get_simple_cubic_sublattice
+    >>> sublattice = get_simple_cubic_sublattice()
     >>> sublattice.plot()
 
     If you want different atom amplitudes, use `amplitude`
 
-    >>> sublattice = tml.dummy_data.get_simple_cubic_sublattice(
-        amplitude=[1, 5])
+    >>> sublattice = get_simple_cubic_sublattice(
+    ...     amplitude=[1, 5])
 
     Do not set `amplitude` to two consecutive numbers, as only amplitudes of
     the lower number (2 below) will be set, see numpy.random.randint for info.
 
-    >>> sublattice = tml.dummy_data.get_simple_cubic_sublattice(
-        amplitude=[2,3])
+    >>> sublattice = get_simple_cubic_sublattice(
+    ...     amplitude=[2,3])
 
     """
 
@@ -195,16 +195,12 @@ def polarisation_colorwheel_test_dataset(cmap=cc.cm.colorwheel, plot_XY=True,
     """
     Check how the arrows will be plotted on a colorwheel.
     Note that for STEM images, the y axis is reversed. This is taken into
-    account in the plot_polarisation_vectors function.
+    account in the plot_polarisation_vectors function, but not here.
 
     Parameters
     ----------
     image_noise : default False
         If True, will add Gaussian noise to the image.
-
-    Returns
-    -------
-    sublattice : Atomap Sublattice
 
     Examples
     --------
