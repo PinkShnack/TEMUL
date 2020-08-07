@@ -1746,9 +1746,14 @@ def assign_z_height_to_sublattice(sublattice,
 
 def create_dataframe_for_cif(sublattice_list, element_list):
     """
+    Outputs a dataframe from the inputted sublattice(s), which can then be
+    input to temul.io.write_cif_from_dataframe().
+
     Parameters
     ----------
-
+    sublattice_list : list of Atomap Sublattice objects
+    element_list : list of strings
+        Each string must be an element symbol from the periodic table.
     """
     dfObj = pd.DataFrame(columns=['_atom_site_label',
                                   '_atom_site_occupancy',
