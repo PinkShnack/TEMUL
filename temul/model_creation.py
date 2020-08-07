@@ -20,17 +20,14 @@ def count_element_in_pandas_df(element, dataframe):
 
     Parameters
     ----------
-
     element : string
         element symbol
-
     dataframe : pandas dataframe
         The dataframe must have column headers as elements or element
         configurations
 
     Returns
     -------
-
     Counter object
 
     Examples
@@ -70,18 +67,14 @@ def count_all_individual_elements(individual_element_list, dataframe):
 
     Parameters
     ----------
-
     individual_element_list : list
-
     dataframe : pandas dataframe
         The dataframe must have column headers as elements or element
         configurations
 
     Returns
     -------
-
-    dict object with each individual element as dict.key and their
-    count as dict.value
+    dict object with each key=individual element and value=element count
 
     Examples
     --------
@@ -114,20 +107,16 @@ def count_atoms_in_sublattice_list(sublattice_list, filename=None):
 
     Parameters
     ----------
-
     sublattice_list : list of atomap sublattice(s)
-
     filename : string, default None
         name with which the image will be saved
 
     Returns
     -------
-
     Counter object
 
     Examples
     --------
-
     >>> from temul.model_creation import count_atoms_in_sublattice_list
     >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
     >>> # import atomap.dummy_data as dummy_data
@@ -139,11 +128,11 @@ def count_atoms_in_sublattice_list(sublattice_list, filename=None):
     ...     sub1.atom_list[i].elements = 'Ti_2'
     >>> for i in range(0, len(sub2.atom_list)):
     ...     sub2.atom_list[i].elements = 'Cl_1'
-
     >>> added_atoms = count_atoms_in_sublattice_list(
     ...     sublattice_list=[sub1, sub2])
 
     Compare before and after
+
     >>> at_lat_before = dummy_data.get_simple_atom_lattice_two_sublattices()
     >>> no_added_atoms = count_atoms_in_sublattice_list(
     ...    sublattice_list=at_lat_before.sublattice_list)
@@ -183,7 +172,6 @@ def count_atoms_in_sublattice_list(sublattice_list, filename=None):
 
 def compare_count_atoms_in_sublattice_list(counter_list):
     '''
-
     Compare the count of atomap elements in two counter_lists gotten by
     count_atoms_in_sublattice_list()
 
@@ -193,23 +181,19 @@ def compare_count_atoms_in_sublattice_list(counter_list):
 
     Parameters
     ----------
-
     counter_list : list of two Counter objects
 
     Returns
     -------
-
     Boolean True if the counters are equal,
     boolean False is the counters are not equal.
 
     Examples
     --------
-
     >>> from temul.model_creation import (
     ...     count_atoms_in_sublattice_list,
     ...     compare_count_atoms_in_sublattice_list)
     >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
-    >>> # import atomap.dummy_data as dummy_data
     >>> atom_lattice = dummy_data.get_simple_atom_lattice_two_sublattices()
     >>> sub1 = atom_lattice.sublattice_list[0]
     >>> sub2 = atom_lattice.sublattice_list[1]
@@ -218,7 +202,6 @@ def compare_count_atoms_in_sublattice_list(counter_list):
     ...     sub1.atom_list[i].elements = 'Ti_2'
     >>> for i in range(0, len(sub2.atom_list)):
     ...     sub2.atom_list[i].elements = 'Cl_1'
-
     >>> added_atoms = count_atoms_in_sublattice_list(
     ...     sublattice_list=[sub1, sub2],
     ...     filename=atom_lattice.name)
@@ -231,7 +214,8 @@ def compare_count_atoms_in_sublattice_list(counter_list):
     >>> compare_count_atoms_in_sublattice_list([added_atoms, no_added_atoms])
     False
 
-    # To stop a refinement loop
+    This function can also be used to stop a refinement loop by using an
+    if break loop:
     # >>> if compare_count_atoms_in_sublattice_list(counter_list) is True:
     # >>>    break
     '''
@@ -243,16 +227,6 @@ def compare_count_atoms_in_sublattice_list(counter_list):
         raise ValueError('len(counter_list) must be 2')
 
     return True if counter0 == counter1 else False
-
-
-'''
-This is the first loop to refine the simulation:
-refining the atom_position's assigned atoms without
-changing the atom_position location. Using intensity of current positions only
-'''
-
-# aim hereis to change the elements in the sublattice to something that will
-#   make the simulation agree more with the experiment
 
 
 def get_most_common_sublattice_element(sublattice, info='element'):
@@ -308,10 +282,7 @@ def change_sublattice_atoms_via_intensity(
         darker_or_brighter,
         element_list,
         verbose=False):
-    # get the index in sublattice from the image_difference_intensity() output,
-    #   which is the image_diff_array input here.
-    # then, depending on whether the image_diff_array is for atoms that should
-    # be brighter or darker, set a new element to that sublattice atom_position
+
     '''
     Change the elements in a sublattice object to a higher or lower combined
     atomic (Z) number.
@@ -319,9 +290,13 @@ def change_sublattice_atoms_via_intensity(
     agrees with the simulated image in a realistic manner.
     See image_difference_intensity()
 
+    Get the index in sublattice from the image_difference_intensity() output,
+    which is the image_diff_array input here.
+    Then, depending on whether the image_diff_array is for atoms that should
+    be brighter or darker, set a new element to that sublattice atom_position
+
     Parameters
     ----------
-
     sublattice : Atomap Sublattice object
         the elements of this sublattice will be changed
     image_diff_array : Numpy 2D array
@@ -340,11 +315,8 @@ def change_sublattice_atoms_via_intensity(
         respectively.
     element_list : list
         list of element configurations
-
-    Returns
-    -------
-
-    n/a - changes sublattice elements inplace
+    verbose : Bool, default False
+        If set to True then atom warnings will be printed as output.
 
     Examples
     --------
@@ -434,15 +406,13 @@ def change_sublattice_atoms_via_intensity(
                 raise ValueError("You don't have any smaller atoms")
             elif new_atom_index >= len(element_list):
                 raise ValueError("You don't have any bigger atoms")
-#                new_atom = element_list[new_atom_index]
+
             try:
                 new_atom
             except NameError:
                 pass
             else:
                 sublattice.atom_list[p].elements = new_atom
-
-#            sublattice.atom_list[p].elements = new_atom
 
 
 def image_difference_intensity(sublattice,
@@ -463,7 +433,6 @@ def image_difference_intensity(sublattice,
 
     Parameters
     ----------
-
     sublattice : Atomap Sublattice object
         Elements of this sublattice will be refined
     sim_image : HyperSpy 2D signal
@@ -485,11 +454,8 @@ def image_difference_intensity(sublattice,
     change_sublattice : bool, default False
         If change_sublattice is set to True, all incorrect element assignments
         will be corrected inplace.
-
-
-    Returns
-    -------
-    Nothing - changes the elements within the sublattice object.
+    verbose : Bool, default False
+        If set to True then atom warnings will be printed as output.
 
     Example
     -------
@@ -506,6 +472,7 @@ def image_difference_intensity(sublattice,
     ...                            element_list=element_list)
 
     with some image noise and plotting the images
+
     >>> sublattice = dummy_data.get_simple_cubic_sublattice(
     ...     image_noise=True)
     >>> sim_image = dummy_data.get_simple_cubic_with_vacancies_signal()
@@ -598,9 +565,9 @@ def image_difference_intensity(sublattice,
         pass
 
     if filename is not None:
-        #        sublattice.plot()
-        #        sim_image.plot()
-        #        diff_image.plot()
+        # sublattice.plot()
+        # sim_image.plot()
+        # diff_image.plot()
         diff_sub.plot()
         plt.gca().axes.get_xaxis().set_visible(False)
         plt.gca().axes.get_yaxis().set_visible(False)
@@ -628,9 +595,6 @@ def image_difference_intensity(sublattice,
             transparent=True, frameon=False, bbox_inches='tight',
             pad_inches=None, dpi=300, labels=False)
 
-    else:
-        pass
-
 
 def image_difference_position_new_sub(sublattice_list,
                                       sim_image,
@@ -650,7 +614,6 @@ def image_difference_position_new_sub(sublattice_list,
 
     Parameters
     ----------
-
     sublattice_list : list of atomap sublattice objects
     sim_image : simulated image used for comparison with sublattice image
     pixel_threshold : int
@@ -681,11 +644,10 @@ def image_difference_position_new_sub(sublattice_list,
 
     Returns
     -------
-    Atomap sublattice object
+    Atomap Sublattice object
 
     Examples
     --------
-
     >>> from temul.model_creation import image_difference_position
     >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
     >>> # import atomap.dummy_data as dummy_data
@@ -871,6 +833,98 @@ def scaling_z_contrast(numerator_sublattice, numerator_element,
     # Make sure that the intensity_type input has been chosen. Could
     #   make this more flexible, so that 'all' could be calculated in one go
     #   simple loop should do that.
+
+    '''
+    Find new atomic coordinates by comparing experimental to simulated image.
+    Create a new sublattice to store the new atomic coordinates.
+
+    The aim is to change the sublattice elements so that the experimental image
+    agrees with the simulated image in a realistic manner.
+
+    Parameters
+    ----------
+    numerator_sublattice : Sublattice object
+        Sublattice from which the numerator intensity will be calculated
+        according to Reference [1].
+    numerator_element : string
+        Element from which the numerator atomic number will be taken
+        according to Reference [1].
+    denominator_sublattice : Sublattice object
+        Sublattice from which the denominator intensity will be calculated
+        according to Reference [1].
+    denominator_element : string
+        Element from which the denominator atomic number will be taken
+        according to Reference [1].
+    intensity_type : string
+        Determines the method used to find the sublattice intensities.
+        The available methods are "max", "mean", "min", "total" and
+        "all".
+    method : string
+        Method used to calculate the intensity of the sublattices. Options are
+        "mean" or "mode".
+    remove_background_method : string
+        Determines the method used to remove the background_sublattice
+        intensities from the image. Options are "average" and "local".
+    background_sub : Sublattice object
+        The sublattice to be used if remove_background_method is used.
+    num_points : int
+        If remove_background_method="local", num_points is the number
+        of nearest neighbour values averaged from background_sublattice.
+    percent_to_nn : float, default 0.40
+        Determines the boundary of the area surrounding each atomic
+        column, as fraction of the distance to the nearest neighbour.
+    mask_radius : float
+        Radius of the atomic column in pixels. If chosen, `percent_to_nn` must
+        be None.
+    split_symbol : string, default '_'
+        The symbols used to split the element into its name
+        and count.
+        The first string '_' is used to split the name and count
+        of the element.
+        The second string has not been implemented within this function.
+
+    Returns
+    -------
+    Four floats:
+    scaling_ratio, scaling_exponent, sublattice0_intensity_method,
+    sublattice1_intensity_method
+
+    References
+    ----------
+    .. [1] Reference: Krivanek et al. Nature 464, 10.1038/nature08879, (2010)
+
+    Examples
+    --------
+    >>> from temul.model_creation import image_difference_position
+    >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
+    >>> sublattice = dummy_data.get_simple_cubic_with_vacancies_sublattice(
+    ...                                             image_noise=True)
+    >>> sim_image = dummy_data.get_simple_cubic_signal()
+    >>> for i in range(0, len(sublattice.atom_list)):
+    ...         sublattice.atom_list[i].elements = 'Mo_1'
+    ...         sublattice.atom_list[i].z_height = '0.5'
+
+    Check without adding a new sublattice
+
+    >>> image_difference_position_new_sub(sublattice_list=[sublattice],
+    ...                           sim_image=sim_image,
+    ...                           pixel_threshold=1,
+    ...                           percent_to_nn=None,
+    ...                           mask_radius=5,
+    ...                           num_peaks=5,
+    ...                           add_sublattice=False)
+
+    Add a new sublattice
+
+    >>> sub_new = image_difference_position_new_sub(
+    ...                                   sublattice_list=[sublattice],
+    ...                                   sim_image=sim_image,
+    ...                                   pixel_threshold=10,
+    ...                                   num_peaks=5,
+    ...                                   add_sublattice=True)
+    New Atoms Found! Adding to a new sublattice
+
+    '''
     if intensity_type == 'all':
         TypeError
         print('intensity_type must be "max", "mean", or "min"')
@@ -971,17 +1025,12 @@ def auto_generate_sublattice_element_list(material_type,
     return(element_list)
 
 
-'''
 # manipulating the adatoms. Issue here is that if we just look for
-# #  vacancies, Se_1 and Mo_1, then we'd just get more Se_1.
-# #  need to find a way of "locking in" those limits..
-
+# vacancies, Se_1 and Mo_1, then we'd just get more Se_1.
+# need to find a way of "locking in" those limits..
 # Calculate the middle point and limits of the distribution for a
 # given element_list.
 # Need to add Mike's histogram display
-'''
-
-
 def find_middle_and_edge_intensities(sublattice,
                                      element_list,
                                      standard_element,
@@ -1903,18 +1952,21 @@ def image_difference_position(sublattice,
     sublattice_name : string, default 'sub_new'
         the outputted sublattice object name and sublattice.name the new
         sublattice will be given
+    inplace : Bool, default True
+        If set to True, the input `sublattice` will be changed inplace and the
+        sublattice returned. If set to False, these changes will be output only
+        to a new sublattice.
 
     Returns
     -------
-    Atomap Sublattice object, with added positions if found.
+    Atomap Sublattice object if `inplace=False`. See the `inplace` parameter
+    for details.
 
     Examples
     --------
-
     >>> from temul.model_creation import (image_difference_position,
     ...                                   change_sublattice_pseudo_inplace)
     >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
-    >>> # import atomap.dummy_data as dummy_data
     >>> sublattice = dummy_data.get_simple_cubic_with_vacancies_sublattice(
     ...                                             image_noise=True)
     >>> sim_image = dummy_data.get_simple_cubic_signal()
@@ -1937,10 +1989,6 @@ def image_difference_position(sublattice,
     400
 
     One can now sort these atom positions into elements.
-
-    Returns
-    -------
-    Atomap Sublattice object
     '''
 
     image_for_sublattice = sublattice.signal
