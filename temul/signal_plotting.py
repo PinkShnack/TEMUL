@@ -1,20 +1,16 @@
 
 import numpy as np
 import hyperspy.api as hs
-# newest version not working with hspy
+# newest version of skimage not working with hspy
 from temul.external.skimage_devel_0162.profile import profile_line
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import subplots_adjust
-# from matplotlib.text import TextPath
-
-# import datetime as DT
 import matplotlib.dates as mdates
 import scipy.spatial as spatial
 from temul.intensity_tools import get_sublattice_intensity
 
+
 # line_profile_positions = am.add_atoms_with_gui(s)
-
-
 def compare_images_line_profile_one_image(image,
                                           line_profile_positions,
                                           linewidth=1,
@@ -26,11 +22,10 @@ def compare_images_line_profile_one_image(image,
     Plots two line profiles on one image with the line profile intensities
     in a subfigure.
     See skimage PR PinkShnack for details on implementing profile_line
-    in skimage
+    in skimage: https://github.com/scikit-image/scikit-image/pull/4206
 
     Parameters
     ----------
-
     image : 2D Hyperspy signal
     line_profile_positions : list of lists
         two line profile coordinates. Use atomap's am.add_atoms_with_gui()
@@ -49,14 +44,8 @@ def compare_images_line_profile_one_image(image,
         If set, the line profile will be plotted on the image.
         The thickness of the linetrace will be linewidth*linetrace.
         Name could be improved maybe.
+    kwargs : Matplotlib keyword arguments passed to imshow()
 
-    Returns
-    -------
-
-    Examples
-    --------
-
-    Include PTO example from paper
     '''
 
     if image_sampling == 'Auto':
@@ -67,20 +56,6 @@ def compare_images_line_profile_one_image(image,
             raise ValueError("The image sampling cannot be computed."
                              "The image should either be calibrated "
                              "or the image_sampling provided")
-
-    # image.axes_manager[0].scale = 1
-    # image.axes_manager[1].scale = 1
-    # image.axes_manager[0].units = scale_unit
-    # image.axes_manager[1].units = scale_unit
-
-    # llim, tlim = cropping_area[0]
-    # rlim, blim = cropping_area[1]
-
-    # for many line plots:
-    # for i, line_profile in enumerate(line_profile_positions):
-    #     print(i)
-    #     print(line_profile)
-    #   expand
 
     x0, y0 = line_profile_positions[0]
     x1, y1 = line_profile_positions[1]
@@ -150,32 +125,23 @@ def compare_images_line_profile_one_image(image,
     ax2.set_xlabel('Distance ({})'.format(scale_units))
     # ax2.set_ylim(max(profile_y_1), min(profile_y_1))
     ax2.legend(fancybox=True, loc='upper right')
-    # ax2.yaxis.set_ticks([])
-    # ax2.xaxis.set_ticks([])
-    # ax2.axes.get_yaxis().set_visible(False)
     plt.tight_layout()
     plt.show()
 
-    # plt.savefig(fname='Line Profile Example.png',
-    #             transparent=True, frameon=False, bbox_inches='tight',
-    #             pad_inches=None, dpi=300)
-
 
 # line_profile_positions = am.add_atoms_with_gui(s)
-
-
 def compare_images_line_profile_two_images(imageA, imageB,
                                            line_profile_positions,
                                            reduce_func=np.mean,
+                                           filename=None,
                                            linewidth=1,
                                            image_sampling='auto',
                                            scale_units='nm',
                                            crop_offset=20,
-                                           title='Intensity Profile',
+                                           title="Intensity Profile",
                                            marker_A='v',
                                            marker_B='o',
                                            arrow_markersize=10,
-                                           filename=None,
                                            figsize=(10, 3),
                                            imageB_intensity_offset=0):
     '''
@@ -186,12 +152,16 @@ def compare_images_line_profile_two_images(imageA, imageB,
 
     Parameters
     ----------
-
     imageA, imageB : 2D Hyperspy signal
     line_profile_positions : list of lists
         one line profile coordinate. Use atomap's am.add_atoms_with_gui()
         function to get these. The two dots will trace the line profile.
         See Examples below for example.
+    filename : string, default None
+        If this is set to a name (string), the image will be saved with that
+        name.
+    reduce_func : ufunc, default np.mean
+        See skimage's `profile_line` reduce_func parameter for details.
     linewidth : int, default 1
         see profile_line for parameter details.
     image_sampling :  float, default 'auto'
@@ -201,12 +171,13 @@ def compare_images_line_profile_two_images(imageA, imageB,
     crop_offset : int, default 20
         number of pixels away from the `line_profile_positions` coordinates the
         image crop will be taken.
-    filename : string, default None
-        If this is set to a name (string), the image will be saved with that
-        name.
-
-    Returns
-    -------
+    title : string, default "Intensity Profile"
+        Title of the plot
+    marker_A, marker_B : Matplotlib marker
+    arrow_markersize : Matplotlib markersize
+    figsize : see Matplotlib for details
+    imageB_intensity_offset : float, default 0
+        Adds a y axis offset for comparison purposes.
 
     Examples
     --------
@@ -221,7 +192,8 @@ def compare_images_line_profile_two_images(imageA, imageB,
     ...     imageA, imageB, line_profile_positions,
     ...     linewidth=3, image_sampling=0.012, crop_offset=30)
 
-    To use the new skimage functionality try `reduce_func`
+    To use the new skimage functionality try the `reduce_func` parameter:
+
     >>> import numpy as np
     >>> reduce_func = np.sum # can be any ufunc!
     >>> compare_images_line_profile_two_images(
@@ -233,14 +205,17 @@ def compare_images_line_profile_two_images(imageA, imageB,
     ...     imageA, imageB, line_profile_positions, reduce_func=reduce_func,
     ...     linewidth=3, image_sampling=0.012, crop_offset=30)
 
+    Offseting the y axis of the second image can sometimes be useful:
+
     >>> import temul.example_data as example_data
     >>> imageA = example_data.load_Se_implanted_MoS2_data()
-    >>> imageB = example_data.load_Se_implanted_MoS2_data()
+    >>> imageA.data = imageA.data/np.max(imageA.data)
+    >>> imageB = imageA.deepcopy()
     >>> line_profile_positions = [[301.42, 318.9], [535.92, 500.82]]
     >>> compare_images_line_profile_two_images(
-    ...     imageA, imageB, line_profile_positions, reduce_func=None)
+    ...     imageA, imageB, line_profile_positions, reduce_func=None,
+    ...     imageB_intensity_offset=0.1)
 
-    Include PTO example from paper
     '''
 
     if isinstance(image_sampling, str):
@@ -265,8 +240,8 @@ def compare_images_line_profile_two_images(imageA, imageB,
     profile_x_exp = np.arange(0, len(profile_y_exp), 1)
     profile_x_exp = profile_x_exp * image_sampling
 
-    crop_left, crop_right = x0 - crop_offset, x1 + crop_offset
-    crop_top, crop_bot = y0 - crop_offset, y1 + crop_offset
+    crop_left, crop_right, crop_top, crop_bot = get_cropping_area(
+        line_profile_positions, crop_offset)
 
     crop_left *= imageA.axes_manager[-1].scale
     crop_right *= imageA.axes_manager[-1].scale
@@ -338,7 +313,12 @@ def compare_images_line_profile_two_images(imageA, imageB,
 
 
 def get_cropping_area(line_profile_positions, crop_offset=20):
-
+    '''
+    By inputting the top-left and bottom-right coordinates of a rectangle, this
+    function will add a border buffer (`crop_offset`) which can be used for
+    cropping of regions in a plot.
+    See `compare_images_line_profile_two_images` for use-case
+    '''
     x0, y0 = line_profile_positions[0]
     x1, y1 = line_profile_positions[1]
 
@@ -352,27 +332,31 @@ def plot_atom_energies(sublattice_list, image=None, vac_or_implants=None,
                        elements_dict_other=None, filename='energy_map',
                        cmap='plasma', levels=20, colorbar_fontsize=16):
     '''
-    vac_or_implants options are 'implants' and 'vac'
+    Used to plot the energies of atomic column configurations above 0 as
+    calculated by DFT.
+
+
+    Parameters
+    ----------
+    sublattice_list : list of Atomap Sublattices
+    image : array-like, default None
+        The first sublattice image is used if `image=None`.
+    vac_or_implants :string, default None
+        `vac_or_implants` options are "implants" and "vac".
+    elements_dict_other : dict, default None
+        A dictionary of {element_config1: energy1, element_config2: energy2, }
+        The default is Se antisites in monolayer MoS2.
+    filename : string, default "energy_map"
+        Name with which to save the plot.
+    cmap : Matplotlib colormap, default "plasma"
+    levels : int, default 20
+        Number of Matplotlib contour map levels.
+    colorbar_fontsize : int, default 16
 
     Returns
     -------
-    the x and y coordinates of the atom positions and the
+    The x and y coordinates of the atom positions and the
     atom energy.
-
-    import os
-    import atomap.api as am
-    from temul.signal_plotting import plot_atom_energies
-     Make a test dataset
-    base_directory = (
-        'C:/Users/Eoghan.OConnell/Documents/Documents/Eoghan UL/PHD'
-        '/Thesis_Eoghan/Images/Results/Chapter 1/Part 1 - Se/'
-        'Spectroscopy/EELS/Core Loss/Image simulations/'
-        '020_EELS-SI-During_HAADF')
-    os.chdir(base_directory)
-    atom_lattice = am.load_atom_lattice_from_hdf5(
-        'Atom_Lattice_Refiner_max.hdf5')
-    x,y,energy = plot_atom_energies(sublattice_list=[
-        atom_lattice.sublattice_list[1]], vac_or_implants='implants')
 
     '''
 
@@ -419,7 +403,7 @@ def plot_atom_energies(sublattice_list, image=None, vac_or_implants=None,
             y.append(atom.pixel_y)
             energy.append(atom.atom_energy)
 
-#            print(atom.elements, atom.atom_energy)
+    # print(atom.elements, atom.atom_energy)
 
     levels = np.arange(-0.5, np.max(energy), np.max(energy) / levels)
 
