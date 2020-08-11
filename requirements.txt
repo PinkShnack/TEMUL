@@ -11,3 +11,4 @@ PyCifRW==4.3
 pandas==0.24.2 
 sphinx_rtd_theme
 numpydoc
+matplotlib-scalebar
