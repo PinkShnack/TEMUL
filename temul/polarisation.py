@@ -270,9 +270,8 @@ def plot_polarisation_vectors(x, y, u, v, image,
         colorwheel = np.arctan2(-v, u)
         if degrees:
             colorwheel = colorwheel * (180 / np.pi)
-            wheel_label = "Angle (degrees)"
-        else:
-            wheel_label = "Angle (rads)"
+
+        bar_label = angle_label(degrees=degrees)
 
         if cmap is None:
             cmap = cc.cm.colorwheel
@@ -282,7 +281,7 @@ def plot_polarisation_vectors(x, y, u, v, image,
             pivot=pivot, angles=angles, scale_units=scale_units,
             scale=scale, headwidth=headwidth,
             headlength=headlength, headaxislength=headaxislength)
-        plt.colorbar(Q, label=wheel_label)
+        plt.colorbar(Q, label=bar_label)
 
     elif plot_style == 'contour':
         if cmap is None:
@@ -993,7 +992,7 @@ def get_average_polarisation_in_regions_square(x, y, u, v, image,
 def get_strain_map(sublattice, zone_axis_index, theoretical_value,
                    sampling=None, units='pix', vmin=None, vmax=None,
                    cmap='inferno', title='Strain Map', filename=None,
-                   **kwargs):
+                   return_x_y_z=False, **kwargs):
     '''
     Calculate the strain across a zone axis of a sublattice.
 
@@ -1014,6 +1013,9 @@ def get_strain_map(sublattice, zone_axis_index, theoretical_value,
     title : string, default "Strain Map"
     filename : string, optional
         If filename is set, the strain signal and plot will be saved.
+    return_x_y_z : Bool, default False
+        If this is set to True, the `strain_signal` (map), as well as separate
+        lists of the x, y, and strain values.
     **kwargs : Matplotlib keyword arguments passed to `imshow()`.
 
     Returns
@@ -1079,15 +1081,19 @@ def get_strain_map(sublattice, zone_axis_index, theoretical_value,
         strain_signal.save("{}_{}_{}.hspy".format(
             filename, title, zone_axis_index))
 
-    return(strain_signal)
+    if return_x_y_z:
+        return(strain_signal, x_position, y_position, xy_distance)
+    else:
+        return(strain_signal)
 
 
 # Improvement would be to distinguish between horizontal angle e.g., 5 and 175
 # degrees. Also 'deg' and 'rad' should be degrees=True/False
 def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
-                            angle_type='deg', sampling=None, units='pix',
+                            degrees=False, sampling=None, units='pix',
                             vmin=None, vmax=None, cmap='inferno',
-                            title='Rotation Map', filename=None, **kwargs):
+                            title='Rotation Map', filename=None,
+                            return_x_y_z=False, **kwargs):
     '''
     Calculate a map of the angles between each atom along the atom planes of a
     zone axis.
@@ -1101,8 +1107,9 @@ def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
     angle_offset : float, optional
         The angle which can be considered zero degrees. Useful when the atomic
         planes are at an angle.
-    angle_type : string, default "deg"
-        Set `angle_type="deg"` for degrees and `angle_type="rad"` for radians.
+    degrees : Bool, default False
+        Setting to False will return angle values in radian. Setting to True
+        will return angle values in degrees.
     sampling : float, default None
         Pixel sampling of the image for calibration.
     units : string, default "pix"
@@ -1111,6 +1118,9 @@ def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
     title : string, default "Rotation Map"
     filename : string, optional
         If filename is set, the strain signal and plot will be saved.
+    return_x_y_z : Bool, default False
+        If this is set to True, the rotation_signal (map), as well as separate
+        lists of the x, y, and angle values.
     **kwargs : Matplotlib keyword arguments passed to `imshow()`.
 
     Returns
@@ -1128,7 +1138,8 @@ def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
     >>> sublatticeA.construct_zone_axes()
     >>> rotation_map = rotation_of_atom_planes(sublatticeA, 2)
 
-    Use `angle_offset` to choose what the zero degrees should be
+    Use `angle_offset` to effectively change the angle of the horizontal axis
+    when calculating angles:
 
     >>> rotation_map = rotation_of_atom_planes(sublatticeA, 2,
     ...                                        angle_offset=-50)
@@ -1138,25 +1149,32 @@ def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
     zone_vector_index_list = sublattice._get_zone_vector_index_list(
         zone_vector_list=None)
     _, zone_vector = zone_vector_index_list[zone_axis_index]
-    x_list, y_list, _ = sublattice.get_atom_distance_list_from_zone_vector(
-        zone_vector)
 
     angles_list_rad = []
+    x_list, y_list = [], []
     for atom_plane in sublattice.atom_plane_list:
         if atom_plane.zone_vector == zone_vector:
+            pos_distance = atom_plane.position_distance_to_neighbor()
+            x_half_pos = pos_distance[:, 0]
+            y_half_pos = pos_distance[:, 1]
             angle = atom_plane.get_angle_to_horizontal_axis()
+
+            x_list.append(x_half_pos)
+            y_list.append(y_half_pos)
             angles_list_rad.append(angle)
 
-    # flatten the list
+    # flatten the lists
+    x_list = [i for sublist in x_list for i in sublist]
+    y_list = [i for sublist in y_list for i in sublist]
     angles_list_rad = [i for sublist in angles_list_rad for i in sublist]
 
-    if 'deg' in angle_type:
+    if degrees:
         angles_list_deg = [np.degrees(i) for i in angles_list_rad]
         angles_list = angles_list_deg
-    elif 'rad' in angle_type:
+    elif not degrees:
         angles_list = angles_list_rad
-    else:
-        raise ValueError("angle_type must be 'deg' or 'rad'.")
+
+    bar_label = angle_label(degrees=degrees)
 
     if angle_offset is not None:
         angles_list = [i + angle_offset for i in angles_list]
@@ -1183,7 +1201,7 @@ def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
     cbar.set_array(angles_list)
     cbar.set_clim(vmin, vmax)
     plt.colorbar(cbar, fraction=0.046, pad=0.04,
-                 label="Rotation of Atom Planes ({})".format(angle_type))
+                 label=bar_label)
     plt.tight_layout()
 
     if filename is not None:
@@ -1194,7 +1212,10 @@ def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
         rotation_signal.save("{}_{}_{}.hspy".format(
             filename, title, zone_axis_index))
 
-    return(rotation_signal)
+    if return_x_y_z:
+        return(rotation_signal, x_list, y_list, angles_list)
+    else:
+        return(rotation_signal)
 
 
 def ratio_of_lattice_spacings(sublattice, zone_axis_index_A, zone_axis_index_B,
@@ -1325,6 +1346,13 @@ def ratio_of_lattice_spacings(sublattice, zone_axis_index_A, zone_axis_index_B,
             filename, title, zone_axis_index_A, zone_axis_index_B))
 
     return(ratio_signal)
+
+
+def angle_label(degrees=False):
+    if degrees:
+        return("Angle (deg)")
+    else:
+        return("Angle (rad)")
 
 
 def atom_to_atom_distance_grouped_mean(sublattice, zone_axis_index,
