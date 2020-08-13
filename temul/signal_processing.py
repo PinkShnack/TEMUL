@@ -478,6 +478,19 @@ Image Comparison
 
 
 def mse(imageA, imageB):
+    '''
+    Measure the mean squared error between two images of the same shape.
+
+    Parameters
+    ----------
+    imageA, imageB : array-like
+        The images must be the same shape.
+    
+    Returns
+    -------
+    Mean squared error
+
+    '''
     err = np.sum((imageA.astype("float") - imageB.astype("float")) ** 2)
     err /= float(imageA.shape[0] * imageA.shape[1])
     return err
@@ -490,28 +503,25 @@ def measure_image_errors(imageA, imageB, filename=None):
 
     Parameters
     ----------
-
     imageA, imageB : 2D NumPy array, default None
         Two images between which to measure mse and ssm
-    filename : string, default None
+    filename : str, default None
         name with which the image will be saved
 
     Returns
     -------
-
     mse_number, ssm_number : float
-    returned subtracted image is imageA - imageB
 
     Example
     -------
-
     >>> import atomap.api as am
     >>> imageA = am_dev.dummy_data.get_simple_cubic_signal().data
     >>> imageB = am_dev.dummy_data.get_simple_cubic_with_vacancies_signal().data
     >>> mse_number, ssm_number = measure_image_errors(imageA, imageB,
     ...                                               filename=None)
 
-    Showing the ideal case of both images being exactly equal
+    Showing the ideal case of both images being exactly equal:
+
     >>> imageA = am_dev.dummy_data.get_simple_cubic_signal().data
     >>> imageB = am_dev.dummy_data.get_simple_cubic_signal().data
     >>> mse_number, ssm_number = measure_image_errors(imageA, imageA,
@@ -561,34 +571,21 @@ def measure_image_errors(imageA, imageB, filename=None):
     return(mse_number, ssm_number)
 
 
-# imageA = am_dev.dummy_data.get_simple_cubic_signal().data
-# imageB = am_dev.dummy_data.get_simple_cubic_with_vacancies_signal().data
-# mse_number, ssm_number = measure_image_errors(imageA, imageB,
-
-
 def load_and_compare_images(imageA, imageB, filename=None):
     '''
-    Load two images and compare their mean standard error and structural
-    simularity index.
+    Load two images with hyperspy and compare their mean square error and
+    structural simularity index.
 
     Parameters
     ----------
-
-    imageA, imageB : string
+    imageA, imageB : str, path to file
         filename of the images to be loaded and compared
-    filename : string, default None
+    filename : str, default None
         name with which the image will be saved
 
     Returns
     -------
-    mean standard error and structural simularity index
-
-    Examples
-    --------
-    # >>> # has to be a name for hyperspy to open with hs.load!!!
-    # >>> imageA = am_dev.dummy_data.get_simple_cubic_signal(image_noise=True)
-    # >>> imageB = am_dev.dummy_data.get_simple_cubic_signal()
-    # >>> load_and_compare_images(imageA, imageB, filename=None)
+    Two floats (mean standard error and structural simularity index)
 
     '''
     imageA = hs.load(imageA)
@@ -603,37 +600,65 @@ def load_and_compare_images(imageA, imageB, filename=None):
 
 
 def compare_two_image_and_create_filtered_image(
-        image_to_filter,
-        reference_image,
-        delta_image_filter,
-        cropping_area,
-        separation,
-        filename=None,
-        max_sigma=6,
-        percent_to_nn=0.4,
-        mask_radius=None,
-        refine=False):
+        image_to_filter, reference_image, delta_image_filter, max_sigma=6,
+        cropping_area=[[0,0], [50,50]], separation=8, filename=None,
+        percent_to_nn=0.4, mask_radius=None, refine=False):
     '''
     Gaussian blur an image for comparison with a reference image.
     Good for finding the best gaussian blur for a simulation by
     comparing to an experimental image.
-    See measure_image_errors() and load_and_compare_images()
+    See measure_image_errors() and load_and_compare_images().
+
+    Parameters
+    ----------
+    image_to_filter : Hyperspy Signal2D
+        Image you wish to automatically filter.
+    reference_image : Hyperspy Signal2D
+        Image with which `image_to_filter` is compared.
+    delta_image_filter : float
+        The increment of the Gaussian sigma used.
+    max_sigma : float, default 6
+        The largest (limiting) Gaussian sigma used.
+    cropping_area : list of 2 floats, default [[0,0], [50,50]]
+        The best method of choosing the area is by using the function
+        "choose_points_on_image(image.data)". Choose two points on the
+        image. First point is top left of area, second point is bottom right.
+    separation : int, default 8
+        Pixel separation between atoms as used by Atomap.
+    filename : str, default None
+        If set to a string, the plotted and filtered image will be saved.
+    percent_to_nn : float, default 0.4
+        Determines the boundary of the area surrounding each atomic
+        column, as fraction of the distance to the nearest neighbour.
+    mask_radius : int, default None
+        Radius in pixels of the mask. If set, then set `percent_to_nn=None`.
+    refine : Bool, default False
+        If set to True, the `calibrate_intensity_distance_with_sublattice_roi`
+        calibration will refine the atom positions for each calibration. May
+        make the function very slow depending on the size of `image_to_filter`
+        and `cropping_area`.
+
+    Returns
+    -------
+    Hyperspy Signal2D (filtered image) and float (ideal Gaussian sigma).
 
     Examples
     --------
-
+    >>> from scipy.ndimage.filters import gaussian_filter
+    >>> import temul.example_data as example_data
     >>> from temul.signal_processing import (
     ...     compare_two_image_and_create_filtered_image)
-    >>> import temul.example_data as example_data
-    >>> experiment = example_data.load_Se_implanted_MoS2_data()
-
-    # get a simulation from desktop
-    #>>> simulation = example_data.load_Se_implanted_MoS2_simulation()
-    #>>> filtered_image = compare_two_image_and_create_filtered_image(
-    #...     simulation, experiment, 0.5, cropping_area=[[5,5], [20, 20]],
-    #...     separation=15, mask_radius=4, percent_to_nn=None)
+    >>> experiment = example_data.load_Se_implanted_MoS2_data() # example
+    >>> experiment.data = gaussian_filter(experiment.data, sigma=4)
+    >>> simulation = example_data.load_Se_implanted_MoS2_data()
+    >>> filt_image, ideal_sigma = compare_two_image_and_create_filtered_image(
+    ...     simulation, experiment, 0.25, cropping_area=[[5,5], [200, 200]],
+    ...     separation=11, mask_radius=4, percent_to_nn=None, max_sigma=10)
+    >>> ideal_sigma
+    3.9
 
     '''
+
     image_to_filter_data = image_to_filter.data
     reference_image_data = reference_image.data
 
@@ -646,7 +671,7 @@ def compare_two_image_and_create_filtered_image(
                                                         sigma=i)
         temp_image_filtered = hs.signals.Signal2D(
             image_to_filter_data_filtered)
-#        temp_image_filtered.plot()
+
         calibrate_intensity_distance_with_sublattice_roi(
             image=temp_image_filtered,
             cropping_area=cropping_area,
@@ -695,41 +720,56 @@ def compare_two_image_and_create_filtered_image(
     #     refine=refine,
     #     filename=None)
 
-    if filename is not None:
+    plt.figure()
+    plt.scatter(x=ssm_indexing, y=ssm, label='ssm',
+                marker='x', color='magenta')
+    plt.scatter(x=mse_indexing, y=mse, label='mse', marker='o', color='b')
+    plt.scatter(x=ideal_sigma, y=ideal_sigma_y_coord, label='\u03C3 = ' +
+                str(round(ideal_sigma, 2)), marker='D', color='k')
+    plt.title("MSE & SSM vs. Gauss Blur", fontsize=20)
+    plt.xlabel("\u03C3 (Gaussian Blur)", fontsize=16)
+    plt.ylabel("MSE (0) and SSM (1)", fontsize=16)
+    plt.legend()
+    plt.tight_layout
+    plt.show()
 
-        plt.figure()
-        plt.scatter(x=ssm_indexing, y=ssm, label='ssm',
-                    marker='x', color='magenta')
-        plt.scatter(x=mse_indexing, y=mse, label='mse', marker='o', color='b')
-        plt.scatter(x=ideal_sigma, y=ideal_sigma_y_coord, label='\u03C3 = ' +
-                    str(round(ideal_sigma, 2)), marker='D', color='k')
-        plt.title("MSE & SSM vs. Gauss Blur " + filename, fontsize=20)
-        plt.xlabel("\u03C3 (Gaussian Blur)", fontsize=16)
-        plt.ylabel("MSE (0) and SSM (1)", fontsize=16)
-        plt.legend()
-        plt.tight_layout
-        plt.show()
+    if filename is not None:
         plt.savefig(fname='MSE_SSM_gaussian_blur_' + filename + '.png',
                     transparent=True, frameon=False, bbox_inches='tight',
                     pad_inches=None, dpi=300, labels=False)
 
-    return(image_filtered)
+    return(image_filtered, ideal_sigma)
 
 
-'''
-Image Filtering
-'''
-
-
-def make_gaussian(size, fwhm, center):
+def make_gaussian(size, fwhm, center=None):
     """ Make a square gaussian kernel.
 
-    size is the length of a side of the square
-    fwhm is full-width-half-maximum, which
-    can be thought of as an effective radius.
+    Parameters
+    ----------
+    size : int
+        The length of a side of the square
+    fwhm : float
+        The full-width-half-maximum of the Gaussian, which can be thought of as
+        an effective radius.
+    center : array, default None
+        The location of the center of the Gaussian. None will set it to the
+        center of the array.
+
+    Returns
+    -------
+    2D Numpy array
+
+    Examples
+    --------
+    >>> from temul.signal_processing import make_gaussian
+    >>> import matplotlib.pyplot as plt
+    >>> array = make_gaussian(15, 5)
+    >>> plt.figure()
+    >>> plt.imshow(array)
+    >>> plt.show()
+
     """
 
-    arr = []  # output numpy array
     x = np.arange(0, size, 1, float)
     y = x[:, np.newaxis]
 
@@ -739,14 +779,59 @@ def make_gaussian(size, fwhm, center):
         x0 = center[0]
         y0 = center[1]
 
-    arr.append(np.exp(-4 * np.log(2) * ((x - x0)**2 + (y - y0)**2) / fwhm**2))
+    arr = np.array((np.exp(-4 * np.log(2) * ((x - x0)**2 + \
+                    (y - y0)**2) / fwhm**2)))
 
     return(arr)
 
 
-def double_gaussian_fft_filter(image, filename,
-                               d_inner, d_outer, real_space_sampling,
-                               delta=0.05, units='nm'):
+def double_gaussian_fft_filter(image, d_inner, d_outer, delta=0.05,
+                               sampling=None, units=None, filename=None):
+    '''
+    Filter an image with an double Gaussian (band-pass) filter. The function
+    will automatically find the optimum magnitude of the negative inner
+    Gaussian.
+
+    Parameters
+    ----------
+    image : Hyperspy Signal2D
+        Image to be filtered.
+    d_inner : float
+        Inner diameter of the FFT spots. Effectively the diameter of the
+        negative Gaussian.
+    d_outer : float
+        Outer diameter of the FFT spots. Effectively the diameter of the
+        positive Gaussian.
+    delta : float, default 0.05
+        Increment of the automatic filtering with the negative Gaussian.
+        Setting this very small will slow down the function.
+    sampling : float
+        image sampling in units/pixel. If set to None, the image.axes_manager
+        will be used.
+    units : str
+        Real space units. `sampling` should then be the value of
+        these units/pixel. If set to None, the image.axes_manager
+        will be used.
+    filename : str, default None
+        If set to a string, the following files will be plotted and saved:
+        negative Gaussian optimumisation, negative Gaussian, positive Gaussian,
+        double Gaussian, FFT and double Gaussian convolution, filtered image,
+        filtered variables table.
+    
+    Returns
+    -------
+    Hyperspy Signal2D
+
+    Examples
+    --------
+    >>> import temul.example_data as example_data
+    >>> from temul.signal_processing import (
+    ...     double_gaussian_fft_filter)
+    >>> experiment = example_data.load_Se_implanted_MoS2_data()
+    >>> filtered_image = double_gaussian_fft_filter(experiment, 7.48, 14.96)
+
+    '''
+
     # Folder: G:/SuperStem visit/Feb 2019 data/2019_02_18_QMR_S1574_MoS2-
     # Se-15eV
 
@@ -770,7 +855,19 @@ def double_gaussian_fft_filter(image, filename,
     MoS2: d_1 = 7.7, d_2 = 14
     '''
 
-    physical_image_size = real_space_sampling * len(image.data)
+    if sampling is None:
+        sampling = image.axes_manager[-1].scale
+    else:
+        image.axes_manager[0].scale = sampling
+        image.axes_manager[1].scale = sampling
+
+    if units is None:
+        units = image.axes_manager[-1].units
+    else:
+        image.axes_manager[0].units = units
+        image.axes_manager[1].units = units
+
+    physical_image_size = sampling * len(image.data)
     reciprocal_sampling = 1 / physical_image_size
 
     # Get radius
@@ -782,11 +879,6 @@ def double_gaussian_fft_filter(image, filename,
     fwhm_neg_gaus = reciprocal_d_inner_pix
     fwhm_pos_gaus = reciprocal_d_outer_pix
 
-    # s = normalize_signal(subtract_average_background(s))
-    image.axes_manager[0].scale = real_space_sampling
-    image.axes_manager[1].scale = real_space_sampling
-    image.axes_manager[0].units = units
-    image.axes_manager[1].units = units
     # image.save('Calibrated Image Data', overwrite=True)
 
     #    image.plot()
@@ -897,10 +989,10 @@ def double_gaussian_fft_filter(image, filename,
     '''how to change to just the 2 dimensiuons'''
     DGFilter = DGFilter_extra_dimension.sum('extra_dimension')
 
-    DGFilter.axes_manager[0].scale = reciprocal_sampling
-    DGFilter.axes_manager[1].scale = reciprocal_sampling
-    DGFilter.axes_manager[0].units = '1/' + units
-    DGFilter.axes_manager[1].units = '1/' + units
+    #DGFilter.axes_manager[0].scale = reciprocal_sampling
+    #DGFilter.axes_manager[1].scale = reciprocal_sampling
+    #DGFilter.axes_manager[0].units = '1/' + units
+    #DGFilter.axes_manager[1].units = '1/' + units
 
     # Multiply the 2-D Gaussian with the FFT. This filters the FFT.
     convolution = image_fft * DGFilter
@@ -910,8 +1002,8 @@ def double_gaussian_fft_filter(image, filename,
     image_filtered = convolution.ifft()
     # s = normalize_signal(subtract_average_background(convolution_ifft))
 
-    image_filtered.axes_manager[0].scale = real_space_sampling
-    image_filtered.axes_manager[1].scale = real_space_sampling
+    image_filtered.axes_manager[0].scale = sampling
+    image_filtered.axes_manager[1].scale = sampling
     image_filtered.axes_manager[0].units = units
     image_filtered.axes_manager[1].units = units
 
@@ -998,7 +1090,7 @@ def double_gaussian_fft_filter(image, filename,
         Filtering_Variables['Image Size (nm)'] = [physical_image_size]
         Filtering_Variables['Image Size (pix)'] = [len(image.data)]
         Filtering_Variables['Real Space Sampling (nm/pix)'] = [
-            real_space_sampling]
+            sampling]
         Filtering_Variables['Reciprocal Space Sampling (1/nm/pix)'] = [
             reciprocal_sampling]
         Filtering_Variables['First Diffraction Ring (Diameter) (1/nm)'] = [
@@ -1150,10 +1242,10 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
 
     Parameters
     ----------
-    image : HyperSpy 2D signal, default None
+    image : HyperSpy 2D signal
         The signal can be distance calibrated. If it is, set
         `scalebar_true=True`.
-    cropping_area : list of 2 floats, default None
+    cropping_area : list of 2 floats
         The best method of choosing the area is by using the function
         "choose_points_on_image(image.data)". Choose two points on the
         image. First point is top left of area, second point is bottom right.
@@ -1267,7 +1359,7 @@ def toggle_atom_refine_position_automatically(sublattice,
         The upper end of the intensity range is defined as
         max_cut_off_percent * modal value of max intensity list of
         sublattice.
-    range_type : string, default 'internal'
+    range_type : str, default 'internal'
         'internal' provides the 'refine_position' attribute for each
         Atom Position as True if the intensity of that Atom Position
         lies between the lower and upper limits defined by min_cut_off_percent
@@ -1592,7 +1684,7 @@ def choose_mask_coordinates(image, norm='log'):
     Parameters
     ----------
     image : Hyperspy 2D Signal
-    norm : string, default 'log'
+    norm : str, default 'log'
         How to scale the intensity value for the displayed image.
         Options are 'linear' and 'log'
 
@@ -1633,7 +1725,7 @@ def get_masked_ifft(image, mask_coords, mask_radius=10, space="real",
         two simple coordinates.
     mask_radius : int, default 10
         Radius in pixels of the mask.
-    space : string, default "real"
+    space : str, default "real"
         If the input image is a Fourier transform already, set space="fourier"
     keep_masked_area : Bool, default True
         If True, this will set the mask at the mask_coords.
