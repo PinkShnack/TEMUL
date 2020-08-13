@@ -510,22 +510,21 @@ def measure_image_errors(imageA, imageB, filename=None):
 
     Returns
     -------
-    mse_number, ssm_number : float
+    two floats (mse_number, ssm_number)
 
     Example
     -------
-    >>> import atomap.api as am
-    >>> imageA = am_dev.dummy_data.get_simple_cubic_signal().data
-    >>> imageB = am_dev.dummy_data.get_simple_cubic_with_vacancies_signal().data
-    >>> mse_number, ssm_number = measure_image_errors(imageA, imageB,
-    ...                                               filename=None)
+    >>> from temul.dummy_data import get_simple_cubic_signal
+    >>> imageA = get_simple_cubic_signal().data
+    >>> imageB = get_simple_cubic_signal(image_noise=True).data
+    >>> mse_number, ssm_number = measure_image_errors(imageA, imageB)
 
     Showing the ideal case of both images being exactly equal:
 
-    >>> imageA = am_dev.dummy_data.get_simple_cubic_signal().data
-    >>> imageB = am_dev.dummy_data.get_simple_cubic_signal().data
-    >>> mse_number, ssm_number = measure_image_errors(imageA, imageA,
-    ...                                               filename=None)
+    >>> imageB = imageA
+    >>> mse_number, ssm_number = measure_image_errors(imageA, imageA)
+    >>> print("MSE: {} and SSM: {}".format(mse_number, ssm_number))
+    MSE: 0.0 and SSM: 1.0
 
     '''
     if imageA.dtype is not imageB.dtype:
@@ -804,7 +803,8 @@ def double_gaussian_fft_filter(image, d_inner, d_outer, delta=0.05,
         positive Gaussian.
     delta : float, default 0.05
         Increment of the automatic filtering with the negative Gaussian.
-        Setting this very small will slow down the function.
+        Setting this very small will slow down the function, but too high will
+        not allow the function to calculate negative Gaussians near zero.
     sampling : float
         image sampling in units/pixel. If set to None, the image.axes_manager
         will be used.
@@ -828,7 +828,9 @@ def double_gaussian_fft_filter(image, d_inner, d_outer, delta=0.05,
     >>> from temul.signal_processing import (
     ...     double_gaussian_fft_filter)
     >>> experiment = example_data.load_Se_implanted_MoS2_data()
+    >>> experiment.plot()
     >>> filtered_image = double_gaussian_fft_filter(experiment, 7.48, 14.96)
+    >>> filtered_image.plot()
 
     '''
 
@@ -879,34 +881,12 @@ def double_gaussian_fft_filter(image, d_inner, d_outer, delta=0.05,
     fwhm_neg_gaus = reciprocal_d_inner_pix
     fwhm_pos_gaus = reciprocal_d_outer_pix
 
-    # image.save('Calibrated Image Data', overwrite=True)
-
-    #    image.plot()
-    #    plt.title('Calibrated Image', fontsize = 20)
-    #    plt.gca().axes.get_xaxis().set_visible(False)
-    #    plt.gca().axes.get_yaxis().set_visible(False)
-    #    plt.tight_layout()
-    #    plt.savefig(fname='Calibrated Image.png',
-    #                transparent=True, frameon=False, bbox_inches='tight',
-    #                pad_inches=None, dpi=300, labels=False)
-    #    plt.close()
-
     # Get FFT of the image
     image_fft = image.fft(shift=True)
-    # image_fft.plot()
-
-    # Get the absolute value for viewing purposes
-    # image_amp = image_fft.amplitude
-
-    # image_amp.plot(norm='log')
-    '''Plot the dataset'''
-    # image.plot()
-    # plt.close()
-    # Get the sampling of the real and reciprocal space
 
     # Positive Gaussian
     arr = make_gaussian(size=len(image.data), fwhm=fwhm_pos_gaus, center=None)
-    nD_Gaussian = hs.signals.Signal2D(np.array(arr))
+    nD_Gaussian = hs.signals.Signal2D(arr)
     # nD_Gaussian.plot()
     # plt.close()
 
@@ -918,36 +898,23 @@ def double_gaussian_fft_filter(image, d_inner, d_outer, delta=0.05,
     #   However, we do it this way so that we can save a plot of the negative
     # gaussian!
     # np_arr_neg = np_arr_neg
-    nD_Gaussian_neg = hs.signals.Signal2D(np.array(arr_neg))
+    nD_Gaussian_neg = hs.signals.Signal2D(arr_neg)
     # nD_Gaussian_neg.plot()
 
     neg_gauss_amplitude = 0.0
     int_and_gauss_array = []
-
     for neg_gauss_amplitude in np.arange(0, 1 + delta, delta):
 
         # while neg_gauss_amplitude <= 1:
         nD_Gaussian_neg_scaled = nD_Gaussian_neg * -1 * \
             neg_gauss_amplitude  # NEED TO FIGURE out best number here!
-        # nD_Gaussian_neg.plot()
-        # plt.close()
 
         # Double Gaussian
         DGFilter = nD_Gaussian + nD_Gaussian_neg_scaled
-        # DGFilter.plot()
-        # plt.close()
 
-        '''
-        # Remove background intensity and normalize
-        DGFilter = normalize_signal(subtract_average_background(DGFilter))
-        DGFilter.plot()
-        '''
         # Multiply the 2-D Gaussian with the FFT. This low pass filters the
         # FFT.
         convolution = image_fft * DGFilter
-        # convolution.plot(norm='log')
-        # convolution_amp = convolution.amplitude
-        # convolution_amp.plot(norm='log')
 
         # Create the inverse FFT, which is your filtered image!
         convolution_ifft = convolution.ifft()
@@ -960,9 +927,9 @@ def double_gaussian_fft_filter(image, d_inner, d_outer, delta=0.05,
 
         # neg_gauss_amplitude = neg_gauss_amplitude + delta
 
-    np_arr_2 = np.array(int_and_gauss_array)
-    x_axis = np_arr_2[:, 0]
-    y_axis = np_arr_2[:, 1]
+    int_and_gauss_array = np.array(int_and_gauss_array)
+    x_axis = int_and_gauss_array[:, 0]
+    y_axis = int_and_gauss_array[:, 1]
     zero_line = np.zeros_like(x_axis)
     idx = np.argwhere(np.diff(np.sign(zero_line - y_axis))).flatten()
     neg_gauss_amplitude_calculated = x_axis[idx][0]
@@ -982,17 +949,10 @@ def double_gaussian_fft_filter(image, d_inner, d_outer, delta=0.05,
     nD_Gaussian_neg_used.axes_manager[0].units = '1/' + units
     nD_Gaussian_neg_used.axes_manager[1].units = '1/' + units
 
-    # Double Gaussian
-    DGFilter_extra_dimension = nD_Gaussian + nD_Gaussian_neg_used
-    DGFilter_extra_dimension.axes_manager[0].name = 'extra_dimension'
-
-    '''how to change to just the 2 dimensiuons'''
-    DGFilter = DGFilter_extra_dimension.sum('extra_dimension')
-
-    #DGFilter.axes_manager[0].scale = reciprocal_sampling
-    #DGFilter.axes_manager[1].scale = reciprocal_sampling
-    #DGFilter.axes_manager[0].units = '1/' + units
-    #DGFilter.axes_manager[1].units = '1/' + units
+    DGFilter.axes_manager[0].scale = reciprocal_sampling
+    DGFilter.axes_manager[1].scale = reciprocal_sampling
+    DGFilter.axes_manager[0].units = '1/' + units
+    DGFilter.axes_manager[1].units = '1/' + units
 
     # Multiply the 2-D Gaussian with the FFT. This filters the FFT.
     convolution = image_fft * DGFilter
@@ -1116,38 +1076,55 @@ def double_gaussian_fft_filter(image, d_inner, d_outer, delta=0.05,
         Filtering_Variables['Delta used for Calculation'] = [delta]
         Filtering_Variables_Table = pd.DataFrame(Filtering_Variables)
         Filtering_Variables_Table
-        Filtering_Variables_Table.to_pickle(
-            'filtering_variables_table_' + filename + '.pkl')
-        # Filtering_Variables_Table.to_csv('Filtering_Variables_Table.csv',
-        # sep=',', index=False)
+        Filtering_Variables_Table.to_csv('Filtering_Variables_Table.csv',
+                                         sep=',', index=False)
 
     return(image_filtered)
 
 
-'''
-Cropping and Calibrating
-'''
-
 # cropping done in the scale, so nm, pixel, or whatever you have
 # cropping_area = choose_points_on_image(image.data)
-
-
-def crop_image_hs(image, cropping_area, save_image=True, save_variables=True,
-                  scalebar_true=True):
+def crop_image_hs(image, cropping_area, scalebar_true=True, filename=None):
     '''
+    Crop a Hyperspy Signal2D by providing the `cropping_area`. See the example
+    below.
+
+    Parameters
+    ----------
+    image : Hyperspy Signal2D
+        Image you wish to crop
+    cropping_area : list of 2 floats
+        The best method of choosing the area is by using the function
+        "choose_points_on_image(image.data)". Choose two points on the
+        image. First point is top left of area, second point is bottom right.
+    scalebar_true : Bool, default True
+        If set to True, the function assumes that `image.axes_manager` is
+        calibrated to a unit other than pixel.
+    filename : str, default None
+        If set to a string, the images and cropping variables will be saved.
+
+    Returns
+    -------
+    Hyperspy Signal2D
+
     Example
     -------
-
-    >>> image = am_dev.dummy_data.get_simple_cubic_with_vacancies_signal()
+    >>> from temul.dummy_data import get_simple_cubic_signal
+    >>> from temul.signal_processing import (
+    ...     choose_points_on_image, crop_image_hs)
+    >>> image = get_simple_cubic_signal()
     >>> image.plot()
     >>> cropping_area = choose_points_on_image(image.data) # choose two points
+    >>> cropping_area = [[5,5], [50,50]] # use above line if trying yourself!
+    >>> image_cropped = crop_image_hs(image, cropping_area, False, False, False)
+    >>> image_cropped.plot()
+
     '''
 
     llim, tlim = cropping_area[0]
     rlim, blim = cropping_area[1]
 
     unit = image.axes_manager[0].units
-#    image_name = image.metadata.General.original_filename
 
     if image.axes_manager[0].scale != image.axes_manager[1].scale:
         raise ValueError("x & y scales don't match!")
@@ -1157,51 +1134,41 @@ def crop_image_hs(image, cropping_area, save_image=True, save_variables=True,
         tlim *= image.axes_manager[0].scale
         rlim *= image.axes_manager[0].scale
         blim *= image.axes_manager[0].scale
-    else:
-        pass
 
     roi = hs.roi.RectangularROI(left=llim, right=rlim, top=tlim, bottom=blim)
     image.plot()
     image_crop = roi.interactive(image)
+    plt.title('Cropped region highlighted', fontsize=20)
+    plt.gca().axes.get_xaxis().set_visible(False)
+    plt.gca().axes.get_yaxis().set_visible(False)
+    plt.tight_layout()
 
-    if save_image is True:
-        plt.title('Cropped region highlighted', fontsize=20)
-        plt.gca().axes.get_xaxis().set_visible(False)
-        plt.gca().axes.get_yaxis().set_visible(False)
-        plt.tight_layout()
+    if filename is not None:
         plt.savefig(fname='Cropped region highlighted.png',
                     transparent=True, frameon=False, bbox_inches='tight',
                     pad_inches=None, dpi=300, labels=False)
-        plt.close()
-    else:
-        plt.close()
 
     image_crop.plot()
+    image_crop.plot()
+    plt.title('Cropped Image', fontsize=20)
+    plt.gca().axes.get_xaxis().set_visible(False)
+    plt.gca().axes.get_yaxis().set_visible(False)
+    plt.tight_layout()
 
-    image_crop
-    physical_image_crop_size_x = image_crop.axes_manager[0].scale * \
-        image_crop.axes_manager[0].size
-    physical_image_crop_size_y = image_crop.axes_manager[1].scale * \
-        image_crop.axes_manager[1].size
-
-    if save_image is True:
-        image_crop.save('Cropped Image.hspy')
-        image_crop.plot()
-        plt.title('Cropped Image', fontsize=20)
-        plt.gca().axes.get_xaxis().set_visible(False)
-        plt.gca().axes.get_yaxis().set_visible(False)
-        plt.tight_layout()
+    if filename is not None:
         plt.savefig(fname='Cropped Image.png',
                     transparent=True, frameon=False, bbox_inches='tight',
                     pad_inches=None, dpi=300, labels=False)
-        plt.close()
-    else:
-        plt.close()
+        image_crop.save('Cropped Image.hspy')
 
-    if save_variables is True:
+        physical_image_crop_size_x = image_crop.axes_manager[0].scale * \
+            image_crop.axes_manager[0].size
+        physical_image_crop_size_y = image_crop.axes_manager[1].scale * \
+            image_crop.axes_manager[1].size
+
         ''' Saving the Variables for the image and filtered Image '''
         Cropping_Variables = collections.OrderedDict()
-#        Cropping_Variables['Image Name'] = [image_name]
+        # Cropping_Variables['Image Name'] = [image_name]
         Cropping_Variables['left (%s)' % unit] = [llim]
         Cropping_Variables['right (%s)' % unit] = [rlim]
         Cropping_Variables['top (%s)' % unit] = [tlim]
@@ -1213,19 +1180,13 @@ def crop_image_hs(image, cropping_area, save_image=True, save_variables=True,
         Cropping_Variables['Unit'] = [unit]
         Cropping_Variables_Table = pd.DataFrame(Cropping_Variables)
         Cropping_Variables_Table
-        Cropping_Variables_Table.to_pickle('Cropping_Variables_Table.pkl')
         Cropping_Variables_Table.to_csv(
             'Cropping_Variables_Table.csv', sep=',', index=False)
-
-    else:
-        pass
 
     return image_crop
 
 
 # cropping_area = choose_points_on_image(image.data)
-
-
 def calibrate_intensity_distance_with_sublattice_roi(image,
                                                      cropping_area,
                                                      separation,
