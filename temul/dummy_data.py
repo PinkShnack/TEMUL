@@ -3,6 +3,7 @@ from atomap.testing_tools import MakeTestData
 import numpy as np
 import matplotlib.pyplot as plt
 import colorcet as cc
+from atomap.sublattice import Sublattice
 
 
 # some of the below have been adapted from Atomap:
@@ -121,6 +122,21 @@ def get_simple_cubic_sublattice(image_noise=False, amplitude=1,
                                             with_vacancies=with_vacancies)
     return test_data.sublattice
 
+
+def get_simple_cubic_sublattice_positions_on_vac(image_noise=False):
+    '''
+    Create a simple cubic structure similar to `get_simple_cubic_sublattice`
+    above but the atom positions are also overlaid on the vacancy positions.
+    '''
+
+    temp_sub = _make_simple_cubic_testdata(image_noise=image_noise,
+                                           with_vacancies=False).sublattice
+    temp_pos = np.asarray([temp_sub.x_position, temp_sub.y_position]).T
+    image = _make_simple_cubic_testdata(image_noise=image_noise,
+                                    with_vacancies=True).signal
+    sublattice = Sublattice(temp_pos, image.data)
+
+    return sublattice
 
 def _make_distorted_cubic_testdata_adjustable(y_offset=2, image_noise=False):
     test_data = MakeTestData(240, 240)

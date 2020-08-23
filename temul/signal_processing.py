@@ -282,7 +282,7 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
     plots Gaussian distributions for intensities of a sublattice, over the
     given parameters (fitting tools).
 
-    Example
+    Examples
     -------
 
     sub_ints_all = [sub1_ints, sub2_ints]
@@ -512,7 +512,7 @@ def measure_image_errors(imageA, imageB, filename=None):
     -------
     two floats (mse_number, ssm_number)
 
-    Example
+    Examples
     -------
     >>> from temul.dummy_data import get_simple_cubic_signal
     >>> imageA = get_simple_cubic_signal().data
@@ -852,10 +852,8 @@ def double_gaussian_fft_filter(image, d_inner, d_outer, delta=0.05,
     # image.plot()
     #    image.save('Original Image Data', overwrite=True)
     #    image_name = image.metadata.General.original_filename
-    '''
-    Example d_inner, d_outer:
-    MoS2: d_1 = 7.7, d_2 = 14
-    '''
+    # Example d_inner, d_outer:
+    # MoS2: d_1 = 7.7, d_2 = 14
 
     if sampling is None:
         sampling = image.axes_manager[-1].scale
@@ -1107,7 +1105,7 @@ def crop_image_hs(image, cropping_area, scalebar_true=True, filename=None):
     -------
     Hyperspy Signal2D
 
-    Example
+    Examples
     -------
     >>> from temul.dummy_data import get_simple_cubic_signal
     >>> from temul.signal_processing import (
@@ -1115,8 +1113,8 @@ def crop_image_hs(image, cropping_area, scalebar_true=True, filename=None):
     >>> image = get_simple_cubic_signal()
     >>> image.plot()
     >>> cropping_area = choose_points_on_image(image.data) # choose two points
-    >>> cropping_area = [[5,5], [50,50]] # use above line if trying yourself!
-    >>> image_cropped = crop_image_hs(image, cropping_area, False, False, False)
+    >>> cropping_area = [[5,5],[50,50]] # use above line if trying yourself!
+    >>> image_cropped = crop_image_hs(image, cropping_area, False, False)
     >>> image_cropped.plot()
 
     '''
@@ -1190,50 +1188,59 @@ def crop_image_hs(image, cropping_area, scalebar_true=True, filename=None):
 def calibrate_intensity_distance_with_sublattice_roi(image,
                                                      cropping_area,
                                                      separation,
-                                                     filename=None,
                                                      reference_image=None,
+                                                     scalebar_true=False,
                                                      percent_to_nn=0.2,
                                                      mask_radius=None,
                                                      refine=True,
-                                                     scalebar_true=False):
+                                                     filename=None):
     # add max mean min etc.
     '''
-    Calibrates the intensity of an image by using a sublattice, found with some
-    atomap functions. The mean intensity of that sublattice is set to 1
+    Calibrates the intensity of an image by using the brightest sublattice.
+    The mean intensity of that sublattice is set to 1.
 
     Parameters
     ----------
-    image : HyperSpy 2D signal
-        The signal can be distance calibrated. If it is, set
-        `scalebar_true=True`.
+    image : Hyperspy Signal2D
+        Image you wish to calibrate.
     cropping_area : list of 2 floats
         The best method of choosing the area is by using the function
         "choose_points_on_image(image.data)". Choose two points on the
         image. First point is top left of area, second point is bottom right.
-    percent_to_nn : float, default 0.40
+    separation : int, default 8
+        Pixel separation between atoms as used by Atomap.
+    reference_image : Hyperspy Signal2D
+        Image with which `image` is compared.
+    scalebar_true : Bool, default True
+        If set to True, the function assumes that `image.axes_manager` is
+        calibrated to a unit other than pixel.
+    mask_radius : int, default None
+        Radius in pixels of the mask.
+    percent_to_nn : float, default 0.2
         Determines the boundary of the area surrounding each atomic
         column, as fraction of the distance to the nearest neighbour.
-    scalebar_true : Bool, default False
-        Set to True if the scale of the image is calibrated to a distance unit.
-        *** is there any point to this? if scale=1, then multiplying has no
-        *** effect, and if it is scaled to nm or angstrom, multiplying is
-        *** good. so keep the code, remove the parameter option!
+    refine : Bool, default False
+        If set to True, the atom positions found for the calibration will be
+        refined.
+    filename : str, default None
+        If set to a string, the image will be saved.
 
     Returns
     -------
-    calibrated image data
+    Nothing, but the mean intensity of the brightest sublattice is set to 1.
 
-    Example
+    Examples
     -------
-
-    >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
-    >>> image = dummy_data.get_simple_cubic_with_vacancies_signal()
-    >>> # image.plot()
-    >>> cropping_area = [[10,10],[100,100]]
-    >>> # cropping_area = choose_points_on_image(image.data) # manually
+    >>> from temul.dummy_data import get_simple_cubic_signal
+    >>> from temul.signal_processing import (choose_points_on_image,
+    ...             calibrate_intensity_distance_with_sublattice_roi)
+    >>> image = get_simple_cubic_signal()
+    >>> image.plot()
+    >>> cropping_area = choose_points_on_image(image.data) # manually
+    >>> cropping_area = [[10,10],[100,100]] #use above line if trying yourself!
     >>> calibrate_intensity_distance_with_sublattice_roi(image,
     ...             cropping_area, separation=10)
-    >>> # image.plot()
+    >>> image.plot()
 
     '''
     llim, tlim = cropping_area[0]
@@ -1291,74 +1298,74 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
         # plt.close()
 
 
-'''
-Atomap extensions
-'''
-
-
+#Atomap extensions
 def toggle_atom_refine_position_automatically(sublattice,
                                               min_cut_off_percent,
                                               max_cut_off_percent,
-                                              filename=None,
                                               range_type='internal',
                                               method='mode',
                                               percent_to_nn=0.05,
-                                              mask_radius=None):
+                                              mask_radius=None,
+                                              filename=None):
     '''
     Sets the 'refine_position' attribute of each Atom Position in a
     sublattice using a range of intensities.
 
     Parameters
     ----------
-    sublattice : Atomap Sublattice object, default None
-
+    sublattice : Atomap Sublattice object
     min_cut_off_percent : float, default None
         The lower end of the intensity range is defined as
-        min_cut_off_percent * modal value of max intensity list of
-        sublattice.
+        `min_cut_off_percent` * `method` value of max intensity list of
+        `sublattice`.
     max_cut_off_percent : float, default None
         The upper end of the intensity range is defined as
-        max_cut_off_percent * modal value of max intensity list of
-        sublattice.
+        `max_cut_off_percent` * `method` value of max intensity list of
+        `sublattice`.
     range_type : str, default 'internal'
-        'internal' provides the 'refine_position' attribute for each
-        Atom Position as True if the intensity of that Atom Position
-        lies between the lower and upper limits defined by min_cut_off_percent
-        and max_cut_off_percent.
-        'external' provides the 'refine_position' attribute for each
-        Atom Position as True if the intensity of that Atom Position
-        lies outside the lower and upper limits defined by min_cut_off_percent
-        and max_cut_off_percent.
-    save_image : Bool, default False
-        Save the 'sublattice.toggle_atom_refine_position_with_gui()'
-        image.
-    percent_to_nn : float, default 0.40
+        "internal" provides the `refine_position` attribute for each
+        `Atom Position` as True if the intensity of that Atom Position
+        lies between the lower and upper limits defined by `min_cut_off_percent`
+        and `max_cut_off_percent`.
+        "external" provides the `refine_position` attribute for each
+        `Atom Position` as True if the intensity of that Atom Position
+        lies outside the lower and upper limits defined by `min_cut_off_percent`
+        and `max_cut_off_percent`.
+    method : str, default 'mode'
+        The method used to aggregate the intensity of the sublattice positions
+        max intensity list. Options are "mode" and "mean"
+    percent_to_nn : float, default 0.05
         Determines the boundary of the area surrounding each atomic
         column, as fraction of the distance to the nearest neighbour.
+    mask_radius : int, default None
+        Radius in pixels of the mask.
+    filename : str, default None
+        If set to a string, the Atomap `refine_position` image will be saved.
 
     Returns
     -------
-    calibrated image data
-    Example
-    -------
+    list of the `AtomPosition.refine_position=False` attribute.
 
-    >>> min_cut_off_percent = 0.75
-    >>> max_cut_off_percent = 1.25
-    >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
-    >>> sublattice = dummy_data.get_simple_cubic_with_vacancies_sublattice(
-    ...     image_noise=True)
+    Examples
+    -------
+    >>> from temul.dummy_data import (
+    ...     get_simple_cubic_sublattice_positions_on_vac)
+    >>> from temul.signal_processing import (
+    ...     toggle_atom_refine_position_automatically)
+    >>> sublattice = get_simple_cubic_sublattice_positions_on_vac()
     >>> sublattice.find_nearest_neighbors()
     >>> sublattice.plot()
+    >>> min_cut_off_percent = 0.75
+    >>> max_cut_off_percent = 1.25
     >>> false_list_sublattice =  toggle_atom_refine_position_automatically(
-    ...                             sublattice=sublattice,
-    ...                             min_cut_off_percent=min_cut_off_percent,
-    ...                             max_cut_off_percent=max_cut_off_percent,
-    ...                             range_type='internal',
-    ...                             method='mode',
-    ...                             percent_to_nn=0.05)
+    ...         sublattice, min_cut_off_percent, max_cut_off_percent,
+    ...         range_type='internal', method='mode', percent_to_nn=0.05)
+    >>> len(false_list_sublattice) # check how many atoms will not be refined
 
-    >>> # Check which atoms will not be refined (red dots)
+    Visually check which atoms will not be refined (red dots)
+
     >>> sublattice.toggle_atom_refine_position_with_gui()
+
     '''
 
     sublattice.get_atom_column_amplitude_max_intensity(
