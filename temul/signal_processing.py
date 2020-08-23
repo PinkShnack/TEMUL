@@ -1431,6 +1431,7 @@ def toggle_atom_refine_position_automatically(sublattice,
     return(false_list_sublattice)
 
 
+# atomap adaption
 def remove_image_intensity_in_data_slice(atom,
                                          image_data,
                                          percent_to_nn=0.50):
@@ -1445,6 +1446,7 @@ def remove_image_intensity_in_data_slice(atom,
                                     image_data, slice_size)
 
 
+# atomap adaption
 def _remove_image_slice_around_atom(
         self,
         image_data,
@@ -1487,8 +1489,8 @@ def _remove_image_slice_around_atom(
         data_slice_max
 
 
-def get_cell_image(s, points_x, points_y, method='Voronoi', max_radius='Auto',
-                   reduce_func=np.min,
+def get_cell_image(s, points_x, points_y, method='Voronoi',
+                   max_radius='Auto', reduce_func=np.min,
                    show_progressbar=True):
     '''
     The same as atomap's integrate, except instead of summing the
@@ -1499,21 +1501,34 @@ def get_cell_image(s, points_x, points_y, method='Voronoi', max_radius='Auto',
 
     Parameters
     ----------
-    See atomap's integrate function.
-
     reduce_func : ufunc, default np.min
         function used to reduce the pixel values around each atom
         to a float.
-
-    Examples
-    --------
-    #### add PTO example from paper
+    For the other parameters see atomap's integrate function.
 
     Returns
     -------
-
     Numpy array with the same shape as s
+
+    Examples
+    --------
+    >>> from temul.dummy_data import (
+    ...     get_simple_cubic_sublattice_positions_on_vac)
+    >>> from temul.signal_processing import get_cell_image
+    >>> import numpy as np
+    >>> sublattice = get_simple_cubic_sublattice_positions_on_vac()
+    >>> cell_image = get_cell_image(sublattice.image, sublattice.x_position,
+    ...     sublattice.y_position)
+
+    Plot the `cell_image` which shows, in this case, the background intensity
+
+    >>> import matplotlib.pyplot as plt
+    >>> plt.figure()
+    >>> plt.imshow(cell_image)
+    >>> plt.show()
+
     '''
+
     image = s.__array__()
     if len(image.shape) < 2:
         raise ValueError("s must have at least 2 dimensions")
