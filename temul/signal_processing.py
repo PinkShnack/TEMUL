@@ -101,6 +101,7 @@ def fit_1D_gaussian_to_data(xdata, amp, mu, sigma):
     >>> xdata, ydata = get_xydata_from_list_of_intensities(sub1_inten,
     ...     hist_bins=50)
     >>> gauss_fit_01 = fit_1D_gaussian_to_data(xdata, amp, mu, sigma)
+
     '''
 
     return(amp * (1 / (sigma * (np.sqrt(2 * np.pi)))) * (
@@ -183,6 +184,7 @@ def plot_gaussian_fit(xdata, ydata, function, amp, mu, sigma,
     ...           gauss_art='r--', gauss_label='Gauss Fit',
     ...           plot_data=True, data_art='ko', data_label='Data Points',
     ...           plot_fill=True, facecolor='r', alpha=0.5)
+
     '''
 
     _gaussian_fit = function(xdata=xdata, amp=amp, mu=mu, sigma=sigma)
@@ -485,7 +487,7 @@ def mse(imageA, imageB):
     ----------
     imageA, imageB : array-like
         The images must be the same shape.
-    
+
     Returns
     -------
     Mean squared error
@@ -600,7 +602,7 @@ def load_and_compare_images(imageA, imageB, filename=None):
 
 def compare_two_image_and_create_filtered_image(
         image_to_filter, reference_image, delta_image_filter, max_sigma=6,
-        cropping_area=[[0,0], [50,50]], separation=8, filename=None,
+        cropping_area=[[0, 0], [50, 50]], separation=8, filename=None,
         percent_to_nn=0.4, mask_radius=None, refine=False):
     '''
     Gaussian blur an image for comparison with a reference image.
@@ -763,9 +765,7 @@ def make_gaussian(size, fwhm, center=None):
     >>> from temul.signal_processing import make_gaussian
     >>> import matplotlib.pyplot as plt
     >>> array = make_gaussian(15, 5)
-    >>> plt.figure()
-    >>> plt.imshow(array)
-    >>> plt.show()
+    >>> im = plt.imshow(array)
 
     """
 
@@ -778,7 +778,7 @@ def make_gaussian(size, fwhm, center=None):
         x0 = center[0]
         y0 = center[1]
 
-    arr = np.array((np.exp(-4 * np.log(2) * ((x - x0)**2 + \
+    arr = np.array((np.exp(-4 * np.log(2) * ((x - x0)**2 +
                     (y - y0)**2) / fwhm**2)))
 
     return(arr)
@@ -817,7 +817,7 @@ def double_gaussian_fft_filter(image, d_inner, d_outer, delta=0.05,
         negative Gaussian optimumisation, negative Gaussian, positive Gaussian,
         double Gaussian, FFT and double Gaussian convolution, filtered image,
         filtered variables table.
-    
+
     Returns
     -------
     Hyperspy Signal2D
@@ -1114,7 +1114,7 @@ def crop_image_hs(image, cropping_area, scalebar_true=True, filename=None):
     >>> image.plot()
     >>> cropping_area = choose_points_on_image(image.data) # choose two points
     >>> cropping_area = [[5,5],[50,50]] # use above line if trying yourself!
-    >>> image_cropped = crop_image_hs(image, cropping_area, False, False)
+    >>> image_cropped = crop_image_hs(image, cropping_area, False)
     >>> image_cropped.plot()
 
     '''
@@ -1298,7 +1298,7 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
         # plt.close()
 
 
-#Atomap extensions
+# Atomap extensions
 def toggle_atom_refine_position_automatically(sublattice,
                                               min_cut_off_percent,
                                               max_cut_off_percent,
@@ -1325,12 +1325,12 @@ def toggle_atom_refine_position_automatically(sublattice,
     range_type : str, default 'internal'
         "internal" provides the `refine_position` attribute for each
         `Atom Position` as True if the intensity of that Atom Position
-        lies between the lower and upper limits defined by `min_cut_off_percent`
-        and `max_cut_off_percent`.
+        lies between the lower and upper limits defined by
+        `min_cut_off_percent` and `max_cut_off_percent`.
         "external" provides the `refine_position` attribute for each
         `Atom Position` as True if the intensity of that Atom Position
-        lies outside the lower and upper limits defined by `min_cut_off_percent`
-        and `max_cut_off_percent`.
+        lies outside the lower and upper limits defined by
+        `min_cut_off_percent` and `max_cut_off_percent`.
     method : str, default 'mode'
         The method used to aggregate the intensity of the sublattice positions
         max intensity list. Options are "mode" and "mean"
@@ -1361,6 +1361,7 @@ def toggle_atom_refine_position_automatically(sublattice,
     ...         sublattice, min_cut_off_percent, max_cut_off_percent,
     ...         range_type='internal', method='mode', percent_to_nn=0.05)
     >>> len(false_list_sublattice) # check how many atoms will not be refined
+    12
 
     Visually check which atoms will not be refined (red dots)
 
@@ -1515,7 +1516,6 @@ def get_cell_image(s, points_x, points_y, method='Voronoi',
     >>> from temul.dummy_data import (
     ...     get_simple_cubic_sublattice_positions_on_vac)
     >>> from temul.signal_processing import get_cell_image
-    >>> import numpy as np
     >>> sublattice = get_simple_cubic_sublattice_positions_on_vac()
     >>> cell_image = get_cell_image(sublattice.image, sublattice.x_position,
     ...     sublattice.y_position)
@@ -1523,9 +1523,7 @@ def get_cell_image(s, points_x, points_y, method='Voronoi',
     Plot the `cell_image` which shows, in this case, the background intensity
 
     >>> import matplotlib.pyplot as plt
-    >>> plt.figure()
-    >>> plt.imshow(cell_image)
-    >>> plt.show()
+    >>> im = plt.imshow(cell_image)
 
     Convert it to a Hyperspy Signal2D object:
 
@@ -1700,13 +1698,9 @@ def choose_mask_coordinates(image, norm="log"):
 def get_masked_ifft(image, mask_coords, mask_radius=10, image_space="real",
                     keep_masked_area=True, plot_masked_fft=False):
     '''
-    loop through each mask_coords and mask the fft. Then return
-    an ifft of the image.
-    To Do: calibration of units automatically.
-
-    Masks a fast Fourier transform (FFT) and provides the inverse FFT.
-    Use choose_mask_coordinates() to manually choose mask coordinates in the
-    FFT.
+    Creates an inverse fast Fourier transform (iFFT) from an image and mask
+    coordinates. Use `choose_mask_coordinates` to manually choose mask
+    coordinates in the FFT.
 
     Parameters
     ----------
