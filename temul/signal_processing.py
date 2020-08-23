@@ -1504,7 +1504,7 @@ def get_cell_image(s, points_x, points_y, method='Voronoi',
     reduce_func : ufunc, default np.min
         function used to reduce the pixel values around each atom
         to a float.
-    For the other parameters see atomap's integrate function.
+    For the other parameters see Atomap's `integrate` function.
 
     Returns
     -------
@@ -1526,6 +1526,12 @@ def get_cell_image(s, points_x, points_y, method='Voronoi',
     >>> plt.figure()
     >>> plt.imshow(cell_image)
     >>> plt.show()
+
+    Convert it to a Hyperspy Signal2D object:
+
+    >>> import hyperspy.api as hs
+    >>> cell_image = hs.signals.Signal2D(cell_image)
+    >>> cell_image.plot()
 
     '''
 
@@ -1609,19 +1615,24 @@ def mean_and_std_nearest_neighbour_distances(sublattice,
         The number of nearest neighbours used to calculate the mean distance
         from an atom. As in atomap, choosing 5 gets the 4 nearest
         neighbours.
+    sampling : float, default None
+        The image sampling in units/pixel. If set to None then the values
+        returned are given in pixels.
+        This may be changed in future versions if Atomap's Sublattice pixel
+        attribute is updated.
 
     Returns
     -------
-    2 lists: list of mean distances, list of standard deviations.
+    Two lists: list of mean distances, list of standard deviations.
 
     Examples
     --------
     >>> from temul.dummy_data import get_simple_cubic_sublattice
-    >>> import temul.signal_processing as tmlsp
-    >>> sub1 = get_simple_cubic_sublattice()
-    >>> mean, std = tmlsp.mean_and_std_nearest_neighbour_distances(sub1)
-    >>> mean_scaled,_ = tmlsp.mean_and_std_nearest_neighbour_distances(sub1,
-    ...     nearest_neighbours=5,
+    >>> from temul.signal_processing import (
+    ...     mean_and_std_nearest_neighbour_distances)
+    >>> sublattice = get_simple_cubic_sublattice()
+    >>> mean, std = mean_and_std_nearest_neighbour_distances(sublattice)
+    >>> mean_scaled, _ = mean_and_std_nearest_neighbour_distances(sublattice,
     ...     sampling=0.0123)
 
     '''
@@ -1659,25 +1670,22 @@ def mean_and_std_nearest_neighbour_distances(sublattice,
     return(mean_list, std_dev_list)
 
 
-def choose_mask_coordinates(image, norm='log'):
+def choose_mask_coordinates(image, norm="log"):
     '''
-    Pick the mask locations for an FFT. See get_masked_ifft() and
-    commit 5ba307b5af0b598bedc0284aa989d44e23fdde4d on Atomap
+    Pick the mask locations for an FFT. See get_masked_ifft() for examples and
+    commit 5ba307b5af0b598bedc0284aa989d44e23fdde4d on Atomap for more details.
 
     Parameters
     ----------
     image : Hyperspy 2D Signal
-    norm : str, default 'log'
+    norm : str, default "log"
         How to scale the intensity value for the displayed image.
-        Options are 'linear' and 'log'
+        Options are "linear" and "log".
 
     Returns
     -------
-    mask_coords : list of pixel coordinates
+    list of pixel coordinates
 
-    Examples
-    --------
-    See get_masked_ifft() for example.
     '''
 
     fft = image.fft(shift=True)
@@ -1689,7 +1697,7 @@ def choose_mask_coordinates(image, norm='log'):
     return(mask_coords)
 
 
-def get_masked_ifft(image, mask_coords, mask_radius=10, space="real",
+def get_masked_ifft(image, mask_coords, mask_radius=10, image_space="real",
                     keep_masked_area=True, plot_masked_fft=False):
     '''
     loop through each mask_coords and mask the fft. Then return
@@ -1703,20 +1711,22 @@ def get_masked_ifft(image, mask_coords, mask_radius=10, space="real",
     Parameters
     ----------
     image : Hyperspy 2D Signal
-    mask_coords : list of lists
+    mask_coords : list of pixel coordinates
         Pixel coordinates of the masking locations. See the example below for
-        two simple coordinates.
+        two simple coordinates found using `choose_mask_coordinates`.
     mask_radius : int, default 10
         Radius in pixels of the mask.
-    space : str, default "real"
-        If the input image is a Fourier transform already, set space="fourier"
+    image_space : str, default "real"
+        If the input image is in Fourier/diffraction/reciprocal space already,
+        set space="fourier".
     keep_masked_area : Bool, default True
         If True, this will set the mask at the mask_coords.
         If False, this will set the mask as everything other than the
-        mask_coords.
+        mask_coords. Can be thought of as inversing the mask.
     plot_masked_fft : Bool, default False
         If True, the mask used to filter the FFT will be plotted. Good for
-        checking that the mask is doing what you want.
+        checking that the mask is doing what you want. Can fail sometimes due
+        to matplotlib plotting issues.
 
     Returns
     -------
@@ -1725,45 +1735,39 @@ def get_masked_ifft(image, mask_coords, mask_radius=10, space="real",
     Examples
     --------
     >>> from temul.dummy_data import get_simple_cubic_signal
-    >>> import temul.signal_processing as tmlsp
+    >>> from temul.signal_processing import (
+    ...     choose_mask_coordinates, get_masked_ifft)
     >>> image = get_simple_cubic_signal()
+    >>> mask_coords = choose_mask_coordinates(image) # use this on the image!
     >>> mask_coords = [[170.2, 170.8],[129.8, 130]]
-    >>> # mask_coords = tmlsp.choose_mask_coordinates(image=image, norm='log')
-
-    Use the defaults:
-
-    >>> image_ifft = tmlsp.get_masked_ifft(
-    ...     image=image, mask_coords=mask_coords)
+    >>> image_ifft = get_masked_ifft(image, mask_coords)
     >>> image_ifft.plot()
 
     Plot the masked fft:
 
-    >>> image_ifft = tmlsp.get_masked_ifft(
-    ...     image=image, mask_coords=mask_coords,
-    ...     plot_masked_fft=True)
-    >>> image_ifft.plot()
+    >>> image_ifft = get_masked_ifft(image, mask_coords, plot_masked_fft=True)
 
     Use unmasked fft area and plot the masked fft:
 
-    >>> image_ifft = tmlsp.get_masked_ifft(
-    ...     image=image, mask_coords=mask_coords,
-    ...     plot_masked_fft=True, keep_masked_area=False)
+    >>> image_ifft = get_masked_ifft(image, mask_coords, plot_masked_fft=True,
+    ...     keep_masked_area=False)
     >>> image_ifft.plot()
 
     If the input image is already a Fourier transform:
 
     >>> fft_image = image.fft(shift=True)
-    >>> image_ifft = tmlsp.get_masked_ifft(
-    ...     image=fft_image, mask_coords=mask_coords,
-    ...     space='fourier')
+    >>> image_ifft = get_masked_ifft(fft_image, mask_coords,
+    ...     image_space='fourier')
     >>> image_ifft.plot()
 
     '''
-    if space == 'real':
+    if image_space == 'real':
         fft = image.fft(shift=True)
-    elif space == 'fourier':
+    elif image_space == 'fourier':
         fft = image
 
+    if len(mask_coords) == 0:
+        raise ValueError("`mask_coords` has not been set.")
     for mask_coord in mask_coords:
 
         x_pix = mask_coord[0]
@@ -1796,5 +1800,6 @@ def get_masked_ifft(image, mask_coords, mask_radius=10, space="real",
     # sort out units here
     image_ifft = masked_fft_image.ifft()
     image_ifft = np.absolute(image_ifft)
+    image_ifft.axes_manager = image.axes_manager
 
     return(image_ifft)
