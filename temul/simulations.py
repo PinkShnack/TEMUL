@@ -50,12 +50,11 @@ def simulate_and_filter_and_calibrate_with_prismatic(
         algorithm="prism",
         numThreads=2):
     '''
-    Simulate an xyz coordinate model with pyprismatic
-    fast simulation software.
+    Simulate an xyz coordinate model with the PyPrismatic fast simulation
+    software.
 
     Parameters
     ----------
-
     xyz_filename : string
         filename of the xyz coordinate model. Must be in the prismatic format.
         See http://prism-em.com/docs-inputs/ for more information.
@@ -85,16 +84,9 @@ def simulate_and_filter_and_calibrate_with_prismatic(
     probeStep, E0 ... etc.
         See function simulate_with_prismatic()
 
-
     Returns
     -------
-    Simulated image as a hyperspy object
-
-    Examples
-    --------
-
-    # >>> simulate_and_calibrate_with_prismatic()
-    ######## need to include an example reference_image here
+    Hyperspy Signal2D
 
     '''
 
@@ -160,12 +152,11 @@ def simulate_and_calibrate_with_prismatic(
         algorithm="prism",
         numThreads=2):
     '''
-    Simulate an xyz coordinate model with pyprismatic
-    fast simulation software.
+    Simulate an xyz coordinate model with the PyPrismatic fast simulation
+    software.
 
     Parameters
     ----------
-
     xyz_filename : string
         filename of the xyz coordinate model. Must be in the prismatic format.
         See http://prism-em.com/docs-inputs/ for more information.
@@ -195,16 +186,9 @@ def simulate_and_calibrate_with_prismatic(
     probeStep, E0 ... etc.
         See function simulate_with_prismatic()
 
-
     Returns
     -------
-    Simulated image as a hyperspy object
-
-    Examples
-    --------
-
-    # >>> simulate_and_calibrate_with_prismatic()
-    ######## need to include an example reference_image here
+    Hyperspy Signal2D
 
     '''
 
@@ -291,18 +275,17 @@ def simulate_with_prismatic(xyz_filename,
         If this is set to None, the cell dimension values from the .xyz file
         will be used (default). If it is specified, it will overwrite the .xyz
         file values.
-    tileXYZ : tuple, deault None
+    tileXYZ : tuple, default None
         A tuple of length 3. Example (5, 5, 2) would multiply the model in x
         and y by 5, and z by 2.
         Default of None is just set to (1, 1, 1)
 
     Returns
     -------
-    Simulated image as a 2D mrc file
+    Simulated image as a 2D .mrc file
 
     Examples
     --------
-
     >>> from temul.simulations import simulate_with_prismatic
     >>> simulate_with_prismatic(
     ...     xyz_filename="temul/example_data/prismatic/"
@@ -391,28 +374,7 @@ def simulate_with_prismatic(xyz_filename,
     pr_sim.go()
 
 
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Mar 13 13:12:44 2019
-
-@author: eoghan.oconnell
-"""
-
-
-'''
-directory = 'G:/SuperStem visit/Feb 2019 data/2019_02_18_QMR_S1262_MoS2-Se-10eV
-/005_rigid_reg/Try_5/32bit/images_aligned_0'
-os.chdir(directory)
-
-image_refine_via_intensity_loop(atom_lattice_name='Atom_Lattice_total.hdf5',
-                               change_sublattice=True,
-                                   plot_details=False,
-                                   intensity_type='total',
-                                   intensity_refine_name = 'intensity_refine_',
-                                   folder_name = 'refinement_of_intensity')
-'''
-
-
+# Purpose built for an in-house use-case
 def image_refine_via_intensity_loop(atom_lattice,
                                     change_sublattice,
                                     calibration_separation,
@@ -771,28 +733,7 @@ def image_refine_via_intensity_loop(atom_lattice,
                   '/' + intensity_refine_file)
 
 
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Apr 26 17:33:48 2019
-
-@author: Eoghan.OConnell
-"""
-
-
-'''
-directory = 'G:/SuperStem visit/Feb 2019 data/2019_02_18_QMR_S1262_MoS2-Se-10eV
-/005_rigid_reg/Try_5/32bit/images_aligned_0'
-os.chdir(directory)
-image_refine_via_position_loop(atom_lattice_name='Atom_Lattice_total.hdf5',
-                               add_sublattice=True,
-                                   plot_details=False,
-                                   intensity_type='total',
-                                   pixel_threshold=15,
-                                   position_refine_name = 'position_refine_',
-                                   folder_name = 'refinement_of_position')
-'''
-
-
+# Purpose built for an in-house use-case
 def image_refine_via_position_loop(image,
                                    sublattice_list,
                                    filename,

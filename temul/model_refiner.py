@@ -47,7 +47,7 @@ class Model_Refiner():
                  thickness=10, name=''):
         '''
         Object which is used to refine the elements in a list of
-        Atomap sublattices. There are currently two refinement methods:
+        Atomap Sublattice objects. There are currently two refinement methods:
         1. Refine with position `image_difference_position_model_refiner`
         2. Refine with intensity `image_difference_intensity_model_refiner`.
 
@@ -272,6 +272,14 @@ class Model_Refiner():
                 self.element_count_history_list[-2:]))
 
     def get_element_count_as_dataframe(self):
+        '''
+        Allows you to view the element count as a Pandas Dataframe.
+        See `image_difference_intensity_model_refiner` for an example.
+
+        Returns
+        -------
+        Pandas Dataframe
+        '''
 
         elements_ = [i for sublist in self.element_list for i in sublist]
         elements_ = list(set(elements_))
@@ -309,6 +317,27 @@ class Model_Refiner():
                                         flip_colrows=True,
                                         title="Refinement of Elements",
                                         fontsize=16, split_symbol=['_', '.']):
+        '''
+        Allows you to plot the element count as a bar chart.
+        See `image_difference_intensity_model_refiner` for an example.
+
+        Parameters
+        ----------
+        element_configs : int, default 0
+            Change the plotted data.
+            `element_configs=0` will plot the element configuration counts,
+            `element_configs=1` will plot the individual element counts, and
+            `element_configs=2` will plot the both 0 and 1.
+        flip_colrows : Bool, default True
+            Change how the data is plotted.
+            `flip_colrows=True` will take the transpose of the dataframe.
+        title : string, default "Refinement of Elements"
+            Title of the bar chart.
+        fontsize : int, default 16
+        split_symbol : list, default ['_', '.']
+            See temul.element_tools.split_and_sort_element for details.
+        '''
+
         if element_configs == 0:  # only element configs
             df = self.get_element_count_as_dataframe()
         elif element_configs == 1:  # only individual elements
@@ -451,15 +480,21 @@ class Model_Refiner():
         ...     image_noise=True)
         Changing some atoms
         Changing some atoms
+
         >>> history = refiner.element_count_history_list
+        >>> history_df = refiner.get_element_count_as_dataframe()
         >>> refiner.combine_individual_and_element_counts_as_dataframe()
                          Ti_0  Ti_1   Ti_2  Ti_3  Ti_4  Ti_5     Ti
         0 Initial State   0.0   0.0  400.0   0.0   0.0   0.0  800.0
         1 Intensity       0.0  12.0  388.0   0.0   0.0   0.0  788.0
         2 Intensity      12.0   0.0  388.0   0.0   0.0   0.0  776.0
         3 Intensity      12.0   0.0  388.0   0.0   0.0   0.0  776.0
+
         >>> refiner.plot_element_count_as_bar_chart(
         ...     element_configs=2, flip_colrows=True, fontsize=24)
+
+        Flip the view of the data
+
         >>> refiner.plot_element_count_as_bar_chart(
         ...     element_configs=2, flip_colrows=False, fontsize=24)
         >>> refiner.sublattice_list[0].plot()
@@ -563,14 +598,17 @@ class Model_Refiner():
         ...     pixel_threshold=10,
         ...     chosen_sublattice=refiner.sublattice_list[0])
         3 new atoms found! Adding new atom positions.
+
         >>> refiner.sublattice_list[0].plot()
 
         Combination of Refinements (cont.)
 
         >>> refiner.image_difference_intensity_model_refiner()
         Changing some atoms
+
         >>> refiner.image_difference_intensity_model_refiner()
         Changing some atoms
+
         >>> history_df = refiner.get_element_count_as_dataframe()
         >>> refiner.plot_element_count_as_bar_chart(
         ...     element_configs=2, flip_colrows=True, fontsize=24)

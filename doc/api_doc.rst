@@ -35,11 +35,11 @@ Intensity Tools
     :members:
     :undoc-members:
 
-..    Model Creation
-    ==============
-    .. automodule:: temul.model_creation
-        :members:
-        :undoc-members:
+Model Creation
+==============
+.. automodule:: temul.model_creation
+    :members:
+    :undoc-members:
 
 Image Simulation Functions
 ==========================
@@ -68,5 +68,11 @@ Input/Output (io)
 Dummy Data
 ==========
 .. automodule:: temul.dummy_data
+    :members:
+    :undoc-members:
+
+Example Data
+==========
+.. automodule:: temul.example_data
     :members:
     :undoc-members:

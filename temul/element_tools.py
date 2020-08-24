@@ -1,9 +1,7 @@
 
 import periodictable as pt
 
-'''
-Element and radius calibration
-'''
+# Element and radius calibration
 
 
 def get_and_return_element(element_symbol):
@@ -14,8 +12,8 @@ def get_and_return_element(element_symbol):
     Parameters
     ----------
 
-    element_symbol : string, default None
-        Symbol of an element from the periodic table of elements
+    element_symbol : string
+        Symbol of an element from the periodic table of elements e.g., "C", "H"
 
     Returns
     -------
@@ -25,9 +23,14 @@ def get_and_return_element(element_symbol):
     --------
     >>> from temul.element_tools import get_and_return_element
     >>> Moly = get_and_return_element(element_symbol='Mo')
-    >>> #print(Moly.covalent_radius)
-    >>> #print(Moly.symbol)
-    >>> #print(Moly.number)
+    >>> print(Moly.symbol)
+    Mo
+
+    >>> print(Moly.covalent_radius)
+    1.54
+
+    >>> print(Moly.number)
+    42
 
     '''
 
@@ -55,14 +58,20 @@ def atomic_radii_in_pixels(sampling, element_symbol):
 
     Examples
     --------
-
     >>> import atomap.api as am
     >>> from temul.element_tools import atomic_radii_in_pixels
     >>> image = am.dummy_data.get_simple_cubic_signal()
-    >>> # pretend it is a 5x5 nm image
+
+    pretend it is a 5x5 nm image
+
     >>> image_sampling = 5/len(image.data) # units nm/pix
     >>> radius_pix_Mo = atomic_radii_in_pixels(image_sampling, 'Mo')
-    >>> radius_pix_S = atomic_radii_in_pixels(image_sampling, 'S')
+    >>> radius_pix_Mo
+    4.62
+
+    >>> radius_pix_S = atomic_radii_in_pixels(image_sampling, 'C')
+    >>> radius_pix_S
+    2.28
 
     '''
 
@@ -75,14 +84,6 @@ def atomic_radii_in_pixels(sampling, element_symbol):
     radius_pix = radius_nm / sampling
 
     return(radius_pix)
-
-
-'''
-Assigning Elements and Z height
-
-split_symbol must be a list
-splitting an element
-'''
 
 
 def split_and_sort_element(element, split_symbol=['_', '.']):

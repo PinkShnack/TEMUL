@@ -965,7 +965,7 @@ def refine_sublattice(
 def do_pca_on_signal(signal, pca_components=22):
     signal.change_dtype('float64')
     temp_signal = hs.signals.Signal1D(signal.data)
-    temp_signal.decomposition()
+    decomp = temp_signal.decomposition()
     temp_signal = temp_signal.get_decomposition_model(pca_components)
     temp_signal = Signal2D(temp_signal.data)
     temp_signal.axes_manager[0].scale = signal.axes_manager[0].scale

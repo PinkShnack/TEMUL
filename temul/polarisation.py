@@ -1348,6 +1348,8 @@ def ratio_of_lattice_spacings(sublattice, zone_axis_index_A, zone_axis_index_B,
     return(ratio_signal)
 
 
+<<<<<<< HEAD
+=======
 def angle_label(degrees=False):
     if degrees:
         return("Angle (deg)")
@@ -1355,6 +1357,7 @@ def angle_label(degrees=False):
         return("Angle (rad)")
 
 
+>>>>>>> master
 def atom_to_atom_distance_grouped_mean(sublattice, zone_axis_index,
                                        aggregation_axis="y",
                                        slice_thickness=10,
