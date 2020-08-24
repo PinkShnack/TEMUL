@@ -3,7 +3,7 @@ from atomap.testing_tools import MakeTestData
 import numpy as np
 import matplotlib.pyplot as plt
 import colorcet as cc
-from atomap.sublattice import Sublattice
+from temul.external.atomap_devel_012.sublattice import Sublattice
 
 
 # some of the below have been adapted from Atomap:

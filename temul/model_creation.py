@@ -10,6 +10,7 @@ import scipy
 import numpy as np
 from numpy import log
 import hyperspy.api as hs
+from hyperspy._signals.signal2d import Signal2D
 import pandas as pd
 from collections import Counter
 
@@ -489,7 +490,7 @@ def image_difference_intensity(sublattice,
     # np.array().T needs to be taken away for newer atomap versions
     sublattice_atom_positions = np.array(sublattice.atom_positions).T
 
-    diff_image = hs.signals.Signal2D(sublattice.image - sim_image.data)
+    diff_image = Signal2D(sublattice.image - sim_image.data)
 
     # create sublattice for the 'difference' data
     diff_sub = am_dev.Sublattice(
@@ -678,9 +679,9 @@ def image_difference_position_new_sub(sublattice_list,
     '''
 
     image_for_sublattice = sublattice_list[0]
-    diff_image = hs.signals.Signal2D(
+    diff_image = Signal2D(
         image_for_sublattice.image - sim_image.data)
-    diff_image_inverse = hs.signals.Signal2D(
+    diff_image_inverse = Signal2D(
         sim_image.data - image_for_sublattice.image)
 
     # below function edit of get_atom_positions. Just allows num_peaks from
@@ -1997,9 +1998,9 @@ def image_difference_position(sublattice,
     '''
 
     image_for_sublattice = sublattice.signal
-    diff_image = hs.signals.Signal2D(
+    diff_image = Signal2D(
         image_for_sublattice.data - sim_image.data)
-    diff_image_inverse = hs.signals.Signal2D(
+    diff_image_inverse = Signal2D(
         sim_image.data - image_for_sublattice.data)
 
     # below function edit of get_atom_positions. Just allows num_peaks from

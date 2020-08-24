@@ -3,8 +3,10 @@ from temul.element_tools import split_and_sort_element
 from temul.external.atomap_devel_012.initial_position_finding import (
     add_atoms_with_gui as choose_points_on_image)
 
-import temul.external.atomap_devel_012.api as am_dev
+from atomap.sublattice import Sublattice
+from atomap.initial_position_finding import get_atom_positions
 from atomap.atom_finding_refining import _make_circular_mask
+import temul.external.atomap_devel_012.api as am_dev
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -18,6 +20,9 @@ from math import sqrt
 import numpy as np
 from numpy import mean
 import hyperspy.api as hs
+from hyperspy.roi import RectangularROI
+from hyperspy._signals.complex_signal2d import ComplexSignal2D
+from hyperspy._signals.signal2d import Signal2D
 import pandas as pd
 import copy
 from tqdm import trange
@@ -659,6 +664,7 @@ def compare_two_image_and_create_filtered_image(
     >>> ideal_sigma
     3.9
     >>> plt.close("all")
+
     '''
 
     image_to_filter_data = image_to_filter.data
@@ -671,7 +677,7 @@ def compare_two_image_and_create_filtered_image(
 
         image_to_filter_data_filtered = gaussian_filter(image_to_filter_data,
                                                         sigma=i)
-        temp_image_filtered = hs.signals.Signal2D(
+        temp_image_filtered = Signal2D(
             image_to_filter_data_filtered)
 
         calibrate_intensity_distance_with_sublattice_roi(
@@ -711,7 +717,7 @@ def compare_two_image_and_create_filtered_image(
     image_to_filter_filtered = gaussian_filter(image_to_filter_data,
                                                sigma=ideal_sigma)
 
-    image_filtered = hs.signals.Signal2D(image_to_filter_filtered)
+    image_filtered = Signal2D(image_to_filter_filtered)
 
     # calibrate_intensity_distance_with_sublattice_roi(
     #     image=image_filtered,
@@ -885,7 +891,7 @@ def double_gaussian_fft_filter(image, d_inner, d_outer, delta=0.05,
 
     # Positive Gaussian
     arr = make_gaussian(size=len(image.data), fwhm=fwhm_pos_gaus, center=None)
-    nD_Gaussian = hs.signals.Signal2D(arr)
+    nD_Gaussian = Signal2D(arr)
     # nD_Gaussian.plot()
     # plt.close()
 
@@ -897,7 +903,7 @@ def double_gaussian_fft_filter(image, d_inner, d_outer, delta=0.05,
     #   However, we do it this way so that we can save a plot of the negative
     # gaussian!
     # np_arr_neg = np_arr_neg
-    nD_Gaussian_neg = hs.signals.Signal2D(arr_neg)
+    nD_Gaussian_neg = Signal2D(arr_neg)
     # nD_Gaussian_neg.plot()
 
     neg_gauss_amplitude = 0.0
@@ -1111,6 +1117,7 @@ def crop_image_hs(image, cropping_area, scalebar_true=True, filename=None):
     >>> from temul.dummy_data import get_simple_cubic_signal
     >>> from temul.signal_processing import (
     ...     choose_points_on_image, crop_image_hs)
+    >>> import matplotlib.pyplot as plt
     >>> image = get_simple_cubic_signal()
     >>> image.plot()
     >>> cropping_area = choose_points_on_image(image.data) # choose two points
@@ -1134,7 +1141,7 @@ def crop_image_hs(image, cropping_area, scalebar_true=True, filename=None):
         rlim *= image.axes_manager[0].scale
         blim *= image.axes_manager[0].scale
 
-    roi = hs.roi.RectangularROI(left=llim, right=rlim, top=tlim, bottom=blim)
+    roi = RectangularROI(left=llim, right=rlim, top=tlim, bottom=blim)
     image.plot()
     image_crop = roi.interactive(image)
     plt.title('Cropped region highlighted', fontsize=20)
@@ -1243,7 +1250,6 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
     >>> calibrate_intensity_distance_with_sublattice_roi(image,
     ...             cropping_area, separation=10)
     >>> image.plot()
-    >>> plt.close("all")
 
     '''
     llim, tlim = cropping_area[0]
@@ -1258,11 +1264,11 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
         rlim *= image.axes_manager[0].scale
         blim *= image.axes_manager[0].scale
 
-    cal_area = hs.roi.RectangularROI(
+    cal_area = RectangularROI(
         left=llim, right=rlim, top=tlim, bottom=blim)(image)
-    atom_positions = am_dev.get_atom_positions(
+    atom_positions = get_atom_positions(
         cal_area, separation=separation, pca=True)
-    calib_sub = am_dev.Sublattice(atom_positions, cal_area, color='r')
+    calib_sub = Sublattice(atom_positions, cal_area, color='r')
 
     if refine:
         calib_sub.find_nearest_neighbors()
@@ -1786,7 +1792,7 @@ def get_masked_ifft(image, mask_coords, mask_radius=10, image_space="real",
     elif not keep_masked_area:
         masked_fft = np.ma.array(fft.data, mask=mask_combined).filled(0)
 
-    masked_fft_image = hs.signals.ComplexSignal2D(masked_fft)
+    masked_fft_image = ComplexSignal2D(masked_fft)
     if plot_masked_fft:
         masked_fft_image.amplitude.plot(norm="log")
     # sort out units here
