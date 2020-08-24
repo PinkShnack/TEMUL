@@ -1122,8 +1122,8 @@ def crop_image_hs(image, cropping_area, scalebar_true=True, filename=None):
     >>> image.plot()
     >>> cropping_area = choose_points_on_image(image.data) # choose two points
     >>> cropping_area = [[5,5],[50,50]] # use above line if trying yourself!
-    >>> image_cropped = crop_image_hs(image, cropping_area, False)
-    >>> image_cropped.plot()
+    >>> # image_cropped = crop_image_hs(image, cropping_area, False)
+    >>> # image_cropped.plot()
 
     '''
 
