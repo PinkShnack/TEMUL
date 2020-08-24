@@ -658,9 +658,10 @@ def compare_two_image_and_create_filtered_image(
     >>> experiment = example_data.load_Se_implanted_MoS2_data() # example
     >>> experiment.data = gaussian_filter(experiment.data, sigma=4)
     >>> simulation = example_data.load_Se_implanted_MoS2_data()
-    >>> # filt_image, ideal_sigma = compare_two_image_and_create_filtered_image(
-    ... #     simulation, experiment, 0.25, cropping_area=[[5,5], [200, 200]],
-    ... #     separation=11, mask_radius=4, percent_to_nn=None, max_sigma=10)
+
+    filt_image, ideal_sigma = compare_two_image_and_create_filtered_image(
+         simulation, experiment, 0.25, cropping_area=[[5,5], [200, 200]],
+         separation=11, mask_radius=4, percent_to_nn=None, max_sigma=10)
 
     '''
 
@@ -1242,11 +1243,11 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
     >>> import matplotlib.pyplot as plt
     >>> image = get_simple_cubic_signal()
     >>> image.plot()
-    >>> cropping_area = choose_points_on_image(image.data) # manually
-    >>> cropping_area = [[10,10],[100,100]] #use above line if trying yourself!
-    >>> # calibrate_intensity_distance_with_sublattice_roi(image,
-    ... #           cropping_area, separation=10)
-    >>> # image.plot()
+    >>> crop_a = choose_points_on_image(image.data) # manually
+    >>> crop_a = [[10,10],[100,100]] #use above line if trying yourself!
+
+    calibrate_intensity_distance_with_sublattice_roi(image, crop_a, 10)
+    image.plot()
 
     '''
     llim, tlim = cropping_area[0]
