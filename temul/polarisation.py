@@ -6,6 +6,7 @@ import matplotlib.colors as colors
 from matplotlib.cm import ScalarMappable
 from decimal import Decimal
 import colorcet as cc
+from matplotlib_scalebar.scalebar import ScaleBar
 
 
 # good to have an example of getting atom_positions_A and B from sublattice
@@ -74,12 +75,13 @@ def find_polarisation_vectors(atom_positions_A, atom_positions_B,
 def plot_polarisation_vectors(x, y, u, v, image,
                               sampling=None, units='pix',
                               plot_style='vector',
-                              overlay=True, normalise=False, degrees=False,
+                              overlay=True, unit_vector=False, degrees=False,
                               save='polarisation_image', title="",
                               color='yellow', cmap=None, monitor_dpi=96,
                               pivot='middle', angles='xy', scale_units='xy',
                               scale=None, headwidth=3.0, headlength=5.0,
-                              headaxislength=4.5, no_axis_info=True):
+                              headaxislength=4.5, no_axis_info=True,
+                              scalebar=False):
     '''
     Plot the polarisation vectors. These can be found with
     `find_polarisation_vectors()` or Atomap's
@@ -102,9 +104,9 @@ def plot_polarisation_vectors(x, y, u, v, image,
         Options are "vector", "colormap", "contour", "colorwheel".
     overlay : Bool, default True
         If set to True, the `image` will be plotting behind the arrows
-    normalise : Bool, default False
-        Normalise the vectors to unit vectors for plotting purposes.
-        Magnitude will still be displayed correctly.
+    unit_vector : Bool, default False
+        Change the vectors magnitude to unit vectors for plotting purposes.
+        Magnitude will still be displayed correctly for colormaps etc.
     degrees : Bool, default False
         If `plot_style="colorwheel"`, then setting `degrees=True` will convert
         the angle unit to degree from the default radians.
@@ -122,6 +124,11 @@ def plot_polarisation_vectors(x, y, u, v, image,
     no_axis_info :  Bool, default True
         This will remove the x and y axis labels and ticks from the plot if set
         to True.
+    scalebar : Bool or dict, default False
+        Add a matplotlib-scalebar to the plot. If set to True the scalebar will
+        appear similar to that given by Hyperspy's `plot()` function. A custom
+        scalebar can be included as a dictionary and more custom options can be
+        found in the matplotlib-scalebar package. See below for an example.
 
     See matplotlib's quiver function for the remaining parameters.
 
@@ -144,7 +151,7 @@ def plot_polarisation_vectors(x, y, u, v, image,
     vector plot with red arrows:
 
     >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
-    ...                           normalise=False, save=None,
+    ...                           unit_vector=False, save=None,
     ...                           plot_style='vector', color='r',
     ...                           overlay=False, title='Vector Arrows',
     ...                           monitor_dpi=50)
@@ -152,51 +159,59 @@ def plot_polarisation_vectors(x, y, u, v, image,
     vector plot with red arrows overlaid on the image:
 
     >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
-    ...                           normalise=False, save=None,
+    ...                           unit_vector=False, save=None,
     ...                           plot_style='vector', color='r',
     ...                           overlay=True, monitor_dpi=50)
 
     vector plot with colormap viridis:
 
     >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
-    ...                           normalise=False, save=None,
+    ...                           unit_vector=False, save=None,
     ...                           plot_style='colormap', monitor_dpi=50,
     ...                           overlay=False, cmap='viridis')
 
-    colormap arrows with sampling applied:
+    colormap arrows with sampling applied and with scalebar:
 
     >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           sampling=3.0321, units='pm', monitor_dpi=50,
-    ...                           normalise=False, plot_style='colormap',
-    ...                           overlay=False, save=None, cmap='viridis')
+    ...                           unit_vector=False, plot_style='colormap',
+    ...                           overlay=True, save=None, cmap='viridis',
+    ...                           scalebar=True)
 
     vector plot with colormap viridis and unit vectors:
 
     >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
-    ...                           normalise=True, save=None, monitor_dpi=50,
+    ...                           unit_vector=True, save=None, monitor_dpi=50,
     ...                           plot_style='colormap', color='r',
     ...                           overlay=False, cmap='viridis')
-    Warning: In future, the `normalise` keyword will be `unit_vector`.
 
-    normalised vectors on a contourf map:
+    Change the vectors to unit vectors on a contourf map:
 
     >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
-    ...                           normalise=True, plot_style='contour',
+    ...                           unit_vector=True, plot_style='contour',
     ...                           overlay=False, pivot='middle', save=None,
     ...                           color='darkgray', cmap='viridis',
     ...                           monitor_dpi=50)
-    Warning: In future, the `normalise` keyword will be `unit_vector`.
 
     "colorwheel" plot of the vectors, useful for vortexes:
 
     >>> import colorcet as cc
     >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
-    ...                           normalise=True, plot_style="colorwheel",
+    ...                           unit_vector=True, plot_style="colorwheel",
     ...                           overlay=False, cmap=cc.cm.colorwheel,
-    ...                           save=None, monitor_dpi=50)
-    Warning: In future, the `normalise` keyword will be `unit_vector`.
+    ...                           degrees=False, save=None, monitor_dpi=50)
 
-    #>>> plt.close('all')
+    Plot with a custom scalebar, for example here we need it to be dark, see
+    matplotlib-scalebar for more custom features.
+
+    >>> scbar_dict = {"dx": 3.0321, "units": "pm", "location": "lower left",
+    ...               "box_alpha":0.0, "color": "black", "scale_loc": "top"}
+    >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    ...                           sampling=3.0321, units='pm', monitor_dpi=50,
+    ...                           unit_vector=False, plot_style='colormap',
+    ...                           overlay=False, save=None, cmap='viridis',
+    ...                           scalebar=scbar_dict)
+
     '''
 
     u, v = np.array(u), np.array(v)
@@ -208,9 +223,7 @@ def plot_polarisation_vectors(x, y, u, v, image,
     # something. None doesn't work!
     vector_mags = get_vector_magnitudes(u, v)
 
-    if normalise:
-        print("Warning: In future, the `normalise` keyword will be "
-              "`unit_vector`.")
+    if unit_vector:
         # Normalise the data for uniform arrow size
         u_norm = u / np.sqrt(u ** 2.0 + v ** 2.0)
         v_norm = v / np.sqrt(u ** 2.0 + v ** 2.0)
@@ -258,6 +271,8 @@ def plot_polarisation_vectors(x, y, u, v, image,
         if degrees:
             colorwheel = colorwheel * (180 / np.pi)
 
+        bar_label = angle_label(degrees=degrees)
+
         if cmap is None:
             cmap = cc.cm.colorwheel
 
@@ -266,7 +281,7 @@ def plot_polarisation_vectors(x, y, u, v, image,
             pivot=pivot, angles=angles, scale_units=scale_units,
             scale=scale, headwidth=headwidth,
             headlength=headlength, headaxislength=headaxislength)
-        plt.colorbar(Q)
+        plt.colorbar(Q, label=bar_label)
 
     elif plot_style == 'contour':
         if cmap is None:
@@ -295,6 +310,14 @@ def plot_polarisation_vectors(x, y, u, v, image,
     if no_axis_info:
         plt.gca().axes.get_xaxis().set_visible(False)
         plt.gca().axes.get_yaxis().set_visible(False)
+
+    if scalebar is True:
+        scbar = ScaleBar(sampling, units, location="lower left", box_alpha=0.0,
+                         color="white", scale_loc="top")
+        plt.gca().add_artist(scbar)
+    elif isinstance(scalebar, dict):
+        scbar = ScaleBar(**scalebar)
+        plt.gca().add_artist(scbar)
 
     # plt.tight_layout()
     if save is not None:
@@ -481,7 +504,7 @@ def atom_deviation_from_straight_line_fit(sublattice,
     >>> sublatticeA.construct_zone_axes()
     >>> x,y,u,v = atom_deviation_from_straight_line_fit(sublatticeA, save=None)
     >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
-    ...                           normalise=False, save=None, monitor_dpi=50)
+    ...                           unit_vector=False, save=None, monitor_dpi=50)
 
     '''
 
@@ -573,10 +596,11 @@ def atom_deviation_from_straight_line_fit(sublattice,
 # need to add the truncated colormap version: divergent plot.
 def plot_atom_deviation_from_all_zone_axes(
         sublattice, image=None, sampling=None, units='pix',
-        plot_style='vector', overlay=True, normalise=False,
+        plot_style='vector', overlay=True, unit_vector=False, degrees=False,
         save='atom_deviation', title="", color='yellow', cmap=None,
         pivot='middle', angles='xy', scale_units='xy', scale=None,
-        headwidth=3.0, headlength=5.0, headaxislength=4.5, monitor_dpi=96):
+        headwidth=3.0, headlength=5.0, headaxislength=4.5, monitor_dpi=96,
+        no_axis_info=True, scalebar=False):
     '''
     Plot the atom deviation from a straight line fit for all zone axes
     constructed by an Atomap sublattice object.
@@ -618,19 +642,21 @@ def plot_atom_deviation_from_all_zone_axes(
 
         plot_polarisation_vectors(
             u=u, v=v, x=x, y=y, image=image, sampling=sampling, units=units,
-            plot_style=plot_style, overlay=overlay, normalise=normalise,
-            save=save, title=title, color=color, cmap=cmap, pivot=pivot,
-            angles=angles, scale_units=scale_units, scale=scale,
+            plot_style=plot_style, overlay=overlay, unit_vector=unit_vector,
+            degrees=degrees, save=save, title=title, color=color, cmap=cmap,
+            pivot=pivot, angles=angles, scale_units=scale_units, scale=scale,
             headwidth=headwidth, headlength=headlength,
-            headaxislength=headaxislength, monitor_dpi=monitor_dpi)
+            headaxislength=headaxislength, monitor_dpi=monitor_dpi,
+            no_axis_info=no_axis_info, scalebar=scalebar)
 
 
 def combine_atom_deviations_from_zone_axes(
         sublattice, image=None, axes=None, sampling=None, units='pix',
-        plot_style='vector', overlay=True, normalise=False,
+        plot_style='vector', overlay=True, unit_vector=False, degrees=False,
         save='atom_deviation', title="", color='yellow', cmap=None,
         pivot='middle', angles='xy', scale_units='xy', scale=None,
-        headwidth=3.0, headlength=5.0, headaxislength=4.5, monitor_dpi=96):
+        headwidth=3.0, headlength=5.0, headaxislength=4.5, monitor_dpi=96,
+        no_axis_info=True, scalebar=False):
     '''
     Combine the atom deviations of each atom for all zone axes.
     Good for plotting vortexes and seeing the total deviation from a
@@ -747,11 +773,12 @@ def combine_atom_deviations_from_zone_axes(
 
         plot_polarisation_vectors(
             u=u, v=v, x=x, y=y, image=image, sampling=sampling, units=units,
-            plot_style=plot_style, overlay=overlay, normalise=normalise,
-            save=save, title=title, color=color, cmap=cmap, pivot=pivot,
-            angles=angles, scale_units=scale_units, scale=scale,
+            plot_style=plot_style, overlay=overlay, unit_vector=unit_vector,
+            degrees=degrees, save=save, title=title, color=color, cmap=cmap,
+            pivot=pivot, angles=angles, scale_units=scale_units, scale=scale,
             headwidth=headwidth, headlength=headlength,
-            headaxislength=headaxislength, monitor_dpi=monitor_dpi)
+            headaxislength=headaxislength, monitor_dpi=monitor_dpi,
+            no_axis_info=no_axis_info, scalebar=scalebar)
 
     return(x, y, u, v)
 
@@ -797,7 +824,7 @@ def get_average_polarisation_in_regions(x, y, u, v, image, divide_into=8):
     >>> x, y, u, v = combine_atom_deviations_from_zone_axes(sublatticeA,
     ...     save=None)
     >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
-    ...                   normalise=False, save=None,
+    ...                   unit_vector=False, save=None,
     ...                   plot_style='vector', color='r',
     ...                   overlay=False, title='Actual Vector Arrows',
     ...                   monitor_dpi=50)
@@ -965,7 +992,7 @@ def get_average_polarisation_in_regions_square(x, y, u, v, image,
 def get_strain_map(sublattice, zone_axis_index, theoretical_value,
                    sampling=None, units='pix', vmin=None, vmax=None,
                    cmap='inferno', title='Strain Map', filename=None,
-                   **kwargs):
+                   return_x_y_z=False, **kwargs):
     '''
     Calculate the strain across a zone axis of a sublattice.
 
@@ -986,6 +1013,9 @@ def get_strain_map(sublattice, zone_axis_index, theoretical_value,
     title : string, default "Strain Map"
     filename : string, optional
         If filename is set, the strain signal and plot will be saved.
+    return_x_y_z : Bool, default False
+        If this is set to True, the `strain_signal` (map), as well as separate
+        lists of the x, y, and strain values.
     **kwargs : Matplotlib keyword arguments passed to `imshow()`.
 
     Returns
@@ -1051,15 +1081,19 @@ def get_strain_map(sublattice, zone_axis_index, theoretical_value,
         strain_signal.save("{}_{}_{}.hspy".format(
             filename, title, zone_axis_index))
 
-    return(strain_signal)
+    if return_x_y_z:
+        return(strain_signal, x_position, y_position, xy_distance)
+    else:
+        return(strain_signal)
 
 
 # Improvement would be to distinguish between horizontal angle e.g., 5 and 175
 # degrees. Also 'deg' and 'rad' should be degrees=True/False
 def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
-                            angle_type='deg', sampling=None, units='pix',
+                            degrees=False, sampling=None, units='pix',
                             vmin=None, vmax=None, cmap='inferno',
-                            title='Rotation Map', filename=None, **kwargs):
+                            title='Rotation Map', filename=None,
+                            return_x_y_z=False, **kwargs):
     '''
     Calculate a map of the angles between each atom along the atom planes of a
     zone axis.
@@ -1073,8 +1107,9 @@ def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
     angle_offset : float, optional
         The angle which can be considered zero degrees. Useful when the atomic
         planes are at an angle.
-    angle_type : string, default "deg"
-        Set `angle_type="deg"` for degrees and `angle_type="rad"` for radians.
+    degrees : Bool, default False
+        Setting to False will return angle values in radian. Setting to True
+        will return angle values in degrees.
     sampling : float, default None
         Pixel sampling of the image for calibration.
     units : string, default "pix"
@@ -1083,6 +1118,9 @@ def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
     title : string, default "Rotation Map"
     filename : string, optional
         If filename is set, the strain signal and plot will be saved.
+    return_x_y_z : Bool, default False
+        If this is set to True, the rotation_signal (map), as well as separate
+        lists of the x, y, and angle values.
     **kwargs : Matplotlib keyword arguments passed to `imshow()`.
 
     Returns
@@ -1100,7 +1138,8 @@ def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
     >>> sublatticeA.construct_zone_axes()
     >>> rotation_map = rotation_of_atom_planes(sublatticeA, 2)
 
-    Use `angle_offset` to choose what the zero degrees should be
+    Use `angle_offset` to effectively change the angle of the horizontal axis
+    when calculating angles:
 
     >>> rotation_map = rotation_of_atom_planes(sublatticeA, 2,
     ...                                        angle_offset=-50)
@@ -1110,25 +1149,32 @@ def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
     zone_vector_index_list = sublattice._get_zone_vector_index_list(
         zone_vector_list=None)
     _, zone_vector = zone_vector_index_list[zone_axis_index]
-    x_list, y_list, _ = sublattice.get_atom_distance_list_from_zone_vector(
-        zone_vector)
 
     angles_list_rad = []
+    x_list, y_list = [], []
     for atom_plane in sublattice.atom_plane_list:
         if atom_plane.zone_vector == zone_vector:
+            pos_distance = atom_plane.position_distance_to_neighbor()
+            x_half_pos = pos_distance[:, 0]
+            y_half_pos = pos_distance[:, 1]
             angle = atom_plane.get_angle_to_horizontal_axis()
+
+            x_list.append(x_half_pos)
+            y_list.append(y_half_pos)
             angles_list_rad.append(angle)
 
-    # flatten the list
+    # flatten the lists
+    x_list = [i for sublist in x_list for i in sublist]
+    y_list = [i for sublist in y_list for i in sublist]
     angles_list_rad = [i for sublist in angles_list_rad for i in sublist]
 
-    if 'deg' in angle_type:
+    if degrees:
         angles_list_deg = [np.degrees(i) for i in angles_list_rad]
         angles_list = angles_list_deg
-    elif 'rad' in angle_type:
+    elif not degrees:
         angles_list = angles_list_rad
-    else:
-        raise ValueError("angle_type must be 'deg' or 'rad'.")
+
+    bar_label = angle_label(degrees=degrees)
 
     if angle_offset is not None:
         angles_list = [i + angle_offset for i in angles_list]
@@ -1155,7 +1201,7 @@ def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
     cbar.set_array(angles_list)
     cbar.set_clim(vmin, vmax)
     plt.colorbar(cbar, fraction=0.046, pad=0.04,
-                 label="Rotation of Atom Planes ({})".format(angle_type))
+                 label=bar_label)
     plt.tight_layout()
 
     if filename is not None:
@@ -1166,7 +1212,10 @@ def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
         rotation_signal.save("{}_{}_{}.hspy".format(
             filename, title, zone_axis_index))
 
-    return(rotation_signal)
+    if return_x_y_z:
+        return(rotation_signal, x_list, y_list, angles_list)
+    else:
+        return(rotation_signal)
 
 
 def ratio_of_lattice_spacings(sublattice, zone_axis_index_A, zone_axis_index_B,
@@ -1299,6 +1348,16 @@ def ratio_of_lattice_spacings(sublattice, zone_axis_index_A, zone_axis_index_B,
     return(ratio_signal)
 
 
+<<<<<<< HEAD
+=======
+def angle_label(degrees=False):
+    if degrees:
+        return("Angle (deg)")
+    else:
+        return("Angle (rad)")
+
+
+>>>>>>> master
 def atom_to_atom_distance_grouped_mean(sublattice, zone_axis_index,
                                        aggregation_axis="y",
                                        slice_thickness=10,
