@@ -32,6 +32,7 @@ def load_example_Au_nanoparticle():
     -------
     >>> import temul.example_data as example_data
     >>> s = example_data.load_example_Au_nanoparticle()
+    >>> s.plot()
 
     """
     global example_Au_nanoparticle
@@ -47,14 +48,15 @@ def load_example_Au_nanoparticle():
 example_Cu_nanoparticle_sim = None
 
 
-def load_example_Cu_nanoparticle():
+def load_example_Cu_nanoparticle_sim():
     """
     Get the hspy simulated image of an example Cu nanoparticle
 
     Example
     -------
     >>> import temul.example_data as example_data
-    >>> s = example_data.load_example_Cu_nanoparticle()
+    >>> s = example_data.load_example_Cu_nanoparticle_sim()
+    >>> s.plot()
 
     """
     global example_Cu_nanoparticle_sim
@@ -77,7 +79,8 @@ def load_Se_implanted_MoS2_data():
     Example
     -------
     >>> import temul.example_data as example_data
-    >>> s = example_data.load_example_Cu_nanoparticle()
+    >>> s = example_data.load_Se_implanted_MoS2_data()
+    >>> s.plot()
 
     """
     global example_Se_implanted_MoS2
@@ -101,6 +104,7 @@ def load_Se_implanted_MoS2_simulation():
     -------
     >>> import temul.example_data as example_data
     >>> s = example_data.load_Se_implanted_MoS2_simulation()
+    >>> s.plot()
 
     """
     global example_Se_implanted_MoS2_simulation
