@@ -647,6 +647,7 @@ def compare_two_image_and_create_filtered_image(
     --------
     >>> from scipy.ndimage.filters import gaussian_filter
     >>> import temul.example_data as example_data
+    >>> import matplotlib.pyplot as plt
     >>> from temul.signal_processing import (
     ...     compare_two_image_and_create_filtered_image)
     >>> experiment = example_data.load_Se_implanted_MoS2_data() # example
@@ -657,7 +658,7 @@ def compare_two_image_and_create_filtered_image(
     ...     separation=11, mask_radius=4, percent_to_nn=None, max_sigma=10)
     >>> ideal_sigma
     3.9
-
+    >>> plt.close("all")
     '''
 
     image_to_filter_data = image_to_filter.data
@@ -1234,6 +1235,7 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
     >>> from temul.dummy_data import get_simple_cubic_signal
     >>> from temul.signal_processing import (choose_points_on_image,
     ...             calibrate_intensity_distance_with_sublattice_roi)
+    >>> import matplotlib.pyplot as plt
     >>> image = get_simple_cubic_signal()
     >>> image.plot()
     >>> cropping_area = choose_points_on_image(image.data) # manually
@@ -1241,6 +1243,7 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
     >>> calibrate_intensity_distance_with_sublattice_roi(image,
     ...             cropping_area, separation=10)
     >>> image.plot()
+    >>> plt.close("all")
 
     '''
     llim, tlim = cropping_area[0]
@@ -1249,22 +1252,19 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
     if image.axes_manager[0].scale != image.axes_manager[1].scale:
         raise ValueError("x & y scales don't match!")
 
-    if scalebar_true is True:
+    if scalebar_true:
         llim *= image.axes_manager[0].scale
         tlim *= image.axes_manager[0].scale
         rlim *= image.axes_manager[0].scale
         blim *= image.axes_manager[0].scale
-    else:
-        pass
 
     cal_area = hs.roi.RectangularROI(
         left=llim, right=rlim, top=tlim, bottom=blim)(image)
     atom_positions = am_dev.get_atom_positions(
         cal_area, separation=separation, pca=True)
-    # atom_positions = am_dev.add_atoms_with_gui(cal_area, atom_positions)
     calib_sub = am_dev.Sublattice(atom_positions, cal_area, color='r')
-    # calib_sub.plot()
-    if refine is True:
+
+    if refine:
         calib_sub.find_nearest_neighbors()
         calib_sub.refine_atom_positions_using_center_of_mass(
             percent_to_nn=percent_to_nn, mask_radius=mask_radius,
@@ -1272,9 +1272,7 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
         calib_sub.refine_atom_positions_using_2d_gaussian(
             percent_to_nn=percent_to_nn, mask_radius=mask_radius,
             show_progressbar=False)
-    else:
-        pass
-    # calib_sub.plot()
+
     calib_sub.get_atom_column_amplitude_max_intensity(
         percent_to_nn=percent_to_nn, mask_radius=mask_radius)
     calib_sub_max_list = calib_sub.atom_amplitude_max_intensity
