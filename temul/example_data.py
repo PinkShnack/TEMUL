@@ -74,7 +74,7 @@ example_Se_implanted_MoS2 = None
 
 def load_Se_implanted_MoS2_data():
     """
-    Get the hspy simulated image of an example Cu nanoparticle
+    Load an ADF image of Se implanted monolayer MoS2.
 
     Example
     -------
