@@ -3,8 +3,8 @@ from temul.element_tools import split_and_sort_element
 from temul.external.atomap_devel_012.initial_position_finding import (
     add_atoms_with_gui as choose_points_on_image)
 
-from atomap.sublattice import Sublattice
-from atomap.atom_finding_refining import (
+from temul.external.atomap_devel_012.sublattice import Sublattice
+from temul.external.atomap_devel_012.atom_finding_refining import (
     get_atom_positions, _make_circular_mask)
 import temul.external.atomap_devel_012.api as am_dev
 
