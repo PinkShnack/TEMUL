@@ -12,7 +12,7 @@ setup(
             'temul.external.atomap_devel_012.external',
             'temul.external.skimage_devel_0162',
             ],
-        version = '1.0.20',
+        version = '1.0.21',
         description = 'Functions for analysis of high resolution electron microscopy and spectroscopy data.',
         long_description=long_description,
         long_description_content_type='text/markdown',
@@ -29,7 +29,7 @@ setup(
             'atomic models'
             ],
         install_requires = [
-            'atomap',
+            'atomap==0.2.0',
             'colorcet',
             'glob2',
             'hyperspy',
@@ -50,5 +50,14 @@ setup(
             'Intended Audience :: Science/Research',
             'Programming Language :: Python :: 3',
             ],
+        package_data = {
+            'temul.example_data.experimental': [
+                'example_Au_nanoparticle.emd',
+                'example_Se_implanted_MoS2.dm3'],
+            'temul.example_data.prismatic': [
+                'example_MoS2_vesta_xyz.xyz'],
+            'temul.example_data.structures': [
+                'example_Cu_nanoparticle_sim.hspy'],
+            },
         include_package_data=True,
 )
