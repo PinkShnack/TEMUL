@@ -1,12 +1,15 @@
 
 import numpy as np
 import scipy
+from scipy.optimize import curve_fit
+from scipy.misc import derivative
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 from matplotlib.cm import ScalarMappable
 from decimal import Decimal
 import colorcet as cc
 from matplotlib_scalebar.scalebar import ScaleBar
+from temul.signal_processing import sine_wave_function_strain_gradient
 
 
 # good to have an example of getting atom_positions_A and B from sublattice
@@ -1442,6 +1445,116 @@ def atom_to_atom_distance_grouped_mean(sublattice, zone_axis_index,
         grouped_means.append(np.mean(grouped_region))
 
     return(groupings, grouped_means)
+
+
+def get_strain_gradient(sublattice, zone_vector_index,
+                        atom_planes=None, sampling=None, units='pix',
+                        vmin=None, vmax=None, cmap='inferno',
+                        title='Strain Gradient Map', filename=None, **kwargs):
+    """
+    Calculates the strain gradient in a lattice via a sinusoidal fit of chosen
+    atom planes of a Atomap Sublattice object.
+
+    Parameters
+    ----------
+
+    sublattice : Atomap Sublattice object
+    zone_vector_index : int
+        The index of the zone axis (translation symmetry) found by the Atomap
+        function `construct_zone_axes()`.
+    atom_planes : tuple, optional
+        The starting and ending atom plane to be computed. Useful if only a
+        section of the image should be fitted with sine waves. Given in the
+        form e.g., (0, 3).
+    sampling : float, optional
+        sampling of an image in units of units/pix
+    units : string, default "pix"
+        Units of sampling, for display purposes.
+    vmin, vmax, cmap : see Matplotlib documentation, default None
+    title : string, default 'Strain Gradient Map'
+    filename : string
+        Name of the file to be saved.
+    **kwargs
+        keyword arguments to be passed to Matplotlib's imshow.
+
+    Examples
+    --------
+    >>> from temul.dummy_data import sine_wave_sublattice
+    >>> from temul.polarisation import get_strain_gradient
+    >>> sublattice = sine_wave_sublattice()
+    >>> sublattice.construct_zone_axes(atom_plane_tolerance=1)
+    >>> sublattice.plot()
+    >>> strain_grad_map = get_strain_gradient(sublattice, zone_vector_index=0)
+
+    Just compute several atom planes:
+
+    >>> strain_grad_map = get_strain_gradient(sublattice, 0, atom_planes=(0,3))
+
+    Returns
+    -------
+    Strain Gradient Map as a Hyperspy Signal2D
+
+    References
+    ----------
+    .. [1] Reference: Function adapted from a script written by
+    Dr. Marios Hadjimichael, and used in paper_name.
+
+    """
+
+    if sublattice.zones_axis_average_distances is None:
+        raise Exception(
+            "zones_axis_average_distances is empty. "
+            "Has sublattice.construct_zone_axes() been run?")
+    else:
+        zone_vector = sublattice.zones_axis_average_distances[
+            zone_vector_index]
+
+    atom_plane_list = sublattice.atom_planes_by_zone_vector[zone_vector]
+
+    if atom_planes is not None:
+        atom_plane_list = atom_plane_list[atom_planes[0]:atom_planes[1]]
+
+    strain_gradient = []
+    x_list, y_list = [], []
+    for atom_plane in atom_plane_list:
+        # fit a sine wave to the atoms in the atom_plane
+        params, _ = curve_fit(sine_wave_function_strain_gradient,
+                              atom_plane.x_position, atom_plane.y_position)
+
+        # calculate the second derivative of the sine wave
+        #   with respect to x analytically (to extract the strain gradient)
+        second_der = derivative(sine_wave_function_strain_gradient,
+                                np.asarray(atom_plane.x_position),
+                                dx=1e-6, n=2, args=(params))
+
+        x_list.extend(atom_plane.x_position)
+        y_list.extend(atom_plane.y_position)
+        strain_gradient.extend(list(second_der))
+
+    strain_gradient_map = sublattice.get_property_map(
+        x_list, y_list, strain_gradient, upscale_map=1)
+    if sampling is not None:
+        strain_gradient_map.axes_manager[0].scale = sampling
+        strain_gradient_map.axes_manager[1].scale = sampling
+    strain_gradient_map.axes_manager[0].units = units
+    strain_gradient_map.axes_manager[1].units = units
+
+    strain_gradient_map.plot(vmin=vmin, vmax=vmax, cmap=cmap, **kwargs)
+    # need to put in colorbar axis units like in get_strain_map
+    plt.gca().axes.get_xaxis().set_visible(False)
+    plt.gca().axes.get_yaxis().set_visible(False)
+    plt.title("{} of Index {}".format(title, zone_vector_index))
+    plt.tight_layout()
+
+    if filename is not None:
+        plt.savefig(fname="{}_{}_{}.png".format(
+            filename, title, zone_vector_index),
+            transparent=True, frameon=False, bbox_inches='tight',
+            pad_inches=None, dpi=300, labels=False)
+        strain_gradient_map.save("{}_{}_{}.hspy".format(
+            filename, title, zone_vector_index))
+
+    return(strain_gradient_map)
 
 
 """
