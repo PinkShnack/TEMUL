@@ -75,7 +75,7 @@ def find_polarisation_vectors(atom_positions_A, atom_positions_B,
 
 def plot_polarisation_vectors(
         x, y, u, v, image, sampling=None, units='pix',
-        plot_style='vector', vector_rep='vector',
+        plot_style='vector', vector_rep='magnitude',
         overlay=True, unit_vector=False, degrees=False,
         save='polarisation_image', title="",
         color='yellow', cmap=None, alpha=1.0,
