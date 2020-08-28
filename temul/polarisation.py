@@ -1,6 +1,7 @@
 
 import numpy as np
 import scipy
+import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 from matplotlib.cm import ScalarMappable
@@ -72,16 +73,16 @@ def find_polarisation_vectors(atom_positions_A, atom_positions_B,
     return(u, v)
 
 
-def plot_polarisation_vectors(x, y, u, v, image,
-                              sampling=None, units='pix',
-                              plot_style='vector',
-                              overlay=True, unit_vector=False, degrees=False,
-                              save='polarisation_image', title="",
-                              color='yellow', cmap=None, monitor_dpi=96,
-                              pivot='middle', angles='xy', scale_units='xy',
-                              scale=None, headwidth=3.0, headlength=5.0,
-                              headaxislength=4.5, no_axis_info=True,
-                              scalebar=False):
+def plot_polarisation_vectors(
+        x, y, u, v, image, sampling=None, units='pix',
+        plot_style='vector', vector_rep='vector',
+        overlay=True, unit_vector=False, degrees=False,
+        save='polarisation_image', title="",
+        color='yellow', cmap=None, alpha=1.0,
+        monitor_dpi=96, pivot='middle', angles='xy',
+        scale_units='xy', scale=None, headwidth=3.0, headlength=5.0,
+        headaxislength=4.5, no_axis_info=True,
+        scalebar=False, antialiased=False, remove_vectors=False):
     '''
     Plot the polarisation vectors. These can be found with
     `find_polarisation_vectors()` or Atomap's
@@ -101,13 +102,20 @@ def plot_polarisation_vectors(x, y, u, v, image,
     units : string, default "pix"
         Units used to display the magnitude of the vectors.
     plot_style : string, default "vector"
-        Options are "vector", "colormap", "contour", "colorwheel".
+        Options are "vector", "colormap", "contour", "colorwheel". Note that
+        "colorwheel" will automatically plot the colorbar as an angle.
+    vector_rep : str, default "magnitude"
+        How the vectors are represented. This can be either their `magnitude`
+        or `angle`. One may want to use `angle` when plotting a contour map,
+        i.e., view the contours in terms of angles which can be useful for
+        visualising regions of different polarisation.
     overlay : Bool, default True
         If set to True, the `image` will be plotting behind the arrows
     unit_vector : Bool, default False
         Change the vectors magnitude to unit vectors for plotting purposes.
         Magnitude will still be displayed correctly for colormaps etc.
     degrees : Bool, default False
+        Change between degrees and radian. Default is radian.
         If `plot_style="colorwheel"`, then setting `degrees=True` will convert
         the angle unit to degree from the default radians.
     save : string, default "polarisation_image"
@@ -117,6 +125,10 @@ def plot_polarisation_vectors(x, y, u, v, image,
     color : string, default "r"
         Color of the arrows when `plot_style="vector" or "contour".
     cmap : matplotlib colormap, default "viridis"
+    alpha : float, default 1.0
+        Transparency of the matplotlib `cmap`. For `plot_style="colormap"` and
+        `plot_style="colorwheel"`, this alpha applies to the vector arrows.
+        For `plot_style="contour"` this alpha applies to the tricontourf map.
     monitor_dpi : int, default 96
         The DPI of the monitor, generally 96 pixels. Used to scale the image
         so that large images render correctly. Use a smaller value or
@@ -129,7 +141,12 @@ def plot_polarisation_vectors(x, y, u, v, image,
         appear similar to that given by Hyperspy's `plot()` function. A custom
         scalebar can be included as a dictionary and more custom options can be
         found in the matplotlib-scalebar package. See below for an example.
-
+    antialiased : Bool, default False
+        Applies only to `plot_style="contour"`. Essentially removes the
+        border between regions in the tricontourf map.
+    remove_vectors : Bool, default False
+        Applies only to `plot_style="contour"`. If set to True, do not plot
+        the vector arrows.
     See matplotlib's quiver function for the remaining parameters.
 
     Examples
@@ -185,13 +202,23 @@ def plot_polarisation_vectors(x, y, u, v, image,
     ...                           plot_style='colormap', color='r',
     ...                           overlay=False, cmap='viridis')
 
-    Change the vectors to unit vectors on a contourf map:
+    Change the vectors to unit vectors on a tricontourf map:
 
     >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           unit_vector=True, plot_style='contour',
     ...                           overlay=False, pivot='middle', save=None,
     ...                           color='darkgray', cmap='viridis',
     ...                           monitor_dpi=50)
+
+    Plot a partly transparent tricontourf map with no vector arrows:
+
+    >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    ...                           unit_vector=True, plot_style='contour',
+    ...                           overlay=True, pivot='middle', save=None,
+    ...                           color='darkgray', cmap='viridis',
+    ...                           monitor_dpi=50, remove_vectors=True,
+    ...                           vector_rep="angle", alpha=0.5,
+    ...                           antialiased=True)
 
     "colorwheel" plot of the vectors, useful for vortexes:
 
@@ -219,9 +246,13 @@ def plot_polarisation_vectors(x, y, u, v, image,
     if sampling is not None:
         u, v = u * sampling, v * sampling
 
-    # for ax.quiver optional C paramater, we need to set this to
-    # something. None doesn't work!
-    vector_mags = get_vector_magnitudes(u, v)
+    if vector_rep == "magnitude":
+        vector_rep_val = get_vector_magnitudes(u, v)
+    elif vector_rep == "angle":
+        vector_rep_val = get_angles_from_uv(u, v, degrees=degrees)
+
+    vector_label = angle_label(
+            vector_rep=vector_rep, units=units, degrees=degrees)
 
     if unit_vector:
         # Normalise the data for uniform arrow size
@@ -249,51 +280,52 @@ def plot_polarisation_vectors(x, y, u, v, image,
                      labelpos='E', coordinates='axes')
 
     elif plot_style == "colormap":
+
         if cmap is None:
             cmap = 'viridis'
         ax.quiver(
-            x, y, u, v, vector_mags, color=color, cmap=cmap,
+            x, y, u, v, vector_rep_val, color=color, cmap=cmap,
             pivot=pivot, angles=angles, scale_units=scale_units,
-            scale=scale, headwidth=headwidth,
+            scale=scale, headwidth=headwidth, alpha=alpha,
             headlength=headlength, headaxislength=headaxislength)
 
-        norm = colors.Normalize(vmin=np.min(vector_mags),
-                                vmax=np.max(vector_mags))
+        norm = colors.Normalize(vmin=np.min(vector_rep_val),
+                                vmax=np.max(vector_rep_val))
         sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
         sm.set_array([])
         cbar = plt.colorbar(mappable=sm)
-        cbar.ax.set_ylabel('Vector Magnitude ({})'.format(units))
+        cbar.ax.set_ylabel(vector_label)
 
     elif plot_style == "colorwheel":
 
         # -v because in STEM the origin is top left
-        colorwheel = np.arctan2(-v, u)
-        if degrees:
-            colorwheel = colorwheel * (180 / np.pi)
-
-        bar_label = angle_label(degrees=degrees)
-
+        colorwheel = get_angles_from_uv(u, -v, degrees=degrees)
+        vector_label = angle_label(
+                vector_rep='angle', degrees=degrees)
         if cmap is None:
             cmap = cc.cm.colorwheel
 
         Q = ax.quiver(
-            x, y, u, v, colorwheel, cmap=cmap,
+            x, y, u, v, colorwheel, cmap=cmap, alpha=alpha,
             pivot=pivot, angles=angles, scale_units=scale_units,
             scale=scale, headwidth=headwidth,
             headlength=headlength, headaxislength=headaxislength)
-        plt.colorbar(Q, label=bar_label)
+        plt.colorbar(Q, label=vector_label)
 
-    elif plot_style == 'contour':
+    elif plot_style == "contour":
+
         if cmap is None:
             cmap = 'viridis'
 
-        contour_map = plt.tricontourf(x, y, vector_mags, cmap=cmap)
-
-        ax.quiver(
-            x, y, u, v, color=color, pivot=pivot,
-            angles=angles, scale_units=scale_units,
-            scale=scale, headwidth=headwidth,
-            headlength=headlength, headaxislength=headaxislength)
+        contour_map = plt.tricontourf(x, y, vector_rep_val, cmap=cmap,
+                                      alpha=alpha, antialiased=antialiased)
+        
+        if not remove_vectors:
+            ax.quiver(
+                x, y, u, v, color=color, pivot=pivot,
+                angles=angles, scale_units=scale_units,
+                scale=scale, headwidth=headwidth,
+                headlength=headlength, headaxislength=headaxislength)
 
     ax.set(aspect='equal')
     ax.set_xlim(0, image.shape[1])
@@ -302,8 +334,7 @@ def plot_polarisation_vectors(x, y, u, v, image,
     if plot_style == 'contour':
         cbar = plt.colorbar(mappable=contour_map, fraction=0.046, pad=0.04)
         cbar.ax.tick_params(labelsize=14)
-        cbar.ax.set_ylabel('Vector Magnitude ({})'.format(units),
-                           fontsize=14)
+        cbar.ax.set_ylabel(vector_label, fontsize=14)
     if overlay:
         plt.imshow(image)
 
@@ -324,6 +355,33 @@ def plot_polarisation_vectors(x, y, u, v, image,
         plt.savefig(fname=save + '_' + plot_style + '.png',
                     transparent=True, frameon=False, bbox_inches='tight',
                     pad_inches=None, dpi=300, labels=False)
+
+
+def get_angles_from_uv(u, v, degrees=False):
+    '''
+    Calculate the angle of a vector given the uv components.
+    
+    Parameters
+    ----------
+    u,v  : list or 1D NumPy array
+    degrees : Bool, default False
+        Change between degrees and radian. Default is radian.
+
+    Returns
+    -------
+    1D NumPy array
+    '''
+
+    u_comp = np.array(u)
+    v_comp = np.array(v).T
+
+    vector_angles = np.arctan2(v_comp, u_comp)
+
+    if degrees:
+        vector_angles = vector_angles * 180 / np.pi
+
+    return(vector_angles)
+
 
 
 def get_vector_magnitudes(u, v, sampling=None):
@@ -1348,11 +1406,19 @@ def ratio_of_lattice_spacings(sublattice, zone_axis_index_A, zone_axis_index_B,
     return(ratio_signal)
 
 
-def angle_label(degrees=False):
-    if degrees:
-        return("Angle (deg)")
+def angle_label(vector_rep="magnitude", units='pix', degrees=False):
+    
+    if vector_rep == "magnitude":
+        vector_label = "Magnitude ({})".format(units)
+    elif vector_rep == "angle":
+        if degrees:
+            vector_label = "Angle (deg)"
+        else:
+            vector_label = "Angle (rad)"
     else:
-        return("Angle (rad)")
+        raise ValueError(
+                "`vector_rep` must be either 'magnitude' or 'angle'.")
+    return(vector_label)
 
 
 def atom_to_atom_distance_grouped_mean(sublattice, zone_axis_index,
