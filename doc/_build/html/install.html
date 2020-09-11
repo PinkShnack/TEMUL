@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html4" lang="en" >
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -26,10 +26,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -158,24 +158,21 @@
             
   <div class="section" id="installation">
 <span id="install"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<p>TLDR: Place the temul folder into your site packages folder.
-Now that PyPrismatic can be installed via conda, we hope to have a pip or conda
-installation available for the TEMUL Toolkit soon.</p>
-<p>The easiest way to use the TEMUL Toolkit is to place the temul folder (lowercase) into your Python packages directory as follows:</p>
-<ol class="arabic simple">
-<li>Go to the <a class="reference external" href="https://github.com/PinkShnack/TEMUL">TEMUL Toolkit source code</a>.</li>
-<li>Click on the green “Code” button. Git clone or Download the ZIP to download the TEMUL package.</li>
-<li>Navigate into the TEMUL folder, copy the “temul” folder.</li>
-<li>Navigate to your python packages directory and paste the “temul” folder there. In an Anaconda installation, this can be found at “anaconda3/Lib/site-packages”</li>
-<li>Open Anaconda prompt and run <code class="code bash docutils literal notranslate"><span class="pre">python</span></code>. Run <code class="code bash docutils literal notranslate"><span class="pre">import</span> <span class="pre">temul</span></code>. If no error occurs, run <code class="code bash docutils literal notranslate"><span class="pre">temul</span></code>, which should show the directory in which you just pasted the temul folder.</li>
-<li>If you’re using any of the functions or classes that require element quantification:<ul>
-<li>navigate to the “temul/external” directory, copy the “atomap_devel_012” folder and paste that in your “site-packages” directory.</li>
-<li>Then, when using atomap to create sublattices and quantify elements call atomap like this: <code class="code python docutils literal notranslate"><span class="keyword namespace"><span class="pre">import</span></span> <span class="name namespace"><span class="pre">atomap_devel_012.api</span></span> <span class="keyword namespace"><span class="pre">as</span></span> <span class="name namespace"><span class="pre">am</span></span></code>.</li>
-<li>This development version is slowly being folded into the master branch here: <a class="reference external" href="https://gitlab.com/PinkShnack/atomap/-/tree/chemical_info">https://gitlab.com/PinkShnack/atomap/-/tree/chemical_info</a>.</li>
-<li>The original issue can be found here: <a class="reference external" href="https://gitlab.com/atomap/atomap/-/issues/93">https://gitlab.com/atomap/atomap/-/issues/93</a> and any help or tips on implementation are welcome!</li>
+<p>The TEMUL Toolkit can be installed easily with PIP.</p>
+<p><code class="code bash docutils literal notranslate"><span class="pre">$</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">temul-toolkit</span></code></p>
+<p>Then, it can be imported with the name “temul”. For example, to import the
+<code class="code python docutils literal notranslate"><span class="name"><span class="pre">polarisation</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">py</span></span></code> module, use:</p>
+<p><code class="code python docutils literal notranslate"><span class="keyword namespace"><span class="pre">import</span></span> <span class="name namespace"><span class="pre">temul.polarisation</span></span> <span class="keyword"><span class="pre">as</span></span> <span class="name namespace"><span class="pre">tmlpol</span></span></code></p>
+<p>Note 1: If you wish to use the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">simulations</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">py</span></span></code> or <code class="code python docutils literal notranslate"><span class="name"><span class="pre">model_refiner</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">py</span></span></code>
+modules, you will need to install PyPrismatic.</p>
+<p>Note 2: If you’re using any of the functions or classes that require element quantification:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>navigate to the “temul/external” directory, copy the “atomap_devel_012” folder and paste that in your “site-packages” directory.</p></li>
+<li><p>Then, when using atomap to create sublattices and quantify elements call atomap like this: <code class="code python docutils literal notranslate"><span class="keyword namespace"><span class="pre">import</span></span> <span class="name namespace"><span class="pre">atomap_devel_012.api</span></span> <span class="keyword"><span class="pre">as</span></span> <span class="name namespace"><span class="pre">am</span></span></code>.</p></li>
+<li><p>This development version is slowly being folded into the master branch here: <a class="reference external" href="https://gitlab.com/atomap/atomap/-/issues/93">https://gitlab.com/atomap/atomap/-/issues/93</a> and any help or tips on implementation are welcome!</p></li>
 </ul>
-</li>
-</ol>
+</div></blockquote>
 </div>
 
 

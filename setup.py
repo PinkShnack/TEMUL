@@ -15,7 +15,7 @@ setup(
             'temul.external.atomap_devel_012.external',
             'temul.external.skimage_devel_0162',
             ],
-        version = '1.0.24',
+        version = '0.1.0',
         description = 'Functions for analysis of high resolution electron microscopy and spectroscopy data.',
         long_description=long_description,
         long_description_content_type='text/markdown',
@@ -32,7 +32,7 @@ setup(
             'atomic models'
             ],
         install_requires = [
-            'atomap==0.2.0',
+            'atomap',
             'colorcet',
             'glob2',
             'hyperspy',
@@ -42,7 +42,7 @@ setup(
             'pandas',
             'periodictable',
             'PyCifRW==4.3',
-            'scikit-image==0.16.2',
+            'scikit-image>=0.16.2',
             'scipy',
             'tifffile',
             ],
