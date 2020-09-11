@@ -12,7 +12,7 @@ from matplotlib_scalebar.scalebar import ScaleBar
 
 # good to have an example of getting atom_positions_A and B from sublattice
 def find_polarisation_vectors(atom_positions_A, atom_positions_B,
-                              save='uv_vectors_array'):
+                              save=None):
     '''
     Calculate the vectors from atom_positions_A to atom_positions_B.
 
@@ -20,8 +20,8 @@ def find_polarisation_vectors(atom_positions_A, atom_positions_B,
     ----------
     atom_positions_A, atom_positions_B : list
         Atom positions list in the form [[x1,y1], [x2,y2], [x3,y3]...].
-    save : string, default 'uv_vectors_array'
-        If set to `save=None`, the array will not be saved.
+    save : string, default None
+        If set to a string, the array will be saved.
 
     Returns
     -------
