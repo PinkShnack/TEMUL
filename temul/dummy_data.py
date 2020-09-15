@@ -268,3 +268,75 @@ def polarisation_colorwheel_test_dataset(cmap=cc.cm.colorwheel, plot_XY=True,
     if plot_XY is True:
         plt.scatter(x, y, color='k', alpha=0.7, s=2)
     plt.colorbar(Q)
+
+
+def polarisation_dummy_data():
+    pass
+
+
+
+
+def _make_polarization_film_A(image_noise=False):
+    test_data = MakeTestData(312, 312)
+    sizes = [np.mgrid[5:156:20, 5:156:20], 
+            np.mgrid[156+10:312:20, 5:156:20],
+            np.mgrid[5:156:20, 156+10:312:20],
+            np.mgrid[156+10:312:20, 156+10:312:20]]
+    for size in sizes:
+        x0, y0 = size
+        x0_list = x0.flatten()
+        y0_list = y0.flatten()
+        amplitude0 = np.ones(len(x0_list)) * 20
+        test_data.add_atom_list(
+                x0_list, y0_list, sigma_x=3, sigma_y=3, amplitude=amplitude0)
+    
+    if image_noise:
+        test_data.add_image_noise(mu=0, sigma=0.004)
+    return test_data
+
+test_data.sublattice.plot()
+
+
+def _make_polarization_film_B(image_noise=False):
+    test_data = MakeTestData(312, 312)
+
+    sizes = [np.mgrid[15:156:20, 15:156:20], 
+            np.mgrid[156+10:312:20, 5:156:20],
+            np.mgrid[5:156:20, 156+10:312:20],
+            np.mgrid[156+10:312:20, 156+10:312:20]]
+    for size in sizes:
+        x0, y0 = size
+        x0_list = x0.flatten()
+        y0_list = y0.flatten()
+        amplitude0 = np.ones(len(x0_list)) * 20
+        test_data.add_atom_list(
+                x0_list, y0_list, sigma_x=3, sigma_y=3, amplitude=amplitude0)
+    
+    if image_noise:
+        test_data.add_image_noise(mu=0, sigma=0.004)
+    return test_data
+    
+    max_x = -3
+    test_data = MakeTestData(312, 312)
+    x0, y0 = np.mgrid[15:312:20, 15:136:20]
+    x0 = x0.astype('float64')
+    y0 = y0.astype('float64')
+    dx = max_x/y0.shape[1]
+    for i in range(y0.shape[1]):
+        x0[:, y0.shape[1] - 1 - i] += dx * i
+    x0_list = x0.flatten()
+    y0_list = y0.flatten()
+    amplitude0 = np.ones(len(x0_list)) * 8
+    test_data.add_atom_list(
+            x0_list, y0_list, sigma_x=3, sigma_y=3, amplitude=amplitude0)
+    x1, y1 = np.mgrid[15:312:20, 135+20:312:20]
+    x1_list = x1.flatten()
+    y1_list = y1.flatten()
+    amplitude1 = np.ones(len(x1_list)) * 8
+    test_data.add_atom_list(
+            x1_list, y1_list, sigma_x=3, sigma_y=3, amplitude=amplitude1)
+    if image_noise:
+        test_data.add_image_noise(mu=0, sigma=0.004)
+    return test_data
+
+
