@@ -364,6 +364,9 @@ def plot_polarisation_vectors(
     ax.set_ylim(image.shape[0], 0)
 
     if plot_style == 'contour':
+        # if we want the colorbar from -180 to 180 and the data to fit inside
+        # this without rescaling, maybe make a stackoverflow Q or use linear
+        # interpolation. Then could prob work with normal contourf or imshow.
         cbar = plt.colorbar(mappable=contour_map, fraction=0.046, pad=0.04,
                             drawedges=False)
         cbar.ax.tick_params(labelsize=14)

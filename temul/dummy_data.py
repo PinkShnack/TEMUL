@@ -293,7 +293,7 @@ def _make_polarised_sublattice(image_noise=False):
         np.mgrid[78+15:156:20, 15-2:156:20],  # middle top left
         np.mgrid[156+19:234+4:20, 15-2.5:156:20],  # middle top right
         np.mgrid[234+19+3.5:312:20, 15-2:156:20],  # top right
-        np.mgrid[234+19+4:312:20, 156+19:312:20],  # bot right
+        np.mgrid[234+19+4:312:20, 156+19+0.5:312:20],  # bot right
         np.mgrid[156+19+2:234+4:20, 156+20+1:312:20],  # bot middle right
         np.mgrid[78+17:156:20, 156+20+2.5:312:20],  # bot middle left
         np.mgrid[15-2.5:78:20, 156+20+2.5:312:20]]  # bot left
