@@ -6,8 +6,8 @@ import colorcet as cc
 from temul.external.atomap_devel_012.sublattice import Sublattice
 from temul.external.atomap_devel_012.atom_lattice import Atom_Lattice
 
-# some of the below have been adapted from Atomap:
 
+# some of the below have been adapted from Atomap:
 def _make_simple_cubic_testdata(image_noise=False, amplitude=1,
                                 with_vacancies=False):
     """
@@ -289,17 +289,14 @@ def _make_polarised_sublattice(image_noise=False):
 
     test_data = MakeTestData(312, 312)
     sizes = [
-        np.mgrid[15-1.5:78:20, 15:156:20], # top left
-        np.mgrid[78+15:156:20, 15-2:156:20], # middle top left
-
-        np.mgrid[156+19:234+4:20, 15-2.5:156:20], # middle top right
-        np.mgrid[234+19+3.5:312:20, 15-2:156:20], # top right
-
-        np.mgrid[234+19+4:312:20, 156+19:312:20], # bot right
-        np.mgrid[156+19+2:234+4:20, 156+20+1:312:20], # bot middle right
-
-        np.mgrid[78+17:156:20, 156+20+2.5:312:20], # bot middle left
-        np.mgrid[15-2.5:78:20, 156+20+2.5:312:20]] # bot left
+        np.mgrid[15-1.5:78:20, 15:156:20],  # top left
+        np.mgrid[78+15:156:20, 15-2:156:20],  # middle top left
+        np.mgrid[156+19:234+4:20, 15-2.5:156:20],  # middle top right
+        np.mgrid[234+19+3.5:312:20, 15-2:156:20],  # top right
+        np.mgrid[234+19+4:312:20, 156+19:312:20],  # bot right
+        np.mgrid[156+19+2:234+4:20, 156+20+1:312:20],  # bot middle right
+        np.mgrid[78+17:156:20, 156+20+2.5:312:20],  # bot middle left
+        np.mgrid[15-2.5:78:20, 156+20+2.5:312:20]]  # bot left
 
     for size in sizes:
         x0, y0 = size

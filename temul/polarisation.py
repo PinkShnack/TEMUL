@@ -1,7 +1,6 @@
 
 import numpy as np
 import scipy
-import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 from matplotlib.cm import ScalarMappable
@@ -196,7 +195,7 @@ def plot_polarisation_vectors(
     >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           unit_vector=False, save=None,
     ...                           plot_style='colormap', monitor_dpi=50,
-    ...                           overlay=False, cmap='cet_colorwheel', 
+    ...                           overlay=False, cmap='cet_colorwheel',
     ...                           vector_rep="angle", degrees=True)
 
     colormap arrows with sampling applied and with scalebar:
@@ -347,10 +346,11 @@ def plot_polarisation_vectors(
             min_angle, max_angle = -np.pi, np.pi
 
         levels_list = np.arange(min_angle, max_angle,
-                           (max_angle-min_angle) / levels)
+                                (max_angle-min_angle) / levels)
 
         contour_map = plt.tricontourf(x, y, vector_rep_val, cmap=cmap,
-                    alpha=alpha, antialiased=antialiased, levels=levels_list)
+                                      alpha=alpha, antialiased=antialiased,
+                                      levels=levels_list)
 
         if not remove_vectors:
             ax.quiver(
@@ -395,7 +395,7 @@ def plot_polarisation_vectors(
 def get_angles_from_uv(u, v, degrees=False):
     '''
     Calculate the angle of a vector given the uv components.
-    
+
     Parameters
     ----------
     u,v  : list or 1D NumPy array
@@ -416,7 +416,6 @@ def get_angles_from_uv(u, v, degrees=False):
         vector_angles = vector_angles * 180 / np.pi
 
     return(vector_angles)
-
 
 
 def get_vector_magnitudes(u, v, sampling=None):
@@ -1442,7 +1441,7 @@ def ratio_of_lattice_spacings(sublattice, zone_axis_index_A, zone_axis_index_B,
 
 
 def angle_label(vector_rep="magnitude", units='pix', degrees=False):
-    
+
     if vector_rep == "magnitude":
         vector_label = "Magnitude ({})".format(units)
     elif vector_rep == "angle":
