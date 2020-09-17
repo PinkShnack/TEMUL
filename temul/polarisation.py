@@ -228,7 +228,7 @@ def plot_polarisation_vectors(
     ...                           overlay=True, pivot='middle', save=None,
     ...                           color='red', cmap='cet_colorwheel',
     ...                           monitor_dpi=50, remove_vectors=False,
-    ...                           vector_rep="angle", alpha=0.5, levels=100,
+    ...                           vector_rep="angle", alpha=0.5, levels=9,
     ...                           antialiased=True, degrees=True,
     ...                           ticks=[180, 90, 0, -90, -180])
 
@@ -345,8 +345,10 @@ def plot_polarisation_vectors(
         elif not degrees:
             min_angle, max_angle = -np.pi, np.pi
 
-        levels_list = np.arange(min_angle, max_angle,
-                                (max_angle-min_angle) / levels)
+        if isinstance(levels, list):
+            levels_list = levels
+        elif isinstance(levels, int):
+            levels_list = np.linspace(min_angle, max_angle, levels)
 
         contour_map = plt.tricontourf(x, y, vector_rep_val, cmap=cmap,
                                       alpha=alpha, antialiased=antialiased,
@@ -364,9 +366,6 @@ def plot_polarisation_vectors(
     ax.set_ylim(image.shape[0], 0)
 
     if plot_style == 'contour':
-        # if we want the colorbar from -180 to 180 and the data to fit inside
-        # this without rescaling, maybe make a stackoverflow Q or use linear
-        # interpolation. Then could prob work with normal contourf or imshow.
         cbar = plt.colorbar(mappable=contour_map, fraction=0.046, pad=0.04,
                             drawedges=False)
         cbar.ax.tick_params(labelsize=14)
