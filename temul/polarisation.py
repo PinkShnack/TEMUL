@@ -1226,7 +1226,7 @@ def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
     >>> import atomap.api as am
     >>> from temul.polarisation import rotation_of_atom_planes
     >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
-    >>> sublatticeA = atom_lattice.sublattice_list[0]
+    >>> sublatticeA = atom_lattice.sublattice_list[1]
     >>> sublatticeA.find_nearest_neighbors()
     >>> sublatticeA.refine_atom_positions_using_center_of_mass()
     >>> sublatticeA.construct_zone_axes()
@@ -1268,7 +1268,7 @@ def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
     elif not degrees:
         angles_list = angles_list_rad
 
-    bar_label = angle_label(degrees=degrees)
+    bar_label = angle_label("angle", degrees=degrees)
 
     if angle_offset is not None:
         angles_list = [i + angle_offset for i in angles_list]
