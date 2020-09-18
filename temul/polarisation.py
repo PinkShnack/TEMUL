@@ -433,11 +433,10 @@ def get_angles_from_uv(u, v, degrees=False, angle_offset=None):
             angle_offset = angle_offset * np.pi / 180
         vector_angles += angle_offset
         # refactor so that all angles still lie between -180 and 180
-        a = np.where(
-            vector_angles > np.pi, vector_angles - (2 * np.pi), vector_angles)
-        b = np.where(
-            a < -np.pi, a + (2 * np.pi), a)
-        vector_angles = b.copy()
+        a = vector_angles.copy()
+        b = np.where(a > np.pi, a - (2 * np.pi), a)
+        c = np.where(b < -np.pi, b + (2 * np.pi), b)
+        vector_angles = c.copy()
 
     if degrees:
         vector_angles = vector_angles * 180 / np.pi
