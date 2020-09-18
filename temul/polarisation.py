@@ -347,7 +347,7 @@ def plot_polarisation_vectors(
             cmap = 'viridis'
 
         if degrees:
-            min_angle, max_angle = -180, 180
+            min_angle, max_angle = -180, 180 + 0.0001  # fixes display issues
         elif not degrees:
             min_angle, max_angle = -np.pi, np.pi
 
@@ -433,16 +433,11 @@ def get_angles_from_uv(u, v, degrees=False, angle_offset=None):
             angle_offset = angle_offset * np.pi / 180
         vector_angles += angle_offset
         # refactor so that all angles still lie between -180 and 180
-        refact_angles = []
-        for ang in vector_angles:
-            if ang > np.pi:
-                print(ang)
-                ang = ang - (2 * np.pi)
-            elif ang < -np.pi:
-                print(ang)
-                ang = ang + (2 * np.pi)
-            refact_angles.append(ang)
-        vector_angles = np.asarray(refact_angles)
+        a = np.where(
+            vector_angles > np.pi, vector_angles - (2 * np.pi), vector_angles)
+        b = np.where(
+            a < -np.pi, a + (2 * np.pi), a)
+        vector_angles = b.copy()
 
     if degrees:
         vector_angles = vector_angles * 180 / np.pi
