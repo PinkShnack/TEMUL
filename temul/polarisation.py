@@ -75,7 +75,7 @@ def find_polarisation_vectors(atom_positions_A, atom_positions_B,
 def plot_polarisation_vectors(
         x, y, u, v, image, sampling=None, units='pix',
         plot_style='vector', vector_rep='magnitude',
-        overlay=True, unit_vector=False, degrees=False,
+        overlay=True, unit_vector=False, degrees=False, angle_offset=None,
         save='polarisation_image', title="",
         color='yellow', cmap=None, alpha=1.0,
         monitor_dpi=96, pivot='middle', angles='xy',
@@ -117,6 +117,11 @@ def plot_polarisation_vectors(
         Change between degrees and radian. Default is radian.
         If `plot_style="colorwheel"`, then setting `degrees=True` will convert
         the angle unit to degree from the default radians.
+    angle_offset : float, default None
+        If using `vector_rep="angle"` or `plot_style="contour"`, this angle
+        will rotate the vector angles displayed by the given amount. Useful
+        when you want to offset the angle of the atom planes relative to the
+        polarisation.
     save : string, default "polarisation_image"
         If set to `save=None`, the array will not be saved.
     title : string, default ""
@@ -273,7 +278,8 @@ def plot_polarisation_vectors(
         vector_rep_val = get_vector_magnitudes(u, v)
     elif vector_rep == "angle":
         # -v because in STEM the origin is top left
-        vector_rep_val = get_angles_from_uv(u, -v, degrees=degrees)
+        vector_rep_val = get_angles_from_uv(u, -v, degrees=degrees,
+                                            angle_offset=angle_offset)
 
     vector_label = angle_label(
             vector_rep=vector_rep, units=units, degrees=degrees)
@@ -394,7 +400,7 @@ def plot_polarisation_vectors(
                     pad_inches=None, dpi=300, labels=False)
 
 
-def get_angles_from_uv(u, v, degrees=False):
+def get_angles_from_uv(u, v, degrees=False, angle_offset=None):
     '''
     Calculate the angle of a vector given the uv components.
 
@@ -403,6 +409,11 @@ def get_angles_from_uv(u, v, degrees=False):
     u,v  : list or 1D NumPy array
     degrees : Bool, default False
         Change between degrees and radian. Default is radian.
+    angle_offset : float, default None
+        Rotate the angles by the given amount. The function assumes that if you
+        set `degrees=False` then the provided `angle_offset` is in radians, and
+        if you set `degrees=True` then the provided `angle_offset` is in
+        degrees.
 
     Returns
     -------
@@ -413,6 +424,25 @@ def get_angles_from_uv(u, v, degrees=False):
     v_comp = np.array(v).T
 
     vector_angles = np.arctan2(v_comp, u_comp)
+
+    if angle_offset is not None:
+        # all here is calculated in rad
+        if degrees:
+            # assumes angle_offset has also been given in degrees
+            # so change to rad
+            angle_offset = angle_offset * np.pi / 180
+        vector_angles += angle_offset
+        # refactor so that all angles still lie between -180 and 180
+        refact_angles = []
+        for ang in vector_angles:
+            if ang > np.pi:
+                print(ang)
+                ang = ang - (2 * np.pi)
+            elif ang < -np.pi:
+                print(ang)
+                ang = ang + (2 * np.pi)
+            refact_angles.append(ang)
+        vector_angles = np.asarray(refact_angles)
 
     if degrees:
         vector_angles = vector_angles * 180 / np.pi
@@ -1198,7 +1228,7 @@ def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
     zone_axis_index : int
         The zone axis you wish to specify. You are indexing
         `sublattice.zones_axis_average_distances[zone_axis_index]`.
-    angle_offset : float, optional
+    angle_offset : float, default None
         The angle which can be considered zero degrees. Useful when the atomic
         planes are at an angle.
     degrees : Bool, default False
