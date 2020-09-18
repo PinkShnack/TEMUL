@@ -1254,13 +1254,20 @@ def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
     >>> sublatticeA.find_nearest_neighbors()
     >>> sublatticeA.refine_atom_positions_using_center_of_mass()
     >>> sublatticeA.construct_zone_axes()
-    >>> rotation_map = rotation_of_atom_planes(sublatticeA, 2)
+    >>> rotation_map = rotation_of_atom_planes(sublatticeA, 3, degrees=True)
 
     Use `angle_offset` to effectively change the angle of the horizontal axis
     when calculating angles:
 
-    >>> rotation_map = rotation_of_atom_planes(sublatticeA, 2,
-    ...                                        angle_offset=-50)
+    >>> rotation_map = rotation_of_atom_planes(sublatticeA, 3, angle_offset=45,
+    ...                                        degrees=True)
+
+    Use the return_x_y_z parameter when you want to either plot with a
+    different style (e.g., contour map), or you want the angle information:
+
+    >>> rotation_map, x, y, angles = rotation_of_atom_planes(
+    ...     sublatticeA, 3, degrees=True, return_x_y_z=True)
+    >>> mean_angle = np.mean(angles)  # useful for offsetting polar. plots
 
     '''
 
