@@ -569,3 +569,39 @@ class Sublattice_Hover_Intensity(object):
         except IndexError:
             # IndexError: index out of bounds
             return self._points[0]
+
+def color_palettes(pallette):
+    '''
+    See here for info: venngage.com/blog/color-blind-friendly-palette/
+    '''
+    zesty = ['#F5793A', '#A95AA1', '#85C0F9', '#0F2080']
+
+    if pallette == 'zesty':
+        return zesty
+    else:
+        return('Pick a real one')
+
+
+def hex_to_rgb(hex_values):
+    '''
+    Change from hex to rgb. Grabs starting two, middle two, last two values in
+    hex, multiplies by 16^1 and 16^0 for the first and second, respectively.
+    
+    Examples
+    --------
+
+    >>> import temul.signal_plotting as tmlplot
+    >>> tmlplot.hex_to_rgb(color_palettes('zesty'))
+    [(245, 121, 58), (169, 90, 161), (133, 192, 249), (15, 32, 128)]
+
+    '''
+    hex_values = [i.lstrip('#') for i in hex_values]
+    rgb_values = []
+    for hex_value in hex_values:
+        rgb_value = tuple(int(hex_value[i:i+2], 16) for i in (0,2,4))
+        rgb_values.append(rgb_value)
+    return rgb_values
+
+
+def create_colormap_from_rgb(rgb_values):
+    pass
