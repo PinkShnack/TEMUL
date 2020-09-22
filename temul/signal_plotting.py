@@ -6,6 +6,7 @@ from temul.external.skimage_devel_0162.profile import profile_line
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import subplots_adjust
 import matplotlib.dates as mdates
+import matplotlib.colors as mpl_colors
 import scipy.spatial as spatial
 from temul.intensity_tools import get_sublattice_intensity
 
@@ -572,7 +573,9 @@ class Sublattice_Hover_Intensity(object):
 
 def color_palettes(pallette):
     '''
+    Color sequences that are useful for creating matplotlib colormaps
     See here for info: venngage.com/blog/color-blind-friendly-palette/
+
     '''
     zesty = ['#F5793A', '#A95AA1', '#85C0F9', '#0F2080']
 
@@ -581,11 +584,18 @@ def color_palettes(pallette):
     else:
         return('Pick a real one')
 
+def rgb_to_dec(rgb_values):
+
+    dec_values = []
+    for rgb_value in rgb_values:
+        dec_values.append(tuple([i/256 for i in rgb_value]))
+    return(dec_values)
 
 def hex_to_rgb(hex_values):
     '''
     Change from hex to rgb. Grabs starting two, middle two, last two values in
     hex, multiplies by 16^1 and 16^0 for the first and second, respectively.
+    See `color_palettes` for other examples.
     
     Examples
     --------
@@ -593,6 +603,15 @@ def hex_to_rgb(hex_values):
     >>> import temul.signal_plotting as tmlplot
     >>> tmlplot.hex_to_rgb(color_palettes('zesty'))
     [(245, 121, 58), (169, 90, 161), (133, 192, 249), (15, 32, 128)]
+
+    Create a matplotlib cmap from a palette with the help of
+    matplotlib.colors.from_levels_and_colors()
+
+    >>> from matplotlib.colors import from_levels_and_colors
+    >>> zest = tmlplot.hex_to_rgb(tmlplot.color_palettes('zesty'))
+    >>> zest.append(zest[0])  # make the top and bottom colour the same
+    >>> cmap, norm = from_levels_and_colors(
+    ...     levels=[0,1,2,3,4,5], colors=tmlplot.rgb_to_dec(zest))
 
     '''
     hex_values = [i.lstrip('#') for i in hex_values]
@@ -603,5 +622,6 @@ def hex_to_rgb(hex_values):
     return rgb_values
 
 
-def create_colormap_from_rgb(rgb_values):
-    pass
+
+
+
