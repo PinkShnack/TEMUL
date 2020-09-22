@@ -622,6 +622,22 @@ def hex_to_rgb(hex_values):
     return rgb_values
 
 
+def expand_palette(palette, expand_list):
+    '''
+    Essentially multiply the palette so that it has the number of instances of
+    each color that you want.
 
+    Examples
+    --------
 
+    >>> import temul.signal_plotting as tmlplot
+    >>> zest = tmlplot.color_palettes('zesty')
+    >>> expanded_palette = tmlplot.expand_palette(zest, [1,2,2,2])
+
+    '''
+    expanded_palette = []
+    for pal, ex in zip(palette, expand_list):
+        for count in range(ex):
+            expanded_palette.append(pal)
+    return expanded_palette
 
