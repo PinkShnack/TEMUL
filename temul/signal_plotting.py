@@ -6,7 +6,6 @@ from temul.external.skimage_devel_0162.profile import profile_line
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import subplots_adjust
 import matplotlib.dates as mdates
-import matplotlib.colors as mpl_colors
 import scipy.spatial as spatial
 from temul.intensity_tools import get_sublattice_intensity
 
@@ -571,18 +570,25 @@ class Sublattice_Hover_Intensity(object):
             # IndexError: index out of bounds
             return self._points[0]
 
+
 def color_palettes(pallette):
     '''
     Color sequences that are useful for creating matplotlib colormaps
+    Options are "zesty" (4 colours), and "r_safe" (12 colours).
     See here for info: venngage.com/blog/color-blind-friendly-palette/
-
+    And here: Google: r-plot-color-combinations-that-are-colorblind-accessible
     '''
     zesty = ['#F5793A', '#A95AA1', '#85C0F9', '#0F2080']
+    r_safe = ["#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499",
+              "#44AA99", "#999933", "#882255", "#661100", "#6699CC", "#888888"]
 
     if pallette == 'zesty':
         return zesty
+    elif pallette == 'r_safe':
+        return r_safe
     else:
-        return('Pick a real one')
+        return('This option is not allowed.')
+
 
 def rgb_to_dec(rgb_values):
 
@@ -591,12 +597,13 @@ def rgb_to_dec(rgb_values):
         dec_values.append(tuple([i/256 for i in rgb_value]))
     return(dec_values)
 
+
 def hex_to_rgb(hex_values):
     '''
     Change from hex to rgb. Grabs starting two, middle two, last two values in
     hex, multiplies by 16^1 and 16^0 for the first and second, respectively.
     See `color_palettes` for other examples.
-    
+
     Examples
     --------
 
@@ -617,7 +624,7 @@ def hex_to_rgb(hex_values):
     hex_values = [i.lstrip('#') for i in hex_values]
     rgb_values = []
     for hex_value in hex_values:
-        rgb_value = tuple(int(hex_value[i:i+2], 16) for i in (0,2,4))
+        rgb_value = tuple(int(hex_value[i:i+2], 16) for i in (0, 2, 4))
         rgb_values.append(rgb_value)
     return rgb_values
 
@@ -640,4 +647,3 @@ def expand_palette(palette, expand_list):
         for count in range(ex):
             expanded_palette.append(pal)
     return expanded_palette
-
