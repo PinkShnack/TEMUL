@@ -569,3 +569,124 @@ class Sublattice_Hover_Intensity(object):
         except IndexError:
             # IndexError: index out of bounds
             return self._points[0]
+
+
+def color_palettes(pallette):
+    '''
+    Color sequences that are useful for creating matplotlib colormaps.
+    Info on "zesty" and other options:
+    venngage.com/blog/color-blind-friendly-palette/
+    Info on "r_safe":
+    Google: r-plot-color-combinations-that-are-colorblind-accessible
+
+    Parameters
+    ----------
+    palette : str
+        Options are "zesty" (4 colours), and "r_safe" (12 colours).
+
+    Returns
+    -------
+    list of hex colours
+
+    '''
+    zesty = ['#F5793A', '#A95AA1', '#85C0F9', '#0F2080']
+    r_safe = ["#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499",
+              "#44AA99", "#999933", "#882255", "#661100", "#6699CC", "#888888"]
+
+    if pallette == 'zesty':
+        return zesty
+    elif pallette == 'r_safe':
+        return r_safe
+    else:
+        return('This option is not allowed.')
+
+
+def rgb_to_dec(rgb_values):
+    '''
+    Change RGB color values to decimal color values (between 0 and 1).
+    Required for use with matplotlib. See Example in `hex_to_rgb` below.
+
+    Parameters
+    ----------
+    rgb_values : list of tuples
+
+    Returns
+    -------
+    Decimal color values (RGB but scaled from 0 to 1 rather than 0 to 255)
+
+    '''
+    dec_values = []
+    for rgb_value in rgb_values:
+        dec_values.append(tuple([i/256 for i in rgb_value]))
+    return(dec_values)
+
+
+def hex_to_rgb(hex_values):
+    '''
+    Change from hexidecimal color values to rgb color values.
+    Grabs starting two, middle two, last two values in hex, multiplies by
+    16^1 and 16^0 for the first and second, respectively.
+
+    Parameters
+    ----------
+    hex_values : list
+        A list of hexidecimal color values as strings e.g., '#F5793A'
+
+    Returns
+    -------
+    list of tuples
+
+    Examples
+    --------
+
+    >>> import temul.signal_plotting as tmlplot
+    >>> tmlplot.hex_to_rgb(color_palettes('zesty'))
+    [(245, 121, 58), (169, 90, 161), (133, 192, 249), (15, 32, 128)]
+
+    Create a matplotlib cmap from a palette with the help of
+    matplotlib.colors.from_levels_and_colors()
+
+    >>> from matplotlib.colors import from_levels_and_colors
+    >>> zest = tmlplot.hex_to_rgb(tmlplot.color_palettes('zesty'))
+    >>> zest.append(zest[0])  # make the top and bottom colour the same
+    >>> cmap, norm = from_levels_and_colors(
+    ...     levels=[0,1,2,3,4,5], colors=tmlplot.rgb_to_dec(zest))
+
+    '''
+    hex_values = [i.lstrip('#') for i in hex_values]
+    rgb_values = []
+    for hex_value in hex_values:
+        rgb_value = tuple(int(hex_value[i:i+2], 16) for i in (0, 2, 4))
+        rgb_values.append(rgb_value)
+    return rgb_values
+
+
+def expand_palette(palette, expand_list):
+    '''
+    Essentially multiply the palette so that it has the number of instances of
+    each color that you want.
+
+    Parameters
+    ----------
+    palette : list
+        Color palette in hex, rgb or dec
+    expand_list : list
+        List of integers that will be used to duplicate colours in the palette.
+
+    Returns
+    -------
+    List of expanded palette
+
+    Examples
+    --------
+
+    >>> import temul.signal_plotting as tmlplot
+    >>> zest = tmlplot.color_palettes('zesty')
+    >>> expanded_palette = tmlplot.expand_palette(zest, [1,2,2,2])
+
+    '''
+    expanded_palette = []
+    for pal, ex in zip(palette, expand_list):
+        for count in range(ex):
+            expanded_palette.append(pal)
+    return expanded_palette
