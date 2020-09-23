@@ -573,10 +573,21 @@ class Sublattice_Hover_Intensity(object):
 
 def color_palettes(pallette):
     '''
-    Color sequences that are useful for creating matplotlib colormaps
-    Options are "zesty" (4 colours), and "r_safe" (12 colours).
-    See here for info: venngage.com/blog/color-blind-friendly-palette/
-    And here: Google: r-plot-color-combinations-that-are-colorblind-accessible
+    Color sequences that are useful for creating matplotlib colormaps.
+    Info on "zesty" and other options:
+    venngage.com/blog/color-blind-friendly-palette/
+    Info on "r_safe":
+    Google: r-plot-color-combinations-that-are-colorblind-accessible
+
+    Parameters
+    ----------
+    palette : str
+        Options are "zesty" (4 colours), and "r_safe" (12 colours).
+
+    Returns
+    -------
+    list of hex colours
+
     '''
     zesty = ['#F5793A', '#A95AA1', '#85C0F9', '#0F2080']
     r_safe = ["#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499",
@@ -591,7 +602,19 @@ def color_palettes(pallette):
 
 
 def rgb_to_dec(rgb_values):
+    '''
+    Change RGB color values to decimal color values (between 0 and 1).
+    Required for use with matplotlib. See Example in `hex_to_rgb` below.
 
+    Parameters
+    ----------
+    rgb_values : list of tuples
+
+    Returns
+    -------
+    Decimal color values (RGB but scaled from 0 to 1 rather than 0 to 255)
+
+    '''
     dec_values = []
     for rgb_value in rgb_values:
         dec_values.append(tuple([i/256 for i in rgb_value]))
@@ -600,9 +623,18 @@ def rgb_to_dec(rgb_values):
 
 def hex_to_rgb(hex_values):
     '''
-    Change from hex to rgb. Grabs starting two, middle two, last two values in
-    hex, multiplies by 16^1 and 16^0 for the first and second, respectively.
-    See `color_palettes` for other examples.
+    Change from hexidecimal color values to rgb color values.
+    Grabs starting two, middle two, last two values in hex, multiplies by
+    16^1 and 16^0 for the first and second, respectively.
+
+    Parameters
+    ----------
+    hex_values : list
+        A list of hexidecimal color values as strings e.g., '#F5793A'
+
+    Returns
+    -------
+    list of tuples
 
     Examples
     --------
@@ -633,6 +665,17 @@ def expand_palette(palette, expand_list):
     '''
     Essentially multiply the palette so that it has the number of instances of
     each color that you want.
+
+    Parameters
+    ----------
+    palette : list
+        Color palette in hex, rgb or dec
+    expand_list : list
+        List of integers that will be used to duplicate colours in the palette.
+
+    Returns
+    -------
+    List of expanded palette
 
     Examples
     --------
