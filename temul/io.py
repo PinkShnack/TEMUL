@@ -565,28 +565,15 @@ def save_individual_images_from_image_stack(
     output_folder : string
         Name of the folder in which all individual images from
         the stack will be saved.
-    
-    Examples
-    --------
-
-    >>> import numpy as np
-    >>> a = np.array([[1, 2, 3], [2, 3, 4], [9, 4, 3]])
-    >>> b = np.array([[4, 5, 6], [2, 3, 4], [9, 4, 3]])
-    >>> stack = np.stack((a, b))
-    >>> 
 
     '''
     # Save each image as a 32 bit tiff )cqn be displayed in DM
     image_stack_32bit = np.float32(image_stack)
     folder = os.mkdir(output_folder)
-    i = 0
-    delta = 1
     # Find the number of images, change to an integer for the loop.
-    while i < int(image_stack_32bit[0, 0, :].shape[0]):
+    for i in range(int(image_stack_32bit[0, 0, :].shape[0])):
         im = image_stack_32bit[:, :, i]
-        i_filled = str(i).zfill(4)
-        imwrite(os.path.join(folder, f'images_aligned_{i_filled}.tif'), im)
-        i = i + delta
+        imwrite(os.path.join(folder, f'images_aligned_{i:04}.tif'), im)
 
 
 def load_prismatic_mrc_with_hyperspy(

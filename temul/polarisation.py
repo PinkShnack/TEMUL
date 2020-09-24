@@ -922,25 +922,41 @@ def get_divide_into(sublattice, averaging_by, sampling,
                     zone_axis_index_A, zone_axis_index_B):
     '''
     Calculate the `divide_into` required to get an averaging of `averaging_by`.
-    `divide_into` can then be used in temul.polarisation.get_average_polarisation_in_regions.
-    Also finds unit cell size and the number of unit cells in the (square) image
-    along the x axis.
-    
+    `divide_into` can then be used in
+    temul.polarisation.get_average_polarisation_in_regions.
+    Also finds unit cell size and the number of unit cells in the (square)
+    image along the x axis.
+
     Parameters
     ----------
     sublattice : Atomap Sublattice
     averaging_by : int or float
-        How many unit cells should be averaged. If `averaging_by=2`, 2x2 unit cells will
-        be averaged when passing `divide_into` to
+        How many unit cells should be averaged. If `averaging_by=2`, 2x2 unit
+        cells will be averaged when passing `divide_into` to
         temul.polarisation.get_average_polarisation_in_regions.
     sampling : float
         Pixel sampling of the image for calibration.
     zone_axis_index_A, zone_axis_index_B : int
-        Sublattice zone axis indices which should represent x direction and y direction. 
+        Sublattice zone axis indices which should represent the sides of the
+        unit cell.
 
     Returns
     -------
     divide_into, unit_cell_size, num_unit_cells
+
+    Examples
+    --------
+
+    >>> from temul.polarisation import get_divide_into
+    >>> from atomap.dummy_data import get_simple_cubic_sublattice
+    >>> sublattice = get_simple_cubic_sublattice()
+    >>> sublattice.construct_zone_axes()
+    >>> cell_info = get_divide_into(sublattice, averaging_by=2, sampling=0.1,
+    ...                 zone_axis_index_A=0, zone_axis_index_B=1)
+    >>> divide_into = cell_info[0]
+    >>> unit_cell_size = cell_info[1]
+    >>> num_unit_cells = cell_info[2]
+    >>> sublattice.plot()  # You can count the unit cells to check
 
     '''
 
@@ -952,13 +968,15 @@ def get_divide_into(sublattice, averaging_by, sampling,
     zone_vector_index_list = sublattice._get_zone_vector_index_list(
         zone_vector_list=None)
 
-    # zone 0
+    # zone A
     zone_index_A, zone_vector_A = zone_vector_index_list[zone_axis_index_A]
-    x_list_A, y_list_A, xy_dist_A = sublattice.get_atom_distance_list_from_zone_vector(zone_vector_A)
+    _, _, xy_dist_A = \
+        sublattice.get_atom_distance_list_from_zone_vector(zone_vector_A)
 
-    # zone 1
+    # zone B
     zone_index_B, zone_vector_B = zone_vector_index_list[zone_axis_index_B]
-    x_list_B, y_list_B, xy_dist_B = sublattice.get_atom_distance_list_from_zone_vector(zone_vector_B)
+    _, _, xy_dist_B = \
+        sublattice.get_atom_distance_list_from_zone_vector(zone_vector_B)
 
     # average unit cell size in zone A and zone B
     p_A = np.mean(xy_dist_A) * sampling
