@@ -1484,11 +1484,14 @@ def get_strain_gradient(sublattice, zone_vector_index,
     >>> sublattice = sine_wave_sublattice()
     >>> sublattice.construct_zone_axes(atom_plane_tolerance=1)
     >>> sublattice.plot()
-    >>> strain_grad_map = get_strain_gradient(sublattice, zone_vector_index=0)
+    >>> sampling = 0.05 #  nm/pix
+    >>> strain_grad_map = get_strain_gradient(sublattice, zone_vector_index=0,
+    ...                                       sampling=sampling, units='nm')
 
     Just compute several atom planes:
 
-    >>> strain_grad_map = get_strain_gradient(sublattice, 0, atom_planes=(0,3))
+    >>> strain_grad_map = get_strain_gradient(sublattice, 0, atom_planes=(0,3),
+    ...                                       sampling=sampling, units='nm')
 
     Returns
     -------
@@ -1531,6 +1534,8 @@ def get_strain_gradient(sublattice, zone_vector_index,
         y_list.extend(atom_plane.y_position)
         strain_gradient.extend(list(second_der))
 
+    if sampling is not None:
+        strain_gradient = [i * sampling for i in strain_gradient]
     strain_gradient_map = sublattice.get_property_map(
         x_list, y_list, strain_gradient, upscale_map=1)
     if sampling is not None:
@@ -1539,11 +1544,17 @@ def get_strain_gradient(sublattice, zone_vector_index,
     strain_gradient_map.axes_manager[0].units = units
     strain_gradient_map.axes_manager[1].units = units
 
-    strain_gradient_map.plot(vmin=vmin, vmax=vmax, cmap=cmap, **kwargs)
+    strain_gradient_map.plot(vmin=vmin, vmax=vmax, cmap=cmap,
+                             colorbar=False, **kwargs)
     # need to put in colorbar axis units like in get_strain_map
     plt.gca().axes.get_xaxis().set_visible(False)
     plt.gca().axes.get_yaxis().set_visible(False)
     plt.title("{} of Index {}".format(title, zone_vector_index))
+    cbar = ScalarMappable(cmap=cmap)
+    cbar.set_array(strain_gradient)
+    cbar.set_clim(vmin, vmax)
+    plt.colorbar(cbar, fraction=0.046, pad=0.04,
+                 label=f"Strain Gradient (1/{units})")
     plt.tight_layout()
 
     if filename is not None:
