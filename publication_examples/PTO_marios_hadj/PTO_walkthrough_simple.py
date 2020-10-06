@@ -4,7 +4,8 @@ import atomap.api as am
 import hyperspy.api as hs
 
 # Open the original PTO/SRO dataset
-image = hs.load("data/name")
+image = hs.load("publication_examples/data"
+                "/STEM 20191121 HAADF 3.3 Mx 0300.emd")
 
 # Open the pre-made PTO atom lattice. 
 # See the extended walkthrough for how to make this atom lattice.
