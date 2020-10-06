@@ -1447,11 +1447,11 @@ def atom_to_atom_distance_grouped_mean(sublattice, zone_axis_index,
     return(groupings, grouped_means)
 
 
-def get_strain_gradient(sublattice, zone_vector_index,
+def get_strain_gradient(sublattice, zone_vector_index, func='strain_grad',
                         atom_planes=None, sampling=None, units='pix',
                         vmin=None, vmax=None, cmap='inferno',
                         title='Strain Gradient Map', filename=None,
-                        plot_fits=False, **kwargs):
+                        plot_and_return_fits=False, **kwargs):
     """
     Calculates the strain gradient in a lattice via a sinusoidal fit of chosen
     atom planes of a Atomap Sublattice object.
@@ -1498,15 +1498,19 @@ def get_strain_gradient(sublattice, zone_vector_index,
 
     >>> strain_grad_map = get_strain_gradient(sublattice, 0, atom_planes=(0,3),
     ...                                       sampling=sampling, units='nm',
-    ...                                       cmap=cmap, plot_fits=True)
+    ...                                       cmap=cmap)
 
     You can also provide initial fitting estimations via scipy's curve_fit:
 
     >>> p0 = [2, 1, 1, 15]
     >>> kwargs = {'p0': p0}
-    >>> strain_grad_map = get_strain_gradient(sublattice, 0,
+    >>> strain_grad_map, fittings = get_strain_gradient(sublattice, 0,
     ...                     atom_planes=(0,3), sampling=sampling, units='nm',
-    ...                     cmap=cmap, **kwargs, plot_fits=True)
+    ...                     cmap=cmap, **kwargs, plot_and_return_fits=True)
+    >>> fittings
+    [array([ 2.,  1.,  1., 15.]),
+     array([ 2.,  1.,  1., 25.]),
+     array([ 2.,  1.,  1., 35.])]
 
     Returns
     -------
@@ -1532,28 +1536,30 @@ def get_strain_gradient(sublattice, zone_vector_index,
     if atom_planes is not None:
         atom_plane_list = atom_plane_list[atom_planes[0]:atom_planes[1]]
 
+    if func == 'strain_grad':
+        func = sine_wave_function_strain_gradient
+
     strain_gradient = []
     x_list, y_list = [], []
+    fittings_list = []
     for atom_plane in atom_plane_list:
         # fit a sine wave to the atoms in the atom_plane
-        params, _ = curve_fit(sine_wave_function_strain_gradient,
-                              atom_plane.x_position, atom_plane.y_position,
-                              **kwargs)
+        params, _ = curve_fit(func, atom_plane.x_position,
+                              atom_plane.y_position, **kwargs)
 
         # calculate the second derivative of the sine wave
         #   with respect to x analytically (to extract the strain gradient)
-        second_der = derivative(sine_wave_function_strain_gradient,
+        second_der = derivative(func,
                                 np.asarray(atom_plane.x_position),
                                 dx=1e-6, n=2, args=(params))
         
-        if plot_fits:
+        if plot_and_return_fits:
+            fittings_list.append(params)
             plt.figure()
             plt.scatter(atom_plane.x_position, atom_plane.y_position)
             plt.plot(atom_plane.x_position,
-                     sine_wave_function_strain_gradient(
-                         atom_plane.x_position, *params), 'r-',
-                     label='fit: a=%5.3f, b=%5.3f, c=%5.3f, d=%5.3f' % tuple(
-                         params))
+                     func(atom_plane.x_position, *params), 'r-',
+                     label=f'fit params: {params}')
             plt.legend()
             plt.show()
 
@@ -1592,7 +1598,10 @@ def get_strain_gradient(sublattice, zone_vector_index,
         strain_gradient_map.save("{}_{}_{}.hspy".format(
             filename, title, zone_vector_index))
 
-    return(strain_gradient_map)
+    if plot_and_return_fits:
+        return(strain_gradient_map, fittings_list)
+    else:
+        return(strain_gradient_map)
 
 
 """
