@@ -6,7 +6,7 @@ import hyperspy.api as hs
 path_to_data = os.path.join(os.path.dirname(__file__), "data") 
 
 # Open the PTO/SRO dataset
-image = hs.load(os.path.join(path_to_data, 'PTO-SRO_Aligned-Series.hspy'))
+image = hs.load(os.path.join(path_to_data, 'PTO-SRO_Aligned.hspy'))
 
 sampling = image.axes_manager[-1].scale #  nm/pix
 units = image.axes_manager[-1].units
@@ -20,8 +20,7 @@ sublattice2 = atom_lattice.sublattice_list[1] #  Ti-Ru Sublattice
 
 # Plot the sublattice planes to see which zone_vector_index we use
 sublattice2.construct_zone_axes(atom_plane_tolerance=1)
-sublattice1.construct_zone_axes(atom_plane_tolerance=1)
-sublattice2.plot_planes()
+# sublattice2.plot_planes()
 
 # Set up parameters for get_strain_gradient
 zone_vector_index = 1
@@ -31,8 +30,17 @@ cmap = 'bwr' #  see matplotlib and colorcet for more colormaps
 title = 'Strain Gradient Map'
 filename = None #  Set to a string if you want to save the map
 
+p0 = [14, 10, 24, 173]
+kwargs = {'p0': p0, 'maxfev': 1000}
 
-# We want to see the strain gradient in the SRO Sublattice
+# We want to see the strain gradient in the Ti-Ru Sublattice
 str_grad_map = get_strain_gradient(sublattice2, zone_vector_index,
-                                   sampling=sampling, units=units,
-                                   cmap=cmap, title=title, atom_planes=atom_planes)
+                    sampling=sampling, units=units, cmap=cmap, title=title,
+                    atom_planes=atom_planes, **kwargs)
+
+# When using plot_and_return_fits=True, the function will return the curve
+#   fittings, and plot each plane.
+str_grad_map, fittings = get_strain_gradient(sublattice2, zone_vector_index,
+                    sampling=sampling, units=units, cmap=cmap, title=title,
+                    atom_planes=atom_planes, **kwargs,
+                    plot_and_return_fits=True)

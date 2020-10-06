@@ -1475,11 +1475,12 @@ def get_strain_gradient(sublattice, zone_vector_index, func='strain_grad',
     title : string, default 'Strain Gradient Map'
     filename : string
         Name of the file to be saved.
-    plot_fits : Bool, default False
+    plot_and_return_fits : Bool, default False
         If set to True, each atom plane fitting will be plotted along with its
-        respective atom positions.
+        respective atom positions. The fitting parameters (popt) will be
+        returned as a list.
     **kwargs
-        keyword arguments to be passed to scipy.optimize.curve_fit. 
+        keyword arguments to be passed to scipy.optimize.curve_fit.
 
     Examples
     --------
@@ -1507,10 +1508,6 @@ def get_strain_gradient(sublattice, zone_vector_index, func='strain_grad',
     >>> strain_grad_map, fittings = get_strain_gradient(sublattice, 0,
     ...                     atom_planes=(0,3), sampling=sampling, units='nm',
     ...                     cmap=cmap, **kwargs, plot_and_return_fits=True)
-    >>> fittings
-    [array([ 2.,  1.,  1., 15.]),
-     array([ 2.,  1.,  1., 25.]),
-     array([ 2.,  1.,  1., 35.])]
 
     Returns
     -------
@@ -1552,7 +1549,7 @@ def get_strain_gradient(sublattice, zone_vector_index, func='strain_grad',
         second_der = derivative(func,
                                 np.asarray(atom_plane.x_position),
                                 dx=1e-6, n=2, args=(params))
-        
+
         if plot_and_return_fits:
             fittings_list.append(params)
             plt.figure()
@@ -1560,7 +1557,7 @@ def get_strain_gradient(sublattice, zone_vector_index, func='strain_grad',
             plt.plot(atom_plane.x_position,
                      func(atom_plane.x_position, *params), 'r-',
                      label=f'fit params: {params}')
-            plt.legend()
+            plt.legend(loc='lower left')
             plt.show()
 
         x_list.extend(atom_plane.x_position)
