@@ -1802,4 +1802,4 @@ def get_masked_ifft(image, mask_coords, mask_radius=10, image_space="real",
 
 
 def sine_wave_function_strain_gradient(x, a, b, c, d):
-    return a * np.sin(2*np.pi*(x+b)/c) + d
+    return a * np.sin((2*np.pi*(x+b))/c) + d

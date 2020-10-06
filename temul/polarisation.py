@@ -1450,7 +1450,8 @@ def atom_to_atom_distance_grouped_mean(sublattice, zone_axis_index,
 def get_strain_gradient(sublattice, zone_vector_index,
                         atom_planes=None, sampling=None, units='pix',
                         vmin=None, vmax=None, cmap='inferno',
-                        title='Strain Gradient Map', filename=None, **kwargs):
+                        title='Strain Gradient Map', filename=None,
+                        plot_fits=False, **kwargs):
     """
     Calculates the strain gradient in a lattice via a sinusoidal fit of chosen
     atom planes of a Atomap Sublattice object.
@@ -1474,8 +1475,11 @@ def get_strain_gradient(sublattice, zone_vector_index,
     title : string, default 'Strain Gradient Map'
     filename : string
         Name of the file to be saved.
+    plot_fits : Bool, default False
+        If set to True, each atom plane fitting will be plotted along with its
+        respective atom positions.
     **kwargs
-        keyword arguments to be passed to Matplotlib's imshow.
+        keyword arguments to be passed to scipy.optimize.curve_fit. 
 
     Examples
     --------
@@ -1485,13 +1489,24 @@ def get_strain_gradient(sublattice, zone_vector_index,
     >>> sublattice.construct_zone_axes(atom_plane_tolerance=1)
     >>> sublattice.plot()
     >>> sampling = 0.05 #  nm/pix
+    >>> cmap='bwr'
     >>> strain_grad_map = get_strain_gradient(sublattice, zone_vector_index=0,
-    ...                                       sampling=sampling, units='nm')
+    ...                                       sampling=sampling, units='nm',
+    ...                                       cmap=cmap)
 
     Just compute several atom planes:
 
     >>> strain_grad_map = get_strain_gradient(sublattice, 0, atom_planes=(0,3),
-    ...                                       sampling=sampling, units='nm')
+    ...                                       sampling=sampling, units='nm',
+    ...                                       cmap=cmap, plot_fits=True)
+
+    You can also provide initial fitting estimations via scipy's curve_fit:
+
+    >>> p0 = [2, 1, 1, 15]
+    >>> kwargs = {'p0': p0}
+    >>> strain_grad_map = get_strain_gradient(sublattice, 0,
+    ...                     atom_planes=(0,3), sampling=sampling, units='nm',
+    ...                     cmap=cmap, **kwargs, plot_fits=True)
 
     Returns
     -------
@@ -1522,13 +1537,25 @@ def get_strain_gradient(sublattice, zone_vector_index,
     for atom_plane in atom_plane_list:
         # fit a sine wave to the atoms in the atom_plane
         params, _ = curve_fit(sine_wave_function_strain_gradient,
-                              atom_plane.x_position, atom_plane.y_position)
+                              atom_plane.x_position, atom_plane.y_position,
+                              **kwargs)
 
         # calculate the second derivative of the sine wave
         #   with respect to x analytically (to extract the strain gradient)
         second_der = derivative(sine_wave_function_strain_gradient,
                                 np.asarray(atom_plane.x_position),
                                 dx=1e-6, n=2, args=(params))
+        
+        if plot_fits:
+            plt.figure()
+            plt.scatter(atom_plane.x_position, atom_plane.y_position)
+            plt.plot(atom_plane.x_position,
+                     sine_wave_function_strain_gradient(
+                         atom_plane.x_position, *params), 'r-',
+                     label='fit: a=%5.3f, b=%5.3f, c=%5.3f, d=%5.3f' % tuple(
+                         params))
+            plt.legend()
+            plt.show()
 
         x_list.extend(atom_plane.x_position)
         y_list.extend(atom_plane.y_position)
@@ -1545,7 +1572,7 @@ def get_strain_gradient(sublattice, zone_vector_index,
     strain_gradient_map.axes_manager[1].units = units
 
     strain_gradient_map.plot(vmin=vmin, vmax=vmax, cmap=cmap,
-                             colorbar=False, **kwargs)
+                             colorbar=False)
     # need to put in colorbar axis units like in get_strain_map
     plt.gca().axes.get_xaxis().set_visible(False)
     plt.gca().axes.get_yaxis().set_visible(False)

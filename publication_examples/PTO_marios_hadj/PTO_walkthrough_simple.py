@@ -3,9 +3,23 @@ from temul.polarisation import get_strain_gradient
 import atomap.api as am
 import hyperspy.api as hs
 
-# Open the original PTO/SRO dataset
-image = hs.load("publication_examples/data"
-                "/STEM 20191121 HAADF 3.3 Mx 0300.emd")
+path_to_data = os.path.join(os.path.dirname(__file__), "data") 
+
+# Open the PTO/SRO dataset
+image = hs.load(os.path.join(path_to_data, 'PTO-SRO_Aligned-Series.hspy'))
+
+image = image[1]
+image = image.inav[22]
+
+image.save('PTO-SRO_Aligned-Series.hspy')
+
+sampling = image.axes_manager[-1].scale #  nm/pix
+units = 'nm'
+image.axes_manager[-1].scale = sampling
+image.axes_manager[-2].scale = sampling
+image.axes_manager[-1].units = units
+image.axes_manager[-2].units = units
+image.plot()
 
 # Open the pre-made PTO atom lattice. 
 # See the extended walkthrough for how to make this atom lattice.
