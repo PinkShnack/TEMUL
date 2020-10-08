@@ -45,7 +45,7 @@ sublattice2.plot()
 # Make and save the Atom Lattice
 atom_lattice = am.Atom_Lattice(image, name='PTO-SRO-cropped-region',
                                sublattice_list=[sublattice1, sublattice2])
-atom_lattice.save(filename="Atom_Lattice_crop.hdf5")
+#atom_lattice.save(filename="Atom_Lattice_crop.hdf5")
 atom_lattice.plot()
 
 
@@ -57,6 +57,7 @@ cmap = 'bwr' #  see matplotlib and colorcet for more colormaps
 title = 'Strain Gradient Map'
 filename = None #  Set to a string if you want to save the map
 
+# Set the extra initial fitting parameters
 p0 = [14, 10, 24, 173]
 kwargs = {'p0': p0, 'maxfev': 1000}
 
