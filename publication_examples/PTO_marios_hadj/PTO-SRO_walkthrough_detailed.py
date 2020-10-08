@@ -45,7 +45,7 @@ sublattice2.plot()
 # Make and save the Atom Lattice
 atom_lattice = am.Atom_Lattice(image, name='PTO-SRO-cropped-region',
                                sublattice_list=[sublattice1, sublattice2])
-#atom_lattice.save(filename="Atom_Lattice_crop.hdf5")
+atom_lattice.save(filename="Atom_Lattice_crop_new.hdf5")
 atom_lattice.plot()
 
 
