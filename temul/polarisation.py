@@ -1447,22 +1447,31 @@ def atom_to_atom_distance_grouped_mean(sublattice, zone_axis_index,
     return(groupings, grouped_means)
 
 
-def get_strain_gradient(sublattice, zone_vector_index, func='strain_grad',
-                        atom_planes=None, sampling=None, units='pix',
-                        vmin=None, vmax=None, cmap='inferno',
-                        title='Strain Gradient Map', filename=None,
-                        plot_and_return_fits=False, **kwargs):
+def calculate_atom_plane_curvature(sublattice, zone_vector_index,
+                        func='strain_grad', atom_planes=None,
+                        sampling=None, units='pix', vmin=None, vmax=None,
+                        cmap='inferno', title='Curvature Map',
+                        filename=None, plot_and_return_fits=False, **kwargs):
     """
-    Calculates the strain gradient in a lattice via a sinusoidal fit of chosen
-    atom planes of a Atomap Sublattice object.
+    Calculates the curvature (in the case of [1] below, the curvature is the
+    inverse of the radius of curvature, and is effectively equal to the second
+    derivative of the displacement direction of the atoms. Because the first
+    derivative is negligible, the curvature can be calculated as the strain
+    gradient [2].
+    With the parameter func="strain_grad", this function calculates the strain
+    gradient of the atom planes of a Atomap Sublattice object.
 
     Parameters
     ----------
-
     sublattice : Atomap Sublattice object
     zone_vector_index : int
         The index of the zone axis (translation symmetry) found by the Atomap
         function `construct_zone_axes()`.
+    func : 'strain_grad' or function
+        Function that can be used by `scipy.optimize.curve_fit`. If
+        func='strain_grad', then the
+        `temul.signal_processing.sine_wave_function_strain_gradient` function
+        will be used.
     atom_planes : tuple, optional
         The starting and ending atom plane to be computed. Useful if only a
         section of the image should be fitted with sine waves. Given in the
@@ -1472,51 +1481,52 @@ def get_strain_gradient(sublattice, zone_vector_index, func='strain_grad',
     units : string, default "pix"
         Units of sampling, for display purposes.
     vmin, vmax, cmap : see Matplotlib documentation, default None
-    title : string, default 'Strain Gradient Map'
-    filename : string
+    title : string, default 'Curvature Map'
+    filename : string, default None
         Name of the file to be saved.
     plot_and_return_fits : Bool, default False
         If set to True, each atom plane fitting will be plotted along with its
         respective atom positions. The fitting parameters (popt) will be
         returned as a list.
     **kwargs
-        keyword arguments to be passed to scipy.optimize.curve_fit.
+        keyword arguments to be passed to `scipy.optimize.curve_fit`.
 
     Examples
     --------
     >>> from temul.dummy_data import sine_wave_sublattice
-    >>> from temul.polarisation import get_strain_gradient
+    >>> from temul.polarisation import calculate_atom_plane_curvature
     >>> sublattice = sine_wave_sublattice()
     >>> sublattice.construct_zone_axes(atom_plane_tolerance=1)
     >>> sublattice.plot()
     >>> sampling = 0.05 #  nm/pix
     >>> cmap='bwr'
-    >>> strain_grad_map = get_strain_gradient(sublattice, zone_vector_index=0,
-    ...                                       sampling=sampling, units='nm',
-    ...                                       cmap=cmap)
+    >>> strain_grad_map = calculate_atom_plane_curvature(sublattice,
+    ...         zone_vector_index=0, sampling=sampling, units='nm', cmap=cmap)
 
     Just compute several atom planes:
 
-    >>> strain_grad_map = get_strain_gradient(sublattice, 0, atom_planes=(0,3),
-    ...                                       sampling=sampling, units='nm',
-    ...                                       cmap=cmap)
+    >>> strain_grad_map = calculate_atom_plane_curvature(sublattice, 0, 
+    ...         atom_planes=(0,3), sampling=sampling, units='nm', cmap=cmap)
 
     You can also provide initial fitting estimations via scipy's curve_fit:
 
     >>> p0 = [2, 1, 1, 15]
     >>> kwargs = {'p0': p0}
-    >>> strain_grad_map, fittings = get_strain_gradient(sublattice, 0,
-    ...                     atom_planes=(0,3), sampling=sampling, units='nm',
-    ...                     cmap=cmap, **kwargs, plot_and_return_fits=True)
+    >>> strain_grad_map, fittings = calculate_atom_plane_curvature(sublattice,
+    ...         zone_vector_index=0, atom_planes=(0,3), sampling=sampling,
+    ...         units='nm', cmap=cmap, **kwargs, plot_and_return_fits=True)
 
     Returns
     -------
-    Strain Gradient Map as a Hyperspy Signal2D
+    Curvature Map as a Hyperspy Signal2D
 
     References
     ----------
     .. [1] Reference: Function adapted from a script written by
-    Dr. Marios Hadjimichael, and used in paper_name.
+    Dr. Marios Hadjimichael, and used in paper_name. The original MATLAB script
+    can be found in TEMUL/publication_examples/PTO_marios_hadj
+    .. [2] Reference: Landau and Lifshitz, Theory of Elasticity, Vol 7, 
+    pp47-49, 1981
 
     """
 
@@ -1584,7 +1594,7 @@ def get_strain_gradient(sublattice, zone_vector_index, func='strain_grad',
     cbar.set_array(strain_gradient)
     cbar.set_clim(vmin, vmax)
     plt.colorbar(cbar, fraction=0.046, pad=0.04,
-                 label=f"Strain Gradient (1/{units})")
+                 label=f"Curvature (1/{units})")
     plt.tight_layout()
 
     if filename is not None:

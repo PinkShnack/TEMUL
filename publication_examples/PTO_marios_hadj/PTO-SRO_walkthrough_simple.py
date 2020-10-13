@@ -1,5 +1,5 @@
 
-from temul.polarisation import get_strain_gradient
+from temul.polarisation import calculate_atom_plane_curvature
 import atomap.api as am
 import hyperspy.api as hs
 import os
@@ -23,26 +23,26 @@ sublattice2 = atom_lattice.sublattice_list[1] #  Ti-Ru Sublattice
 sublattice2.construct_zone_axes(atom_plane_tolerance=1)
 # sublattice2.plot_planes()
 
-# Set up parameters for get_strain_gradient
+# Set up parameters for calculate_atom_plane_curvature
 zone_vector_index = 0
 atom_planes = (2, 6) #  chooses the starting and ending atom planes
 vmin, vmax = 1, 2
 cmap = 'bwr' #  see matplotlib and colorcet for more colormaps
-title = 'Strain Gradient Map'
+title = 'Curvature Map'
 filename = None #  Set to a string if you want to save the map
 
 # Set the extra initial fitting parameters
 p0 = [14, 10, 24, 173]
 kwargs = {'p0': p0, 'maxfev': 1000}
 
-# We want to see the strain gradient in the SRO Sublattice
-str_grad_map = get_strain_gradient(sublattice2, zone_vector_index,
+# We want to see the curvature (approx. as strain gradient) in the SRO Sublattice
+str_grad_map = calculate_atom_plane_curvature(sublattice2, zone_vector_index,
                     sampling=sampling, units=units, cmap=cmap, title=title,
                     atom_planes=atom_planes, **kwargs)
 
 # When using plot_and_return_fits=True, the function will return the curve
 #   fittings, and plot each plane.
-str_grad_map, fittings = get_strain_gradient(sublattice2, zone_vector_index,
-                    sampling=sampling, units=units, cmap=cmap, title=title,
-                    atom_planes=atom_planes, **kwargs,
+str_grad_map, fittings = calculate_atom_plane_curvature(sublattice2,
+                    zone_vector_index, sampling=sampling, units=units,
+                    cmap=cmap, title=title, atom_planes=atom_planes, **kwargs,
                     plot_and_return_fits=True)
