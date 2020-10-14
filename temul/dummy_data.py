@@ -4,10 +4,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import colorcet as cc
 from temul.external.atomap_devel_012.sublattice import Sublattice
+from temul.external.atomap_devel_012.atom_lattice import Atom_Lattice
 
 
 # some of the below have been adapted from Atomap:
-
 def _make_simple_cubic_testdata(image_noise=False, amplitude=1,
                                 with_vacancies=False):
     """
@@ -293,3 +293,101 @@ def sine_wave_sublattice():
     sublattice = Sublattice(atom_positions, image_data)
     # sublattice.plot()
     return(sublattice)
+# adapted/copied from atomap
+def _make_rigid_sublattice(image_noise=False):
+    test_data = MakeTestData(312, 312)
+    x0, y0 = np.mgrid[5:312:20, 5:312:20]
+    x0_list = x0.flatten()
+    y0_list = y0.flatten()
+    amplitude0 = np.ones(len(x0_list)) * 20
+    test_data.add_atom_list(
+            x0_list, y0_list, sigma_x=3, sigma_y=3, amplitude=amplitude0)
+    if image_noise:
+        test_data.add_image_noise(mu=0, sigma=0.004)
+    return test_data
+
+
+# adapted/copied from atomap
+def _make_polarised_sublattice(image_noise=False):
+
+    test_data = MakeTestData(312, 312)
+    sizes = [
+        np.mgrid[15-1.5:78:20, 15:156:20],  # top left
+        np.mgrid[78+15:156:20, 15-2:156:20],  # middle top left
+        np.mgrid[156+19:234+4:20, 15-2.5:156:20],  # middle top right
+        np.mgrid[234+19+3.5:312:20, 15-2:156:20],  # top right
+        np.mgrid[234+19+4:312:20, 156+19+0.5:312:20],  # bot right
+        np.mgrid[156+19+2:234+4:20, 156+20+1:312:20],  # bot middle right
+        np.mgrid[78+17:156:20, 156+20+2.5:312:20],  # bot middle left
+        np.mgrid[15-2.5:78:20, 156+20+2.5:312:20]]  # bot left
+
+    for size in sizes:
+        x0, y0 = size
+        x0_list = x0.flatten()
+        y0_list = y0.flatten()
+        amplitude0 = np.ones(len(x0_list)) * 8
+        test_data.add_atom_list(
+                x0_list, y0_list, sigma_x=3, sigma_y=3, amplitude=amplitude0)
+
+    if image_noise:
+        test_data.add_image_noise(mu=0, sigma=0.004)
+    return test_data
+
+
+def get_polarisation_dummy_dataset(image_noise=False):
+    """Get an Atom Lattice with two sublattices resembling a perovskite film.
+
+    Similar to a perovskite oxide thin film, where the B cations
+    are shifted in the film.
+
+    Parameters
+    ----------
+    image_noise : bool, default False
+
+    Returns
+    -------
+    simple_atom_lattice : Atom_Lattice object
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from temul.dummy_data import get_polarisation_dummy_dataset
+    >>> atom_lattice = get_polarisation_dummy_dataset()
+    >>> atom_lattice.plot()
+    >>> sublatticeA = atom_lattice.sublattice_list[0]
+    >>> sublatticeB = atom_lattice.sublattice_list[1]
+    >>> sublatticeA.construct_zone_axes()
+    >>> za0, za1 = sublatticeA.zones_axis_average_distances[0:2]
+    >>> s_p = sublatticeA.get_polarization_from_second_sublattice(
+    ...     za0, za1, sublatticeB, color='blue')
+    >>> s_p.plot()
+    >>> vector_list = s_p.metadata.vector_list
+    >>> x, y = [i[0] for i in vector_list], [i[1] for i in vector_list]
+    >>> u, v = [i[2] for i in vector_list], [i[3] for i in vector_list]
+    >>> u, v = -np.asarray(u), -np.asarray(v)
+
+    You can they use the plot_polarisation_vectors function to visualise:
+
+    >>> from temul.polarisation import plot_polarisation_vectors
+    >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    ...                           unit_vector=False, plot_style="vector",
+    ...                           overlay=True, color='yellow',
+    ...                           degrees=False, save=None, monitor_dpi=50)
+
+
+    """
+    test_data0 = _make_rigid_sublattice(image_noise=image_noise)
+    test_data1 = _make_polarised_sublattice(image_noise=image_noise)
+    image = test_data0.signal.data + test_data1.signal.data
+
+    sublattice0 = test_data0.sublattice
+    sublattice1 = test_data1.sublattice
+    sublattice0.image = image
+    sublattice1.image = image
+    sublattice0.original_image = image
+    sublattice1.original_image = image
+    sublattice1._plot_color = 'b'
+    atom_lattice = Atom_Lattice(
+            image=image, name='Test Polarisation Dataset',
+            sublattice_list=[sublattice0, sublattice1])
+    return atom_lattice

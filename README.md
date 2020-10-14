@@ -3,7 +3,11 @@ Functions for image and signal processing, based on the packages Scikit-image, H
 
 ## Documentation & Installation
 
-For steps on how to install the TEMUL Toolkit, go to [temul-toolkit.readthedocs.io](https://temul-toolkit.readthedocs.io/en/latest/). There you will also find full searchable documentation of the functions within the TEMUL Toolkit.
+```bash
+pip install temul-toolkit
+```
+
+For full installation instructions and documentation, go to [temul-toolkit.readthedocs.io](https://temul-toolkit.readthedocs.io/en/latest/).
 
 ## Cite
 

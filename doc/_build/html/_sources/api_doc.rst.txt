@@ -72,7 +72,7 @@ Dummy Data
     :undoc-members:
 
 Example Data
-==========
+============
 .. automodule:: temul.example_data
     :members:
     :undoc-members:

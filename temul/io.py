@@ -12,28 +12,6 @@ from glob import glob
 import os
 
 
-def create_new_folder(new_folder_name):
-    '''
-    Create a folder in the given directory
-
-    Parameters
-    ----------
-    new_folder_name : string
-        name of the new folder. It will be created in the current directory
-
-    Examples
-    --------
-    >>> from temul.io import create_new_folder
-    >>> create_new_folder('test_folder')
-
-    '''
-    try:
-        if not os.path.exists(new_folder_name):
-            os.makedirs('./' + new_folder_name + '/')
-    except OSError:
-        print('Could not create directory ' + new_folder_name)
-
-
 def batch_convert_emd_to_image(extension_to_save,
                                top_level_directory,
                                glob_search="**/*",
@@ -589,19 +567,13 @@ def save_individual_images_from_image_stack(
         the stack will be saved.
 
     '''
-
     # Save each image as a 32 bit tiff )cqn be displayed in DM
     image_stack_32bit = np.float32(image_stack)
-    folder = './' + output_folder + '/'
-    create_new_folder(create_new_folder)
-    i = 0
-    delta = 1
+    folder = os.mkdir(output_folder)
     # Find the number of images, change to an integer for the loop.
-    while i < int(image_stack_32bit[0, 0, :].shape[0]):
+    for i in range(int(image_stack_32bit[0, 0, :].shape[0])):
         im = image_stack_32bit[:, :, i]
-        i_filled = str(i).zfill(4)
-        imwrite(folder + 'images_aligned_%s.tif' % i_filled, im)
-        i = i + delta
+        imwrite(os.path.join(folder, f'images_aligned_{i:04}.tif'), im)
 
 
 def load_prismatic_mrc_with_hyperspy(

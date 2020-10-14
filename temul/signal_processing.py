@@ -1148,11 +1148,10 @@ def crop_image_hs(image, cropping_area, scalebar_true=True, filename=None):
     plt.tight_layout()
 
     if filename is not None:
-        plt.savefig(fname='Cropped region highlighted.png',
+        plt.savefig(fname=f'Cropped region highlighted_{filename}.png',
                     transparent=True, frameon=False, bbox_inches='tight',
                     pad_inches=None, dpi=300, labels=False)
 
-    image_crop.plot()
     image_crop.plot()
     plt.title('Cropped Image', fontsize=20)
     plt.gca().axes.get_xaxis().set_visible(False)
@@ -1160,10 +1159,10 @@ def crop_image_hs(image, cropping_area, scalebar_true=True, filename=None):
     plt.tight_layout()
 
     if filename is not None:
-        plt.savefig(fname='Cropped Image.png',
+        plt.savefig(fname=f'Cropped Image_{filename}.png',
                     transparent=True, frameon=False, bbox_inches='tight',
                     pad_inches=None, dpi=300, labels=False)
-        image_crop.save('Cropped Image.hspy')
+        image_crop.save(f'Cropped Image_{filename}.hspy')
 
         physical_image_crop_size_x = image_crop.axes_manager[0].scale * \
             image_crop.axes_manager[0].size
@@ -1185,7 +1184,7 @@ def crop_image_hs(image, cropping_area, scalebar_true=True, filename=None):
         Cropping_Variables_Table = pd.DataFrame(Cropping_Variables)
         Cropping_Variables_Table
         Cropping_Variables_Table.to_csv(
-            'Cropping_Variables_Table.csv', sep=',', index=False)
+            f'Cropping_Variables_Table_{filename}.csv', sep=',', index=False)
 
     return image_crop
 

@@ -14,7 +14,7 @@ from temul.signal_processing import sine_wave_function_strain_gradient
 
 # good to have an example of getting atom_positions_A and B from sublattice
 def find_polarisation_vectors(atom_positions_A, atom_positions_B,
-                              save='uv_vectors_array'):
+                              save=None):
     '''
     Calculate the vectors from atom_positions_A to atom_positions_B.
 
@@ -22,8 +22,8 @@ def find_polarisation_vectors(atom_positions_A, atom_positions_B,
     ----------
     atom_positions_A, atom_positions_B : list
         Atom positions list in the form [[x1,y1], [x2,y2], [x3,y3]...].
-    save : string, default 'uv_vectors_array'
-        If set to `save=None`, the array will not be saved.
+    save : string, default None
+        If set to a string, the array will be saved.
 
     Returns
     -------
@@ -75,16 +75,16 @@ def find_polarisation_vectors(atom_positions_A, atom_positions_B,
     return(u, v)
 
 
-def plot_polarisation_vectors(x, y, u, v, image,
-                              sampling=None, units='pix',
-                              plot_style='vector',
-                              overlay=True, unit_vector=False, degrees=False,
-                              save='polarisation_image', title="",
-                              color='yellow', cmap=None, monitor_dpi=96,
-                              pivot='middle', angles='xy', scale_units='xy',
-                              scale=None, headwidth=3.0, headlength=5.0,
-                              headaxislength=4.5, no_axis_info=True,
-                              scalebar=False):
+def plot_polarisation_vectors(
+        x, y, u, v, image, sampling=None, units='pix',
+        plot_style='vector', vector_rep='magnitude',
+        overlay=True, unit_vector=False, degrees=False, angle_offset=None,
+        save='polarisation_image', title="",
+        color='yellow', cmap=None, alpha=1.0,
+        monitor_dpi=96, pivot='middle', angles='xy',
+        scale_units='xy', scale=None, headwidth=3.0, headlength=5.0,
+        headaxislength=4.5, no_axis_info=True, ticks=None, scalebar=False,
+        antialiased=False, levels=20, remove_vectors=False):
     '''
     Plot the polarisation vectors. These can be found with
     `find_polarisation_vectors()` or Atomap's
@@ -104,15 +104,27 @@ def plot_polarisation_vectors(x, y, u, v, image,
     units : string, default "pix"
         Units used to display the magnitude of the vectors.
     plot_style : string, default "vector"
-        Options are "vector", "colormap", "contour", "colorwheel".
+        Options are "vector", "colormap", "contour", "colorwheel". Note that
+        "colorwheel" will automatically plot the colorbar as an angle.
+    vector_rep : str, default "magnitude"
+        How the vectors are represented. This can be either their `magnitude`
+        or `angle`. One may want to use `angle` when plotting a contour map,
+        i.e., view the contours in terms of angles which can be useful for
+        visualising regions of different polarisation.
     overlay : Bool, default True
         If set to True, the `image` will be plotting behind the arrows
     unit_vector : Bool, default False
         Change the vectors magnitude to unit vectors for plotting purposes.
         Magnitude will still be displayed correctly for colormaps etc.
     degrees : Bool, default False
+        Change between degrees and radian. Default is radian.
         If `plot_style="colorwheel"`, then setting `degrees=True` will convert
         the angle unit to degree from the default radians.
+    angle_offset : float, default None
+        If using `vector_rep="angle"` or `plot_style="contour"`, this angle
+        will rotate the vector angles displayed by the given amount. Useful
+        when you want to offset the angle of the atom planes relative to the
+        polarisation.
     save : string, default "polarisation_image"
         If set to `save=None`, the array will not be saved.
     title : string, default ""
@@ -120,6 +132,10 @@ def plot_polarisation_vectors(x, y, u, v, image,
     color : string, default "r"
         Color of the arrows when `plot_style="vector" or "contour".
     cmap : matplotlib colormap, default "viridis"
+    alpha : float, default 1.0
+        Transparency of the matplotlib `cmap`. For `plot_style="colormap"` and
+        `plot_style="colorwheel"`, this alpha applies to the vector arrows.
+        For `plot_style="contour"` this alpha applies to the tricontourf map.
     monitor_dpi : int, default 96
         The DPI of the monitor, generally 96 pixels. Used to scale the image
         so that large images render correctly. Use a smaller value or
@@ -127,29 +143,38 @@ def plot_polarisation_vectors(x, y, u, v, image,
     no_axis_info :  Bool, default True
         This will remove the x and y axis labels and ticks from the plot if set
         to True.
+    ticks : colorbar ticks, default None
+        None or list of ticks or Locator If None, ticks are determined
+        automatically from the input.
     scalebar : Bool or dict, default False
         Add a matplotlib-scalebar to the plot. If set to True the scalebar will
         appear similar to that given by Hyperspy's `plot()` function. A custom
         scalebar can be included as a dictionary and more custom options can be
         found in the matplotlib-scalebar package. See below for an example.
-
+    antialiased : Bool, default False
+        Applies only to `plot_style="contour"`. Essentially removes the
+        border between regions in the tricontourf map.
+    levels : int, default 20
+        Number of Matplotlib tricontourf levels to be used.
+    remove_vectors : Bool, default False
+        Applies only to `plot_style="contour"`. If set to True, do not plot
+        the vector arrows.
     See matplotlib's quiver function for the remaining parameters.
 
     Examples
     --------
-    >>> import matplotlib.pyplot as plt
-    >>> import numpy as np
-    >>> import atomap.api as am
-    >>> from temul.polarisation import (
-    ...    combine_atom_deviations_from_zone_axes,
-    ...    plot_polarisation_vectors)
-    >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
+    >>> from temul.polarisation import plot_polarisation_vectors
+    >>> from temul.dummy_data import get_polarisation_dummy_dataset
+    >>> atom_lattice = get_polarisation_dummy_dataset()
     >>> sublatticeA = atom_lattice.sublattice_list[0]
-    >>> sublatticeA.find_nearest_neighbors()
-    >>> sublatticeA.refine_atom_positions_using_center_of_mass()
+    >>> sublatticeB = atom_lattice.sublattice_list[1]
     >>> sublatticeA.construct_zone_axes()
-    >>> x, y, u, v = combine_atom_deviations_from_zone_axes(sublatticeA,
-    ...     save=None)
+    >>> za0, za1 = sublatticeA.zones_axis_average_distances[0:2]
+    >>> s_p = sublatticeA.get_polarization_from_second_sublattice(
+    ...     za0, za1, sublatticeB, color='blue')
+    >>> vector_list = s_p.metadata.vector_list
+    >>> x, y = [i[0] for i in vector_list], [i[1] for i in vector_list]
+    >>> u, v = [i[2] for i in vector_list], [i[3] for i in vector_list]
 
     vector plot with red arrows:
 
@@ -173,6 +198,14 @@ def plot_polarisation_vectors(x, y, u, v, image,
     ...                           plot_style='colormap', monitor_dpi=50,
     ...                           overlay=False, cmap='viridis')
 
+    vector plot with colormap viridis, with `vector_rep="angle"`:
+
+    >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    ...                           unit_vector=False, save=None,
+    ...                           plot_style='colormap', monitor_dpi=50,
+    ...                           overlay=False, cmap='cet_colorwheel',
+    ...                           vector_rep="angle", degrees=True)
+
     colormap arrows with sampling applied and with scalebar:
 
     >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
@@ -188,7 +221,7 @@ def plot_polarisation_vectors(x, y, u, v, image,
     ...                           plot_style='colormap', color='r',
     ...                           overlay=False, cmap='viridis')
 
-    Change the vectors to unit vectors on a contourf map:
+    Change the vectors to unit vectors on a tricontourf map:
 
     >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           unit_vector=True, plot_style='contour',
@@ -196,13 +229,35 @@ def plot_polarisation_vectors(x, y, u, v, image,
     ...                           color='darkgray', cmap='viridis',
     ...                           monitor_dpi=50)
 
+    Plot a partly transparent angle tricontourf map with vector arrows:
+
+    >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    ...                           unit_vector=False, plot_style='contour',
+    ...                           overlay=True, pivot='middle', save=None,
+    ...                           color='red', cmap='cet_colorwheel',
+    ...                           monitor_dpi=50, remove_vectors=False,
+    ...                           vector_rep="angle", alpha=0.5, levels=9,
+    ...                           antialiased=True, degrees=True,
+    ...                           ticks=[180, 90, 0, -90, -180])
+
+    Plot a partly transparent angle tricontourf map with no vector arrows:
+
+    >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    ...                           unit_vector=True, plot_style='contour',
+    ...                           overlay=True, pivot='middle', save=None,
+    ...                           cmap='cet_colorwheel',
+    ...                           monitor_dpi=50, remove_vectors=True,
+    ...                           vector_rep="angle", alpha=0.5,
+    ...                           antialiased=True, degrees=True)
+
     "colorwheel" plot of the vectors, useful for vortexes:
 
     >>> import colorcet as cc
     >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           unit_vector=True, plot_style="colorwheel",
+    ...                           vector_rep="angle",
     ...                           overlay=False, cmap=cc.cm.colorwheel,
-    ...                           degrees=False, save=None, monitor_dpi=50)
+    ...                           degrees=True, save=None, monitor_dpi=50)
 
     Plot with a custom scalebar, for example here we need it to be dark, see
     matplotlib-scalebar for more custom features.
@@ -215,6 +270,23 @@ def plot_polarisation_vectors(x, y, u, v, image,
     ...                           overlay=False, save=None, cmap='viridis',
     ...                           scalebar=scbar_dict)
 
+    Plot a contourf for quadrant visualisation using a custom matplotlib cmap:
+
+    >>> import temul.signal_plotting as tmlplot
+    >>> from matplotlib.colors import from_levels_and_colors
+    >>> zest = tmlplot.hex_to_rgb(tmlplot.color_palettes('zesty'))
+    >>> zest.append(zest[0])  # make the -180 and 180 degree colour the same
+    >>> expanded_zest = tmlplot.expand_palette(zest, [1,2,2,2,1])
+    >>> custom_cmap, _ = from_levels_and_colors(
+    ...     levels=range(9), colors=tmlplot.rgb_to_dec(expanded_zest))
+    >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    ...                           unit_vector=False, plot_style='contour',
+    ...                           overlay=False, pivot='middle', save=None,
+    ...                           cmap=custom_cmap, levels=9, monitor_dpi=50,
+    ...                           vector_rep="angle", alpha=0.5, color='r',
+    ...                           antialiased=True, degrees=True,
+    ...                           ticks=[180, 90, 0, -90, -180])
+
     '''
 
     u, v = np.array(u), np.array(v)
@@ -222,9 +294,15 @@ def plot_polarisation_vectors(x, y, u, v, image,
     if sampling is not None:
         u, v = u * sampling, v * sampling
 
-    # for ax.quiver optional C paramater, we need to set this to
-    # something. None doesn't work!
-    vector_mags = get_vector_magnitudes(u, v)
+    if vector_rep == "magnitude":
+        vector_rep_val = get_vector_magnitudes(u, v)
+    elif vector_rep == "angle":
+        # -v because in STEM the origin is top left
+        vector_rep_val = get_angles_from_uv(u, -v, degrees=degrees,
+                                            angle_offset=angle_offset)
+
+    vector_label = angle_label(
+            vector_rep=vector_rep, units=units, degrees=degrees)
 
     if unit_vector:
         # Normalise the data for uniform arrow size
@@ -252,61 +330,74 @@ def plot_polarisation_vectors(x, y, u, v, image,
                      labelpos='E', coordinates='axes')
 
     elif plot_style == "colormap":
+
         if cmap is None:
             cmap = 'viridis'
         ax.quiver(
-            x, y, u, v, vector_mags, color=color, cmap=cmap,
+            x, y, u, v, vector_rep_val, color=color, cmap=cmap,
             pivot=pivot, angles=angles, scale_units=scale_units,
-            scale=scale, headwidth=headwidth,
+            scale=scale, headwidth=headwidth, alpha=alpha,
             headlength=headlength, headaxislength=headaxislength)
 
-        norm = colors.Normalize(vmin=np.min(vector_mags),
-                                vmax=np.max(vector_mags))
+        norm = colors.Normalize(vmin=np.min(vector_rep_val),
+                                vmax=np.max(vector_rep_val))
         sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
         sm.set_array([])
         cbar = plt.colorbar(mappable=sm)
-        cbar.ax.set_ylabel('Vector Magnitude ({})'.format(units))
+        cbar.ax.set_ylabel(vector_label)
 
     elif plot_style == "colorwheel":
 
-        # -v because in STEM the origin is top left
-        colorwheel = np.arctan2(-v, u)
-        if degrees:
-            colorwheel = colorwheel * (180 / np.pi)
-
-        bar_label = angle_label(degrees=degrees)
-
+        if vector_rep != "angle":
+            raise ValueError("`vector_rep` must be set to 'angle' when "
+                             "`plot_style` is set to 'colorwheel'.")
         if cmap is None:
             cmap = cc.cm.colorwheel
 
         Q = ax.quiver(
-            x, y, u, v, colorwheel, cmap=cmap,
+            x, y, u, v, vector_rep_val, cmap=cmap, alpha=alpha,
             pivot=pivot, angles=angles, scale_units=scale_units,
             scale=scale, headwidth=headwidth,
             headlength=headlength, headaxislength=headaxislength)
-        plt.colorbar(Q, label=bar_label)
+        plt.colorbar(Q, label=vector_label)
 
-    elif plot_style == 'contour':
+    elif plot_style == "contour":
+
         if cmap is None:
             cmap = 'viridis'
 
-        contour_map = plt.tricontourf(x, y, vector_mags, cmap=cmap)
+        if degrees:
+            min_angle, max_angle = -180, 180 + 0.0001  # fixes display issues
+        elif not degrees:
+            min_angle, max_angle = -np.pi, np.pi
 
-        ax.quiver(
-            x, y, u, v, color=color, pivot=pivot,
-            angles=angles, scale_units=scale_units,
-            scale=scale, headwidth=headwidth,
-            headlength=headlength, headaxislength=headaxislength)
+        if isinstance(levels, list):
+            levels_list = levels
+        elif isinstance(levels, int):
+            levels_list = np.linspace(min_angle, max_angle, levels)
+
+        contour_map = plt.tricontourf(x, y, vector_rep_val, cmap=cmap,
+                                      alpha=alpha, antialiased=antialiased,
+                                      levels=levels_list)
+
+        if not remove_vectors:
+            ax.quiver(
+                x, y, u, v, color=color, pivot=pivot,
+                angles=angles, scale_units=scale_units,
+                scale=scale, headwidth=headwidth,
+                headlength=headlength, headaxislength=headaxislength)
 
     ax.set(aspect='equal')
     ax.set_xlim(0, image.shape[1])
     ax.set_ylim(image.shape[0], 0)
 
     if plot_style == 'contour':
-        cbar = plt.colorbar(mappable=contour_map, fraction=0.046, pad=0.04)
+        cbar = plt.colorbar(mappable=contour_map, fraction=0.046, pad=0.04,
+                            drawedges=False)
         cbar.ax.tick_params(labelsize=14)
-        cbar.ax.set_ylabel('Vector Magnitude ({})'.format(units),
-                           fontsize=14)
+        cbar.set_ticks(ticks)
+        cbar.ax.set_ylabel(vector_label, fontsize=14)
+
     if overlay:
         plt.imshow(image)
 
@@ -327,6 +418,50 @@ def plot_polarisation_vectors(x, y, u, v, image,
         plt.savefig(fname=save + '_' + plot_style + '.png',
                     transparent=True, frameon=False, bbox_inches='tight',
                     pad_inches=None, dpi=300, labels=False)
+
+
+def get_angles_from_uv(u, v, degrees=False, angle_offset=None):
+    '''
+    Calculate the angle of a vector given the uv components.
+
+    Parameters
+    ----------
+    u,v  : list or 1D NumPy array
+    degrees : Bool, default False
+        Change between degrees and radian. Default is radian.
+    angle_offset : float, default None
+        Rotate the angles by the given amount. The function assumes that if you
+        set `degrees=False` then the provided `angle_offset` is in radians, and
+        if you set `degrees=True` then the provided `angle_offset` is in
+        degrees.
+
+    Returns
+    -------
+    1D NumPy array
+    '''
+
+    u_comp = np.array(u)
+    v_comp = np.array(v).T
+
+    vector_angles = np.arctan2(v_comp, u_comp)
+
+    if angle_offset is not None:
+        # all here is calculated in rad
+        if degrees:
+            # assumes angle_offset has also been given in degrees
+            # so change to rad
+            angle_offset = angle_offset * np.pi / 180
+        vector_angles += angle_offset
+        # refactor so that all angles still lie between -180 and 180
+        a = vector_angles.copy()
+        b = np.where(a > np.pi, a - (2 * np.pi), a)
+        c = np.where(b < -np.pi, b + (2 * np.pi), b)
+        vector_angles = c.copy()
+
+    if degrees:
+        vector_angles = vector_angles * 180 / np.pi
+
+    return(vector_angles)
 
 
 def get_vector_magnitudes(u, v, sampling=None):
@@ -786,6 +921,80 @@ def combine_atom_deviations_from_zone_axes(
     return(x, y, u, v)
 
 
+def get_divide_into(sublattice, averaging_by, sampling,
+                    zone_axis_index_A, zone_axis_index_B):
+    '''
+    Calculate the `divide_into` required to get an averaging of `averaging_by`.
+    `divide_into` can then be used in
+    temul.polarisation.get_average_polarisation_in_regions.
+    Also finds unit cell size and the number of unit cells in the (square)
+    image along the x axis.
+
+    Parameters
+    ----------
+    sublattice : Atomap Sublattice
+    averaging_by : int or float
+        How many unit cells should be averaged. If `averaging_by=2`, 2x2 unit
+        cells will be averaged when passing `divide_into` to
+        temul.polarisation.get_average_polarisation_in_regions.
+    sampling : float
+        Pixel sampling of the image for calibration.
+    zone_axis_index_A, zone_axis_index_B : int
+        Sublattice zone axis indices which should represent the sides of the
+        unit cell.
+
+    Returns
+    -------
+    divide_into, unit_cell_size, num_unit_cells
+
+    Examples
+    --------
+
+    >>> from temul.polarisation import get_divide_into
+    >>> from atomap.dummy_data import get_simple_cubic_sublattice
+    >>> sublattice = get_simple_cubic_sublattice()
+    >>> sublattice.construct_zone_axes()
+    >>> cell_info = get_divide_into(sublattice, averaging_by=2, sampling=0.1,
+    ...                 zone_axis_index_A=0, zone_axis_index_B=1)
+    >>> divide_into = cell_info[0]
+    >>> unit_cell_size = cell_info[1]
+    >>> num_unit_cells = cell_info[2]
+    >>> sublattice.plot()  # You can count the unit cells to check
+
+    '''
+
+    if sublattice.zones_axis_average_distances is None:
+        raise Exception(
+            "zones_axis_average_distances is empty. "
+            "Has sublattice.construct_zone_axes() been run?")
+
+    zone_vector_index_list = sublattice._get_zone_vector_index_list(
+        zone_vector_list=None)
+
+    # zone A
+    zone_index_A, zone_vector_A = zone_vector_index_list[zone_axis_index_A]
+    _, _, xy_dist_A = \
+        sublattice.get_atom_distance_list_from_zone_vector(zone_vector_A)
+
+    # zone B
+    zone_index_B, zone_vector_B = zone_vector_index_list[zone_axis_index_B]
+    _, _, xy_dist_B = \
+        sublattice.get_atom_distance_list_from_zone_vector(zone_vector_B)
+
+    # average unit cell size in zone A and zone B
+    p_A = np.mean(xy_dist_A) * sampling
+    p_B = np.mean(xy_dist_B) * sampling
+
+    unit_cell_size = (p_A + p_B)/2
+    image_size_x = sublattice.signal.axes_manager[0].size * sampling
+
+    num_unit_cells = image_size_x / unit_cell_size
+
+    divide_into = num_unit_cells / averaging_by
+
+    return(divide_into, unit_cell_size, num_unit_cells)
+
+
 def get_average_polarisation_in_regions(x, y, u, v, image, divide_into=8):
     '''
     This function splits the image into the given number of regions and
@@ -1107,7 +1316,7 @@ def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
     zone_axis_index : int
         The zone axis you wish to specify. You are indexing
         `sublattice.zones_axis_average_distances[zone_axis_index]`.
-    angle_offset : float, optional
+    angle_offset : float, default None
         The angle which can be considered zero degrees. Useful when the atomic
         planes are at an angle.
     degrees : Bool, default False
@@ -1135,17 +1344,24 @@ def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
     >>> import atomap.api as am
     >>> from temul.polarisation import rotation_of_atom_planes
     >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
-    >>> sublatticeA = atom_lattice.sublattice_list[0]
+    >>> sublatticeA = atom_lattice.sublattice_list[1]
     >>> sublatticeA.find_nearest_neighbors()
     >>> sublatticeA.refine_atom_positions_using_center_of_mass()
     >>> sublatticeA.construct_zone_axes()
-    >>> rotation_map = rotation_of_atom_planes(sublatticeA, 2)
+    >>> rotation_map = rotation_of_atom_planes(sublatticeA, 3, degrees=True)
 
     Use `angle_offset` to effectively change the angle of the horizontal axis
     when calculating angles:
 
-    >>> rotation_map = rotation_of_atom_planes(sublatticeA, 2,
-    ...                                        angle_offset=-50)
+    >>> rotation_map = rotation_of_atom_planes(sublatticeA, 3, angle_offset=45,
+    ...                                        degrees=True)
+
+    Use the return_x_y_z parameter when you want to either plot with a
+    different style (e.g., contour map), or you want the angle information:
+
+    >>> rotation_map, x, y, angles = rotation_of_atom_planes(
+    ...     sublatticeA, 3, degrees=True, return_x_y_z=True)
+    >>> mean_angle = np.mean(angles)  # useful for offsetting polar. plots
 
     '''
 
@@ -1177,7 +1393,7 @@ def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
     elif not degrees:
         angles_list = angles_list_rad
 
-    bar_label = angle_label(degrees=degrees)
+    bar_label = angle_label("angle", degrees=degrees)
 
     if angle_offset is not None:
         angles_list = [i + angle_offset for i in angles_list]
@@ -1351,11 +1567,19 @@ def ratio_of_lattice_spacings(sublattice, zone_axis_index_A, zone_axis_index_B,
     return(ratio_signal)
 
 
-def angle_label(degrees=False):
-    if degrees:
-        return("Angle (deg)")
+def angle_label(vector_rep="magnitude", units='pix', degrees=False):
+
+    if vector_rep == "magnitude":
+        vector_label = "Magnitude ({})".format(units)
+    elif vector_rep == "angle":
+        if degrees:
+            vector_label = "Angle (deg)"
+        else:
+            vector_label = "Angle (rad)"
     else:
-        return("Angle (rad)")
+        raise ValueError(
+                "`vector_rep` must be either 'magnitude' or 'angle'.")
+    return(vector_label)
 
 
 def atom_to_atom_distance_grouped_mean(sublattice, zone_axis_index,
