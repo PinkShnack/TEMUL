@@ -1,5 +1,8 @@
 .. _install:
 
+.. include:: define_roles.rst
+
+
 Installation
 ------------
 

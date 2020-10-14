@@ -3,11 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-.. role:: bash(code)
-   :language: bash
+.. include:: define_roles.rst
 
-.. role:: python(code)
-   :language: python
 
 Welcome to TEMUL Toolkit's documentation!
 =========================================

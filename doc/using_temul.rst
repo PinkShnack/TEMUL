@@ -1,5 +1,7 @@
 .. _using_temul:
 
+.. include:: define_roles.rst
+
 Getting started
 ---------------
 
