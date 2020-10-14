@@ -30,7 +30,9 @@ See the :ref:`api_doc` for examples and a full list of modules and functions.
 
    install
    using_temul
+   curvature_marios_publication
    api_doc
+
 
 .. Look how easy it is to use:
     import project

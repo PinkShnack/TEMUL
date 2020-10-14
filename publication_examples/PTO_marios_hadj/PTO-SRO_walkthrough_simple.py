@@ -1,5 +1,5 @@
 
-from temul.polarisation import calculate_atom_plane_curvature
+from temul.lattice_structure_tools import calculate_atom_plane_curvature
 import atomap.api as am
 import hyperspy.api as hs
 import os
