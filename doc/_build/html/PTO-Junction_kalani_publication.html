@@ -1,0 +1,349 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Analysis of PTO Domain Wall Junction &mdash; TEMUL Toolkit v0.1-alpha documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API documentation" href="api_doc.html" />
+    <link rel="prev" title="Getting started" href="using_temul.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> TEMUL Toolkit
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                Version 0.1-alpha
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_temul.html">Getting started</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Analysis of PTO Domain Wall Junction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#import-the-modules-and-load-the-data">Import the Modules and Load the Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#set-up-the-parameters">Set up the Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#create-the-lattice-strain-map">Create the Lattice Strain Map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#create-the-lattice-rotation-map">Create the Lattice Rotation Map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">Create the Lattice Rotation Map</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api_doc.html">API documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">TEMUL Toolkit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Analysis of PTO Domain Wall Junction</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/PTO-Junction_kalani_publication.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="analysis-of-pto-domain-wall-junction">
+<span id="pto-junction-kalani-publication"></span><h1>Analysis of PTO Domain Wall Junction<a class="headerlink" href="#analysis-of-pto-domain-wall-junction" title="Permalink to this headline">¶</a></h1>
+<p>This tutorial follows the python scripts and jupyter notebooks found in the
+“TEMUL/publication_examples/PTO-Junction_kalani_moore” folder in the
+<a class="reference external" href="https://github.com/PinkShnack/TEMUL">TEMUL repository</a>. The data and scripts
+used below can be downloaded from there.</p>
+<div class="section" id="import-the-modules-and-load-the-data">
+<h2>Import the Modules and Load the Data<a class="headerlink" href="#import-the-modules-and-load-the-data" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.polarisation</span> <span class="k">as</span> <span class="nn">tmlp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_plotting</span> <span class="kn">import</span> <span class="n">compare_images_line_profile_one_image</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">atomap.api</span> <span class="k">as</span> <span class="nn">am</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">hyperspy.api</span> <span class="k">as</span> <span class="nn">hs</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">path_to_data</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">),</span> <span class="s2">&quot;publication_examples/PTO-Junction_kalani_moore/data&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">path_to_data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Open the filtered PTO Junction dataset</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">image</span> <span class="o">=</span> <span class="n">hs</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;filtered_PTO_HAADF_STEM.hspy&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sampling</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">scale</span>  <span class="c1"># nm/pix</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">units</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">units</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/filtered_PTO_HAADF_STEM.png"><img alt="_images/filtered_PTO_HAADF_STEM.png" src="_images/filtered_PTO_HAADF_STEM.png" style="width: 527.25px; height: 417.75px;" /></a>
+<p>Open the pre-made PTO-SRO atom lattice.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">atom_lattice</span> <span class="o">=</span> <span class="n">am</span><span class="o">.</span><span class="n">load_atom_lattice_from_hdf5</span><span class="p">(</span><span class="s2">&quot;Atom_Lattice_crop.hdf5&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice1</span> <span class="o">=</span> <span class="n">atom_lattice</span><span class="o">.</span><span class="n">sublattice_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># Pb Sublattice</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice2</span> <span class="o">=</span> <span class="n">atom_lattice</span><span class="o">.</span><span class="n">sublattice_list</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># Ti Sublattice</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice1</span><span class="o">.</span><span class="n">construct_zone_axes</span><span class="p">(</span><span class="n">atom_plane_tolerance</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="set-up-the-parameters">
+<h2>Set up the Parameters<a class="headerlink" href="#set-up-the-parameters" title="Permalink to this headline">¶</a></h2>
+<p>Set up parameters for plotting the strain, rotation, and c/a ratio maps:
+Note that sometimes the 0 and 1 axes are constructed first or second,
+so you may have to swap them.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">zone_vector_index_A</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">zone_vector_index_B</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">filename</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Set to a string if you want to save the map</span>
+</pre></div>
+</div>
+<p>Note: You can use <code class="code python docutils literal notranslate"><span class="name"><span class="pre">return_x_y_z</span></span><span class="operator"><span class="pre">=</span></span><span class="keyword constant"><span class="pre">True</span></span></code> for each of the map functions below
+to get the raw x,y, and strain/rotation/ratio values for further plotting with
+matplotlib! <a class="reference external" href="temul-toolkit.readthedocs.io">Check the documentation</a></p>
+<p>Load the line profile positions:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">line_profile_positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;line_profile_positions.npy&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note: You can also choose your own line_profile_positions with
+<code class="code python docutils literal notranslate"><span class="name"><span class="pre">am</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">add_atoms_with_gui</span></span><span class="punctuation"><span class="pre">(</span></span><span class="name"><span class="pre">image</span></span><span class="punctuation"><span class="pre">)</span></span></code> and use the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">skimage</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">profile_line</span></span></code>
+for customisability.</p>
+</div>
+<div class="section" id="create-the-lattice-strain-map">
+<h2>Create the Lattice Strain Map<a class="headerlink" href="#create-the-lattice-strain-map" title="Permalink to this headline">¶</a></h2>
+<p>We want to see the strain map of the Pb Sublattice in the y-axis direction
+Note that sometimes the 0 and 1 axes directions are constructed vice versa.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">vmin</span> <span class="o">=</span> <span class="o">-</span><span class="mi">15</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">vmax</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;inferno&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">theoretical_value</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="mf">3.929</span><span class="o">/</span><span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1"># units of nm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">strain_map</span> <span class="o">=</span> <span class="n">tmlp</span><span class="o">.</span><span class="n">get_strain_map</span><span class="p">(</span><span class="n">sublattice1</span><span class="p">,</span> <span class="n">zone_vector_index_B</span><span class="p">,</span>
+<span class="gp">... </span>                         <span class="n">theoretical_value</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="n">sampling</span><span class="p">,</span>
+<span class="gp">... </span>                         <span class="n">units</span><span class="o">=</span><span class="n">units</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/strain_map.png"><img alt="_images/strain_map.png" src="_images/strain_map.png" style="width: 320.0px; height: 290.5px;" /></a>
+<p>Plot the line profiles with <code class="code python docutils literal notranslate"><span class="name"><span class="pre">temul</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">signal_plotting</span></span></code> functions and a kwarg dictionary</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vmin&#39;</span><span class="p">:</span> <span class="n">vmin</span><span class="p">,</span> <span class="s1">&#39;vmax&#39;</span><span class="p">:</span> <span class="n">vmax</span><span class="p">,</span> <span class="s1">&#39;cmap&#39;</span><span class="p">:</span> <span class="n">cmap</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">compare_images_line_profile_one_image</span><span class="p">(</span><span class="n">strain_map</span><span class="p">,</span> <span class="n">line_profile_positions</span><span class="p">,</span>
+<span class="gp">... </span>                              <span class="n">linewidth</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">arrow</span><span class="o">=</span><span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="n">linetrace</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+<span class="gp">... </span>                              <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/strain_map_line_profile.png"><img alt="_images/strain_map_line_profile.png" src="_images/strain_map_line_profile.png" style="width: 480.0px; height: 360.0px;" /></a>
+</div>
+<div class="section" id="create-the-lattice-rotation-map">
+<h2>Create the Lattice Rotation Map<a class="headerlink" href="#create-the-lattice-rotation-map" title="Permalink to this headline">¶</a></h2>
+<p>Now plot the rotation map of the Pb Sublattice in the x-axis direction to see
+the turning of the lattice across the junction.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">vmin</span> <span class="o">=</span> <span class="o">-</span><span class="mi">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">vmax</span> <span class="o">=</span> <span class="mi">15</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;inferno&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">angle_offset</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span>  <span class="c1"># degrees</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rotation_map</span> <span class="o">=</span> <span class="n">tmlp</span><span class="o">.</span><span class="n">rotation_of_atom_planes</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">sublattice1</span><span class="p">,</span> <span class="n">zone_vector_index_A</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">units</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">angle_offset</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="n">sampling</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/rotation_map.png"><img alt="_images/rotation_map.png" src="_images/rotation_map.png" style="width: 320.0px; height: 290.5px;" /></a>
+<p>Plot the line profiles with <code class="code python docutils literal notranslate"><span class="name"><span class="pre">temul</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">signal_plotting</span></span></code> functions and a kwarg dictionary</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vmin&#39;</span><span class="p">:</span> <span class="n">vmin</span><span class="p">,</span> <span class="s1">&#39;vmax&#39;</span><span class="p">:</span> <span class="n">vmax</span><span class="p">,</span> <span class="s1">&#39;cmap&#39;</span><span class="p">:</span> <span class="n">cmap</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">compare_images_line_profile_one_image</span><span class="p">(</span><span class="n">rotation_map</span><span class="p">,</span> <span class="n">line_profile_positions</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                               <span class="n">linewidth</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">arrow</span><span class="o">=</span><span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="n">linetrace</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                               <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/ratio_map_line_profile.png"><img alt="_images/ratio_map_line_profile.png" src="_images/ratio_map_line_profile.png" style="width: 486.5px; height: 304.5px;" /></a>
+</div>
+<div class="section" id="id1">
+<h2>Create the Lattice Rotation Map<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>Now plot the c/a ratio map of the Pb Sublattice</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">vmin</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">vmax</span> <span class="o">=</span> <span class="mf">1.15</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;inferno&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ideal_ratio_one</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># values under 1 will be divided by themselves</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ca_ratio_map</span> <span class="o">=</span> <span class="n">tmlp</span><span class="o">.</span><span class="n">ratio_of_lattice_spacings</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>                   <span class="n">sublattice1</span><span class="p">,</span> <span class="n">zone_vector_index_B</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                   <span class="n">zone_vector_index_A</span><span class="p">,</span> <span class="n">ideal_ratio_one</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="n">sampling</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                   <span class="n">units</span><span class="o">=</span><span class="n">units</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/ratio_map.png"><img alt="_images/ratio_map.png" src="_images/ratio_map.png" style="width: 341.0px; height: 277.5px;" /></a>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vmin&#39;</span><span class="p">:</span> <span class="n">vmin</span><span class="p">,</span> <span class="s1">&#39;vmax&#39;</span><span class="p">:</span> <span class="n">vmax</span><span class="p">,</span> <span class="s1">&#39;cmap&#39;</span><span class="p">:</span> <span class="n">cmap</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">compare_images_line_profile_one_image</span><span class="p">(</span><span class="n">ca_ratio_map</span><span class="p">,</span> <span class="n">line_profile_positions</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                              <span class="n">linewidth</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">arrow</span><span class="o">=</span><span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="n">linetrace</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                              <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/ratio_map_line_profile.png"><img alt="_images/ratio_map_line_profile.png" src="_images/ratio_map_line_profile.png" style="width: 486.5px; height: 304.5px;" /></a>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="api_doc.html" class="btn btn-neutral float-right" title="API documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="using_temul.html" class="btn btn-neutral float-left" title="Getting started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Eoghan O&#39;Connell
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
