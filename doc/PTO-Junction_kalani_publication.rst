@@ -52,6 +52,8 @@ Set up the Parameters
 ---------------------
 
 Set up parameters for plotting the strain, rotation, and c/a ratio maps:
+Note that sometimes the 0 and 1 axes are constructed first or second,
+so you may have to swap them.
 
 .. code-block:: python
 
@@ -90,7 +92,7 @@ Note that sometimes the 0 and 1 axes directions are constructed vice versa.
     ...                          theoretical_value, sampling=sampling,
     ...                          units=units, vmin=vmin, vmax=vmax, cmap=cmap)
 
-.. image:: ../publication_examples/PTO-Junction_kalani_moore/data/FILL.png
+.. image:: ../publication_examples/PTO-Junction_kalani_moore/data/strain_map.png
     :scale: 30 %
 
 Plot the line profiles with :python:`temul.signal_plotting` functions and a kwarg dictionary
@@ -102,7 +104,7 @@ Plot the line profiles with :python:`temul.signal_plotting` functions and a kwar
     ...                               linewidth=100, arrow='h', linetrace=0.05,
     ...                               **kwargs)
 
-.. image:: ../publication_examples/PTO-Junction_kalani_moore/data/FILL.png
+.. image:: ../publication_examples/PTO-Junction_kalani_moore/data/strain_map_line_profile.png
     :scale: 30 %
 
 
@@ -124,7 +126,7 @@ the turning of the lattice across the junction.
     >>>                     angle_offset, degrees=True, sampling=sampling,
     >>>                     vmin=vmin, vmax=vmax, cmap=cmap)
 
-.. image:: ../publication_examples/PTO-Junction_kalani_moore/data/FILL.png
+.. image:: ../publication_examples/PTO-Junction_kalani_moore/data/rotation_map.png
     :scale: 30 %
 
 
@@ -137,7 +139,7 @@ Plot the line profiles with :python:`temul.signal_plotting` functions and a kwar
     >>>                                linewidth=100, arrow='h', linetrace=0.05,
     >>>                                **kwargs)
 
-.. image:: ../publication_examples/PTO-Junction_kalani_moore/data/FILL.png
+.. image:: ../publication_examples/PTO-Junction_kalani_moore/data/ratio_map_line_profile.png
     :scale: 30 %
 
 

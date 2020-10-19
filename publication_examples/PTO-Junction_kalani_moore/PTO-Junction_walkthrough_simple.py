@@ -24,6 +24,8 @@ sublattice1.construct_zone_axes(atom_plane_tolerance=1)
 # Set up parameters for plotting the strain, rotation, and c/a ratio maps:
 zone_vector_index_A = 0
 zone_vector_index_B = 1
+# Note that sometimes the 0 and 1 axes are constructed first or second, so you may have to swap them.
+
 filename = None  # Set to a string if you want to save the map
 
 '''
@@ -42,13 +44,12 @@ line_profile_positions = np.load('line_profile_positions.npy')
 
 
 # We want to see the strain map of the Pb Sublattice in the y-axis direction
-# Note that sometimes the 0 and 1 axes are constructed first or second
 vmin = -15
 vmax = 30
 cmap = 'inferno'
 theoretical_value = round(3.929/10, 3)  # units of nm
 
-strain_map = tmlp.get_strain_map(sublattice1, zone_vector_index_B,
+strain_map = tmlp.get_strain_map(sublattice1, zone_vector_index_A,
                                  theoretical_value, sampling=sampling,
                                  units=units, vmin=vmin, vmax=vmax, cmap=cmap)
 
