@@ -1,4 +1,5 @@
 
+import hyperspy
 import numpy as np
 import scipy
 import matplotlib.pyplot as plt
@@ -286,6 +287,16 @@ def plot_polarisation_vectors(
 
     '''
 
+    if isinstance(image, np.ndarray):
+        pass
+    elif isinstance(image, hyperspy._signals.signal2d.Signal2D):
+        sampling = image.axes_manager[-1].scale
+        units = image.axes_manager[-1].units
+        image = image.data
+    else:
+        raise ValueError("`image` must be a 2D numpy array or 2D Hyperspy "
+                         "Signal")
+
     u, v = np.array(u), np.array(v)
 
     if sampling is not None:
@@ -363,15 +374,21 @@ def plot_polarisation_vectors(
         if cmap is None:
             cmap = 'viridis'
 
-        if degrees:
-            min_angle, max_angle = -180, 180 + 0.0001  # fixes display issues
-        elif not degrees:
-            min_angle, max_angle = -np.pi, np.pi
+        if vector_rep == "angle":
+            if degrees:
+                min_angle, max_angle = -180, 180 + 0.0001  # fixes display issues
+            elif not degrees:
+                min_angle, max_angle = -np.pi, np.pi
 
         if isinstance(levels, list):
             levels_list = levels
         elif isinstance(levels, int):
-            levels_list = np.linspace(min_angle, max_angle, levels)
+            if vector_rep == "angle":
+                levels_list = np.linspace(min_angle, max_angle, levels)
+            elif vector_rep == "magnitude":
+                levels_list = np.linspace(np.min(vector_rep_val),
+                                          np.max(vector_rep_val)+0.00001,
+                                          levels)
 
         contour_map = plt.tricontourf(x, y, vector_rep_val, cmap=cmap,
                                       alpha=alpha, antialiased=antialiased,
