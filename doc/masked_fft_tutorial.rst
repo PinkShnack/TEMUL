@@ -31,13 +31,18 @@ Load the Image
     :scale: 60 %
 
 
-Choose the Mask Coordinates and Radius
---------------------------------------
+Choose the Mask Coordinates
+---------------------------
 
 .. code-block:: python
 
     >>> mask_coords = tmlsig.choose_mask_coordinates(image, norm="log")
-    >>> mask_radius = 10  # pixels
+
+.. image:: tutorial_images/polarisation_vectors_tutorial/choose_mask_coords.gif
+    :scale: 60 %
+    :align: center
+
+
 
 
 Plot the Masked iFFT
@@ -45,11 +50,12 @@ Plot the Masked iFFT
 
 .. code-block:: python
 
+    >>> mask_radius = 10  # pixels, default is also 10 pixels
     >>> image_ifft = tmlsig.get_masked_ifft(image, mask_coords, 
     ...                                     mask_radius=mask_radius)
     >>> image_ifft.plot()
 
-.. image:: tutorial_images/polarisation_vectors_tutorial/image_uncalibrated.png
+.. image:: tutorial_images/polarisation_vectors_tutorial/ifft_1.png
     :scale: 60 %
 
 Reverse the masking with `keep_masked_area=False`
@@ -60,7 +66,7 @@ Reverse the masking with `keep_masked_area=False`
     ...                                     keep_masked_area=False)
     >>> image_ifft.plot()
 
-.. image:: tutorial_images/polarisation_vectors_tutorial/image_uncalibrated.png
+.. image:: tutorial_images/polarisation_vectors_tutorial/ifft_2.png
     :scale: 60 %
 
 Plot the FFT with masks overlaid by using `plot_masked_fft=True`
@@ -69,10 +75,9 @@ Plot the FFT with masks overlaid by using `plot_masked_fft=True`
 
     >>> image_ifft = tmlsig.get_masked_ifft(image, mask_coords, 
     ...                                     plot_masked_fft=True)
-    >>> image_ifft.plot()
 
-.. image:: tutorial_images/polarisation_vectors_tutorial/image_uncalibrated.png
-    :scale: 60 %
+.. image:: tutorial_images/polarisation_vectors_tutorial/ifft_3.png
+    :scale: 50 %
 
 
 If the input image is already a Fourier transform
@@ -82,10 +87,7 @@ If the input image is already a Fourier transform
     >>> fft_image = image.fft(shift=True)  # Check out Hyperspy
     >>> image_ifft = tmlsig.get_masked_ifft(fft_image, mask_coords,
     ...                                     image_space='fourier')
-    >>> image_ifft.plot()
 
-.. image:: tutorial_images/polarisation_vectors_tutorial/image_uncalibrated.png
-    :scale: 60 %
 
 
 Run FFT masking for Multiple Images
