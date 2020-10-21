@@ -1528,7 +1528,7 @@ def ratio_of_lattice_spacings(sublattice, zone_axis_index_A, zone_axis_index_B,
     cbar.set_array(xy_dist_A)
     cbar.set_clim(vmin, vmax)
     plt.colorbar(cbar, fraction=0.046, pad=0.04,
-                 label="Spacing of Atoms ({})".format(units))
+                 label="Spacing of Atoms (pix)")
     plt.tight_layout()
 
     # spacing B
@@ -1553,7 +1553,7 @@ def ratio_of_lattice_spacings(sublattice, zone_axis_index_A, zone_axis_index_B,
     cbar.set_array(xy_dist_B)
     cbar.set_clim(vmin, vmax)
     plt.colorbar(cbar, fraction=0.046, pad=0.04,
-                 label="Spacing of Atoms ({})".format(units))
+                 label="Spacing of Atoms (pix)")
     plt.tight_layout()
 
     # Get the A/B ratio
