@@ -31,6 +31,7 @@ See the :ref:`api_doc` for examples and a full list of modules and functions.
    install
    using_temul
    polarisation_vectors_tutorial
+   structure_map_tutorial
    api_doc
 
 .. Look how easy it is to use:
