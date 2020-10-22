@@ -7,10 +7,15 @@
 Calculation of Atom Plane Curvature
 ===================================
 
-This tutorial follows the python scripts and jupyter notebooks can be found in the
+This tutorial follows the python scripts and jupyter notebooks found in the
 "TEMUL/publication_examples/PTO_marios_hadj" folder in the
 `TEMUL repository <https://github.com/PinkShnack/TEMUL>`_. The data and scripts
 used below can be downloaded from there.
+The :python:`calculate_atom_plane_curvature` function has been adapted from the
+MATLAB script written by Dr. Marios Hadjimichael for the publication
+"M. Hadjimichael *et al*, Metal-ferroelectric supercrystals with periodically
+curved metallic layers, Nature Materials 2020". This MATLAB script can also be
+found in the same folder.
 
 The :python:`calculate_atom_plane_curvature` function in the
 :python:`temul.lattice_structure_tools` module can be used to find the curvature of the
@@ -20,12 +25,6 @@ curvature as the strain gradient, as in cases where the first derivative is
 negligible. See "Landau and Lifshitz, Theory of Elasticity, Vol 7, pp 47-49, 1981"
 for more details. One can use any :python:`func` input that can be used by
 :python:`scipy.optimize.curve_fit`.
-
-This function has been adapted from the MATLAB script written by Dr. Marios
-Hadjimichael for the publication "M. Hadjimichael *et al*, Metal-ferroelectric
-supercrystals with periodically curved metallic layers, Nature Materials 2020".
-This MATLAB script can also be found in the `TEMUL repository <https://github.com/PinkShnack/TEMUL>`_
-in the folder "TEMUL/publication_examples/PTO_marios_hadj".
 
 
 Import the Modules and Load the Data
