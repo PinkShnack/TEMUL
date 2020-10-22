@@ -36,7 +36,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Masked FFT and iFFT" href="masked_fft_tutorial.html" /> 
+    <link rel="prev" title="Line Intensity Profile Comparisons" href="line_profile_tutorial.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -92,6 +92,7 @@
 <li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Plotting Polarisation and Movement Vectors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="structure_map_tutorial.html">Plot Lattice Structure Maps</a></li>
 <li class="toctree-l1"><a class="reference internal" href="masked_fft_tutorial.html">Masked FFT and iFFT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="line_profile_tutorial.html">Line Intensity Profile Comparisons</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#classes">Classes</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#model-refiner">Model Refiner</a></li>
@@ -2850,6 +2851,11 @@ x,y location and intensity of that point.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="temul.signal_plotting.choose_points_on_image">
+<code class="sig-prename descclassname">temul.signal_plotting.</code><code class="sig-name descname">choose_points_on_image</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">norm</span><span class="o">=</span><span class="default_value">'linear'</span></em>, <em class="sig-param"><span class="n">distance_threshold</span><span class="o">=</span><span class="default_value">4</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.signal_plotting.choose_points_on_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt id="temul.signal_plotting.color_palettes">
 <code class="sig-prename descclassname">temul.signal_plotting.</code><code class="sig-name descname">color_palettes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pallette</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.signal_plotting.color_palettes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Color sequences that are useful for creating matplotlib colormaps.
@@ -2872,7 +2878,7 @@ Google: r-plot-color-combinations-that-are-colorblind-accessible</p>
 
 <dl class="py function">
 <dt id="temul.signal_plotting.compare_images_line_profile_one_image">
-<code class="sig-prename descclassname">temul.signal_plotting.</code><code class="sig-name descname">compare_images_line_profile_one_image</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">line_profile_positions</span></em>, <em class="sig-param"><span class="n">linewidth</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">image_sampling</span><span class="o">=</span><span class="default_value">'Auto'</span></em>, <em class="sig-param"><span class="n">arrow</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">linetrace</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.signal_plotting.compare_images_line_profile_one_image" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">temul.signal_plotting.</code><code class="sig-name descname">compare_images_line_profile_one_image</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">line_profile_positions</span></em>, <em class="sig-param"><span class="n">linewidth</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">sampling</span><span class="o">=</span><span class="default_value">'Auto'</span></em>, <em class="sig-param"><span class="n">units</span><span class="o">=</span><span class="default_value">'pix'</span></em>, <em class="sig-param"><span class="n">arrow</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">linetrace</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.signal_plotting.compare_images_line_profile_one_image" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots two line profiles on one image with the line profile intensities
 in a subfigure.
 See skimage PR PinkShnack for details on implementing profile_line
@@ -2886,7 +2892,7 @@ function to get these. The first two dots will trace the first line
 profile etc.
 Could be extended to n positions with a basic loop.</p></li>
 <li><p><strong>linewidth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>default 1</em>) – see profile_line for parameter details.</p></li>
-<li><p><strong>image_sampling</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>default 'Auto'</em>) – <dl class="simple">
+<li><p><strong>sampling</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>default 'Auto'</em>) – <dl class="simple">
 <dt>if set to ‘Auto’ the function will attempt to find the sampling of</dt><dd><p>image from image.axes_manager[0].scale.</p>
 </dd>
 <dt>arrow<span class="classifier">string, default None</span></dt><dd><p>If set, arrows will be plotting on the image. Options are ‘h’ and
@@ -2905,7 +2911,7 @@ Name could be improved maybe.</p></li>
 
 <dl class="py function">
 <dt id="temul.signal_plotting.compare_images_line_profile_two_images">
-<code class="sig-prename descclassname">temul.signal_plotting.</code><code class="sig-name descname">compare_images_line_profile_two_images</code><span class="sig-paren">(</span><em class="sig-param">imageA</em>, <em class="sig-param">imageB</em>, <em class="sig-param">line_profile_positions</em>, <em class="sig-param">reduce_func=&lt;function mean&gt;</em>, <em class="sig-param">filename=None</em>, <em class="sig-param">linewidth=1</em>, <em class="sig-param">image_sampling='auto'</em>, <em class="sig-param">scale_units='nm'</em>, <em class="sig-param">crop_offset=20</em>, <em class="sig-param">title='Intensity Profile'</em>, <em class="sig-param">marker_A='v'</em>, <em class="sig-param">marker_B='o'</em>, <em class="sig-param">arrow_markersize=10</em>, <em class="sig-param">figsize=(10</em>, <em class="sig-param">3)</em>, <em class="sig-param">imageB_intensity_offset=0</em><span class="sig-paren">)</span><a class="headerlink" href="#temul.signal_plotting.compare_images_line_profile_two_images" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">temul.signal_plotting.</code><code class="sig-name descname">compare_images_line_profile_two_images</code><span class="sig-paren">(</span><em class="sig-param">imageA</em>, <em class="sig-param">imageB</em>, <em class="sig-param">line_profile_positions</em>, <em class="sig-param">reduce_func=&lt;function mean&gt;</em>, <em class="sig-param">filename=None</em>, <em class="sig-param">linewidth=1</em>, <em class="sig-param">sampling='auto'</em>, <em class="sig-param">units='nm'</em>, <em class="sig-param">crop_offset=20</em>, <em class="sig-param">title='Intensity Profile'</em>, <em class="sig-param">imageA_title='Experiment'</em>, <em class="sig-param">imageB_title='Simulation'</em>, <em class="sig-param">marker_A='v'</em>, <em class="sig-param">marker_B='o'</em>, <em class="sig-param">arrow_markersize=10</em>, <em class="sig-param">figsize=(10</em>, <em class="sig-param">3)</em>, <em class="sig-param">imageB_intensity_offset=0</em><span class="sig-paren">)</span><a class="headerlink" href="#temul.signal_plotting.compare_images_line_profile_two_images" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots two line profiles on two images separately with the line
 profile intensities in a subfigure.
 See skimage PR PinkShnack for details on implementing profile_line
@@ -2922,9 +2928,9 @@ See Examples below for example.</p></li>
 name.</p></li>
 <li><p><strong>reduce_func</strong> (<em>ufunc</em><em>, </em><em>default np.mean</em>) – See skimage’s <cite>profile_line</cite> reduce_func parameter for details.</p></li>
 <li><p><strong>linewidth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>default 1</em>) – see profile_line for parameter details.</p></li>
-<li><p><strong>image_sampling</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>default 'auto'</em>) – if set to ‘auto’ the function will attempt to find the sampling of
+<li><p><strong>sampling</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>default 'auto'</em>) – if set to ‘auto’ the function will attempt to find the sampling of
 image from image.axes_manager[0].scale.</p></li>
-<li><p><strong>scale_units</strong> (<em>string</em><em>, </em><em>default 'nm'</em>) – </p></li>
+<li><p><strong>units</strong> (<em>string</em><em>, </em><em>default 'nm'</em>) – </p></li>
 <li><p><strong>crop_offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>default 20</em>) – number of pixels away from the <cite>line_profile_positions</cite> coordinates the
 image crop will be taken.</p></li>
 <li><p><strong>title</strong> (<em>string</em><em>, </em><em>default &quot;Intensity Profile&quot;</em>) – Title of the plot</p></li>
@@ -2946,7 +2952,7 @@ image crop will be taken.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">line_profile_positions</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">81.58</span><span class="p">,</span> <span class="mf">69.70</span><span class="p">],</span> <span class="p">[</span><span class="mf">193.10</span><span class="p">,</span> <span class="mf">184.08</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">compare_images_line_profile_two_images</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">imageA</span><span class="p">,</span> <span class="n">imageB</span><span class="p">,</span> <span class="n">line_profile_positions</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">image_sampling</span><span class="o">=</span><span class="mf">0.012</span><span class="p">,</span> <span class="n">crop_offset</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="mf">0.012</span><span class="p">,</span> <span class="n">crop_offset</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>To use the new skimage functionality try the <cite>reduce_func</cite> parameter:</p>
@@ -2954,13 +2960,13 @@ image crop will be taken.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">reduce_func</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span> <span class="c1"># can be any ufunc!</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">compare_images_line_profile_two_images</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">imageA</span><span class="p">,</span> <span class="n">imageB</span><span class="p">,</span> <span class="n">line_profile_positions</span><span class="p">,</span> <span class="n">reduce_func</span><span class="o">=</span><span class="n">reduce_func</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">image_sampling</span><span class="o">=</span><span class="mf">0.012</span><span class="p">,</span> <span class="n">crop_offset</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="mf">0.012</span><span class="p">,</span> <span class="n">crop_offset</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">reduce_func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">compare_images_line_profile_two_images</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">imageA</span><span class="p">,</span> <span class="n">imageB</span><span class="p">,</span> <span class="n">line_profile_positions</span><span class="p">,</span> <span class="n">reduce_func</span><span class="o">=</span><span class="n">reduce_func</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">image_sampling</span><span class="o">=</span><span class="mf">0.012</span><span class="p">,</span> <span class="n">crop_offset</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="mf">0.012</span><span class="p">,</span> <span class="n">crop_offset</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Offseting the y axis of the second image can sometimes be useful:</p>
@@ -3604,7 +3610,7 @@ the colormap should be the same as the edges, such as colorcet’s CET_C4s.</p>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
       
-        <a href="masked_fft_tutorial.html" class="btn btn-neutral float-left" title="Masked FFT and iFFT" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="line_profile_tutorial.html" class="btn btn-neutral float-left" title="Line Intensity Profile Comparisons" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

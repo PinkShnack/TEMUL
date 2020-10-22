@@ -36,7 +36,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="API documentation" href="api_doc.html" />
+    <link rel="next" title="Line Intensity Profile Comparisons" href="line_profile_tutorial.html" />
     <link rel="prev" title="Plot Lattice Structure Maps" href="structure_map_tutorial.html" /> 
 </head>
 
@@ -93,12 +93,13 @@
 <li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Plotting Polarisation and Movement Vectors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="structure_map_tutorial.html">Plot Lattice Structure Maps</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Masked FFT and iFFT</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#load-the-image">Load the Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#load-the-example-image">Load the Example Image</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#choose-the-mask-coordinates">Choose the Mask Coordinates</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#plot-the-masked-ifft">Plot the Masked iFFT</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#run-fft-masking-for-multiple-images">Run FFT masking for Multiple Images</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="line_profile_tutorial.html">Line Intensity Profile Comparisons</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_doc.html">API documentation</a></li>
 </ul>
 
@@ -173,8 +174,8 @@
 the diffraction space spots and how they relate to the real space structure,
 to <a class="reference external" href="https://onlinelibrary.wiley.com/doi/abs/10.1111/jmi.12876">revealing domain walls</a>
 and finding initial atom positions for difficult images.</p>
-<div class="section" id="load-the-image">
-<h2>Load the Image<a class="headerlink" href="#load-the-image" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="load-the-example-image">
+<h2>Load the Example Image<a class="headerlink" href="#load-the-example-image" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.signal_processing</span> <span class="k">as</span> <span class="nn">tmlsig</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="kn">import</span> <span class="n">get_polarisation_dummy_dataset</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">atom_lattice</span> <span class="o">=</span> <span class="n">get_polarisation_dummy_dataset</span><span class="p">(</span><span class="n">image_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -242,7 +243,7 @@ simple <code class="code python docutils literal notranslate"><span class="keywo
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="api_doc.html" class="btn btn-neutral float-right" title="API documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="line_profile_tutorial.html" class="btn btn-neutral float-right" title="Line Intensity Profile Comparisons" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="structure_map_tutorial.html" class="btn btn-neutral float-left" title="Plot Lattice Structure Maps" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
