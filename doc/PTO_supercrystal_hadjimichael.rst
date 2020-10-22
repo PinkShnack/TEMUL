@@ -1,4 +1,4 @@
-.. _curvature_marios_publication:
+.. _PTO_supercrystal_hadjimichael:
 
 .. include:: define_roles.rst
 
@@ -8,7 +8,7 @@ Calculation of Atom Plane Curvature
 ===================================
 
 This tutorial follows the python scripts and jupyter notebooks found in the
-"TEMUL/publication_examples/PTO_marios_hadj" folder in the
+"publication_examples/PTO_supercrystal_hadjimichael" folder in the
 `TEMUL repository <https://github.com/PinkShnack/TEMUL>`_. The data and scripts
 used below can be downloaded from there.
 The :python:`calculate_atom_plane_curvature` function has been adapted from the
@@ -37,7 +37,7 @@ Import the Modules and Load the Data
     >>> import hyperspy.api as hs
     >>> import os
     >>> path_to_data = os.path.join(os.path.abspath(''),
-    ...                             "publication_examples/PTO_marios_hadj/data") 
+    ...             "publication_examples/PTO_supercrystal_hadjimichael/data") 
     >>> os.chdir(path_to_data)
 
 Open the PTO/SRO dataset
@@ -49,7 +49,7 @@ Open the PTO/SRO dataset
     >>> units = image.axes_manager[-1].units
     >>> image.plot()
 
-.. image:: ../publication_examples/PTO_marios_hadj/data/Cropped_PTO-SRO_Aligned.png
+.. image:: ../publication_examples/PTO_supercrystal_hadjimichael/data/Cropped_PTO-SRO_Aligned.png
     :scale: 35 %
 
 Open the pre-made PTO-SRO atom lattice.
@@ -61,7 +61,7 @@ Open the pre-made PTO-SRO atom lattice.
     >>> sublattice2 = atom_lattice.sublattice_list[1] #  Ti-Ru Sublattice
     >>> atom_lattice.plot()
 
-.. image:: ../publication_examples/PTO_marios_hadj/data/Atom_Lattice_crop.png
+.. image:: ../publication_examples/PTO_supercrystal_hadjimichael/data/Atom_Lattice_crop.png
     :scale: 50 %
 
 
@@ -105,7 +105,7 @@ We want to see the curvature (approx. as strain gradient) in the SRO Sublattice
     ...                     sampling=sampling, units=units, cmap=cmap, title=title,
     ...                     atom_planes=atom_planes, **kwargs)
 
-.. image:: ../publication_examples/PTO_marios_hadj/data/Curvature_Map_Example.png
+.. image:: ../publication_examples/PTO_supercrystal_hadjimichael/data/Curvature_Map_Example.png
     :scale: 50 %
 
 When using :python:`plot_and_return_fits=True`, the function will return the curve
