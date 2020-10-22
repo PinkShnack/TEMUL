@@ -1,7 +1,6 @@
 
 from temul.element_tools import split_and_sort_element
-from temul.external.atomap_devel_012.initial_position_finding import (
-    add_atoms_with_gui as choose_points_on_image)
+from temul.signal_plotting import choose_points_on_image
 
 from temul.external.atomap_devel_012.sublattice import Sublattice
 from temul.external.atomap_devel_012.atom_finding_refining import (

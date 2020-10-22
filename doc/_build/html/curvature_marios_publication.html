@@ -36,8 +36,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="API documentation" href="api_doc.html" />
-    <link rel="prev" title="Getting started" href="using_temul.html" /> 
+    <link rel="next" title="Masked FFT and iFFT" href="masked_fft_tutorial.html" />
+    <link rel="prev" title="Plot Lattice Structure Maps" href="structure_map_tutorial.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -90,12 +90,16 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="using_temul.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Plotting Polarisation and Movement Vectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structure_map_tutorial.html">Plot Lattice Structure Maps</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Calculation of Atom Plane Curvature</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#import-the-modules-and-load-the-data">Import the Modules and Load the Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#set-up-the-parameters">Set up the Parameters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#calculate-the-curvature-of-atom-planes">Calculate the Curvature of Atom Planes</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="masked_fft_tutorial.html">Masked FFT and iFFT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="line_profile_tutorial.html">Line Intensity Profile Comparisons</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_doc.html">API documentation</a></li>
 </ul>
 
@@ -164,31 +168,31 @@
             
   <div class="section" id="calculation-of-atom-plane-curvature">
 <span id="curvature-marios-publication"></span><h1>Calculation of Atom Plane Curvature<a class="headerlink" href="#calculation-of-atom-plane-curvature" title="Permalink to this headline">¶</a></h1>
-<p>This tutorial follows the python scripts and jupyter notebooks found in the
+<p>This tutorial follows the python scripts and jupyter notebooks can be found in the
 “TEMUL/publication_examples/PTO_marios_hadj” folder in the
 <a class="reference external" href="https://github.com/PinkShnack/TEMUL">TEMUL repository</a>. The data and scripts
 used below can be downloaded from there.</p>
 <p>The <code class="code python docutils literal notranslate"><span class="name"><span class="pre">calculate_atom_plane_curvature</span></span></code> function in the
 <code class="code python docutils literal notranslate"><span class="name"><span class="pre">temul</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">lattice_structure_tools</span></span></code> module can be used to find the curvature of the
 displacement of atoms along an atom plane in a sublattice. Using the default
-parameter <code class="code python docutils literal notranslate"><span class="name"><span class="pre">func</span></span><span class="operator"><span class="pre">=</span></span><span class="literal string double"><span class="pre">”strain_grad”</span></span></code>, the function will approximate the
+parameter <code class="code python docutils literal notranslate"><span class="name"><span class="pre">func</span></span><span class="operator"><span class="pre">=</span></span><span class="literal string single"><span class="pre">’strain_grad’</span></span></code>, the function will approximate the
 curvature as the strain gradient, as in cases where the first derivative is
 negligible. See “Landau and Lifshitz, Theory of Elasticity, Vol 7, pp 47-49, 1981”
-for more details. One can use any <code class="code python docutils literal notranslate"><span class="name"><span class="pre">func</span></span></code> that can be used by
+for more details. One can use any <code class="code python docutils literal notranslate"><span class="name"><span class="pre">func</span></span></code> input that can be used by
 <code class="code python docutils literal notranslate"><span class="name"><span class="pre">scipy</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">optimize</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">curve_fit</span></span></code>.</p>
 <p>This function has been adapted from the MATLAB script written by Dr. Marios
 Hadjimichael for the publication “M. Hadjimichael <em>et al</em>, Metal-ferroelectric
 supercrystals with periodically curved metallic layers, Nature Materials 2020”.
-This MATLAB script can be found along with this and other publication examples
-in the <a class="reference external" href="https://github.com/PinkShnack/TEMUL">TEMUL repository</a> in the folder
-“TEMUL/publication_examples/PTO_marios_hadj”.</p>
+This MATLAB script can also be found in the <a class="reference external" href="https://github.com/PinkShnack/TEMUL">TEMUL repository</a>
+in the folder “TEMUL/publication_examples/PTO_marios_hadj”.</p>
 <div class="section" id="import-the-modules-and-load-the-data">
 <h2>Import the Modules and Load the Data<a class="headerlink" href="#import-the-modules-and-load-the-data" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.lattice_structure_tools</span> <span class="kn">import</span> <span class="n">calculate_atom_plane_curvature</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">atomap.api</span> <span class="k">as</span> <span class="nn">am</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">hyperspy.api</span> <span class="k">as</span> <span class="nn">hs</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">path_to_data</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">),</span> <span class="s2">&quot;publication_examples/PTO_marios_hadj/data&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">path_to_data</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">),</span>
+<span class="gp">... </span>                            <span class="s2">&quot;publication_examples/PTO_marios_hadj/data&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">path_to_data</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -239,7 +243,7 @@ in the <a class="reference external" href="https://github.com/PinkShnack/TEMUL">
 </div>
 <a class="reference internal image-reference" href="_images/Curvature_Map_Example.png"><img alt="_images/Curvature_Map_Example.png" src="_images/Curvature_Map_Example.png" style="width: 613.0px; height: 133.0px;" /></a>
 <p>When using <code class="code python docutils literal notranslate"><span class="name"><span class="pre">plot_and_return_fits</span></span><span class="operator"><span class="pre">=</span></span><span class="keyword constant"><span class="pre">True</span></span></code>, the function will return the curve
-fittings, and plot each plane. (plots not shown here)</p>
+fittings, and plot each plane (plots not displayed).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">str_grad_map</span><span class="p">,</span> <span class="n">fittings</span> <span class="o">=</span> <span class="n">calculate_atom_plane_curvature</span><span class="p">(</span><span class="n">sublattice2</span><span class="p">,</span>
 <span class="gp">... </span>                    <span class="n">zone_vector_index</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="n">sampling</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">units</span><span class="p">,</span>
 <span class="gp">... </span>                    <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">atom_planes</span><span class="o">=</span><span class="n">atom_planes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
@@ -257,10 +261,10 @@ fittings, and plot each plane. (plots not shown here)</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="api_doc.html" class="btn btn-neutral float-right" title="API documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="masked_fft_tutorial.html" class="btn btn-neutral float-right" title="Masked FFT and iFFT" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="using_temul.html" class="btn btn-neutral float-left" title="Getting started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="structure_map_tutorial.html" class="btn btn-neutral float-left" title="Plot Lattice Structure Maps" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

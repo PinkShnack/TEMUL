@@ -8,13 +8,16 @@ from matplotlib.pyplot import subplots_adjust
 import matplotlib.dates as mdates
 import scipy.spatial as spatial
 from temul.intensity_tools import get_sublattice_intensity
+from temul.external.atomap_devel_012.initial_position_finding import (
+    add_atoms_with_gui)
 
 
 # line_profile_positions = am.add_atoms_with_gui(s)
 def compare_images_line_profile_one_image(image,
                                           line_profile_positions,
                                           linewidth=1,
-                                          image_sampling='Auto',
+                                          sampling='Auto',
+                                          units='pix',
                                           arrow=None,
                                           linetrace=None,
                                           **kwargs):
@@ -34,7 +37,7 @@ def compare_images_line_profile_one_image(image,
         Could be extended to n positions with a basic loop.
     linewidth : int, default 1
         see profile_line for parameter details.
-    image_sampling :  float, default 'Auto'
+    sampling :  float, default 'Auto'
         if set to 'Auto' the function will attempt to find the sampling of
         image from image.axes_manager[0].scale.
      arrow : string, default None
@@ -48,14 +51,14 @@ def compare_images_line_profile_one_image(image,
 
     '''
 
-    if image_sampling == 'Auto':
+    if sampling == 'Auto':
         if image.axes_manager[0].scale != 1.0:
-            image_sampling = image.axes_manager[-1].scale
-            scale_units = image.axes_manager[-1].units
+            sampling = image.axes_manager[-1].scale
+            units = image.axes_manager[-1].units
         else:
             raise ValueError("The image sampling cannot be computed."
                              "The image should either be calibrated "
-                             "or the image_sampling provided")
+                             "or the sampling provided")
 
     x0, y0 = line_profile_positions[0]
     x1, y1 = line_profile_positions[1]
@@ -66,12 +69,12 @@ def compare_images_line_profile_one_image(image,
     profile_y_1 = profile_line(image=image.data, src=[y0, x0], dst=[y1, x1],
                                linewidth=linewidth)
     profile_x_1 = np.arange(0, len(profile_y_1), 1)
-    profile_x_1 = profile_x_1 * image_sampling
+    profile_x_1 = profile_x_1 * sampling
 
     profile_y_2 = profile_line(image=image.data, src=[y2, x2], dst=[y3, x3],
                                linewidth=linewidth)
     profile_x_2 = np.arange(0, len(profile_y_2), 1)
-    profile_x_2 = profile_x_2 * image_sampling
+    profile_x_2 = profile_x_2 * sampling
 
     # -- Plot the line profile comparisons
     _, (ax1, ax2) = plt.subplots(nrows=2)  # figsize=(12, 4)
@@ -122,7 +125,7 @@ def compare_images_line_profile_one_image(image,
              ls='--', label='2')
     ax2.set_title('Intensity Profile')
     ax2.set_ylabel('Intensity (a.u.)')
-    ax2.set_xlabel('Distance ({})'.format(scale_units))
+    ax2.set_xlabel('Distance ({})'.format(units))
     # ax2.set_ylim(max(profile_y_1), min(profile_y_1))
     ax2.legend(fancybox=True, loc='upper right')
     plt.tight_layout()
@@ -135,10 +138,12 @@ def compare_images_line_profile_two_images(imageA, imageB,
                                            reduce_func=np.mean,
                                            filename=None,
                                            linewidth=1,
-                                           image_sampling='auto',
-                                           scale_units='nm',
+                                           sampling='auto',
+                                           units='nm',
                                            crop_offset=20,
                                            title="Intensity Profile",
+                                           imageA_title='Experiment',
+                                           imageB_title='Simulation',
                                            marker_A='v',
                                            marker_B='o',
                                            arrow_markersize=10,
@@ -164,10 +169,10 @@ def compare_images_line_profile_two_images(imageA, imageB,
         See skimage's `profile_line` reduce_func parameter for details.
     linewidth : int, default 1
         see profile_line for parameter details.
-    image_sampling :  float, default 'auto'
+    sampling :  float, default 'auto'
         if set to 'auto' the function will attempt to find the sampling of
         image from image.axes_manager[0].scale.
-    scale_units : string, default 'nm'
+    units : string, default 'nm'
     crop_offset : int, default 20
         number of pixels away from the `line_profile_positions` coordinates the
         image crop will be taken.
@@ -190,7 +195,7 @@ def compare_images_line_profile_two_images(imageA, imageB,
     >>> line_profile_positions = [[81.58, 69.70], [193.10, 184.08]]
     >>> compare_images_line_profile_two_images(
     ...     imageA, imageB, line_profile_positions,
-    ...     linewidth=3, image_sampling=0.012, crop_offset=30)
+    ...     linewidth=3, sampling=0.012, crop_offset=30)
 
     To use the new skimage functionality try the `reduce_func` parameter:
 
@@ -198,12 +203,12 @@ def compare_images_line_profile_two_images(imageA, imageB,
     >>> reduce_func = np.sum # can be any ufunc!
     >>> compare_images_line_profile_two_images(
     ...     imageA, imageB, line_profile_positions, reduce_func=reduce_func,
-    ...     linewidth=3, image_sampling=0.012, crop_offset=30)
+    ...     linewidth=3, sampling=0.012, crop_offset=30)
 
     >>> reduce_func = lambda x: np.sum(x**0.5)
     >>> compare_images_line_profile_two_images(
     ...     imageA, imageB, line_profile_positions, reduce_func=reduce_func,
-    ...     linewidth=3, image_sampling=0.012, crop_offset=30)
+    ...     linewidth=3, sampling=0.012, crop_offset=30)
 
     Offseting the y axis of the second image can sometimes be useful:
 
@@ -218,18 +223,18 @@ def compare_images_line_profile_two_images(imageA, imageB,
 
     '''
 
-    if isinstance(image_sampling, str):
-        if image_sampling.lower() == 'auto':
+    if isinstance(sampling, str):
+        if sampling.lower() == 'auto':
             if imageA.axes_manager[0].scale != 1.0:
-                image_sampling = imageA.axes_manager[-1].scale
-                scale_units = imageA.axes_manager[-1].units
+                sampling = imageA.axes_manager[-1].scale
+                units = imageA.axes_manager[-1].units
 
             else:
                 raise ValueError("The image sampling cannot be computed."
                                  "The image should either be calibrated "
-                                 "or the image_sampling provided")
-    elif not isinstance(image_sampling, float):
-        raise ValueError("The image_sampling should either be 'auto' or a "
+                                 "or the sampling provided")
+    elif not isinstance(sampling, float):
+        raise ValueError("The sampling should either be 'auto' or a "
                          "floating point number")
 
     x0, y0 = line_profile_positions[0]
@@ -238,7 +243,7 @@ def compare_images_line_profile_two_images(imageA, imageB,
     profile_y_exp = profile_line(image=imageA.data, src=[y0, x0], dst=[y1, x1],
                                  linewidth=linewidth, reduce_func=reduce_func)
     profile_x_exp = np.arange(0, len(profile_y_exp), 1)
-    profile_x_exp = profile_x_exp * image_sampling
+    profile_x_exp = profile_x_exp * sampling
 
     crop_left, crop_right, crop_top, crop_bot = get_cropping_area(
         line_profile_positions, crop_offset)
@@ -263,7 +268,7 @@ def compare_images_line_profile_two_images(imageA, imageB,
         image=imageB.data, src=[y0, x0], dst=[y1, x1], linewidth=linewidth,
         reduce_func=reduce_func) + imageB_intensity_offset
     profile_x_sim = np.arange(0, len(profile_y_sim), 1)
-    profile_x_sim = profile_x_sim * image_sampling
+    profile_x_sim = profile_x_sim * sampling
 
     imageB_crop = hs.roi.RectangularROI(left=crop_left, right=crop_right,
                                         top=crop_top, bottom=crop_bot)(imageB)
@@ -278,7 +283,7 @@ def compare_images_line_profile_two_images(imageA, imageB,
              markersize=arrow_markersize, alpha=1)
     ax1.plot(crop_x1, crop_y1, color='r', marker=marker_B,
              markersize=arrow_markersize, alpha=1)
-    ax1.set_title('Experiment')
+    ax1.set_title(imageA_title)
     ax1.yaxis.set_ticks([])
     ax1.xaxis.set_ticks([])
 
@@ -287,7 +292,7 @@ def compare_images_line_profile_two_images(imageA, imageB,
              markersize=arrow_markersize, alpha=1)
     ax2.plot(crop_x1, crop_y1, color='b', marker=marker_B,
              markersize=arrow_markersize, alpha=1)
-    ax2.set_title('Simulation')
+    ax2.set_title(imageB_title)
     ax2.yaxis.set_ticks([])
     ax2.xaxis.set_ticks([])
 
@@ -301,7 +306,7 @@ def compare_images_line_profile_two_images(imageA, imageB,
 
     ax3.set_title(title)
     ax3.set_ylabel('Intensity (a.u.)')
-    ax3.set_xlabel('Distance ({})'.format(scale_units))
+    ax3.set_xlabel('Distance ({})'.format(units))
     # ax3.set_ylim(max(profile_x_exp), min(profile_x_exp))
     ax3.legend(fancybox=True, loc='upper right')
     plt.tight_layout()
@@ -690,3 +695,10 @@ def expand_palette(palette, expand_list):
         for count in range(ex):
             expanded_palette.append(pal)
     return expanded_palette
+
+
+def choose_points_on_image(image, norm='linear', distance_threshold=4):
+
+    coords = add_atoms_with_gui(image=image, norm=norm,
+                                distance_threshold=distance_threshold)
+    return coords
