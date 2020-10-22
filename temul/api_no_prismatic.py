@@ -42,7 +42,6 @@ from temul.io import (
     batch_convert_emd_to_image,
     convert_vesta_xyz_to_prismatic_xyz,
     create_dataframe_for_xyz,
-    create_new_folder,
     dm3_stack_to_tiff_stack,
     load_data_and_sampling,
     save_individual_images_from_image_stack,

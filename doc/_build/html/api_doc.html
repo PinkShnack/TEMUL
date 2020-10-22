@@ -91,6 +91,7 @@
 <li class="toctree-l1"><a class="reference internal" href="using_temul.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Plotting Polarisation and Movement Vectors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="structure_map_tutorial.html">Plot Lattice Structure Maps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PTO_supercrystal_hadjimichael.html">Calculation of Atom Plane Curvature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="masked_fft_tutorial.html">Masked FFT and iFFT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="line_profile_tutorial.html">Line Intensity Profile Comparisons</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API documentation</a><ul>
@@ -103,7 +104,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#module-temul.element_tools">Element Tools</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-temul.intensity_tools">Intensity Tools</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-temul.model_creation">Model Creation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#image-simulation-functions">Image Simulation Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-temul.simulations">Image Simulation Functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-temul.signal_processing">Signal Processing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-temul.signal_plotting">Signal Plotting</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-temul.io">Input/Output (io)</a></li>
@@ -184,6 +185,290 @@
 <h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="model-refiner">
 <h3>Model Refiner<a class="headerlink" href="#model-refiner" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="temul.model_refiner.Model_Refiner">
+<em class="property">class </em><code class="sig-prename descclassname">temul.model_refiner.</code><code class="sig-name descname">Model_Refiner</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sublattice_and_elements_dict</span></em>, <em class="sig-param"><span class="n">comparison_image</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sampling</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">thickness</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.model_refiner.Model_Refiner" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="temul.model_refiner.Model_Refiner.calibrate_comparison_image">
+<code class="sig-name descname">calibrate_comparison_image</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">percent_to_nn</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mask_radius</span><span class="o">=</span><span class="default_value">'auto'</span></em>, <em class="sig-param"><span class="n">refine</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.model_refiner.Model_Refiner.calibrate_comparison_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="temul.model_refiner.Model_Refiner.combine_individual_and_element_counts_as_dataframe">
+<code class="sig-name descname">combine_individual_and_element_counts_as_dataframe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">split_symbol</span><span class="o">=</span><span class="default_value">['_', '.']</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.model_refiner.Model_Refiner.combine_individual_and_element_counts_as_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="temul.model_refiner.Model_Refiner.compare_latest_element_counts">
+<code class="sig-name descname">compare_latest_element_counts</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#temul.model_refiner.Model_Refiner.compare_latest_element_counts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="temul.model_refiner.Model_Refiner.create_simulation">
+<code class="sig-name descname">create_simulation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sublattices</span><span class="o">=</span><span class="default_value">'all'</span></em>, <em class="sig-param"><span class="n">filter_image</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">calibrate_image</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">xyz_sizes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">header_comment</span><span class="o">=</span><span class="default_value">'example'</span></em>, <em class="sig-param"><span class="n">filename</span><span class="o">=</span><span class="default_value">'refiner_simulation'</span></em>, <em class="sig-param"><span class="n">reference_image</span><span class="o">=</span><span class="default_value">'auto'</span></em>, <em class="sig-param"><span class="n">probeStep</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">E0</span><span class="o">=</span><span class="default_value">60000.0</span></em>, <em class="sig-param"><span class="n">integrationAngleMin</span><span class="o">=</span><span class="default_value">0.085</span></em>, <em class="sig-param"><span class="n">integrationAngleMax</span><span class="o">=</span><span class="default_value">0.186</span></em>, <em class="sig-param"><span class="n">detectorAngleStep</span><span class="o">=</span><span class="default_value">0.001</span></em>, <em class="sig-param"><span class="n">interpolationFactor</span><span class="o">=</span><span class="default_value">16</span></em>, <em class="sig-param"><span class="n">realspacePixelSize</span><span class="o">=</span><span class="default_value">0.0654</span></em>, <em class="sig-param"><span class="n">numFP</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">cellDimXYZ</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tileXYZ</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">probeSemiangle</span><span class="o">=</span><span class="default_value">0.03</span></em>, <em class="sig-param"><span class="n">alphaBeamMax</span><span class="o">=</span><span class="default_value">0.032</span></em>, <em class="sig-param"><span class="n">scanWindowMin</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">scanWindowMax</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">numThreads</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">algorithm</span><span class="o">=</span><span class="default_value">'prism'</span></em>, <em class="sig-param"><span class="n">delta_image_filter</span><span class="o">=</span><span class="default_value">0.5</span></em>, <em class="sig-param"><span class="n">max_sigma</span><span class="o">=</span><span class="default_value">6</span></em>, <em class="sig-param"><span class="n">mask_radius</span><span class="o">=</span><span class="default_value">'auto'</span></em>, <em class="sig-param"><span class="n">percent_to_nn</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">refine</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">sigma_offset</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.model_refiner.Model_Refiner.create_simulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create and simulate a .xyz file from the sublattice information.
+Uses the pyprismatic prism algorithm by default.</p>
+<p>Note: The error resulting from filter=True with percent_to_nn set can
+be fixed by setting mask_radius instead of percent_to_nn.
+Error is: “TypeError: ‘NoneType’ object is not iterable”</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sublattices</strong> (<em>Atomap Sublattices</em><em>, </em><em>default 'all'</em>) – If set to ‘all’, sublattices that exist in the <cite>Model_Refiner</cite> will
+all be used. The <cite>sublattice</cite> indexes can be specified in a list.
+For example [0, 2] will select the first and third sublattices.
+A list of <cite>sublattice</cite> objects can instead be used.</p></li>
+<li><p><strong>filter_image</strong> (<em>Bool</em><em>, </em><em>default False</em>) – Choose whether to filter the simulation with a Gaussian to match
+the <cite>reference_image</cite>.</p></li>
+<li><p><strong>calibrate_image</strong> (<em>Bool</em><em>, </em><em>default True</em>) – Choose whether to calibrate the simulation with a set
+<cite>calibration_area</cite> and <cite>calibration_separation</cite>.</p></li>
+<li><p><strong>xyz_sizes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a><em>, </em><em>default None</em>) – List of the x, y, z physical size of the reference_image in
+angstrom. If None is set, the sizes will be automatically taken
+from the <cite>image_xyz_sizes</cite> attribute.</p></li>
+<li><p><strong>header_comment</strong> (<em>string</em><em>, </em><em>default 'example'</em>) – The first line comment for the .xyz file.</p></li>
+<li><p><strong>filename</strong> (<em>string</em><em>, </em><em>default 'refiner_simulation'</em>) – filename with which the .xyz file and simulated .mrc file will be
+saved.</p></li>
+<li><p><strong>delta_image_filter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>default 0.5</em>) – The change in sigma for the <cite>filter</cite> Gaussian filter. Small values
+will slow the <cite>filter</cite> down.</p></li>
+<li><p><strong>max_sigma</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>default 6</em>) – The maximum sigma used for the <cite>filter</cite> Gaussian filter. Large
+values will slow the <cite>filter</cite> down.</p></li>
+<li><p><strong>percent_to_nn</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>default None</em>) – The percentage distance to the nearest neighbour atom used for
+atomap atom position refinement.</p></li>
+<li><p><strong>mask_radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>default 'auto'</em>) – The pixel distance to the nearest neighbour atom used for atomap
+atom position refinement</p></li>
+<li><p><strong>refine</strong> (<em>Bool</em><em>, </em><em>default True</em>) – Whether to refine the atom positions for the <cite>calibrate</cite> parameter.</p></li>
+<li><p><strong>Note</strong> (<em>The error resulting from filter=True with percent_to_nn set can</em>) – </p></li>
+<li><p><strong>fixed by setting mask_radius instead of percent_to_nn.</strong> (<em>be</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Updates the comparison_image attribute with the newly simulated model.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="temul.model_refiner.Model_Refiner.element_count">
+<em class="property">property </em><code class="sig-name descname">element_count</code><a class="headerlink" href="#temul.model_refiner.Model_Refiner.element_count" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="temul.model_refiner.Model_Refiner.get_element_count_as_dataframe">
+<code class="sig-name descname">get_element_count_as_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#temul.model_refiner.Model_Refiner.get_element_count_as_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allows you to view the element count as a Pandas Dataframe.
+See <cite>image_difference_intensity_model_refiner</cite> for an example.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Pandas Dataframe</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="temul.model_refiner.Model_Refiner.get_individual_elements_as_dataframe">
+<code class="sig-name descname">get_individual_elements_as_dataframe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">split_symbol</span><span class="o">=</span><span class="default_value">['_', '.']</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.model_refiner.Model_Refiner.get_individual_elements_as_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="temul.model_refiner.Model_Refiner.image_difference_intensity_model_refiner">
+<code class="sig-name descname">image_difference_intensity_model_refiner</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sublattices</span><span class="o">=</span><span class="default_value">'all'</span></em>, <em class="sig-param"><span class="n">comparison_image</span><span class="o">=</span><span class="default_value">'default'</span></em>, <em class="sig-param"><span class="n">change_sublattice</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">filename</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">refinement_method</span><span class="o">=</span><span class="default_value">'Intensity'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.model_refiner.Model_Refiner.image_difference_intensity_model_refiner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the elements for sublattice atom positions that don’t match with
+comparison_image.</p>
+<p>See image_difference_intensity for details.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image_difference_intensity for parameter information.</strong> (<em>See</em>) – </p></li>
+<li><p><strong>refinement_method</strong> (<em>string</em><em>, </em><em>default &quot;Intensity&quot;</em>) – Name passed to self.refinement_history for tracking purposes.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.model_refiner</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="gp">... </span>    <span class="n">get_model_refiner_with_12_vacancies_refined</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">refiner</span> <span class="o">=</span> <span class="n">get_model_refiner_with_12_vacancies_refined</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">image_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">Changing some atoms</span>
+<span class="go">Changing some atoms</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">history</span> <span class="o">=</span> <span class="n">refiner</span><span class="o">.</span><span class="n">element_count_history_list</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">history_df</span> <span class="o">=</span> <span class="n">refiner</span><span class="o">.</span><span class="n">get_element_count_as_dataframe</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">refiner</span><span class="o">.</span><span class="n">combine_individual_and_element_counts_as_dataframe</span><span class="p">()</span>
+<span class="go">                 Ti_0  Ti_1   Ti_2  Ti_3  Ti_4  Ti_5     Ti</span>
+<span class="go">0 Initial State   0.0   0.0  400.0   0.0   0.0   0.0  800.0</span>
+<span class="go">1 Intensity       0.0  12.0  388.0   0.0   0.0   0.0  788.0</span>
+<span class="go">2 Intensity      12.0   0.0  388.0   0.0   0.0   0.0  776.0</span>
+<span class="go">3 Intensity      12.0   0.0  388.0   0.0   0.0   0.0  776.0</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">refiner</span><span class="o">.</span><span class="n">plot_element_count_as_bar_chart</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">element_configs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">flip_colrows</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">24</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Flip the view of the data</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">refiner</span><span class="o">.</span><span class="n">plot_element_count_as_bar_chart</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">element_configs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">flip_colrows</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">24</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">refiner</span><span class="o">.</span><span class="n">sublattice_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">refiner</span><span class="o">.</span><span class="n">comparison_image</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="temul.model_refiner.Model_Refiner.image_difference_position_model_refiner">
+<code class="sig-name descname">image_difference_position_model_refiner</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">chosen_sublattice</span></em>, <em class="sig-param"><span class="n">sublattices</span><span class="o">=</span><span class="default_value">'all'</span></em>, <em class="sig-param"><span class="n">comparison_sublattice_list</span><span class="o">=</span><span class="default_value">'auto'</span></em>, <em class="sig-param"><span class="n">comparison_image</span><span class="o">=</span><span class="default_value">'default'</span></em>, <em class="sig-param"><span class="n">pixel_threshold</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">num_peaks</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">filename</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">refinement_method</span><span class="o">=</span><span class="default_value">'Position'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.model_refiner.Model_Refiner.image_difference_position_model_refiner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find new atom positions that were perhaps missed by the initial
+position finding steps. Each sublattice will be updated with new atom
+positions if new atom positions are found.</p>
+<p>See image_difference_position for details.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image_difference_position for parameter information.</strong> (<em>See</em>) – </p></li>
+<li><p><strong>refinement_method</strong> (<em>string</em><em>, </em><em>default &quot;Position&quot;</em>) – Name passed to self.refinement_history for tracking purposes.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.model_refiner</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="gp">... </span>    <span class="n">get_model_refiner_one_sublattice_3_vacancies</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">refiner</span> <span class="o">=</span> <span class="n">get_model_refiner_one_sublattice_3_vacancies</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">refiner</span><span class="o">.</span><span class="n">sublattice_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">refiner</span><span class="o">.</span><span class="n">comparison_image</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">refiner</span><span class="o">.</span><span class="n">image_difference_position_model_refiner</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">pixel_threshold</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">chosen_sublattice</span><span class="o">=</span><span class="n">refiner</span><span class="o">.</span><span class="n">sublattice_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">3 new atoms found! Adding new atom positions.</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">refiner</span><span class="o">.</span><span class="n">sublattice_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Combination of Refinements (cont.)</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">refiner</span><span class="o">.</span><span class="n">image_difference_intensity_model_refiner</span><span class="p">()</span>
+<span class="go">Changing some atoms</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">refiner</span><span class="o">.</span><span class="n">image_difference_intensity_model_refiner</span><span class="p">()</span>
+<span class="go">Changing some atoms</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">history_df</span> <span class="o">=</span> <span class="n">refiner</span><span class="o">.</span><span class="n">get_element_count_as_dataframe</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">refiner</span><span class="o">.</span><span class="n">plot_element_count_as_bar_chart</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">element_configs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">flip_colrows</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">24</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="temul.model_refiner.Model_Refiner.plot_element_count_as_bar_chart">
+<code class="sig-name descname">plot_element_count_as_bar_chart</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">element_configs</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">flip_colrows</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">title</span><span class="o">=</span><span class="default_value">'Refinement of Elements'</span></em>, <em class="sig-param"><span class="n">fontsize</span><span class="o">=</span><span class="default_value">16</span></em>, <em class="sig-param"><span class="n">split_symbol</span><span class="o">=</span><span class="default_value">['_', '.']</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.model_refiner.Model_Refiner.plot_element_count_as_bar_chart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allows you to plot the element count as a bar chart.
+See <cite>image_difference_intensity_model_refiner</cite> for an example.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>element_configs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>default 0</em>) – Change the plotted data.
+<cite>element_configs=0</cite> will plot the element configuration counts,
+<cite>element_configs=1</cite> will plot the individual element counts, and
+<cite>element_configs=2</cite> will plot the both 0 and 1.</p></li>
+<li><p><strong>flip_colrows</strong> (<em>Bool</em><em>, </em><em>default True</em>) – Change how the data is plotted.
+<cite>flip_colrows=True</cite> will take the transpose of the dataframe.</p></li>
+<li><p><strong>title</strong> (<em>string</em><em>, </em><em>default &quot;Refinement of Elements&quot;</em>) – Title of the bar chart.</p></li>
+<li><p><strong>fontsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>default 16</em>) – </p></li>
+<li><p><strong>split_symbol</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a><em>, </em><em>default</em><em> [</em><em>'_'</em><em>, </em><em>'.'</em><em>]</em>) – See temul.element_tools.split_and_sort_element for details.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="temul.model_refiner.Model_Refiner.plot_error_between_comparison_and_reference_image">
+<code class="sig-name descname">plot_error_between_comparison_and_reference_image</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">style</span><span class="o">=</span><span class="default_value">'plot'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.model_refiner.Model_Refiner.plot_error_between_comparison_and_reference_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="temul.model_refiner.Model_Refiner.plot_reference_and_comparison_images">
+<code class="sig-name descname">plot_reference_and_comparison_images</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">title_reference</span><span class="o">=</span><span class="default_value">'Reference'</span></em>, <em class="sig-param"><span class="n">title_comparison</span><span class="o">=</span><span class="default_value">'Comparison'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.model_refiner.Model_Refiner.plot_reference_and_comparison_images" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="temul.model_refiner.Model_Refiner.repeating_intensity_refinement">
+<code class="sig-name descname">repeating_intensity_refinement</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">sublattices</span><span class="o">=</span><span class="default_value">'all'</span></em>, <em class="sig-param"><span class="n">comparison_image</span><span class="o">=</span><span class="default_value">'default'</span></em>, <em class="sig-param"><span class="n">change_sublattice</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">filename</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">ignore_element_count_comparison</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.model_refiner.Model_Refiner.repeating_intensity_refinement" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="temul.model_refiner.Model_Refiner.revert_to_previous_refiner_instance">
+<code class="sig-name descname">revert_to_previous_refiner_instance</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#temul.model_refiner.Model_Refiner.revert_to_previous_refiner_instance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="temul.model_refiner.Model_Refiner.set_calibration_area">
+<code class="sig-name descname">set_calibration_area</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">manual_list</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.model_refiner.Model_Refiner.set_calibration_area" title="Permalink to this definition">¶</a></dt>
+<dd><p>Area that will be used to calibrate a simulation. The pixel separation
+can be set with set_calibration_separation. The average intensity of
+the atoms chosen by this separation within the area will be set to 1.
+The idea is to calibrate the experimental and simulated images with a
+known intensity (e.g., single Mo atom in MoS2 is relatively
+consistant).</p>
+<p>reference_image can be changed via the Model_refiner.reference_image
+attribute.</p>
+<p>manual_list must be a list of two lists, each of length two.
+For example: [ [0,0], [50, 50] ]</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="temul.model_refiner.Model_Refiner.set_calibration_separation">
+<code class="sig-name descname">set_calibration_separation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pixel_separation</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.model_refiner.Model_Refiner.set_calibration_separation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="temul.model_refiner.Model_Refiner.set_image_xyz_sizes">
+<code class="sig-name descname">set_image_xyz_sizes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xyz_list</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.model_refiner.Model_Refiner.set_image_xyz_sizes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="temul.model_refiner.Model_Refiner.set_thickness">
+<code class="sig-name descname">set_thickness</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">thickness</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.model_refiner.Model_Refiner.set_thickness" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="temul.model_refiner.Model_Refiner.update_element_count_and_refinement_history">
+<code class="sig-name descname">update_element_count_and_refinement_history</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">refinement_method</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.model_refiner.Model_Refiner.update_element_count_and_refinement_history" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="temul.model_refiner.Model_Refiner.update_element_count_history">
+<code class="sig-name descname">update_element_count_history</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#temul.model_refiner.Model_Refiner.update_element_count_history" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="temul.model_refiner.Model_Refiner.update_error_between_comparison_and_reference_image">
+<code class="sig-name descname">update_error_between_comparison_and_reference_image</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#temul.model_refiner.Model_Refiner.update_error_between_comparison_and_reference_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="temul.model_refiner.Model_Refiner.update_refinement_history">
+<code class="sig-name descname">update_refinement_history</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">refinement_method</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.model_refiner.Model_Refiner.update_refinement_history" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="temul.model_refiner.Model_Refiner.update_sublattices_positions">
+<code class="sig-name descname">update_sublattices_positions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sublattice_list</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.model_refiner.Model_Refiner.update_sublattices_positions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
 </div>
 <div class="section" id="modules">
@@ -2112,8 +2397,161 @@ The second string has not been implemented within this function.</p></li>
 <dd></dd></dl>
 
 </div>
-<div class="section" id="image-simulation-functions">
-<h3>Image Simulation Functions<a class="headerlink" href="#image-simulation-functions" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="module-temul.simulations">
+<span id="image-simulation-functions"></span><h3>Image Simulation Functions<a class="headerlink" href="#module-temul.simulations" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt id="temul.simulations.image_refine_via_intensity_loop">
+<code class="sig-prename descclassname">temul.simulations.</code><code class="sig-name descname">image_refine_via_intensity_loop</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">atom_lattice</span></em>, <em class="sig-param"><span class="n">change_sublattice</span></em>, <em class="sig-param"><span class="n">calibration_separation</span></em>, <em class="sig-param"><span class="n">calibration_area</span></em>, <em class="sig-param"><span class="n">percent_to_nn</span></em>, <em class="sig-param"><span class="n">mask_radius</span></em>, <em class="sig-param"><span class="n">element_list</span></em>, <em class="sig-param"><span class="n">image_sampling</span></em>, <em class="sig-param"><span class="n">iterations</span></em>, <em class="sig-param"><span class="n">delta_image_filter</span></em>, <em class="sig-param"><span class="n">image_size_x_nm</span></em>, <em class="sig-param"><span class="n">image_size_y_nm</span></em>, <em class="sig-param"><span class="n">image_size_z_nm</span></em>, <em class="sig-param"><span class="n">simulation_filename</span></em>, <em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">intensity_type</span></em>, <em class="sig-param"><span class="n">intensity_refine_name</span><span class="o">=</span><span class="default_value">'intensity_refine_'</span></em>, <em class="sig-param"><span class="n">folder_name</span><span class="o">=</span><span class="default_value">'refinement_of_intensity'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.simulations.image_refine_via_intensity_loop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="temul.simulations.image_refine_via_position_loop">
+<code class="sig-prename descclassname">temul.simulations.</code><code class="sig-name descname">image_refine_via_position_loop</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">sublattice_list</span></em>, <em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">xyz_filename</span></em>, <em class="sig-param"><span class="n">add_sublattice</span></em>, <em class="sig-param"><span class="n">pixel_threshold</span></em>, <em class="sig-param"><span class="n">num_peaks</span></em>, <em class="sig-param"><span class="n">image_size_x_nm</span></em>, <em class="sig-param"><span class="n">image_size_y_nm</span></em>, <em class="sig-param"><span class="n">image_size_z_nm</span></em>, <em class="sig-param"><span class="n">calibration_area</span></em>, <em class="sig-param"><span class="n">calibration_separation</span></em>, <em class="sig-param"><span class="n">element_list</span></em>, <em class="sig-param"><span class="n">element_list_new_sub</span></em>, <em class="sig-param"><span class="n">middle_intensity_list</span></em>, <em class="sig-param"><span class="n">limit_intensity_list</span></em>, <em class="sig-param"><span class="n">delta_image_filter</span><span class="o">=</span><span class="default_value">0.5</span></em>, <em class="sig-param"><span class="n">intensity_type</span><span class="o">=</span><span class="default_value">'max'</span></em>, <em class="sig-param"><span class="n">scalar_method</span><span class="o">=</span><span class="default_value">'mode'</span></em>, <em class="sig-param"><span class="n">remove_background_method</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">background_sublattice</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">num_points</span><span class="o">=</span><span class="default_value">3</span></em>, <em class="sig-param"><span class="n">percent_to_nn</span><span class="o">=</span><span class="default_value">0.4</span></em>, <em class="sig-param"><span class="n">mask_radius</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">iterations</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">max_sigma</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">E0</span><span class="o">=</span><span class="default_value">60000.0</span></em>, <em class="sig-param"><span class="n">integrationAngleMin</span><span class="o">=</span><span class="default_value">0.085</span></em>, <em class="sig-param"><span class="n">integrationAngleMax</span><span class="o">=</span><span class="default_value">0.186</span></em>, <em class="sig-param"><span class="n">interpolationFactor</span><span class="o">=</span><span class="default_value">16</span></em>, <em class="sig-param"><span class="n">realspacePixelSize</span><span class="o">=</span><span class="default_value">0.0654</span></em>, <em class="sig-param"><span class="n">numFP</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">probeSemiangle</span><span class="o">=</span><span class="default_value">0.03</span></em>, <em class="sig-param"><span class="n">alphaBeamMax</span><span class="o">=</span><span class="default_value">0.032</span></em>, <em class="sig-param"><span class="n">scanWindowMin</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">scanWindowMax</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">algorithm</span><span class="o">=</span><span class="default_value">'prism'</span></em>, <em class="sig-param"><span class="n">numThreads</span><span class="o">=</span><span class="default_value">2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.simulations.image_refine_via_position_loop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Image Position Loop</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="temul.simulations.simulate_and_calibrate_with_prismatic">
+<code class="sig-prename descclassname">temul.simulations.</code><code class="sig-name descname">simulate_and_calibrate_with_prismatic</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xyz_filename</span></em>, <em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">reference_image</span></em>, <em class="sig-param"><span class="n">calibration_area</span></em>, <em class="sig-param"><span class="n">calibration_separation</span></em>, <em class="sig-param"><span class="n">percent_to_nn</span><span class="o">=</span><span class="default_value">0.4</span></em>, <em class="sig-param"><span class="n">mask_radius</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">refine</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">scalebar_true</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">probeStep</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">E0</span><span class="o">=</span><span class="default_value">60000.0</span></em>, <em class="sig-param"><span class="n">integrationAngleMin</span><span class="o">=</span><span class="default_value">0.085</span></em>, <em class="sig-param"><span class="n">integrationAngleMax</span><span class="o">=</span><span class="default_value">0.186</span></em>, <em class="sig-param"><span class="n">interpolationFactor</span><span class="o">=</span><span class="default_value">16</span></em>, <em class="sig-param"><span class="n">realspacePixelSize</span><span class="o">=</span><span class="default_value">0.0654</span></em>, <em class="sig-param"><span class="n">numFP</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">probeSemiangle</span><span class="o">=</span><span class="default_value">0.03</span></em>, <em class="sig-param"><span class="n">alphaBeamMax</span><span class="o">=</span><span class="default_value">0.032</span></em>, <em class="sig-param"><span class="n">scanWindowMin</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">scanWindowMax</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">algorithm</span><span class="o">=</span><span class="default_value">'prism'</span></em>, <em class="sig-param"><span class="n">numThreads</span><span class="o">=</span><span class="default_value">2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.simulations.simulate_and_calibrate_with_prismatic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simulate an xyz coordinate model with the PyPrismatic fast simulation
+software.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xyz_filename</strong> (<em>string</em>) – filename of the xyz coordinate model. Must be in the prismatic format.
+See <a class="reference external" href="http://prism-em.com/docs-inputs/">http://prism-em.com/docs-inputs/</a> for more information.</p></li>
+<li><p><strong>filename</strong> (<em>string</em><em>, </em><em>default None</em>) – name with which the image will be saved</p></li>
+<li><p><strong>reference_image</strong> (<em>hyperspy signal 2D</em>) – image from which calibration information is taken, such
+as sampling, pixel height and pixel width</p></li>
+<li><p><strong>calibration_area</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – xy pixel coordinates of the image area to be used to calibrate
+the intensity. In the form [[0,0], [512,512]]
+See calibrate_intensity_distance_with_sublattice_roi()</p></li>
+<li><p><strong>calibration_separation</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – pixel separation used for the intensity calibration.
+See calibrate_intensity_distance_with_sublattice_roi()</p></li>
+<li><p><strong>percent_to_nn</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>default 0.40</em>) – Determines the boundary of the area surrounding each atomic
+column, as fraction of the distance to the nearest neighbour.</p></li>
+<li><p><strong>mask_radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>default None</em>) – Radius of the mask around each atom. If this is not set,
+the radius will be the distance to the nearest atom in the
+same sublattice times the <cite>percent_to_nn</cite> value.
+Note: if <cite>mask_radius</cite> is not specified, the Atom_Position objects
+must have a populated nearest_neighbor_list.</p></li>
+<li><p><strong>refine</strong> – See function calibrate_intensity_distance_with_sublattice_roi()</p></li>
+<li><p><strong>scalebar_true</strong> – See function calibrate_intensity_distance_with_sublattice_roi()</p></li>
+<li><p><strong>probeStep</strong> – See function simulate_with_prismatic()</p></li>
+<li><p><strong>.. etc.</strong> (<em>E0</em>) – See function simulate_with_prismatic()</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Hyperspy Signal2D</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="temul.simulations.simulate_and_filter_and_calibrate_with_prismatic">
+<code class="sig-prename descclassname">temul.simulations.</code><code class="sig-name descname">simulate_and_filter_and_calibrate_with_prismatic</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xyz_filename</span></em>, <em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">reference_image</span></em>, <em class="sig-param"><span class="n">calibration_area</span></em>, <em class="sig-param"><span class="n">calibration_separation</span></em>, <em class="sig-param"><span class="n">delta_image_filter</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">max_sigma</span><span class="o">=</span><span class="default_value">6</span></em>, <em class="sig-param"><span class="n">percent_to_nn</span><span class="o">=</span><span class="default_value">0.4</span></em>, <em class="sig-param"><span class="n">mask_radius</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">refine</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">scalebar_true</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">probeStep</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">E0</span><span class="o">=</span><span class="default_value">60000.0</span></em>, <em class="sig-param"><span class="n">integrationAngleMin</span><span class="o">=</span><span class="default_value">0.085</span></em>, <em class="sig-param"><span class="n">integrationAngleMax</span><span class="o">=</span><span class="default_value">0.186</span></em>, <em class="sig-param"><span class="n">interpolationFactor</span><span class="o">=</span><span class="default_value">16</span></em>, <em class="sig-param"><span class="n">realspacePixelSize</span><span class="o">=</span><span class="default_value">0.0654</span></em>, <em class="sig-param"><span class="n">numFP</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">probeSemiangle</span><span class="o">=</span><span class="default_value">0.03</span></em>, <em class="sig-param"><span class="n">alphaBeamMax</span><span class="o">=</span><span class="default_value">0.032</span></em>, <em class="sig-param"><span class="n">scanWindowMin</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">scanWindowMax</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">algorithm</span><span class="o">=</span><span class="default_value">'prism'</span></em>, <em class="sig-param"><span class="n">numThreads</span><span class="o">=</span><span class="default_value">2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.simulations.simulate_and_filter_and_calibrate_with_prismatic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simulate an xyz coordinate model with the PyPrismatic fast simulation
+software.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xyz_filename</strong> (<em>string</em>) – filename of the xyz coordinate model. Must be in the prismatic format.
+See <a class="reference external" href="http://prism-em.com/docs-inputs/">http://prism-em.com/docs-inputs/</a> for more information.</p></li>
+<li><p><strong>filename</strong> (<em>string</em><em>, </em><em>default None</em>) – name with which the image will be saved</p></li>
+<li><p><strong>reference_image</strong> (<em>hyperspy signal 2D</em>) – image from which calibration information is taken, such
+as sampling, pixel height and pixel width</p></li>
+<li><p><strong>calibration_area</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – xy pixel coordinates of the image area to be used to calibrate
+the intensity. In the form [[0,0], [512,512]]
+See calibrate_intensity_distance_with_sublattice_roi()</p></li>
+<li><p><strong>calibration_separation</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – pixel separation used for the intensity calibration.
+See calibrate_intensity_distance_with_sublattice_roi()</p></li>
+<li><p><strong>percent_to_nn</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>default 0.40</em>) – Determines the boundary of the area surrounding each atomic
+column, as fraction of the distance to the nearest neighbour.</p></li>
+<li><p><strong>mask_radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>default None</em>) – Radius of the mask around each atom. If this is not set,
+the radius will be the distance to the nearest atom in the
+same sublattice times the <cite>percent_to_nn</cite> value.
+Note: if <cite>mask_radius</cite> is not specified, the Atom_Position objects
+must have a populated nearest_neighbor_list.</p></li>
+<li><p><strong>refine</strong> – See function calibrate_intensity_distance_with_sublattice_roi()</p></li>
+<li><p><strong>scalebar_true</strong> – See function calibrate_intensity_distance_with_sublattice_roi()</p></li>
+<li><p><strong>probeStep</strong> – See function simulate_with_prismatic()</p></li>
+<li><p><strong>.. etc.</strong> (<em>E0</em>) – See function simulate_with_prismatic()</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Hyperspy Signal2D</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="temul.simulations.simulate_with_prismatic">
+<code class="sig-prename descclassname">temul.simulations.</code><code class="sig-name descname">simulate_with_prismatic</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xyz_filename</span></em>, <em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">reference_image</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">probeStep</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">E0</span><span class="o">=</span><span class="default_value">60000.0</span></em>, <em class="sig-param"><span class="n">integrationAngleMin</span><span class="o">=</span><span class="default_value">0.085</span></em>, <em class="sig-param"><span class="n">integrationAngleMax</span><span class="o">=</span><span class="default_value">0.186</span></em>, <em class="sig-param"><span class="n">detectorAngleStep</span><span class="o">=</span><span class="default_value">0.001</span></em>, <em class="sig-param"><span class="n">interpolationFactor</span><span class="o">=</span><span class="default_value">16</span></em>, <em class="sig-param"><span class="n">realspacePixelSize</span><span class="o">=</span><span class="default_value">0.0654</span></em>, <em class="sig-param"><span class="n">numFP</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">cellDimXYZ</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tileXYZ</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">probeSemiangle</span><span class="o">=</span><span class="default_value">0.03</span></em>, <em class="sig-param"><span class="n">alphaBeamMax</span><span class="o">=</span><span class="default_value">0.032</span></em>, <em class="sig-param"><span class="n">scanWindowMin</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">scanWindowMax</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">algorithm</span><span class="o">=</span><span class="default_value">'prism'</span></em>, <em class="sig-param"><span class="n">numThreads</span><span class="o">=</span><span class="default_value">2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.simulations.simulate_with_prismatic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simulate an xyz coordinate model with pyprismatic
+fast simulation software.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xyz_filename</strong> (<em>string</em>) – filename of the xyz coordinate model. Must be in the prismatic format.
+See <a class="reference external" href="http://prism-em.com/docs-inputs/">http://prism-em.com/docs-inputs/</a> for more information.</p></li>
+<li><p><strong>filename</strong> (<em>string</em><em>, </em><em>default None</em>) – name with which the image will be saved</p></li>
+<li><p><strong>reference_image</strong> (<em>hyperspy signal 2D</em>) – image from which calibration information is taken, such
+as sampling, pixel height and pixel width</p></li>
+<li><p><strong>probeStep</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>default 1.0</em>) – Should be the sampling of the image, where
+sampling = length (in angstrom)/pixels
+If you want the probeStep to be calculated from the reference image,
+set this to None.</p></li>
+<li><p><strong>E0</strong> (<em>Prismatic parameters</em>) – See <a class="reference external" href="http://prism-em.com/docs-params/">http://prism-em.com/docs-params/</a></p></li>
+<li><p><strong>etc.</strong> (<em>numThreads</em>) – See <a class="reference external" href="http://prism-em.com/docs-params/">http://prism-em.com/docs-params/</a></p></li>
+</ul>
+</dd>
+</dl>
+<p>:param : See <a class="reference external" href="http://prism-em.com/docs-params/">http://prism-em.com/docs-params/</a>
+:type : Prismatic parameters
+:param cellDimXYZ: A tuple of length 3. Example (2.3, 4.5, 5.6).</p>
+<blockquote>
+<div><p>If this is set to None, the cell dimension values from the .xyz file
+will be used (default). If it is specified, it will overwrite the .xyz
+file values.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>tileXYZ</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a><em>, </em><em>default None</em>) – A tuple of length 3. Example (5, 5, 2) would multiply the model in x
+and y by 5, and z by 2.
+Default of None is just set to (1, 1, 1)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Simulated image as a 2D .mrc file</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.simulations</span> <span class="kn">import</span> <span class="n">simulate_with_prismatic</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.example_data</span> <span class="k">as</span> <span class="nn">example_data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file_path</span> <span class="o">=</span> <span class="n">path_to_example_data_MoS2_hex_prismatic</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">simulate_with_prismatic</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">xyz_filename</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;prismatic_simulation&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">probeStep</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">reference_image</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">E0</span><span class="o">=</span><span class="mf">60e3</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">integrationAngleMin</span><span class="o">=</span><span class="mf">0.085</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">integrationAngleMax</span><span class="o">=</span><span class="mf">0.186</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">interpolationFactor</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">realspacePixelSize</span><span class="o">=</span><span class="mf">0.0654</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">numFP</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">probeSemiangle</span><span class="o">=</span><span class="mf">0.030</span><span class="p">,</span> <span class="n">alphaBeamMax</span><span class="o">=</span><span class="mf">0.032</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">scanWindowMin</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">scanWindowMax</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">algorithm</span><span class="o">=</span><span class="s2">&quot;prism&quot;</span><span class="p">,</span> <span class="n">numThreads</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </div>
 <div class="section" id="module-temul.signal_processing">
 <span id="signal-processing"></span><h3>Signal Processing<a class="headerlink" href="#module-temul.signal_processing" title="Permalink to this headline">¶</a></h3>
@@ -2761,6 +3199,11 @@ fitted gaussian function.</p>
 </div></blockquote>
 <p>Fitted Mean: ” + str(round(popt_gauss[1],3)))</p>
 </dd></dl>
+
+<dl class="py function">
+<dt id="temul.signal_processing.sine_wave_function_strain_gradient">
+<code class="sig-prename descclassname">temul.signal_processing.</code><code class="sig-name descname">sine_wave_function_strain_gradient</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">a</span></em>, <em class="sig-param"><span class="n">b</span></em>, <em class="sig-param"><span class="n">c</span></em>, <em class="sig-param"><span class="n">d</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.signal_processing.sine_wave_function_strain_gradient" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt id="temul.signal_processing.toggle_atom_refine_position_automatically">
@@ -3523,6 +3966,11 @@ the colormap should be the same as the edges, such as colorcet’s CET_C4s.</p>
 </pre></div>
 </div>
 </dd></dl>
+
+<dl class="py function">
+<dt id="temul.dummy_data.sine_wave_sublattice">
+<code class="sig-prename descclassname">temul.dummy_data.</code><code class="sig-name descname">sine_wave_sublattice</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#temul.dummy_data.sine_wave_sublattice" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </div>
 <div class="section" id="module-temul.example_data">

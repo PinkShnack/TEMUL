@@ -1,7 +1,6 @@
 .. _polarisation_vectors_tutorial:
 
-.. role:: python(code)
-   :language: python
+.. include:: define_roles.rst
 
 
 ==========================================

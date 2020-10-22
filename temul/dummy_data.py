@@ -270,6 +270,29 @@ def polarisation_colorwheel_test_dataset(cmap=cc.cm.colorwheel, plot_XY=True,
     plt.colorbar(Q)
 
 
+def sine_wave_sublattice():
+
+    image_size = 110
+
+    x = np.linspace(0, image_size-10, 35)
+    y_func = 2 * np.sin(2 * np.pi * (x+5)/1)
+    # plt.scatter(x,y_func)
+    y_shift_list = range(10, image_size-20, 10)
+    x_list, y_list = [], []
+    for y_shift in y_shift_list:
+        y = y_func + y_shift
+        y_list.extend(y)
+        x_list.extend(x)
+
+    x_list, y_list = np.asarray(x_list) + 5, np.asarray(y_list) + 5
+    atom_positions = np.dstack((x_list, y_list))[0]
+    image_data = np.random.random((image_size, image_size))
+
+    # plt.figure()
+    # plt.scatter(atom_positions.T[0], atom_positions.T[1])
+    sublattice = Sublattice(atom_positions, image_data)
+    # sublattice.plot()
+    return(sublattice)
 # adapted/copied from atomap
 def _make_rigid_sublattice(image_noise=False):
     test_data = MakeTestData(312, 312)

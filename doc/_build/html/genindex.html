@@ -90,6 +90,7 @@
 <li class="toctree-l1"><a class="reference internal" href="using_temul.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Plotting Polarisation and Movement Vectors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="structure_map_tutorial.html">Plot Lattice Structure Maps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PTO_supercrystal_hadjimichael.html">Calculation of Atom Plane Curvature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="masked_fft_tutorial.html">Masked FFT and iFFT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="line_profile_tutorial.html">Line Intensity Profile Comparisons</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_doc.html">API documentation</a></li>
@@ -175,6 +176,7 @@
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
+ | <a href="#U"><strong>U</strong></a>
  | <a href="#W"><strong>W</strong></a>
  
 </div>
@@ -211,6 +213,8 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_doc.html#temul.model_refiner.Model_Refiner.calibrate_comparison_image">calibrate_comparison_image() (temul.model_refiner.Model_Refiner method)</a>
+</li>
       <li><a href="api_doc.html#temul.signal_processing.calibrate_intensity_distance_with_sublattice_roi">calibrate_intensity_distance_with_sublattice_roi() (in module temul.signal_processing)</a>
 </li>
       <li><a href="api_doc.html#temul.model_creation.change_sublattice_atoms_via_intensity">change_sublattice_atoms_via_intensity() (in module temul.model_creation)</a>
@@ -227,6 +231,8 @@
 </li>
       <li><a href="api_doc.html#temul.element_tools.combine_element_lists">combine_element_lists() (in module temul.element_tools)</a>
 </li>
+      <li><a href="api_doc.html#temul.model_refiner.Model_Refiner.combine_individual_and_element_counts_as_dataframe">combine_individual_and_element_counts_as_dataframe() (temul.model_refiner.Model_Refiner method)</a>
+</li>
       <li><a href="api_doc.html#temul.model_creation.compare_count_atoms_in_sublattice_list">compare_count_atoms_in_sublattice_list() (in module temul.model_creation)</a>
 </li>
       <li><a href="api_doc.html#temul.signal_plotting.compare_images_line_profile_one_image">compare_images_line_profile_one_image() (in module temul.signal_plotting)</a>
@@ -234,6 +240,8 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api_doc.html#temul.signal_plotting.compare_images_line_profile_two_images">compare_images_line_profile_two_images() (in module temul.signal_plotting)</a>
+</li>
+      <li><a href="api_doc.html#temul.model_refiner.Model_Refiner.compare_latest_element_counts">compare_latest_element_counts() (temul.model_refiner.Model_Refiner method)</a>
 </li>
       <li><a href="api_doc.html#temul.signal_processing.compare_two_image_and_create_filtered_image">compare_two_image_and_create_filtered_image() (in module temul.signal_processing)</a>
 </li>
@@ -252,6 +260,8 @@
       <li><a href="api_doc.html#temul.model_creation.create_dataframe_for_cif">create_dataframe_for_cif() (in module temul.model_creation)</a>
 </li>
       <li><a href="api_doc.html#temul.io.create_dataframe_for_xyz">create_dataframe_for_xyz() (in module temul.io)</a>
+</li>
+      <li><a href="api_doc.html#temul.model_refiner.Model_Refiner.create_simulation">create_simulation() (temul.model_refiner.Model_Refiner method)</a>
 </li>
       <li><a href="api_doc.html#temul.signal_processing.crop_image_hs">crop_image_hs() (in module temul.signal_processing)</a>
 </li>
@@ -276,6 +286,10 @@
 
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_doc.html#temul.model_refiner.Model_Refiner.element_count">element_count() (temul.model_refiner.Model_Refiner property)</a>
+</li>
+  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api_doc.html#temul.signal_plotting.expand_palette">expand_palette() (in module temul.signal_plotting)</a>
 </li>
@@ -319,14 +333,18 @@
 </li>
       <li><a href="api_doc.html#temul.polarisation.get_divide_into">get_divide_into() (in module temul.polarisation)</a>
 </li>
+      <li><a href="api_doc.html#temul.model_refiner.Model_Refiner.get_element_count_as_dataframe">get_element_count_as_dataframe() (temul.model_refiner.Model_Refiner method)</a>
+</li>
       <li><a href="api_doc.html#temul.signal_processing.get_fitting_tools_for_plotting_gaussians">get_fitting_tools_for_plotting_gaussians() (in module temul.signal_processing)</a>
+</li>
+      <li><a href="api_doc.html#temul.model_refiner.Model_Refiner.get_individual_elements_as_dataframe">get_individual_elements_as_dataframe() (temul.model_refiner.Model_Refiner method)</a>
 </li>
       <li><a href="api_doc.html#temul.element_tools.get_individual_elements_from_element_list">get_individual_elements_from_element_list() (in module temul.element_tools)</a>
 </li>
-      <li><a href="api_doc.html#temul.signal_processing.get_masked_ifft">get_masked_ifft() (in module temul.signal_processing)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_doc.html#temul.signal_processing.get_masked_ifft">get_masked_ifft() (in module temul.signal_processing)</a>
+</li>
       <li><a href="api_doc.html#temul.model_creation.get_max_number_atoms_z">get_max_number_atoms_z() (in module temul.model_creation)</a>
 </li>
       <li><a href="api_doc.html#temul.model_creation.get_most_common_sublattice_element">get_most_common_sublattice_element() (in module temul.model_creation)</a>
@@ -369,11 +387,19 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api_doc.html#temul.model_creation.image_difference_intensity">image_difference_intensity() (in module temul.model_creation)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_doc.html#temul.model_refiner.Model_Refiner.image_difference_intensity_model_refiner">image_difference_intensity_model_refiner() (temul.model_refiner.Model_Refiner method)</a>
+</li>
       <li><a href="api_doc.html#temul.model_creation.image_difference_position">image_difference_position() (in module temul.model_creation)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_doc.html#temul.model_refiner.Model_Refiner.image_difference_position_model_refiner">image_difference_position_model_refiner() (temul.model_refiner.Model_Refiner method)</a>
+</li>
       <li><a href="api_doc.html#temul.model_creation.image_difference_position_new_sub">image_difference_position_new_sub() (in module temul.model_creation)</a>
+</li>
+      <li><a href="api_doc.html#temul.simulations.image_refine_via_intensity_loop">image_refine_via_intensity_loop() (in module temul.simulations)</a>
+</li>
+      <li><a href="api_doc.html#temul.simulations.image_refine_via_position_loop">image_refine_via_position_loop() (in module temul.simulations)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -409,6 +435,8 @@
 </li>
       <li><a href="api_doc.html#temul.signal_processing.measure_image_errors">measure_image_errors() (in module temul.signal_processing)</a>
 </li>
+      <li><a href="api_doc.html#temul.model_refiner.Model_Refiner">Model_Refiner (class in temul.model_refiner)</a>
+</li>
       <li>
     module
 
@@ -431,6 +459,8 @@
 </li>
         <li><a href="api_doc.html#module-temul.signal_processing">temul.signal_processing</a>
 </li>
+        <li><a href="api_doc.html#module-temul.simulations">temul.simulations</a>
+</li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -450,6 +480,10 @@
 </li>
       <li><a href="api_doc.html#temul.signal_plotting.plot_atom_energies">plot_atom_energies() (in module temul.signal_plotting)</a>
 </li>
+      <li><a href="api_doc.html#temul.model_refiner.Model_Refiner.plot_element_count_as_bar_chart">plot_element_count_as_bar_chart() (temul.model_refiner.Model_Refiner method)</a>
+</li>
+      <li><a href="api_doc.html#temul.model_refiner.Model_Refiner.plot_error_between_comparison_and_reference_image">plot_error_between_comparison_and_reference_image() (temul.model_refiner.Model_Refiner method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api_doc.html#temul.signal_processing.plot_gaussian_fit">plot_gaussian_fit() (in module temul.signal_processing)</a>
@@ -457,6 +491,8 @@
       <li><a href="api_doc.html#temul.signal_processing.plot_gaussian_fitting_for_multiple_fits">plot_gaussian_fitting_for_multiple_fits() (in module temul.signal_processing)</a>
 </li>
       <li><a href="api_doc.html#temul.polarisation.plot_polarisation_vectors">plot_polarisation_vectors() (in module temul.polarisation)</a>
+</li>
+      <li><a href="api_doc.html#temul.model_refiner.Model_Refiner.plot_reference_and_comparison_images">plot_reference_and_comparison_images() (temul.model_refiner.Model_Refiner method)</a>
 </li>
       <li><a href="api_doc.html#temul.dummy_data.polarisation_colorwheel_test_dataset">polarisation_colorwheel_test_dataset() (in module temul.dummy_data)</a>
 </li>
@@ -476,6 +512,8 @@
 </li>
       <li><a href="api_doc.html#temul.intensity_tools.remove_local_background">remove_local_background() (in module temul.intensity_tools)</a>
 </li>
+      <li><a href="api_doc.html#temul.model_refiner.Model_Refiner.repeating_intensity_refinement">repeating_intensity_refinement() (temul.model_refiner.Model_Refiner method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api_doc.html#temul.signal_processing.return_fitting_of_1D_gaussian">return_fitting_of_1D_gaussian() (in module temul.signal_processing)</a>
@@ -483,6 +521,8 @@
       <li><a href="api_doc.html#temul.model_creation.return_xyz_coordinates">return_xyz_coordinates() (in module temul.model_creation)</a>
 </li>
       <li><a href="api_doc.html#temul.model_creation.return_z_coordinates">return_z_coordinates() (in module temul.model_creation)</a>
+</li>
+      <li><a href="api_doc.html#temul.model_refiner.Model_Refiner.revert_to_previous_refiner_instance">revert_to_previous_refiner_instance() (temul.model_refiner.Model_Refiner method)</a>
 </li>
       <li><a href="api_doc.html#temul.signal_plotting.rgb_to_dec">rgb_to_dec() (in module temul.signal_plotting)</a>
 </li>
@@ -500,10 +540,28 @@
 </li>
       <li><a href="api_doc.html#temul.model_creation.scaling_z_contrast">scaling_z_contrast() (in module temul.model_creation)</a>
 </li>
+      <li><a href="api_doc.html#temul.model_refiner.Model_Refiner.set_calibration_area">set_calibration_area() (temul.model_refiner.Model_Refiner method)</a>
+</li>
+      <li><a href="api_doc.html#temul.model_refiner.Model_Refiner.set_calibration_separation">set_calibration_separation() (temul.model_refiner.Model_Refiner method)</a>
+</li>
+      <li><a href="api_doc.html#temul.model_refiner.Model_Refiner.set_image_xyz_sizes">set_image_xyz_sizes() (temul.model_refiner.Model_Refiner method)</a>
+</li>
+      <li><a href="api_doc.html#temul.model_refiner.Model_Refiner.set_thickness">set_thickness() (temul.model_refiner.Model_Refiner method)</a>
+</li>
       <li><a href="api_doc.html#temul.signal_plotting.Sublattice_Hover_Intensity.setup_annotation">setup_annotation() (temul.signal_plotting.Sublattice_Hover_Intensity method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_doc.html#temul.simulations.simulate_and_calibrate_with_prismatic">simulate_and_calibrate_with_prismatic() (in module temul.simulations)</a>
+</li>
+      <li><a href="api_doc.html#temul.simulations.simulate_and_filter_and_calibrate_with_prismatic">simulate_and_filter_and_calibrate_with_prismatic() (in module temul.simulations)</a>
+</li>
+      <li><a href="api_doc.html#temul.simulations.simulate_with_prismatic">simulate_with_prismatic() (in module temul.simulations)</a>
+</li>
+      <li><a href="api_doc.html#temul.signal_processing.sine_wave_function_strain_gradient">sine_wave_function_strain_gradient() (in module temul.signal_processing)</a>
+</li>
+      <li><a href="api_doc.html#temul.dummy_data.sine_wave_sublattice">sine_wave_sublattice() (in module temul.dummy_data)</a>
+</li>
       <li><a href="api_doc.html#temul.signal_plotting.Sublattice_Hover_Intensity.snap">snap() (temul.signal_plotting.Sublattice_Hover_Intensity method)</a>
 </li>
       <li><a href="api_doc.html#temul.model_creation.sort_sublattice_intensities">sort_sublattice_intensities() (in module temul.model_creation)</a>
@@ -583,7 +641,32 @@
         <li><a href="api_doc.html#module-temul.signal_processing">module</a>
 </li>
       </ul></li>
+      <li>
+    temul.simulations
+
+      <ul>
+        <li><a href="api_doc.html#module-temul.simulations">module</a>
+</li>
+      </ul></li>
       <li><a href="api_doc.html#temul.signal_processing.toggle_atom_refine_position_automatically">toggle_atom_refine_position_automatically() (in module temul.signal_processing)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_doc.html#temul.model_refiner.Model_Refiner.update_element_count_and_refinement_history">update_element_count_and_refinement_history() (temul.model_refiner.Model_Refiner method)</a>
+</li>
+      <li><a href="api_doc.html#temul.model_refiner.Model_Refiner.update_element_count_history">update_element_count_history() (temul.model_refiner.Model_Refiner method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_doc.html#temul.model_refiner.Model_Refiner.update_error_between_comparison_and_reference_image">update_error_between_comparison_and_reference_image() (temul.model_refiner.Model_Refiner method)</a>
+</li>
+      <li><a href="api_doc.html#temul.model_refiner.Model_Refiner.update_refinement_history">update_refinement_history() (temul.model_refiner.Model_Refiner method)</a>
+</li>
+      <li><a href="api_doc.html#temul.model_refiner.Model_Refiner.update_sublattices_positions">update_sublattices_positions() (temul.model_refiner.Model_Refiner method)</a>
 </li>
   </ul></td>
 </tr></table>

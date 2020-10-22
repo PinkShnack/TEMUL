@@ -2,12 +2,15 @@
 import hyperspy
 import numpy as np
 import scipy
+from scipy.optimize import curve_fit
+from scipy.misc import derivative
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 from matplotlib.cm import ScalarMappable
 from decimal import Decimal
 import colorcet as cc
 from matplotlib_scalebar.scalebar import ScaleBar
+from temul.signal_processing import sine_wave_function_strain_gradient
 
 
 # good to have an example of getting atom_positions_A and B from sublattice

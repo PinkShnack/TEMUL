@@ -1,7 +1,6 @@
 .. _masked_fft_tutorial:
 
-.. role:: python(code)
-   :language: python
+.. include:: define_roles.rst
 
 
 ===================

@@ -1,7 +1,6 @@
 .. _structure_map_tutorial:
 
-.. role:: python(code)
-   :language: python
+.. include:: define_roles.rst
 
 
 ===========================
