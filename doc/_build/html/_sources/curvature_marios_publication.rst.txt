@@ -51,7 +51,7 @@ Open the PTO/SRO dataset
     >>> image.plot()
 
 .. image:: ../publication_examples/PTO_marios_hadj/data/Cropped_PTO-SRO_Aligned.png
-    :scale: 30 %
+    :scale: 35 %
 
 Open the pre-made PTO-SRO atom lattice.
 
@@ -60,6 +60,10 @@ Open the pre-made PTO-SRO atom lattice.
     >>> atom_lattice = am.load_atom_lattice_from_hdf5("Atom_Lattice_crop.hdf5")
     >>> sublattice1 = atom_lattice.sublattice_list[0] #  Pb-Sr Sublattice
     >>> sublattice2 = atom_lattice.sublattice_list[1] #  Ti-Ru Sublattice
+    >>> atom_lattice.plot()
+
+.. image:: ../publication_examples/PTO_marios_hadj/data/Atom_Lattice_crop.png
+    :scale: 50 %
 
 
 Set up the Parameters
