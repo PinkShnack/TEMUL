@@ -46,7 +46,7 @@ Here we load some dummy data using a variation of Atomap's
 Compare two Line Profiles in one Image
 --------------------------------------
 
-As with the :ref:`Masked FFT and iFFT <line_profile_tutorial>` tutorial, we can
+As with the :ref:`Masked FFT and iFFT <masked_fft_tutorial>` tutorial, we can
 choose points on the image. This time we use :python:`choose_points_on_image`.
 We need to choose four points for the :python:`compare_images_line_profile_one_image`
 function, as it draws two line profiles over one image.
@@ -74,7 +74,8 @@ Now run the comparison function to display the two line intensity profiles.
     ...             sampling=sampling, units=units, arrow='h', linetrace=1)
 
 .. image:: tutorial_images/line_profile_tutorial/comparison1.png
-    :scale: 60 %
+    :scale: 70 %
+    :align: center
 
 
 Compare two Images with Line Profile
@@ -103,4 +104,5 @@ Then, we plot this line intensity profile over the same position in two images.
     ...             imageA_title="Image A", imageB_title="Image B")
 
 .. image:: tutorial_images/line_profile_tutorial/comparison2.png
-    :scale: 50 %
+    :scale: 70 %
+    :align: center
