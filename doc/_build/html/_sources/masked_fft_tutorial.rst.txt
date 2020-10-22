@@ -16,8 +16,8 @@ to `revealing domain walls <https://onlinelibrary.wiley.com/doi/abs/10.1111/jmi.
 and finding initial atom positions for difficult images.
 
 
-Load the Image
---------------------------
+Load the Example Image
+----------------------
 
 .. code-block:: python
 

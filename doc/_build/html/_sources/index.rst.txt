@@ -33,6 +33,7 @@ See the :ref:`api_doc` for examples and a full list of modules and functions.
    polarisation_vectors_tutorial
    structure_map_tutorial
    masked_fft_tutorial
+   line_profile_tutorial
    api_doc
 
 .. Look how easy it is to use:
