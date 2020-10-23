@@ -1,7 +1,6 @@
 
 from temul.element_tools import split_and_sort_element
-from temul.external.atomap_devel_012.initial_position_finding import (
-    add_atoms_with_gui as choose_points_on_image)
+from temul.signal_plotting import choose_points_on_image
 
 from temul.external.atomap_devel_012.sublattice import Sublattice
 from temul.external.atomap_devel_012.atom_finding_refining import (
@@ -1798,3 +1797,7 @@ def get_masked_ifft(image, mask_coords, mask_radius=10, image_space="real",
     image_ifft.axes_manager = image.axes_manager
 
     return(image_ifft)
+
+
+def sine_wave_function_strain_gradient(x, a, b, c, d):
+    return a * np.sin((2*np.pi*(x+b))/c) + d

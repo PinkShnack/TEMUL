@@ -1,0 +1,400 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Plotting Polarisation and Movement Vectors &mdash; TEMUL Toolkit v0.1-alpha documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Plot Lattice Structure Maps" href="structure_map_tutorial.html" />
+    <link rel="prev" title="Getting started" href="using_temul.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> TEMUL Toolkit
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                Version 0.1-alpha
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_temul.html">Getting started</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Plotting Polarisation and Movement Vectors</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#prepare-and-plot-the-dummy-dataset">Prepare and Plot the dummy dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#find-the-vector-coordinates-using-atomap">Find the Vector Coordinates using Atomap</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="structure_map_tutorial.html">Plot Lattice Structure Maps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PTO_Junction_moore.html">Analysis of PTO Domain Wall Junction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PTO_supercrystal_hadjimichael.html">Calculation of Atom Plane Curvature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="masked_fft_tutorial.html">Masked FFT and iFFT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="line_profile_tutorial.html">Line Intensity Profile Comparisons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_doc.html">API documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">TEMUL Toolkit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Plotting Polarisation and Movement Vectors</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/polarisation_vectors_tutorial.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="plotting-polarisation-and-movement-vectors">
+<span id="polarisation-vectors-tutorial"></span><h1>Plotting Polarisation and Movement Vectors<a class="headerlink" href="#plotting-polarisation-and-movement-vectors" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="code python docutils literal notranslate"><span class="name"><span class="pre">temul</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">polarisation</span></span></code> module allows one to visualise the
+polarisation/movement of atoms in an atomic resolution image. In this tutorial,
+we will use a dummy dataset to show the different ways the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">plot_polarisation_vectors</span></span></code>
+function can display data. In future, tutorials on published experimental data
+will also be available.</p>
+<div class="section" id="prepare-and-plot-the-dummy-dataset">
+<h2>Prepare and Plot the dummy dataset<a class="headerlink" href="#prepare-and-plot-the-dummy-dataset" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="kn">import</span> <span class="n">plot_polarisation_vectors</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="kn">import</span> <span class="n">get_polarisation_dummy_dataset</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">atom_lattice</span> <span class="o">=</span> <span class="n">get_polarisation_dummy_dataset</span><span class="p">(</span><span class="n">image_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span> <span class="o">=</span> <span class="n">atom_lattice</span><span class="o">.</span><span class="n">sublattice_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeB</span> <span class="o">=</span> <span class="n">atom_lattice</span><span class="o">.</span><span class="n">sublattice_list</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image</span> <span class="o">=</span> <span class="n">sublatticeA</span><span class="o">.</span><span class="n">signal</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/image_uncalibrated.png"><img alt="_images/image_uncalibrated.png" src="_images/image_uncalibrated.png" style="width: 381.0px; height: 322.2px;" /></a>
+<p>It is best when the image is calibrated. Your image may already be calibrated,
+but if not, use Hyperspy’s <code class="code python docutils literal notranslate"><span class="name"><span class="pre">axes_manager</span></span></code> for calibration.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sampling</span> <span class="o">=</span> <span class="mf">0.1</span>  <span class="c1"># example of 0.1 nm/pix</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">units</span> <span class="o">=</span> <span class="s1">&#39;nm&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">sampling</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">sampling</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">units</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">units</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/image_calibrated.png"><img alt="_images/image_calibrated.png" src="_images/image_calibrated.png" style="width: 421.2px; height: 356.4px;" /></a>
+<p>Zoom in on the image to see how the atoms look in the different regions.</p>
+<a class="reference internal image-reference" href="_images/image_calibrated_labelled_atoms.png"><img alt="_images/image_calibrated_labelled_atoms.png" src="_images/image_calibrated_labelled_atoms.png" style="width: 632.4px; height: 534.6px;" /></a>
+</div>
+<div class="section" id="find-the-vector-coordinates-using-atomap">
+<h2>Find the Vector Coordinates using Atomap<a class="headerlink" href="#find-the-vector-coordinates-using-atomap" title="Permalink to this headline">¶</a></h2>
+<p>Using the <a class="reference external" href="https://atomap.org/">Atomap</a> package, we can easily get the
+polarisation vectors for regular structures.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">construct_zone_axes</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">za0</span><span class="p">,</span> <span class="n">za1</span> <span class="o">=</span> <span class="n">sublatticeA</span><span class="o">.</span><span class="n">zones_axis_average_distances</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s_p</span> <span class="o">=</span> <span class="n">sublatticeA</span><span class="o">.</span><span class="n">get_polarization_from_second_sublattice</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">za0</span><span class="p">,</span> <span class="n">za1</span><span class="p">,</span> <span class="n">sublatticeB</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">vector_list</span> <span class="o">=</span> <span class="n">s_p</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">vector_list</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">vector_list</span><span class="p">],</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">vector_list</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">vector_list</span><span class="p">],</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">vector_list</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Now we can display all of the variations that <code class="code python docutils literal notranslate"><span class="name"><span class="pre">plot_polarisation_vectors</span></span></code>
+gives us! You can specify sampling (scale) and units, or use a calibrated image
+so that they are automatically set.</p>
+<p>Vector magnitude plot with red arrows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">unit_vector</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">plot_style</span><span class="o">=</span><span class="s1">&#39;vector&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">overlay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Vector Arrows&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/vectors_red.png"><img alt="_images/vectors_red.png" src="_images/vectors_red.png" style="width: 374.4px; height: 374.4px;" /></a>
+<p>Vector magnitude plot with red arrows overlaid on the image, no title:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">unit_vector</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">plot_style</span><span class="o">=</span><span class="s1">&#39;vector&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">overlay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/vectors_red_overlay.png"><img alt="_images/vectors_red_overlay.png" src="_images/vectors_red_overlay.png" style="width: 374.4px; height: 374.4px;" /></a>
+<p>Vector magnitude plot with colormap viridis:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">unit_vector</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">plot_style</span><span class="o">=</span><span class="s1">&#39;colormap&#39;</span><span class="p">,</span> <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">overlay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/colormap_magnitude.png"><img alt="_images/colormap_magnitude.png" src="_images/colormap_magnitude.png" style="width: 447.59999999999997px; height: 349.2px;" /></a>
+<p>Vector angle plot with colormap viridis (<code class="code python docutils literal notranslate"><span class="name"><span class="pre">vector_rep</span></span><span class="operator"><span class="pre">=</span></span><span class="literal string single"><span class="pre">’angle’</span></span></code>):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">unit_vector</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">plot_style</span><span class="o">=</span><span class="s1">&#39;colormap&#39;</span><span class="p">,</span> <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">overlay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;cet_colorwheel&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">vector_rep</span><span class="o">=</span><span class="s2">&quot;angle&quot;</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/colormap_angle.png"><img alt="_images/colormap_angle.png" src="_images/colormap_angle.png" style="width: 411.59999999999997px; height: 340.2px;" /></a>
+<p>Colormap arrows with sampling specified in the parameters and with scalebar:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">sampling</span><span class="o">=</span><span class="mf">3.0321</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;pm&#39;</span><span class="p">,</span> <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">unit_vector</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plot_style</span><span class="o">=</span><span class="s1">&#39;colormap&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">overlay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">scalebar</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/colormap_magnitude_overlay_sb_pm.png"><img alt="_images/colormap_magnitude_overlay_sb_pm.png" src="_images/colormap_magnitude_overlay_sb_pm.png" style="width: 427.2px; height: 353.4px;" /></a>
+<p>Vector plot with colormap viridis and unit vectors:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">unit_vector</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">plot_style</span><span class="o">=</span><span class="s1">&#39;colormap&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">overlay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/colormap_unitvectors.png"><img alt="_images/colormap_unitvectors.png" src="_images/colormap_unitvectors.png" style="width: 443.4px; height: 351.0px;" /></a>
+<p>Change the vectors to unit vectors on a Matplotlib tricontourf map:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="p">,</span> <span class="n">unit_vector</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">plot_style</span><span class="o">=</span><span class="s1">&#39;contour&#39;</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">pivot</span><span class="o">=</span><span class="s1">&#39;middle&#39;</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">color</span><span class="o">=</span><span class="s1">&#39;darkgray&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/contour_magnitude_unitvectors.png"><img alt="_images/contour_magnitude_unitvectors.png" src="_images/contour_magnitude_unitvectors.png" style="width: 408.59999999999997px; height: 321.0px;" /></a>
+<p>Plot a partly transparent angle tricontourf map with specified colorbar ticks
+and vector arrows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">unit_vector</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plot_style</span><span class="o">=</span><span class="s1">&#39;contour&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">overlay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pivot</span><span class="o">=</span><span class="s1">&#39;middle&#39;</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;cet_colorwheel&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">remove_vectors</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">vector_rep</span><span class="o">=</span><span class="s2">&quot;angle&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">antialiased</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">ticks</span><span class="o">=</span><span class="p">[</span><span class="mi">180</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">])</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/contour_angle_trans_overlay_vectors.png"><img alt="_images/contour_angle_trans_overlay_vectors.png" src="_images/contour_angle_trans_overlay_vectors.png" style="width: 470.4px; height: 454.2px;" /></a>
+<p>Plot a partly transparent angle tricontourf map with no vector arrows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="p">,</span> <span class="n">remove_vectors</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">unit_vector</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plot_style</span><span class="o">=</span><span class="s1">&#39;contour&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">overlay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pivot</span><span class="o">=</span><span class="s1">&#39;middle&#39;</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;cet_colorwheel&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">vector_rep</span><span class="o">=</span><span class="s2">&quot;angle&quot;</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">antialiased</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/contour_angle_trans_overlay.png"><img alt="_images/contour_angle_trans_overlay.png" src="_images/contour_angle_trans_overlay.png" style="width: 444.0px; height: 363.0px;" /></a>
+<p>“colorwheel” plot of the vectors, useful for visualising vortexes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">colorcet</span> <span class="k">as</span> <span class="nn">cc</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">unit_vector</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plot_style</span><span class="o">=</span><span class="s2">&quot;colorwheel&quot;</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">vector_rep</span><span class="o">=</span><span class="s2">&quot;angle&quot;</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">overlay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cc</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">colorwheel</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">degrees</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/colorwheel_angle.png"><img alt="_images/colorwheel_angle.png" src="_images/colorwheel_angle.png" style="width: 455.4px; height: 365.4px;" /></a>
+<p>Plot with a custom scalebar. In this example, we need it to be dark, see
+matplotlib-scalebar for more custom features.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">scbar_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;dx&quot;</span><span class="p">:</span> <span class="mf">3.0321</span><span class="p">,</span> <span class="s2">&quot;units&quot;</span><span class="p">:</span> <span class="s2">&quot;pm&quot;</span><span class="p">,</span> <span class="s2">&quot;location&quot;</span><span class="p">:</span> <span class="s2">&quot;lower left&quot;</span><span class="p">,</span>
+<span class="gp">... </span>              <span class="s2">&quot;box_alpha&quot;</span><span class="p">:</span><span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="s2">&quot;scale_loc&quot;</span><span class="p">:</span> <span class="s2">&quot;top&quot;</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">sampling</span><span class="o">=</span><span class="mf">3.0321</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;pm&#39;</span><span class="p">,</span> <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">unit_vector</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plot_style</span><span class="o">=</span><span class="s1">&#39;colormap&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">overlay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">scalebar</span><span class="o">=</span><span class="n">scbar_dict</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/colormap_magnitude_custom_sb.png"><img alt="_images/colormap_magnitude_custom_sb.png" src="_images/colormap_magnitude_custom_sb.png" style="width: 489.59999999999997px; height: 396.59999999999997px;" /></a>
+<p>Plot a tricontourf for quadrant visualisation using a custom matplotlib cmap:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.signal_plotting</span> <span class="k">as</span> <span class="nn">tmlplot</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">matplotlib.colors</span> <span class="kn">import</span> <span class="n">from_levels_and_colors</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">zest</span> <span class="o">=</span> <span class="n">tmlplot</span><span class="o">.</span><span class="n">hex_to_rgb</span><span class="p">(</span><span class="n">tmlplot</span><span class="o">.</span><span class="n">color_palettes</span><span class="p">(</span><span class="s1">&#39;zesty&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">zest</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">zest</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>  <span class="c1"># make the -180 and 180 degree colour the same</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">expanded_zest</span> <span class="o">=</span> <span class="n">tmlplot</span><span class="o">.</span><span class="n">expand_palette</span><span class="p">(</span><span class="n">zest</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">custom_cmap</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">from_levels_and_colors</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">levels</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span> <span class="n">colors</span><span class="o">=</span><span class="n">tmlplot</span><span class="o">.</span><span class="n">rgb_to_dec</span><span class="p">(</span><span class="n">expanded_zest</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">unit_vector</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plot_style</span><span class="o">=</span><span class="s1">&#39;contour&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">overlay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pivot</span><span class="o">=</span><span class="s1">&#39;middle&#39;</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">cmap</span><span class="o">=</span><span class="n">custom_cmap</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">vector_rep</span><span class="o">=</span><span class="s2">&quot;angle&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">antialiased</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">ticks</span><span class="o">=</span><span class="p">[</span><span class="mi">180</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">])</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/contour_angle_custom_cmap_vectors.png"><img alt="_images/contour_angle_custom_cmap_vectors.png" src="_images/contour_angle_custom_cmap_vectors.png" style="width: 472.79999999999995px; height: 416.4px;" /></a>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="structure_map_tutorial.html" class="btn btn-neutral float-right" title="Plot Lattice Structure Maps" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="using_temul.html" class="btn btn-neutral float-left" title="Getting started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Eoghan O&#39;Connell
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

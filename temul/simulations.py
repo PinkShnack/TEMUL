@@ -12,7 +12,6 @@ from temul.model_creation import (count_atoms_in_sublattice_list,
                                   assign_z_height)
 from temul.io import (create_dataframe_for_xyz,
                       write_cif_from_dataframe,
-                      create_new_folder,
                       load_prismatic_mrc_with_hyperspy)
 
 import temul.external.atomap_devel_012.api as am_dev
@@ -725,7 +724,7 @@ def image_refine_via_intensity_loop(atom_lattice,
         pad_inches=None, dpi=300, labels=False)
     plt.close()
 
-    create_new_folder('./' + folder_name + '/')
+    os.mkdir(folder_name)
     intensity_refine_filenames = glob('*' + intensity_refine_name + '*')
     for intensity_refine_file in intensity_refine_filenames:
         # print(position_refine_file, position_refine_name + '/' +
@@ -934,7 +933,7 @@ def image_refine_via_position_loop(image,
                       filename + ".hdf5", overwrite=True)
 
     folder_name = filename + "_pos_ref_data"
-    create_new_folder('./' + folder_name + '/')
+    os.mkdir(folder_name)
     position_refine_filenames = glob('*' + filename + '*')
     for position_refine_file in position_refine_filenames:
         os.rename(position_refine_file, folder_name +

@@ -89,7 +89,12 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="using_temul.html">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="PTO-Junction_kalani_publication.html">Analysis of PTO Domain Wall Junction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Plotting Polarisation and Movement Vectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structure_map_tutorial.html">Plot Lattice Structure Maps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PTO_Junction_moore.html">Analysis of PTO Domain Wall Junction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PTO_supercrystal_hadjimichael.html">Calculation of Atom Plane Curvature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="masked_fft_tutorial.html">Masked FFT and iFFT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="line_profile_tutorial.html">Line Intensity Profile Comparisons</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_doc.html">API documentation</a></li>
 </ul>
 
@@ -169,12 +174,43 @@ atomic resolution images. It is mostly built upon the data structure of
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="using_temul.html">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="PTO-Junction_kalani_publication.html">Analysis of PTO Domain Wall Junction</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="PTO-Junction_kalani_publication.html#import-the-modules-and-load-the-data">Import the Modules and Load the Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="PTO-Junction_kalani_publication.html#set-up-the-parameters">Set up the Parameters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="PTO-Junction_kalani_publication.html#create-the-lattice-strain-map">Create the Lattice Strain Map</a></li>
-<li class="toctree-l2"><a class="reference internal" href="PTO-Junction_kalani_publication.html#create-the-lattice-rotation-map">Create the Lattice Rotation Map</a></li>
-<li class="toctree-l2"><a class="reference internal" href="PTO-Junction_kalani_publication.html#id1">Create the Lattice Rotation Map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Plotting Polarisation and Movement Vectors</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="polarisation_vectors_tutorial.html#prepare-and-plot-the-dummy-dataset">Prepare and Plot the dummy dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="polarisation_vectors_tutorial.html#find-the-vector-coordinates-using-atomap">Find the Vector Coordinates using Atomap</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="structure_map_tutorial.html">Plot Lattice Structure Maps</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="structure_map_tutorial.html#prepare-and-plot-the-dummy-dataset">Prepare and Plot the dummy dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_map_tutorial.html#plot-the-lattice-strain-map">Plot the Lattice Strain Map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_map_tutorial.html#plot-the-lattice-atom-rotation-map">Plot the Lattice Atom Rotation Map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_map_tutorial.html#plot-the-c-a-ratio">Plot the <em>c</em>/<em>a</em> Ratio</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="PTO_Junction_moore.html">Analysis of PTO Domain Wall Junction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="PTO_Junction_moore.html#import-the-modules-and-load-the-data">Import the Modules and Load the Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PTO_Junction_moore.html#set-up-the-parameters">Set up the Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PTO_Junction_moore.html#create-the-lattice-strain-map">Create the Lattice Strain Map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PTO_Junction_moore.html#create-the-lattice-rotation-map">Create the Lattice Rotation Map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PTO_Junction_moore.html#id1">Create the Lattice Rotation Map</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="PTO_supercrystal_hadjimichael.html">Calculation of Atom Plane Curvature</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="PTO_supercrystal_hadjimichael.html#import-the-modules-and-load-the-data">Import the Modules and Load the Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PTO_supercrystal_hadjimichael.html#set-up-the-parameters">Set up the Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PTO_supercrystal_hadjimichael.html#calculate-the-curvature-of-atom-planes">Calculate the Curvature of Atom Planes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="masked_fft_tutorial.html">Masked FFT and iFFT</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="masked_fft_tutorial.html#load-the-example-image">Load the Example Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="masked_fft_tutorial.html#choose-the-mask-coordinates">Choose the Mask Coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="masked_fft_tutorial.html#plot-the-masked-ifft">Plot the Masked iFFT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="masked_fft_tutorial.html#run-fft-masking-for-multiple-images">Run FFT masking for Multiple Images</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="line_profile_tutorial.html">Line Intensity Profile Comparisons</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="line_profile_tutorial.html#load-the-example-images">Load the Example Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="line_profile_tutorial.html#compare-two-line-profiles-in-one-image">Compare two Line Profiles in one Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="line_profile_tutorial.html#compare-two-images-with-line-profile">Compare two Images with Line Profile</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api_doc.html">API documentation</a><ul>
@@ -207,8 +243,9 @@ modules, you will need to install PyPrismatic.</p>
 <span id="using-temul"></span><h2>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
 <p>There are many aspects to the TEMUL Toolkit, such as polarisation analysis,
 element quantification, and automatic image simulation (through pyprismatic).</p>
-<p>(coming soon) These each have their own dedicated pages, which can be found in the table of contents.</p>
-<p>For now, see the <a class="reference internal" href="api_doc.html#api-doc"><span class="std std-ref">API documentation</span></a>.</p>
+<p>Checkout the tutorials in the table of contents above or on the left of the page.
+One can also view the extensive <a class="reference internal" href="api_doc.html#api-doc"><span class="std std-ref">documentation</span></a>, where each function
+is described and examples of their use given.</p>
 </div>
 <div class="section" id="contribute">
 <h2>Contribute<a class="headerlink" href="#contribute" title="Permalink to this headline">¶</a></h2>

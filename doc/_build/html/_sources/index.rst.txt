@@ -3,11 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-.. role:: bash(code)
-   :language: bash
+.. include:: define_roles.rst
 
-.. role:: python(code)
-   :language: python
 
 Welcome to TEMUL Toolkit's documentation!
 =========================================
@@ -30,8 +27,14 @@ See the :ref:`api_doc` for examples and a full list of modules and functions.
 
    install
    using_temul
-   PTO-Junction_kalani_publication
+   polarisation_vectors_tutorial
+   structure_map_tutorial
+   PTO_Junction_moore
+   PTO_supercrystal_hadjimichael
+   masked_fft_tutorial
+   line_profile_tutorial
    api_doc
+
 
 .. Look how easy it is to use:
     import project
