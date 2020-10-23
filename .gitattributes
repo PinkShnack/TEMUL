@@ -1,4 +1,1 @@
-*.py linguist-detectable=true
-*.ipynb linguist-detectable=false
-*.html linguist-detectable=false
-*.m linguist-detectable=false
+publication_examples/* linguist-vendored
