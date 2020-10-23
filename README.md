@@ -30,6 +30,5 @@ If the button does not work, try [this link instead](https://mybinder.org/v2/gh/
 curved metallic layers, Nature Materials 2020"
 
 | Publication Details   | Folder Location in TEMUL  |
-| :------------------   | -----------------------:  |
-|  "M. Hadjimichael *et al*, Metal-ferroelectric supercrystals with periodically
-curved metallic layers, Nature Materials 2020"        | "publication_examples/PTO_supercrystal_hadjimichael"               |
+| :------------------   | :-----------------------  |
+|  "M. Hadjimichael *et al*, Metal-ferroelectric supercrystals with periodically curved metallic layers, Nature Materials 2020"        | "publication_examples/PTO_supercrystal_hadjimichael"               |
