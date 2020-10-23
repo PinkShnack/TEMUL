@@ -14,10 +14,20 @@ atomic resolution images. It is mostly built upon the data structure of
 `HyperSpy <https://hyperspy.org/>`_ and `Atomap <https://atomap.org/>`_.
 
 
-Documentation
--------------
+Code Documentation
+------------------
 
 See the :ref:`api_doc` for examples and a full list of modules and functions.
+
+
+Interactive Examples
+--------------------
+
+.. image:: https://mybinder.org/badge_logo.svg
+   :target: https://mybinder.org/v2/gh/PinkShnack/TEMUL/master
+
+Click the button above to start some data analysis from published scientific papers!
+Just navigate to the "publication_examples" folder and click on the ".ipynb" files.
 
 
 

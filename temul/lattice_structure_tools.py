@@ -63,19 +63,19 @@ def calculate_atom_plane_curvature(sublattice, zone_vector_index,
     >>> sublattice.plot()
     >>> sampling = 0.05 #  nm/pix
     >>> cmap='bwr'
-    >>> strain_grad_map = calculate_atom_plane_curvature(sublattice,
+    >>> curvature_map = calculate_atom_plane_curvature(sublattice,
     ...         zone_vector_index=0, sampling=sampling, units='nm', cmap=cmap)
 
     Just compute several atom planes:
 
-    >>> strain_grad_map = calculate_atom_plane_curvature(sublattice, 0,
+    >>> curvature_map = calculate_atom_plane_curvature(sublattice, 0,
     ...         atom_planes=(0,3), sampling=sampling, units='nm', cmap=cmap)
 
     You can also provide initial fitting estimations via scipy's curve_fit:
 
     >>> p0 = [2, 1, 1, 15]
     >>> kwargs = {'p0': p0}
-    >>> strain_grad_map, fittings = calculate_atom_plane_curvature(sublattice,
+    >>> curvature_map, fittings = calculate_atom_plane_curvature(sublattice,
     ...         zone_vector_index=0, atom_planes=(0,3), sampling=sampling,
     ...         units='nm', cmap=cmap, **kwargs, plot_and_return_fits=True)
 
@@ -109,7 +109,7 @@ def calculate_atom_plane_curvature(sublattice, zone_vector_index,
     if func == 'strain_grad':
         func = sine_wave_function_strain_gradient
 
-    strain_gradient = []
+    curvature = []
     x_list, y_list = [], []
     fittings_list = []
     for atom_plane in atom_plane_list:
@@ -135,26 +135,26 @@ def calculate_atom_plane_curvature(sublattice, zone_vector_index,
 
         x_list.extend(atom_plane.x_position)
         y_list.extend(atom_plane.y_position)
-        strain_gradient.extend(list(second_der))
+        curvature.extend(list(second_der))
 
     if sampling is not None:
-        strain_gradient = [i * sampling for i in strain_gradient]
-    strain_gradient_map = sublattice.get_property_map(
-        x_list, y_list, strain_gradient, upscale_map=1)
+        curvature = [i * sampling for i in curvature]
+    curvature_map = sublattice.get_property_map(
+        x_list, y_list, curvature, upscale_map=1)
     if sampling is not None:
-        strain_gradient_map.axes_manager[0].scale = sampling
-        strain_gradient_map.axes_manager[1].scale = sampling
-    strain_gradient_map.axes_manager[0].units = units
-    strain_gradient_map.axes_manager[1].units = units
+        curvature_map.axes_manager[0].scale = sampling
+        curvature_map.axes_manager[1].scale = sampling
+    curvature_map.axes_manager[0].units = units
+    curvature_map.axes_manager[1].units = units
 
-    strain_gradient_map.plot(vmin=vmin, vmax=vmax, cmap=cmap,
+    curvature_map.plot(vmin=vmin, vmax=vmax, cmap=cmap,
                              colorbar=False)
     # need to put in colorbar axis units like in get_strain_map
     plt.gca().axes.get_xaxis().set_visible(False)
     plt.gca().axes.get_yaxis().set_visible(False)
     plt.title("{} of Index {}".format(title, zone_vector_index))
     cbar = ScalarMappable(cmap=cmap)
-    cbar.set_array(strain_gradient)
+    cbar.set_array(curvature)
     cbar.set_clim(vmin, vmax)
     plt.colorbar(cbar, fraction=0.046, pad=0.04,
                  label=f"Curvature (1/{units})")
@@ -165,10 +165,10 @@ def calculate_atom_plane_curvature(sublattice, zone_vector_index,
             filename, title, zone_vector_index),
             transparent=True, frameon=False, bbox_inches='tight',
             pad_inches=None, dpi=300, labels=False)
-        strain_gradient_map.save("{}_{}_{}.hspy".format(
+        curvature_map.save("{}_{}_{}.hspy".format(
             filename, title, zone_vector_index))
 
     if plot_and_return_fits:
-        return(strain_gradient_map, fittings_list)
+        return(curvature_map, fittings_list)
     else:
-        return(strain_gradient_map)
+        return(curvature_map)

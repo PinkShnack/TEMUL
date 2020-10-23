@@ -61,18 +61,18 @@ filename = None #  Set to a string if you want to save the map
 p0 = [14, 10, 24, 173]
 kwargs = {'p0': p0, 'maxfev': 1000}
 
-# We want to see the curvature (approx. as strain gradient) in the SRO Sublattice
-str_grad_map = calculate_atom_plane_curvature(sublattice2, zone_vector_index, title=title,
+# We want to see the curvature in the SRO Sublattice
+curvature_map = calculate_atom_plane_curvature(sublattice2, zone_vector_index, title=title,
                     sampling=sampling, units=units, cmap=cmap, **kwargs)
 
 # We want to see the curvature in just the SRO Region
-str_grad_map = calculate_atom_plane_curvature(sublattice2, zone_vector_index, title=title,
+curvature_map = calculate_atom_plane_curvature(sublattice2, zone_vector_index, title=title,
                     sampling=sampling, units=units, cmap=cmap, **kwargs,
                     atom_planes=atom_planes)
 
 # When using plot_and_return_fits=True, the function will return the curve
 #   fittings, and plot each plane.
-str_grad_map, fittings = calculate_atom_plane_curvature(sublattice2, zone_vector_index,
+curvature_map, fittings = calculate_atom_plane_curvature(sublattice2, zone_vector_index,
                     sampling=sampling, units=units, cmap=cmap, title=title,
                     atom_planes=atom_planes, **kwargs,
                     plot_and_return_fits=True)
