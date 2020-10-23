@@ -24,11 +24,7 @@ Jupyter Notebooks and MyBinder allow us to analyse data in the browser without n
 
 If the button does not work, try [this link instead](https://mybinder.org/v2/gh/PinkShnack/TEMUL/master). You also share this link with others for quick access.
 
-### Publications:
-
-* "M. Hadjimichael *et al*, Metal-ferroelectric supercrystals with periodically
-curved metallic layers, Nature Materials 2020"
 
 | Publication Details   | Folder Location in TEMUL  |
 | :------------------   | :-----------------------  |
-|  "M. Hadjimichael *et al*, Metal-ferroelectric supercrystals with periodically curved metallic layers, Nature Materials 2020"        | "publication_examples/PTO_supercrystal_hadjimichael"               |
+| M. Hadjimichael *et al*, Metal-ferroelectric supercrystals with periodically curved metallic layers, Nature Materials 2020        | publication_examples/PTO_supercrystal_hadjimichael              |
