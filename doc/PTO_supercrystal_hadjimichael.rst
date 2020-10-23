@@ -97,23 +97,23 @@ Set the extra initial fitting parameters
 Calculate the Curvature of Atom Planes
 --------------------------------------
 
-We want to see the curvature (approx. as strain gradient) in the SRO Sublattice
+We want to see the curvature in the SRO Sublattice
 
 .. code-block:: python
 
-    >>> str_grad_map = calculate_atom_plane_curvature(sublattice2, zone_vector_index,
+    >>> curvature_map = calculate_atom_plane_curvature(sublattice2, zone_vector_index,
     ...                     sampling=sampling, units=units, cmap=cmap, title=title,
     ...                     atom_planes=atom_planes, **kwargs)
 
 .. image:: ../publication_examples/PTO_supercrystal_hadjimichael/data/Curvature_Map_Example.png
-    :scale: 50 %
+    :scale: 90 %
 
 When using :python:`plot_and_return_fits=True`, the function will return the curve
 fittings, and plot each plane (plots not displayed).
 
 .. code-block:: python
 
-    >>> str_grad_map, fittings = calculate_atom_plane_curvature(sublattice2,
+    >>> curvature_map, fittings = calculate_atom_plane_curvature(sublattice2,
     ...                     zone_vector_index, sampling=sampling, units=units,
     ...                     cmap=cmap, title=title, atom_planes=atom_planes, **kwargs,
     ...                     plot_and_return_fits=True)
