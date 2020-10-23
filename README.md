@@ -14,3 +14,17 @@ For full installation instructions and documentation, go to [temul-toolkit.readt
 To cite the TEMUL toolkit, use the following DOI:
 
 [![DOI](https://www.zenodo.org/badge/203785298.svg)](https://www.zenodo.org/badge/latestdoi/203785298)
+
+
+## Interactive Notebooks in the Browser
+
+Jupyter Notebooks and MyBinder allow us to analyse data in the browser without needing any downloads. The below "launch binder" button will allow you to analyse data published in the listed scientific papers in the "publication_examples" folder.
+
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/PinkShnack/TEMUL/master)
+
+If the button does not work, try [this link instead](https://mybinder.org/v2/gh/PinkShnack/TEMUL/master). You also share this link with others for quick access.
+
+### Publications:
+
+* "M. Hadjimichael *et al*, Metal-ferroelectric supercrystals with periodically
+curved metallic layers, Nature Materials 2020"
