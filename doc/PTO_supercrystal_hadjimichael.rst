@@ -12,8 +12,9 @@ This tutorial follows the python scripts and jupyter notebooks found in the
 `TEMUL repository <https://github.com/PinkShnack/TEMUL>`_. The data and scripts
 used below can be downloaded from there. You can also interact with the data
 without needing any downloads. Just click this button and navigate to that same folder:
+
 .. image:: https://mybinder.org/badge_logo.svg
- :target: https://mybinder.org/v2/gh/PinkShnack/TEMUL/master
+    :target: https://mybinder.org/v2/gh/PinkShnack/TEMUL/master
 
 The :python:`calculate_atom_plane_curvature` function has been adapted from the
 MATLAB script written by Dr. Marios Hadjimichael for the publication
