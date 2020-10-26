@@ -19,7 +19,7 @@ without needing any downloads. Just click this button and navigate to that same 
 The :python:`calculate_atom_plane_curvature` function has been adapted from the
 MATLAB script written by Dr. Marios Hadjimichael for the publication
 "M. Hadjimichael *et al*, Metal-ferroelectric supercrystals with periodically
-curved metallic layers, Nature Materials 2020". This MATLAB script can also be
+curved metallic layers, 2020". This MATLAB script can also be
 found in the same folder.
 
 The :python:`calculate_atom_plane_curvature` function in the
