@@ -23,19 +23,19 @@ TEMUL package.
 
     >>> import temul.signal_processing as tmlsig
     >>> from temul.example_data import load_Se_implanted_MoS2_data
-    >>> s = load_Se_implanted_MoS2_data()
+    >>> image = load_Se_implanted_MoS2_data()
 
 
 
-Filter the Experimental Image
------------------------------
+Interactively Filter the Experimental Image
+-------------------------------------------
 
 Run the :python:`visualise_dg_filter` function. There are lots of other parameters
 too for customisation.
 
 .. code-block:: python
 
-    >>> tmlsig.visualise_dg_filter(s)
+    >>> tmlsig.visualise_dg_filter(image)
 
 .. image:: tutorial_images/dg_filter_tutorial/dg_visualiser.gif
     :scale: 50 %
@@ -51,7 +51,26 @@ FWHMs to their initial value, and Filter will display the "Convolution" of the F
 and double Gaussian filter as well as the inverse FFT ("Filtered Image") of this
 convolution.
 
-Details on the basic double Gaussian filter functions such as :python:`make_gaussian`
-and :python:`make_gaussian_pos_neg`, as well as the more advanced
-:python:`double_gaussian_fft_filter` function can be found in the :ref:`api_doc`.
-We hope to added some examples of these functions to this page in future.
+
+Return the Filtered Image
+-------------------------
+
+When we have suitable FWHMs for the inner and outer Gaussians, we can use
+the :python:`double_gaussian_fft_filter` function the return a filtered image.
+
+.. code-block:: python
+
+    >>> filtered_image = tmlsig.double_gaussian_fft_filter(image, 50, 150)
+    >>> image.plot()
+    >>> filtered_image.plot()
+
+.. image:: tutorial_images/dg_filter_tutorial/image_plot.png
+    :scale: 50 %
+
+.. image:: tutorial_images/dg_filter_tutorial/filtered_image_plot.png
+    :scale: 50 %
+
+
+Details on the :python:`double_gaussian_fft_filter_optimised` function can be
+found in the :ref:`api_doc`.
+We hope to added some examples of this functions to this page in future.

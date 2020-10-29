@@ -105,7 +105,8 @@
 <li class="toctree-l1"><a class="reference internal" href="line_profile_tutorial.html">Line Intensity Profile Comparisons</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Interactive Image Filtering</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#load-the-experimental-image">Load the Experimental Image</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#filter-the-experimental-image">Filter the Experimental Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#interactively-filter-the-experimental-image">Interactively Filter the Experimental Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#return-the-filtered-image">Return the Filtered Image</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api_doc.html">API documentation</a></li>
@@ -186,15 +187,15 @@ tutorial, we will see how to use the function on experimental data.</p>
 TEMUL package.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.signal_processing</span> <span class="kn">as</span> <span class="nn">tmlsig</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.example_data</span> <span class="kn">import</span> <span class="n">load_Se_implanted_MoS2_data</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">load_Se_implanted_MoS2_data</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image</span> <span class="o">=</span> <span class="n">load_Se_implanted_MoS2_data</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="filter-the-experimental-image">
-<h2>Filter the Experimental Image<a class="headerlink" href="#filter-the-experimental-image" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="interactively-filter-the-experimental-image">
+<h2>Interactively Filter the Experimental Image<a class="headerlink" href="#interactively-filter-the-experimental-image" title="Permalink to this headline">¶</a></h2>
 <p>Run the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">visualise_dg_filter</span></span></code> function. There are lots of other parameters
 too for customisation.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tmlsig</span><span class="o">.</span><span class="n">visualise_dg_filter</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tmlsig</span><span class="o">.</span><span class="n">visualise_dg_filter</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/dg_visualiser.gif"><img alt="_images/dg_visualiser.gif" src="_images/dg_visualiser.gif" style="width: 638.0px; height: 358.0px;" /></a>
@@ -207,10 +208,21 @@ just use the sliders at the bottom of the window. Reset can be used to reset the
 FWHMs to their initial value, and Filter will display the “Convolution” of the FFT
 and double Gaussian filter as well as the inverse FFT (“Filtered Image”) of this
 convolution.</p>
-<p>Details on the basic double Gaussian filter functions such as <code class="code python docutils literal notranslate"><span class="name"><span class="pre">make_gaussian</span></span></code>
-and <code class="code python docutils literal notranslate"><span class="name"><span class="pre">make_gaussian_pos_neg</span></span></code>, as well as the more advanced
-<code class="code python docutils literal notranslate"><span class="name"><span class="pre">double_gaussian_fft_filter</span></span></code> function can be found in the <a class="reference internal" href="api_doc.html#api-doc"><span class="std std-ref">API documentation</span></a>.
-We hope to added some examples of these functions to this page in future.</p>
+</div>
+<div class="section" id="return-the-filtered-image">
+<h2>Return the Filtered Image<a class="headerlink" href="#return-the-filtered-image" title="Permalink to this headline">¶</a></h2>
+<p>When we have suitable FWHMs for the inner and outer Gaussians, we can use
+the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">double_gaussian_fft_filter</span></span></code> function the return a filtered image.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">filtered_image</span> <span class="o">=</span> <span class="n">tmlsig</span><span class="o">.</span><span class="n">double_gaussian_fft_filter</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">150</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">filtered_image</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/image_plot.png"><img alt="_images/image_plot.png" src="_images/image_plot.png" style="width: 320.0px; height: 289.5px;" /></a>
+<a class="reference internal image-reference" href="_images/filtered_image_plot.png"><img alt="_images/filtered_image_plot.png" src="_images/filtered_image_plot.png" style="width: 320.0px; height: 289.5px;" /></a>
+<p>Details on the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">double_gaussian_fft_filter_optimised</span></span></code> function can be
+found in the <a class="reference internal" href="api_doc.html#api-doc"><span class="std std-ref">API documentation</span></a>.
+We hope to added some examples of this functions to this page in future.</p>
 </div>
 </div>
 

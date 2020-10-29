@@ -818,15 +818,17 @@ def double_gaussian_fft_filter(image, fwhm_neg, fwhm_pos, neg_min=0.9):
     --------
     >>> import temul.signal_processing as tmlsig
     >>> from temul.example_data import load_Se_implanted_MoS2_data
-    >>> s = load_Se_implanted_MoS2_data()
+    >>> image = load_Se_implanted_MoS2_data()
 
     Use the visualise_dg_filter to find suitable FWHMs
 
-    >>> tmlsig.visualise_dg_filter(s)
+    >>> tmlsig.visualise_dg_filter(image)
 
     then use these values to carry out the double_gaussian_fft_filter
 
-    >>> filtered_image = tmlsig.double_gaussian_fft_filter(s, 50, 150)
+    >>> filtered_image = tmlsig.double_gaussian_fft_filter(image, 50, 150)
+    >>> image.plot()
+    >>> filtered_image.plot()
 
     '''
     image_fft = image.fft(shift=True)
@@ -839,6 +841,7 @@ def double_gaussian_fft_filter(image, fwhm_neg, fwhm_pos, neg_min=0.9):
     convolution = image_fft * dg_filter
     convolution_ifft = convolution.ifft()
     convolution_ifft.axes_manager = image.axes_manager
+    convolution_ifft.metadata.General.title = "Filtered Image"
     return convolution_ifft
 
 
@@ -1157,8 +1160,8 @@ def visualise_dg_filter(image, d_inner=7.7, d_outer=21, slider_min=0.1,
     --------
     >>> import temul.signal_processing as tmlsig
     >>> from temul.example_data import load_Se_implanted_MoS2_data
-    >>> s = load_Se_implanted_MoS2_data()
-    >>> tmlsig.visualise_dg_filter(s)
+    >>> image = load_Se_implanted_MoS2_data()
+    >>> tmlsig.visualise_dg_filter(image)
 
     '''
 
@@ -1208,11 +1211,11 @@ def visualise_dg_filter(image, d_inner=7.7, d_outer=21, slider_min=0.1,
     ax_d_inner = plt.axes([0.25, 0.15, 0.5, 0.03], facecolor=axcolor)
     ax_d_outer = plt.axes([0.25, 0.1, 0.5, 0.03], facecolor=axcolor)
 
-    d_inner_slider = Slider(ax_d_inner, 'd_inner (1/pix)',
+    d_inner_slider = Slider(ax_d_inner, 'Inner FWHM (pix)',
                             slider_min, slider_max, color=inner_color,
                             alpha=alpha,
                             valinit=r_fwhm_neg_gaus, valstep=slider_step)
-    d_outer_slider = Slider(ax_d_outer, 'd_outer (1/pix)',
+    d_outer_slider = Slider(ax_d_outer, 'Outer FWHM (pix)',
                             slider_min, slider_max, color=outer_color,
                             alpha=alpha,
                             valinit=r_fwhm_pos_gaus, valstep=slider_step)
