@@ -788,8 +788,8 @@ def make_gaussian(size, fwhm, center=None):
     return(arr)
 
 
-def make_gaussian_pos_neg(size, fwhm_neg, fwhm_pos, neg_min=0.1, center=None):
-
+def make_gaussian_pos_neg(size, fwhm_neg, fwhm_pos, neg_min=0.9, center=None):
+    ''' See double_gaussian_fft_filter for details '''
     arr_pos = make_gaussian(size, fwhm=fwhm_pos, center=center)
     nD_Gaussian_pos = Signal2D(arr_pos)
 
@@ -799,8 +799,52 @@ def make_gaussian_pos_neg(size, fwhm_neg, fwhm_pos, neg_min=0.1, center=None):
     return(nD_Gaussian_pos, nD_Gaussian_neg)
 
 
-def double_gaussian_fft_filter(image, d_inner, d_outer, delta=0.05,
-                               sampling=None, units=None, filename=None):
+def double_gaussian_fft_filter(image, fwhm_neg, fwhm_pos, neg_min=0.9):
+    '''
+    Filter an image with a bandpass-like filter.
+
+    Parameters
+    ----------
+    image : Hyperspy Signal2D
+    fwhm_neg, fwhm_pos : float
+        Initial guess in pixels of full width at half maximum (fwhm) of
+        inner (negative) and outer (positive) Gaussian to be applied to fft,
+        respectively.
+        Use the visualise_dg_filter function to find the optimium values.
+    neg_min : float, default 0.9
+        Effective amplitude of the negative Gaussian.
+
+    Examples
+    --------
+    >>> import temul.signal_processing as tmlsig
+    >>> from temul.example_data import load_Se_implanted_MoS2_data
+    >>> s = load_Se_implanted_MoS2_data()
+
+    Use the visualise_dg_filter to find suitable FWHMs
+
+    >>> tmlsig.visualise_dg_filter(s)
+
+    then use these values to carry out the double_gaussian_fft_filter
+
+    >>> filtered_image = tmlsig.double_gaussian_fft_filter(s, 50, 150)
+
+    '''
+    image_fft = image.fft(shift=True)
+    fft_data = image_fft.amplitude.data
+
+    nD_Gaussian_pos, nD_Gaussian_neg = make_gaussian_pos_neg(
+        fft_data.shape[-1], fwhm_neg, fwhm_pos, neg_min)
+    dg_filter = nD_Gaussian_pos + nD_Gaussian_neg
+
+    convolution = image_fft * dg_filter
+    convolution_ifft = convolution.ifft()
+    convolution_ifft.axes_manager = image.axes_manager
+    return convolution_ifft
+
+
+def double_gaussian_fft_filter_optimised(image, d_inner, d_outer, delta=0.05,
+                                         sampling=None, units=None,
+                                         filename=None):
     '''
     Filter an image with an double Gaussian (band-pass) filter. The function
     will automatically find the optimum magnitude of the negative inner
@@ -1108,9 +1152,6 @@ def visualise_dg_filter(image, d_inner=7.7, d_outer=21, slider_min=0.1,
         Used to plot a smaller section of the FFT image, which can be useful if
         the information is very small (far away!). Default plots the whole
         image.
-
-    Returns
-    -------
 
     Examples
     --------
