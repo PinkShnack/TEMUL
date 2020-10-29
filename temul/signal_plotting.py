@@ -1,24 +1,23 @@
 
 import numpy as np
 import hyperspy.api as hs
-from skimage.measure import profile_line
-
+# newest version of skimage not working with hspy
+from temul.external.skimage_devel_0162.profile import profile_line
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import subplots_adjust
-from matplotlib.text import TextPath
-
-import datetime as DT
 import matplotlib.dates as mdates
 import scipy.spatial as spatial
 from temul.intensity_tools import get_sublattice_intensity
+from temul.external.atomap_devel_012.initial_position_finding import (
+    add_atoms_with_gui)
+
 
 # line_profile_positions = am.add_atoms_with_gui(s)
-
-
 def compare_images_line_profile_one_image(image,
                                           line_profile_positions,
                                           linewidth=1,
-                                          image_sampling='Auto',
+                                          sampling='Auto',
+                                          units='pix',
                                           arrow=None,
                                           linetrace=None,
                                           **kwargs):
@@ -26,11 +25,10 @@ def compare_images_line_profile_one_image(image,
     Plots two line profiles on one image with the line profile intensities
     in a subfigure.
     See skimage PR PinkShnack for details on implementing profile_line
-    in skimage
+    in skimage: https://github.com/scikit-image/scikit-image/pull/4206
 
     Parameters
     ----------
-
     image : 2D Hyperspy signal
     line_profile_positions : list of lists
         two line profile coordinates. Use atomap's am.add_atoms_with_gui()
@@ -39,7 +37,7 @@ def compare_images_line_profile_one_image(image,
         Could be extended to n positions with a basic loop.
     linewidth : int, default 1
         see profile_line for parameter details.
-    image_sampling :  float, default 'Auto'
+    sampling :  float, default 'Auto'
         if set to 'Auto' the function will attempt to find the sampling of
         image from image.axes_manager[0].scale.
      arrow : string, default None
@@ -49,38 +47,18 @@ def compare_images_line_profile_one_image(image,
         If set, the line profile will be plotted on the image.
         The thickness of the linetrace will be linewidth*linetrace.
         Name could be improved maybe.
+    kwargs : Matplotlib keyword arguments passed to imshow()
 
-    Returns
-    -------
-
-    Examples
-    --------
-
-    Include PTO example from paper
     '''
 
-    if image_sampling == 'Auto':
+    if sampling == 'Auto':
         if image.axes_manager[0].scale != 1.0:
-            image_sampling = image.axes_manager[-1].scale
-            scale_units = image.axes_manager[-1].units
+            sampling = image.axes_manager[-1].scale
+            units = image.axes_manager[-1].units
         else:
             raise ValueError("The image sampling cannot be computed."
                              "The image should either be calibrated "
-                             "or the image_sampling provided")
-
-    # image.axes_manager[0].scale = 1
-    # image.axes_manager[1].scale = 1
-    # image.axes_manager[0].units = scale_unit
-    # image.axes_manager[1].units = scale_unit
-
-    # llim, tlim = cropping_area[0]
-    # rlim, blim = cropping_area[1]
-
-    # for many line plots:
-    # for i, line_profile in enumerate(line_profile_positions):
-    #     print(i)
-    #     print(line_profile)
-    #   expand
+                             "or the sampling provided")
 
     x0, y0 = line_profile_positions[0]
     x1, y1 = line_profile_positions[1]
@@ -91,12 +69,12 @@ def compare_images_line_profile_one_image(image,
     profile_y_1 = profile_line(image=image.data, src=[y0, x0], dst=[y1, x1],
                                linewidth=linewidth)
     profile_x_1 = np.arange(0, len(profile_y_1), 1)
-    profile_x_1 = profile_x_1 * image_sampling
+    profile_x_1 = profile_x_1 * sampling
 
     profile_y_2 = profile_line(image=image.data, src=[y2, x2], dst=[y3, x3],
                                linewidth=linewidth)
     profile_x_2 = np.arange(0, len(profile_y_2), 1)
-    profile_x_2 = profile_x_2 * image_sampling
+    profile_x_2 = profile_x_2 * sampling
 
     # -- Plot the line profile comparisons
     _, (ax1, ax2) = plt.subplots(nrows=2)  # figsize=(12, 4)
@@ -147,35 +125,28 @@ def compare_images_line_profile_one_image(image,
              ls='--', label='2')
     ax2.set_title('Intensity Profile')
     ax2.set_ylabel('Intensity (a.u.)')
-    ax2.set_xlabel('Distance ({})'.format(scale_units))
+    ax2.set_xlabel('Distance ({})'.format(units))
     # ax2.set_ylim(max(profile_y_1), min(profile_y_1))
     ax2.legend(fancybox=True, loc='upper right')
-    # ax2.yaxis.set_ticks([])
-    # ax2.xaxis.set_ticks([])
-    # ax2.axes.get_yaxis().set_visible(False)
     plt.tight_layout()
     plt.show()
 
-    # plt.savefig(fname='Line Profile Example.png',
-    #             transparent=True, frameon=False, bbox_inches='tight',
-    #             pad_inches=None, dpi=300)
-
 
 # line_profile_positions = am.add_atoms_with_gui(s)
-
-
 def compare_images_line_profile_two_images(imageA, imageB,
                                            line_profile_positions,
                                            reduce_func=np.mean,
+                                           filename=None,
                                            linewidth=1,
-                                           image_sampling='auto',
-                                           scale_units='nm',
+                                           sampling='auto',
+                                           units='nm',
                                            crop_offset=20,
-                                           title='Intensity Profile',
+                                           title="Intensity Profile",
+                                           imageA_title='Experiment',
+                                           imageB_title='Simulation',
                                            marker_A='v',
                                            marker_B='o',
                                            arrow_markersize=10,
-                                           filename=None,
                                            figsize=(10, 3),
                                            imageB_intensity_offset=0):
     '''
@@ -186,27 +157,32 @@ def compare_images_line_profile_two_images(imageA, imageB,
 
     Parameters
     ----------
-
     imageA, imageB : 2D Hyperspy signal
     line_profile_positions : list of lists
         one line profile coordinate. Use atomap's am.add_atoms_with_gui()
         function to get these. The two dots will trace the line profile.
         See Examples below for example.
-    linewidth : int, default 1
-        see profile_line for parameter details.
-    image_sampling :  float, default 'auto'
-        if set to 'auto' the function will attempt to find the sampling of
-        image from image.axes_manager[0].scale.
-    scale_units : string, default 'nm'
-    crop_offset : int, default 20
-        number of pixels away from the `line_profile_positions` coordinates the
-        image crop will be taken.
     filename : string, default None
         If this is set to a name (string), the image will be saved with that
         name.
-
-    Returns
-    -------
+    reduce_func : ufunc, default np.mean
+        See skimage's `profile_line` reduce_func parameter for details.
+    linewidth : int, default 1
+        see profile_line for parameter details.
+    sampling :  float, default 'auto'
+        if set to 'auto' the function will attempt to find the sampling of
+        image from image.axes_manager[0].scale.
+    units : string, default 'nm'
+    crop_offset : int, default 20
+        number of pixels away from the `line_profile_positions` coordinates the
+        image crop will be taken.
+    title : string, default "Intensity Profile"
+        Title of the plot
+    marker_A, marker_B : Matplotlib marker
+    arrow_markersize : Matplotlib markersize
+    figsize : see Matplotlib for details
+    imageB_intensity_offset : float, default 0
+        Adds a y axis offset for comparison purposes.
 
     Examples
     --------
@@ -219,42 +195,46 @@ def compare_images_line_profile_two_images(imageA, imageB,
     >>> line_profile_positions = [[81.58, 69.70], [193.10, 184.08]]
     >>> compare_images_line_profile_two_images(
     ...     imageA, imageB, line_profile_positions,
-    ...     linewidth=3, image_sampling=0.012, crop_offset=30)
+    ...     linewidth=3, sampling=0.012, crop_offset=30)
 
-    To use the new skimage functionality try `reduce_func`
+    To use the new skimage functionality try the `reduce_func` parameter:
+
     >>> import numpy as np
     >>> reduce_func = np.sum # can be any ufunc!
     >>> compare_images_line_profile_two_images(
     ...     imageA, imageB, line_profile_positions, reduce_func=reduce_func,
-    ...     linewidth=3, image_sampling=0.012, crop_offset=30)
+    ...     linewidth=3, sampling=0.012, crop_offset=30)
 
     >>> reduce_func = lambda x: np.sum(x**0.5)
     >>> compare_images_line_profile_two_images(
     ...     imageA, imageB, line_profile_positions, reduce_func=reduce_func,
-    ...     linewidth=3, image_sampling=0.012, crop_offset=30)
+    ...     linewidth=3, sampling=0.012, crop_offset=30)
+
+    Offseting the y axis of the second image can sometimes be useful:
 
     >>> import temul.example_data as example_data
     >>> imageA = example_data.load_Se_implanted_MoS2_data()
-    >>> imageB = example_data.load_Se_implanted_MoS2_data()
+    >>> imageA.data = imageA.data/np.max(imageA.data)
+    >>> imageB = imageA.deepcopy()
     >>> line_profile_positions = [[301.42, 318.9], [535.92, 500.82]]
     >>> compare_images_line_profile_two_images(
-    ...     imageA, imageB, line_profile_positions, reduce_func=None)
+    ...     imageA, imageB, line_profile_positions, reduce_func=None,
+    ...     imageB_intensity_offset=0.1)
 
-    Include PTO example from paper
     '''
 
-    if isinstance(image_sampling, str):
-        if image_sampling.lower() == 'auto':
+    if isinstance(sampling, str):
+        if sampling.lower() == 'auto':
             if imageA.axes_manager[0].scale != 1.0:
-                image_sampling = imageA.axes_manager[-1].scale
-                scale_units = imageA.axes_manager[-1].units
+                sampling = imageA.axes_manager[-1].scale
+                units = imageA.axes_manager[-1].units
 
             else:
                 raise ValueError("The image sampling cannot be computed."
                                  "The image should either be calibrated "
-                                 "or the image_sampling provided")
-    elif not isinstance(image_sampling, float):
-        raise ValueError("The image_sampling should either be 'auto' or a "
+                                 "or the sampling provided")
+    elif not isinstance(sampling, float):
+        raise ValueError("The sampling should either be 'auto' or a "
                          "floating point number")
 
     x0, y0 = line_profile_positions[0]
@@ -263,10 +243,10 @@ def compare_images_line_profile_two_images(imageA, imageB,
     profile_y_exp = profile_line(image=imageA.data, src=[y0, x0], dst=[y1, x1],
                                  linewidth=linewidth, reduce_func=reduce_func)
     profile_x_exp = np.arange(0, len(profile_y_exp), 1)
-    profile_x_exp = profile_x_exp * image_sampling
+    profile_x_exp = profile_x_exp * sampling
 
-    crop_left, crop_right = x0 - crop_offset, x1 + crop_offset
-    crop_top, crop_bot = y0 - crop_offset, y1 + crop_offset
+    crop_left, crop_right, crop_top, crop_bot = get_cropping_area(
+        line_profile_positions, crop_offset)
 
     crop_left *= imageA.axes_manager[-1].scale
     crop_right *= imageA.axes_manager[-1].scale
@@ -284,10 +264,11 @@ def compare_images_line_profile_two_images(imageA, imageB,
 
     ''' Simulation '''
 
-    profile_y_sim = profile_line(image=imageB.data, src=[y0, x0], dst=[y1, x1],
-                                 linewidth=linewidth, reduce_func=reduce_func) + imageB_intensity_offset
+    profile_y_sim = profile_line(
+        image=imageB.data, src=[y0, x0], dst=[y1, x1], linewidth=linewidth,
+        reduce_func=reduce_func) + imageB_intensity_offset
     profile_x_sim = np.arange(0, len(profile_y_sim), 1)
-    profile_x_sim = profile_x_sim * image_sampling
+    profile_x_sim = profile_x_sim * sampling
 
     imageB_crop = hs.roi.RectangularROI(left=crop_left, right=crop_right,
                                         top=crop_top, bottom=crop_bot)(imageB)
@@ -302,7 +283,7 @@ def compare_images_line_profile_two_images(imageA, imageB,
              markersize=arrow_markersize, alpha=1)
     ax1.plot(crop_x1, crop_y1, color='r', marker=marker_B,
              markersize=arrow_markersize, alpha=1)
-    ax1.set_title('Experiment')
+    ax1.set_title(imageA_title)
     ax1.yaxis.set_ticks([])
     ax1.xaxis.set_ticks([])
 
@@ -311,7 +292,7 @@ def compare_images_line_profile_two_images(imageA, imageB,
              markersize=arrow_markersize, alpha=1)
     ax2.plot(crop_x1, crop_y1, color='b', marker=marker_B,
              markersize=arrow_markersize, alpha=1)
-    ax2.set_title('Simulation')
+    ax2.set_title(imageB_title)
     ax2.yaxis.set_ticks([])
     ax2.xaxis.set_ticks([])
 
@@ -325,7 +306,7 @@ def compare_images_line_profile_two_images(imageA, imageB,
 
     ax3.set_title(title)
     ax3.set_ylabel('Intensity (a.u.)')
-    ax3.set_xlabel('Distance ({})'.format(scale_units))
+    ax3.set_xlabel('Distance ({})'.format(units))
     # ax3.set_ylim(max(profile_x_exp), min(profile_x_exp))
     ax3.legend(fancybox=True, loc='upper right')
     plt.tight_layout()
@@ -336,12 +317,16 @@ def compare_images_line_profile_two_images(imageA, imageB,
                     pad_inches=None, dpi=300)
 
 
-
 def get_cropping_area(line_profile_positions, crop_offset=20):
-
+    '''
+    By inputting the top-left and bottom-right coordinates of a rectangle, this
+    function will add a border buffer (`crop_offset`) which can be used for
+    cropping of regions in a plot.
+    See `compare_images_line_profile_two_images` for use-case
+    '''
     x0, y0 = line_profile_positions[0]
     x1, y1 = line_profile_positions[1]
-    
+
     crop_left, crop_right = x0 - crop_offset, x1 + crop_offset
     crop_top, crop_bot = y0 - crop_offset, y1 + crop_offset
 
@@ -351,81 +336,88 @@ def get_cropping_area(line_profile_positions, crop_offset=20):
 def plot_atom_energies(sublattice_list, image=None, vac_or_implants=None,
                        elements_dict_other=None, filename='energy_map',
                        cmap='plasma', levels=20, colorbar_fontsize=16):
-
     '''
-    vac_or_implants options are 'implants' and 'vac'
-    
-    Returns the x and y coordinates of the atom positions and the 
+    Used to plot the energies of atomic column configurations above 0 as
+    calculated by DFT.
+
+
+    Parameters
+    ----------
+    sublattice_list : list of Atomap Sublattices
+    image : array-like, default None
+        The first sublattice image is used if `image=None`.
+    vac_or_implants :string, default None
+        `vac_or_implants` options are "implants" and "vac".
+    elements_dict_other : dict, default None
+        A dictionary of {element_config1: energy1, element_config2: energy2, }
+        The default is Se antisites in monolayer MoS2.
+    filename : string, default "energy_map"
+        Name with which to save the plot.
+    cmap : Matplotlib colormap, default "plasma"
+    levels : int, default 20
+        Number of Matplotlib contour map levels.
+    colorbar_fontsize : int, default 16
+
+    Returns
+    -------
+    The x and y coordinates of the atom positions and the
     atom energy.
-    
-    >>> import os
-    >>> import atomap.api as am
-    >>> from temul.signal_plotting import plot_atom_energies
-    
-    >>> base_directory = ('C:/Users/Eoghan.OConnell/Documents/Documents/Eoghan UL/PHD'
-    ...               '/Thesis_Eoghan/Images/Results/Chapter 1/Part 1 - Se/'
-    ...               'Spectroscopy/EELS/Core Loss/Image simulations/020_EELS-SI-During_HAADF')
-    >>> os.chdir(base_directory)
-    >>> atom_lattice = am.load_atom_lattice_from_hdf5('Atom_Lattice_Refiner_max.hdf5')
-    
-    >>> x,y,energy = plot_atom_energies(sublattice_list=[atom_lattice.sublattice_list[1]], vac_or_implants='implants')
 
     '''
-    
+
     if elements_dict_other is None:
-        energies_dict = {'S_0': 2*5.9,
+        energies_dict = {'S_0': 2 * 5.9,
                          'S_1': 5.9,
                          'S_2': 0.0,
-                         'Se_1': (2*5.9) - 5.1,
+                         'Se_1': (2 * 5.9) - 5.1,
                          'Se_1.S_1': 5.9 - 5.1,
-                         'Se_2': (2*5.9) - (2*5.1)}
-        
+                         'Se_2': (2 * 5.9) - (2 * 5.1)}
+
         energies_dict['Se_1.S_1'] = round(energies_dict['Se_1.S_1'], 2)
         energies_dict['Se_1'] = round(energies_dict['Se_1'], 2)
         energies_dict['Se_2'] = round(energies_dict['Se_2'], 2)
-        
+
     elif elements_dict_other is not None and vac_or_implants is not None:
-        
+
         raise ValueError("both elements_dict_other and vac_or_implants"
                          " were set to None. If you are using your own"
                          " elements_dict_other then set vac_or_implants=None")
 
     if vac_or_implants == 'implants':
-        energies_dict_implants = {k: energies_dict[k] for k in list(energies_dict)[-3:]}
+        energies_dict_implants = {
+            k: energies_dict[k] for k in list(energies_dict)[-3:]}
         energies_dict = energies_dict_implants
     elif vac_or_implants == 'vac':
-        energies_dict_vac = {k: energies_dict[k] for k in list(energies_dict)[:3]}
+        energies_dict_vac = {k: energies_dict[k]
+                             for k in list(energies_dict)[:3]}
         energies_dict = energies_dict_vac
     else:
         pass
-    
-    
-    for key, value in energies_dict.items():  
+
+    for key, value in energies_dict.items():
         for sub in sublattice_list:
             for atom in sub.atom_list:
                 if atom.elements == key:
-                    atom.atom_energy = value                        
-                        
+                    atom.atom_energy = value
+
     x, y, energy = [], [], []
-        
+
     for sub in sublattice_list:
         for atom in sub.atom_list:
             x.append(atom.pixel_x)
             y.append(atom.pixel_y)
             energy.append(atom.atom_energy)
-            
-#            print(atom.elements, atom.atom_energy)
-    
 
-        
-    levels = np.arange(-0.5, np.max(energy), np.max(energy)/levels)
+    # print(atom.elements, atom.atom_energy)
+
+    levels = np.arange(-0.5, np.max(energy), np.max(energy) / levels)
 
     if image is None:
         image = sublattice_list[0].image
     # plot the contour map
     plt.figure()
     plt.imshow(image)
-    plt.tricontour(x,y,energy, cmap=cmap, levels=levels)
+    plt.tricontour(x, y, energy, cmap=cmap, levels=levels)
     m = plt.cm.ScalarMappable(cmap=cmap)
     m.set_array(energy)
     cbar = plt.colorbar(m)
@@ -436,12 +428,12 @@ def plot_atom_energies(sublattice_list, image=None, vac_or_implants=None,
 
     if filename is not None:
         plt.savefig(fname=sub.name + '_contour_energy_map.png',
-                transparent=True, frameon=False, bbox_inches='tight',
-                pad_inches=None, dpi=100, labels=False)
+                    transparent=True, frameon=False, bbox_inches='tight',
+                    pad_inches=None, dpi=100, labels=False)
 
     plt.figure()
     plt.imshow(image)
-    plt.tricontourf(x,y,energy, cmap=cmap, levels=levels)
+    plt.tricontourf(x, y, energy, cmap=cmap, levels=levels)
     m = plt.cm.ScalarMappable(cmap=cmap)
     m.set_array(energy)
     cbar = plt.colorbar(m)
@@ -449,25 +441,33 @@ def plot_atom_energies(sublattice_list, image=None, vac_or_implants=None,
     plt.gca().axes.get_xaxis().set_visible(False)
     plt.gca().axes.get_yaxis().set_visible(False)
     plt.tight_layout()
-        
+
     if filename is not None:
         plt.savefig(fname=sub.name + '_contourf_energy_map.png',
-                transparent=True, frameon=False, bbox_inches='tight',
-                pad_inches=None, dpi=100, labels=False)
+                    transparent=True, frameon=False, bbox_inches='tight',
+                    pad_inches=None, dpi=100, labels=False)
 
     return(x, y, energy)
 
 
 class Sublattice_Hover_Intensity(object):
 
-    """User can hover over sublattice overlaid on STEM image to display the x,y location and intensity of that point."""
-    def __init__(self, image, sublattice, sublattice_positions, background_sublattice):    #formatter=fmt,
-        
-        #create intensity list from sublattice and bg sublattice
-        intensity_list = get_sublattice_intensity(sublattice=sublattice, intensity_type='max', remove_background_method='local', background_sub=background_sublattice)
-        intensity_list_norm = intensity_list/max(intensity_list)
+    """
+    User can hover over sublattice overlaid on STEM image to display the
+    x,y location and intensity of that point.
+    """
 
-        #split sublattice positions into x and y
+    def __init__(self, image, sublattice, sublattice_positions,
+                 background_sublattice):  # formatter=fmt,
+
+        # create intensity list from sublattice and bg sublattice
+        intensity_list = get_sublattice_intensity(
+            sublattice=sublattice, intensity_type='max',
+            remove_background_method='local',
+            background_sub=background_sublattice)
+        intensity_list_norm = intensity_list / max(intensity_list)
+
+        # split sublattice positions into x and y
         sublattice_position_x = []
         sublattice_position_y = []
 
@@ -477,37 +477,44 @@ class Sublattice_Hover_Intensity(object):
             sublattice_position_y.append(sublattice_positions[i][1])
             i += 1
 
-        #plot image and scatter plot of sublattice positions
+        # plot image and scatter plot of sublattice positions
         fig = plt.figure()
         subplot1 = fig.add_subplot(1, 1, 1)
 
         subplot1.set_title('STEM image')
-        img = plt.imshow(image)
-        scatter = plt.scatter(sublattice_position_x, sublattice_position_y, cmap='inferno', c=intensity_list_norm)    #c=t_metal_intensity_list, cmap='viridis', alpha=0.5
+        _ = plt.imshow(image)
+        # c=t_metal_intensity_list, cmap='viridis', alpha=0.5
+        _ = plt.scatter(
+            sublattice_position_x, sublattice_position_y, cmap='inferno',
+            c=intensity_list_norm)
         plt.colorbar()
 
-        #x_point and y_point are individual points, determined by where the cursor is hovering
-        #x and y in fmt function are the lists of x and y components fed into cursor_hover_int
+        # x_point and y_point are individual points, determined by where the
+        # cursor is hovering x and y in fmt function are the lists of x and y
+        # components fed into cursor_hover_int
         def fmt(x_hover, y_hover, is_date):
-            
+
             x_rounded = [round(num, 4) for num in sublattice_position_x]
             point_index = x_rounded.index(round(x_hover, 4))
             intensity_at_point = intensity_list_norm[point_index]
 
             if is_date:
                 x_hover = mdates.num2date(x_hover).strftime("%Y-%m-%d")
-                return 'x: {x}\ny: {y}\nint: {i}'.format(x=x_hover, y=y_hover, i=intensity_at_point)
+                return 'x: {x}\ny: {y}\nint: {i}'.format(x=x_hover, y=y_hover,
+                                                         i=intensity_at_point)
 
             else:
-                return 'x: {x:0.2f}\ny: {y:0.2f}\nint: {i:0.3f}'.format(x=x_hover, y=y_hover, i=intensity_at_point)
+                return 'x: {x:0.2f}\ny: {y:0.2f}\nint: {i:0.3f}'.format(
+                    x=x_hover, y=y_hover, i=intensity_at_point)
 
         try:
             x = np.asarray(sublattice_position_x, dtype='float')
             self.is_date = False
         except (TypeError, ValueError):
-            x = np.asarray(mdates.date2num(sublattice_position_x), dtype='float')
+            x = np.asarray(mdates.date2num(
+                sublattice_position_x), dtype='float')
             self.is_date = True
-          
+
         y = np.asarray(sublattice_position_y, dtype='float')
         self._points = np.column_stack((x, y))
         self.offsets = (0, 15)
@@ -517,23 +524,21 @@ class Sublattice_Hover_Intensity(object):
         self.formatter = fmt
         self.tolerance = 0.5
         self.ax1 = subplot1
-        self.fig = fig  #ax.figure
+        self.fig = fig  # ax.figure
         self.ax1.xaxis.set_label_position('top')
         self.dot = subplot1.scatter(
             [x.min()], [y.min()], s=130, color='white', alpha=0.5)
         self.annotation = self.setup_annotation()
         plt.connect('motion_notify_event', self)
 
-
     def scaled(self, points):
         points = np.asarray(points)
         return points * (self.scale, 1)
 
-
     def __call__(self, event):
         ax1 = self.ax1
-        # event.inaxes is always the current axis. If you use twinx, ax could be
-        # a different axis.
+        # event.inaxes is always the current axis. If you use twinx, ax could
+        # be a different axis.
         if event.inaxes == ax1:
             x, y = event.xdata, event.ydata
         elif event.inaxes is None:
@@ -541,31 +546,159 @@ class Sublattice_Hover_Intensity(object):
         else:
             inv = ax1.transData.inverted()
             x, y = inv.transform([(event.x, event.y)]).ravel()
-        
+
         annotation = self.annotation
         x, y = self.snap(x, y)
         annotation.xy = x, y
         annotation.set_text(self.formatter(x, y, self.is_date))
         self.dot.set_offsets((x, y))
-        bbox = ax1.viewLim
-        #ax2.axvline(x=self.formatter(x, y, self.is_date).intensity_at_point)
+        _ = ax1.viewLim
+        # ax2.axvline(x=self.formatter(x, y, self.is_date).intensity_at_point)
 
         event.canvas.draw()
 
     def setup_annotation(self):
         """Draw and hide the annotation box."""
         annotation = self.ax1.annotate(
-            '', xy=(0, 0), ha = 'center',
-            xytext = self.offsets, textcoords = 'offset points', va = 'bottom',
-            bbox = dict(
+            '', xy=(0, 0), ha='center',
+            xytext=self.offsets, textcoords='offset points', va='bottom',
+            bbox=dict(
                 boxstyle='square, pad=0.5', fc='white', alpha=0.5))
         return annotation
 
     def snap(self, x, y):
         """Return the value in self.tree closest to x, y."""
-        dist, idx = self.tree.query(self.scaled((x, y)), k=1, p=1)        
+        dist, idx = self.tree.query(self.scaled((x, y)), k=1, p=1)
         try:
             return self._points[idx]
         except IndexError:
             # IndexError: index out of bounds
             return self._points[0]
+
+
+def color_palettes(pallette):
+    '''
+    Color sequences that are useful for creating matplotlib colormaps.
+    Info on "zesty" and other options:
+    venngage.com/blog/color-blind-friendly-palette/
+    Info on "r_safe":
+    Google: r-plot-color-combinations-that-are-colorblind-accessible
+
+    Parameters
+    ----------
+    palette : str
+        Options are "zesty" (4 colours), and "r_safe" (12 colours).
+
+    Returns
+    -------
+    list of hex colours
+
+    '''
+    zesty = ['#F5793A', '#A95AA1', '#85C0F9', '#0F2080']
+    r_safe = ["#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499",
+              "#44AA99", "#999933", "#882255", "#661100", "#6699CC", "#888888"]
+
+    if pallette == 'zesty':
+        return zesty
+    elif pallette == 'r_safe':
+        return r_safe
+    else:
+        return('This option is not allowed.')
+
+
+def rgb_to_dec(rgb_values):
+    '''
+    Change RGB color values to decimal color values (between 0 and 1).
+    Required for use with matplotlib. See Example in `hex_to_rgb` below.
+
+    Parameters
+    ----------
+    rgb_values : list of tuples
+
+    Returns
+    -------
+    Decimal color values (RGB but scaled from 0 to 1 rather than 0 to 255)
+
+    '''
+    dec_values = []
+    for rgb_value in rgb_values:
+        dec_values.append(tuple([i/256 for i in rgb_value]))
+    return(dec_values)
+
+
+def hex_to_rgb(hex_values):
+    '''
+    Change from hexidecimal color values to rgb color values.
+    Grabs starting two, middle two, last two values in hex, multiplies by
+    16^1 and 16^0 for the first and second, respectively.
+
+    Parameters
+    ----------
+    hex_values : list
+        A list of hexidecimal color values as strings e.g., '#F5793A'
+
+    Returns
+    -------
+    list of tuples
+
+    Examples
+    --------
+
+    >>> import temul.signal_plotting as tmlplot
+    >>> tmlplot.hex_to_rgb(color_palettes('zesty'))
+    [(245, 121, 58), (169, 90, 161), (133, 192, 249), (15, 32, 128)]
+
+    Create a matplotlib cmap from a palette with the help of
+    matplotlib.colors.from_levels_and_colors()
+
+    >>> from matplotlib.colors import from_levels_and_colors
+    >>> zest = tmlplot.hex_to_rgb(tmlplot.color_palettes('zesty'))
+    >>> zest.append(zest[0])  # make the top and bottom colour the same
+    >>> cmap, norm = from_levels_and_colors(
+    ...     levels=[0,1,2,3,4,5], colors=tmlplot.rgb_to_dec(zest))
+
+    '''
+    hex_values = [i.lstrip('#') for i in hex_values]
+    rgb_values = []
+    for hex_value in hex_values:
+        rgb_value = tuple(int(hex_value[i:i+2], 16) for i in (0, 2, 4))
+        rgb_values.append(rgb_value)
+    return rgb_values
+
+
+def expand_palette(palette, expand_list):
+    '''
+    Essentially multiply the palette so that it has the number of instances of
+    each color that you want.
+
+    Parameters
+    ----------
+    palette : list
+        Color palette in hex, rgb or dec
+    expand_list : list
+        List of integers that will be used to duplicate colours in the palette.
+
+    Returns
+    -------
+    List of expanded palette
+
+    Examples
+    --------
+
+    >>> import temul.signal_plotting as tmlplot
+    >>> zest = tmlplot.color_palettes('zesty')
+    >>> expanded_palette = tmlplot.expand_palette(zest, [1,2,2,2])
+
+    '''
+    expanded_palette = []
+    for pal, ex in zip(palette, expand_list):
+        for count in range(ex):
+            expanded_palette.append(pal)
+    return expanded_palette
+
+
+def choose_points_on_image(image, norm='linear', distance_threshold=4):
+
+    coords = add_atoms_with_gui(image=image, norm=norm,
+                                distance_threshold=distance_threshold)
+    return coords

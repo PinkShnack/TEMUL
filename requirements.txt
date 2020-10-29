@@ -1,0 +1,16 @@
+atomap
+colorcet
+glob2
+hyperspy
+numpy
+matplotlib
+matplotlib-scalebar
+pandas
+periodictable
+PyCifRW==4.3
+scikit-image==0.16.2
+scipy
+tifffile
+
+sphinx_rtd_theme
+numpydoc

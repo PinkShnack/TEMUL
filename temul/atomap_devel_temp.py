@@ -1,7 +1,6 @@
 '''
 Should make a PR on atomap for these changes.
 They are in EOC's personal atomap version.
-'''
 
 from matplotlib.colors import LogNorm
 import numpy as np
@@ -103,13 +102,15 @@ def add_atoms_with_gui(image, atom_list=None, distance_threshold=4,
         The list can be updated until the figure is closed.
     Examples
     --------
-    >>> import atomap.api as am
-    >>> s = am.dummy_data.get_simple_cubic_signal()
-    >>> peaks = am.get_atom_positions(s, separation=9)
-    >>> peaks_new = am.add_atoms_with_gui(peaks, s)
+    import atomap.api as am
+    s = am.dummy_data.get_simple_cubic_signal()
+    peaks = am.get_atom_positions(s, separation=9)
+    peaks_new = am.add_atoms_with_gui(peaks, s)
     """
     global atom_adder_remover
     atom_adder_remover = AtomAdderRemover(
-        image, atom_list, distance_threshold=distance_threshold, norm=norm, vmin=vmin, vmax=vmax)
+        image, atom_list, distance_threshold=distance_threshold, norm=norm,
+        vmin=vmin, vmax=vmax)
     new_atom_list = atom_adder_remover.atom_list
     return new_atom_list
+'''

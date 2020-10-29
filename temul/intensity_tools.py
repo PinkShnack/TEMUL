@@ -4,7 +4,7 @@ from atomap.atom_finding_refining import _make_circular_mask
 
 
 def get_sublattice_intensity(sublattice,
-                             intensity_type='max',
+                             intensity_type="max",
                              remove_background_method=None,
                              background_sub=None,
                              num_points=3,
@@ -28,55 +28,66 @@ def get_sublattice_intensity(sublattice,
 
     sublattice : sublattice object
         The sublattice whose intensities you are finding.
-    intensity_type : string, default 'max'
+    intensity_type : string, default "max"
         Determines the method used to find the sublattice intensities.
-        The available methods are 'max', 'mean', 'min', 'total' and
-        'all'.
+        The available methods are "max", "mean", "min", "total" and
+        "all".
     remove_background_method : string, default None
         Determines the method used to remove the background_sub
-        intensities from the image. Options are 'average' and 'local'.
+        intensities from the image. Options are "average" and "local".
     background_sub : sublattice object, default None
         The sublattice used if remove_background_method is used.
     num_points : int, default 3
-        If remove_background_method='local', num_points is the number
+        If remove_background_method="local", num_points is the number
         of nearest neighbour values averaged from background_sub
     percent_to_nn : float, default 0.40
         Determines the boundary of the area surrounding each atomic
         column, as fraction of the distance to the nearest neighbour.
+    mask_radius : float
+        Radius of the atomic column in pixels. If chosen, `percent_to_nn` must
+        be None.
 
     Returns
     -------
-    2D numpy array
+    Numpy array, shape depending on `intensity_type`
 
     Examples
     --------
 
     >>> from temul.intensity_tools import get_sublattice_intensity
-    >>> import atomap.dummy_data as dummy_data
+    >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
     >>> sublattice = dummy_data.get_simple_cubic_sublattice()
     >>> sublattice.find_nearest_neighbors()
     >>> intensities_all = get_sublattice_intensity(
     ...     sublattice=sublattice,
-    ...     intensity_type='all',
+    ...     intensity_type="all",
     ...     remove_background_method=None,
     ...     background_sub=None)
+
+    Return the summed intensity around the atom:
 
     >>> intensities_total = get_sublattice_intensity(
     ...     sublattice=sublattice,
-    ...     intensity_type='total',
+    ...     intensity_type="total",
     ...     remove_background_method=None,
     ...     background_sub=None)
 
+    Return the summed intensity around the atom with local background
+    subtraction:
+
     >>> intensities_total_local = get_sublattice_intensity(
     ...     sublattice=sublattice,
-    ...     intensity_type='total',
-    ...     remove_background_method='local',
+    ...     intensity_type="total",
+    ...     remove_background_method="local",
     ...     background_sub=sublattice)
+
+    Return the maximum intensity around the atom with average background
+    subtraction:
 
     >>> intensities_max_average = get_sublattice_intensity(
     ...     sublattice=sublattice,
-    ...     intensity_type='max',
-    ...     remove_background_method='average',
+    ...     intensity_type="max",
+    ...     remove_background_method="average",
     ...     background_sub=sublattice)
 
     '''
@@ -86,7 +97,7 @@ def get_sublattice_intensity(sublattice,
         pass
 
     if remove_background_method is None or background_sub is None:
-        if intensity_type == 'all':
+        if intensity_type == "all":
             sublattice.get_atom_column_amplitude_max_intensity(
                 percent_to_nn=percent_to_nn, mask_radius=mask_radius)
             sublattice_max_intensity_list = []
@@ -133,7 +144,7 @@ def get_sublattice_intensity(sublattice,
     # return max_intensities, mean_intensities, min_intensities,
     # total_intensities
 
-        elif intensity_type == 'max':
+        elif intensity_type == "max":
             sublattice.get_atom_column_amplitude_max_intensity(
                 percent_to_nn=percent_to_nn, mask_radius=mask_radius)
             sublattice_max_intensity_list = []
@@ -144,7 +155,7 @@ def get_sublattice_intensity(sublattice,
 
             return(max_intensities)
 
-        elif intensity_type == 'mean':
+        elif intensity_type == "mean":
             sublattice.get_atom_column_amplitude_mean_intensity(
                 percent_to_nn=percent_to_nn, mask_radius=mask_radius)
             sublattice_mean_intensity_list = []
@@ -155,7 +166,7 @@ def get_sublattice_intensity(sublattice,
 
             return(mean_intensities)
 
-        elif intensity_type == 'min':
+        elif intensity_type == "min":
             sublattice.get_atom_column_amplitude_min_intensity(
                 percent_to_nn=percent_to_nn, mask_radius=mask_radius)
             sublattice_min_intensity_list = []
@@ -166,7 +177,7 @@ def get_sublattice_intensity(sublattice,
 
             return(min_intensities)
 
-        elif intensity_type == 'total':
+        elif intensity_type == "total":
             sublattice.get_atom_column_amplitude_total_intensity(
                 percent_to_nn=percent_to_nn, mask_radius=mask_radius)
             sublattice_total_intensity_list = []
@@ -182,9 +193,9 @@ def get_sublattice_intensity(sublattice,
             return(total_intensities)
 
         else:
-            raise ValueError('You must choose an intensity_type')
+            raise ValueError("You must choose an intensity_type")
 
-    elif remove_background_method == 'average':
+    elif remove_background_method == "average":
 
         sub_intensity_list_average_bksubtracted = remove_average_background(
             sublattice=sublattice,
@@ -194,7 +205,7 @@ def get_sublattice_intensity(sublattice,
             mask_radius=mask_radius)
         return(sub_intensity_list_average_bksubtracted)
 
-    elif remove_background_method == 'local':
+    elif remove_background_method == "local":
 
         sub_intensity_list_local_bksubtracted = remove_local_background(
             sublattice=sublattice,
@@ -224,29 +235,33 @@ def remove_average_background(sublattice, intensity_type,
         The sublattice whose intensities are of interest.
     intensity_type : string
         Determines the method used to find the sublattice intensities.
-        The available methods are 'max', 'mean', 'min' and 'all'.
+        The available methods are "max", "mean", "min" and "all".
     background_sub : sublattice object
         The sublattice used to find the average background.
     percent_to_nn : float, default 0.4
         Determines the boundary of the area surrounding each atomic
         column, as fraction of the distance to the nearest neighbour.
+    mask_radius : float
+        Radius of the atomic column in pixels. If chosen, `percent_to_nn` must
+        be None.
 
     Returns
     -------
-    2D numpy array
+    Numpy array, shape depending on `intensity_type`
 
     Examples
     --------
 
     >>> from temul.intensity_tools import remove_average_background
-    >>> import atomap.dummy_data as dummy_data
+    >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
+    >>> # import atomap.dummy_data as dummy_data
     >>> sublattice = dummy_data.get_simple_cubic_sublattice()
     >>> sublattice.find_nearest_neighbors()
     >>> intensities_all = remove_average_background(
-    ...     sublattice, intensity_type='all',
+    ...     sublattice, intensity_type="all",
     ...     background_sub=sublattice)
     >>> intensities_max = remove_average_background(
-    ...     sublattice, intensity_type='max',
+    ...     sublattice, intensity_type="max",
     ...     background_sub=sublattice)
 
     '''
@@ -258,7 +273,7 @@ def remove_average_background(sublattice, intensity_type,
         background_sub.atom_amplitude_min_intensity)
     background_sub_mean_of_min = np.mean(background_sub_min)
 
-    if intensity_type == 'all':
+    if intensity_type == "all":
         sublattice.get_atom_column_amplitude_max_intensity(
             percent_to_nn=percent_to_nn, mask_radius=mask_radius)
         sublattice_max_intensity_list = []
@@ -299,7 +314,7 @@ def remove_average_background(sublattice, intensity_type,
             (max_intensities, mean_intensities, min_intensities))
         return sublattice_intensities
 
-    elif intensity_type == 'max':
+    elif intensity_type == "max":
         sublattice.get_atom_column_amplitude_max_intensity(
             percent_to_nn=percent_to_nn, mask_radius=mask_radius)
         sublattice_max_intensity_list = []
@@ -311,7 +326,7 @@ def remove_average_background(sublattice, intensity_type,
 
         return max_intensities
 
-    elif intensity_type == 'mean':
+    elif intensity_type == "mean":
         sublattice.get_atom_column_amplitude_mean_intensity(
             percent_to_nn=percent_to_nn, mask_radius=mask_radius)
         sublattice_mean_intensity_list = []
@@ -323,7 +338,7 @@ def remove_average_background(sublattice, intensity_type,
 
         return mean_intensities
 
-    elif intensity_type == 'min':
+    elif intensity_type == "min":
         sublattice.get_atom_column_amplitude_min_intensity(
             percent_to_nn=percent_to_nn, mask_radius=mask_radius)
         sublattice_min_intensity_list = []
@@ -335,7 +350,7 @@ def remove_average_background(sublattice, intensity_type,
 
         return min_intensities
 
-    elif intensity_type == 'total':
+    elif intensity_type == "total":
         raise ValueError(
             "Average background removal doesn't work with total intensity, "
             "yet")
@@ -357,7 +372,7 @@ def remove_average_background(sublattice, intensity_type,
 sublattice0 = dummy_data.get_simple_cubic_sublattice()
 
 inten = get_sublattice_intensity(sublattice=sublattice0,
-            intensity_type='max', remove_background_method='local',
+            intensity_type="max", remove_background_method="local",
                         background_sub=sublattice0,
                         num_points=3, percent_to_nn=0.3)
 
@@ -381,7 +396,7 @@ def remove_local_background(sublattice, background_sub, intensity_type,
         The sublattice whose intensities are of interest.
     intensity_type : string
         Determines the method used to find the sublattice intensities.
-        The available methods are 'max', 'mean', 'min', 'total' and 'all'.
+        The available methods are "max", "mean", "min", "total" and "all".
     background_sub : sublattice object
         The sublattice used to find the local backgrounds.
     num_points : int, default 3
@@ -390,23 +405,26 @@ def remove_local_background(sublattice, background_sub, intensity_type,
     percent_to_nn : float, default 0.40
         Determines the boundary of the area surrounding each atomic
         column, as fraction of the distance to the nearest neighbour.
+    mask_radius : float
+        Radius of the atomic column in pixels. If chosen, `percent_to_nn` must
+        be None.
 
     Returns
     -------
-    2D numpy array
+    Numpy array, shape depending on `intensity_type`
 
     Examples
     --------
 
     >>> from temul.intensity_tools import remove_local_background
-    >>> import atomap.dummy_data as dummy_data
+    >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
     >>> sublattice = dummy_data.get_simple_cubic_sublattice()
     >>> sublattice.find_nearest_neighbors()
     >>> intensities_total = remove_local_background(
-    ...     sublattice, intensity_type='total',
+    ...     sublattice, intensity_type="total",
     ...     background_sub=sublattice)
     >>> intensities_max = remove_local_background(
-    ...     sublattice, intensity_type='max',
+    ...     sublattice, intensity_type="max",
     ...     background_sub=sublattice)
 
     '''
@@ -424,7 +442,7 @@ def remove_local_background(sublattice, background_sub, intensity_type,
     background_sub_min_intensity_list.append(
         background_sub.atom_amplitude_min_intensity)
     background_sub_min_intensity_list = background_sub_min_intensity_list[0]
-    if intensity_type == 'all':
+    if intensity_type == "all":
         raise ValueError(
             "All intensities has not yet been implemented. "
             "Use max, mean or total instead")
@@ -434,7 +452,7 @@ def remove_local_background(sublattice, background_sub, intensity_type,
             "num_points cannot be less than 1 if you wish to locally "
             "remove the background")
 
-    if intensity_type == 'max':
+    if intensity_type == "max":
         # get list of sublattice and background_sub atom positions
         # np.array().T will not be needed in newer versions of atomap
         sublattice_atom_pos = np.array(sublattice.atom_positions).T
@@ -503,7 +521,7 @@ def remove_local_background(sublattice, background_sub, intensity_type,
 
         return(sublattice_max_intensity_list_bksubtracted[:, 0])
 
-    elif intensity_type == 'mean':
+    elif intensity_type == "mean":
         # get list of sublattice and background_sub atom positions
         # np.array().T will not be needed in newer versions of atomap
         sublattice_atom_pos = np.array(sublattice.atom_positions).T
@@ -572,7 +590,7 @@ def remove_local_background(sublattice, background_sub, intensity_type,
 
         return(sublattice_mean_intensity_list_bksubtracted[:, 0])
 
-    elif intensity_type == 'total':
+    elif intensity_type == "total":
         # get list of sublattice and background_sub atom positions
         # np.array().T will not be needed in newer versions of atomap
         sublattice_atom_pos = np.array(sublattice.atom_positions).T
@@ -664,7 +682,7 @@ def remove_local_background(sublattice, background_sub, intensity_type,
 
     else:
         raise ValueError(
-            "You must choose a valid intensity_type. Try max, mean or total")
+            "You must choose a valid intensity_type. Use max, mean or total")
 
 
 # need to add "radius" for where to get intensity from. Do we though?
@@ -699,7 +717,7 @@ def get_pixel_count_from_image_slice(
     --------
 
     >>> from temul.intensity_tools import get_pixel_count_from_image_slice
-    >>> import atomap.dummy_data as dummy_data
+    >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
     >>> sublattice = dummy_data.get_simple_cubic_sublattice()
     >>> sublattice.find_nearest_neighbors()
     >>> atom0 = sublattice.atom_list[0]

@@ -12,34 +12,6 @@ from glob import glob
 import os
 
 
-def create_new_folder(new_folder_name):
-    '''
-    Create a folder in the given directory
-
-    Parameters
-    ----------
-
-    new_folder_name : string
-        name of the new folder. It will be created in the current directory
-
-    Returns
-    -------
-    Nothing
-
-    Examples
-    --------
-
-    >>> from temul.io import create_new_folder
-    >>> create_new_folder('test_folder')
-
-    '''
-    try:
-        if not os.path.exists(new_folder_name):
-            os.makedirs('./' + new_folder_name + '/')
-    except OSError:
-        print('Could not create directory ' + new_folder_name)
-
-
 def batch_convert_emd_to_image(extension_to_save,
                                top_level_directory,
                                glob_search="**/*",
@@ -63,15 +35,6 @@ def batch_convert_emd_to_image(extension_to_save,
         Default will search this directory and all subdirectories.
     overwrite : Bool, default True
         Overwrite if the extension_to_save file already exists.
-
-    Example
-    -------
-
-    # >>> batch_convert_emd_to_image(extension_to_save='.png',
-    # ...         top_level_directory='G:/Titan Images/
-    #               08-10-19_MHEOC_SampleImaging stem',
-    # ...         glob_search="**/*",
-    # ...         overwrite=True)
 
     """
 
@@ -127,7 +90,7 @@ def load_data_and_sampling(filename, file_extension=None,
         s.axes_manager[-2].units = 'nm'
 
     # real_sampling =
-#    physical_image_size = real_sampling * len(s.data)
+    # physical_image_size = real_sampling * len(s.data)
     save_name = filename[:-4]
 
     if invert_image is True:
@@ -181,6 +144,9 @@ def convert_vesta_xyz_to_prismatic_xyz(vesta_xyz_filename,
     Lose some information from the .cif or .vesta file but okay for now.
     Develop your own converter if you need rms and occupancy! Lots to do.
 
+    delimiter='      |       |  ' # ase xyz
+    delimiter='   |    |  ' # vesta xyz
+
     Parameters
     ----------
     vesta_xyz_filename : string
@@ -208,18 +174,16 @@ def convert_vesta_xyz_to_prismatic_xyz(vesta_xyz_filename,
     --------
 
     See example_data for the vesta xyz file.
+
     >>> from temul.io import convert_vesta_xyz_to_prismatic_xyz
     >>> prismatic_xyz = convert_vesta_xyz_to_prismatic_xyz(
-    ...     'example_data/prismatic/example_MoS2_vesta_xyz.xyz',
-    ...     'example_data/prismatic/MoS2_hex_prismatic.xyz',
+    ...     'temul/example_data/prismatic/example_MoS2_vesta_xyz.xyz',
+    ...     'temul/example_data/prismatic/MoS2_hex_prismatic.xyz',
     ...     delimiter='   |    |  ', header=None, skiprows=[0, 1],
     ...     engine='python', occupancy=1.0, rms_thermal_vib=0.05,
     ...     header_comment="Let's do this!", save=True)
 
     '''
-
-    # delimiter='      |       |  ' # ase xyz
-    # delimiter='   |    |  ' # vesta xyz
 
     file = pd.read_csv(vesta_xyz_filename,
                        delimiter=delimiter,
@@ -232,7 +196,7 @@ def convert_vesta_xyz_to_prismatic_xyz(vesta_xyz_filename,
         for value in i:
             if 'nan' in str(value):
                 print("ERROR: nans present, file not read correctly. "
-                      "Try changes the delimiters! "
+                      "Try changing the delimiters! "
                       "See: https://stackoverflow.com/"
                       "questions/51195299/python-reading-a-data-text-file"
                       "-with-different-delimiters")
@@ -317,9 +281,8 @@ def convert_vesta_xyz_to_prismatic_xyz(vesta_xyz_filename,
 
     return file
 
+
 # cif writing
-
-
 def write_cif_from_dataframe(dataframe,
                              filename,
                              chemical_name_common,
@@ -332,6 +295,9 @@ def write_cif_from_dataframe(dataframe,
                              space_group_name_H_M_alt='P 1',
                              space_group_IT_number=1):
     """
+    Write a cif file from a Pandas Dataframe. This Dataframe can be created
+    with temul.model_creation.create_dataframe_for_cif().
+
     Parameters
     ----------
     dataframe : dataframe object
@@ -345,7 +311,6 @@ def write_cif_from_dataframe(dataframe,
     space_group_name_H-M_alt : string
         space group name
     space_group_IT_number : float
-
 
     """
 
@@ -401,14 +366,6 @@ def write_cif_from_dataframe(dataframe,
     outFile.close()
 
 
-# write_cif_from_dataframe(dataframe=example_df,
-#                         filename='simulation_Se_1.S_1',
-#                         chemical_name_common='MoS2_sim',
-#                         cell_length_a=30,
-#                         cell_length_b=30,
-#                         cell_length_c=6.3)
-
-
 # create dataframe function for single atom lattice for .xyz
 def create_dataframe_for_xyz(sublattice_list,
                              element_list,
@@ -418,14 +375,24 @@ def create_dataframe_for_xyz(sublattice_list,
                              filename,
                              header_comment='top_level_comment'):
     """
+    Creates a Pandas Dataframe and a .xyz file (usable with Prismatic) from the
+    inputted sublattice(s).
+
     Parameters
     ----------
+    sublattice_list : list of Atomap Sublattice objects
+    element_list : list of strings
+        Each string must be an element symbol from the periodic table.
+    x_size, y_size, z_size : floats
+        Dimensions of the x,y,z axes in Angstrom.
+    filename : string
+        Name with which the .xyz file will be saved.
+    header_comment : string, default 'top_level_comment'
 
     Example
     -------
-
-    >>> import atomap.api as am
-    >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
+    >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
+    >>> sublattice = dummy_data.get_simple_cubic_sublattice()
     >>> for i in range(0, len(sublattice.atom_list)):
     ...     sublattice.atom_list[i].elements = 'Mo_1'
     ...     sublattice.atom_list[i].z_height = '0.5'
@@ -496,20 +463,33 @@ def create_dataframe_for_xyz(sublattice_list,
                             # nans could be better than ''
                             # (len(sublattice.image)-
 
-                            if "," in sublattice.atom_list[i].z_height and split_and_sort_element(sublattice.atom_list[i].elements)[k][2] > 1:
+                            if "," in sublattice.atom_list[
+                                    i].z_height and split_and_sort_element(
+                                    sublattice.atom_list[i].elements)[
+                                    k][2] > 1:
                                 atom_z_height = float(
-                                    sublattice.atom_list[i].z_height.split(",")[p])
+                                    sublattice.atom_list[
+                                        i].z_height.split(",")[p])
                             else:
                                 pass
 
-                            df_xyz = df_xyz.append({'_atom_site_Z_number': atomic_number,
-                                                    '_atom_site_fract_x': format(sublattice.atom_list[i].pixel_x * (x_size / len(sublattice.image[0, :])), '.6f'),
-                                                    '_atom_site_fract_y': format(sublattice.atom_list[i].pixel_y * (y_size / len(sublattice.image[:, 0])), '.6f'),
-                                                    # this is a fraction already, which is why we don't divide as in x and y
-                                                    '_atom_site_fract_z': format(atom_z_height * z_size, '.6f'),
-                                                    '_atom_site_occupancy': 1.0,  # might need to loop through the vancancies here?
-                                                    '_atom_site_RMS_thermal_vib': 0.1},
-                                                   ignore_index=True)  # insert row
+                            df_xyz = df_xyz.append(
+                                {'_atom_site_Z_number': atomic_number,
+                                 '_atom_site_fract_x': format(
+                                     sublattice.atom_list[i].pixel_x * (
+                                         x_size / len(sublattice.image[
+                                             0, :])), '.6f'),
+                                 '_atom_site_fract_y': format(
+                                     sublattice.atom_list[i].pixel_y * (
+                                         y_size / len(sublattice.image[
+                                             :, 0])), '.6f'),
+                                 # this is a fraction already, which is why we
+                                 # don't divide as in x and y
+                                 '_atom_site_fract_z': format(
+                                     atom_z_height * z_size, '.6f'),
+                                 '_atom_site_occupancy': 1.0,
+                                 '_atom_site_RMS_thermal_vib': 0.1},
+                                ignore_index=True)  # insert row
 
     df_xyz = df_xyz.append({'_atom_site_Z_number': int(-1),
                             '_atom_site_fract_x': '',
@@ -524,12 +504,6 @@ def create_dataframe_for_xyz(sublattice_list,
 
     return(df_xyz)
 
-# element_list = ['S_0', 'S_1', 'S_2', 'S_2.C_1', 'S_2.C_2', 'Mo_1', 'Mo_0']
-# example_df = create_dataframe_for_cif(atom_lattice, element_list)
-
-
-''' Image Stack '''
-
 
 def dm3_stack_to_tiff_stack(loading_file,
                             loading_file_extension='.dm3',
@@ -538,42 +512,21 @@ def dm3_stack_to_tiff_stack(loading_file,
                             crop_start=20.0,
                             crop_end=80.0):
     '''
-    Save an image stack filetype to a different filetype.
-    For example dm3 to tiff
+    Save an image stack filetype to a different filetype, e.g., dm3 to tiff.
 
     Parameters
     ----------
-
     filename : string
         Name of the image stack file
-
     loading_file_extension : string
         file extension of the filename
-
     saving_file_extension : string
         file extension you wish to save as
-
     crop : bool, default False
         if True, the image will be cropped in the navigation space,
         defined by the frames given in crop_start and crop_end
-
     crop_start, crop_end : float, default 20.0, 80.0
         the start and end frame of the crop
-
-    Returns
-    -------
-    n/a
-
-    Examples
-    --------
-
-    # >>> directory = os.chdir('C:/Users/Eoghan.OConnell/Documents/Documents/
-    # Eoghan UL/PHD/Experimental/Ion implantation experiments/Feb 2019
-    # SStem data')
-    # >>> filename = '003_HAADF_movie_300_4nm_MC'
-    # >>> dm3_stack_to_tiff_stack(filename=filename, crop=True,
-    # crop_start=20.0, crop_end=30.0)
-
 
     '''
     if '.' in loading_file:
@@ -599,46 +552,78 @@ def dm3_stack_to_tiff_stack(loading_file,
     # stack.change_dtype('float')
     # stack.data /= stack.data.max()
 
-# dm3_stack_to_tiff_stack(loading_file = loading_file, crop=True,
-# crop_start=50.0, crop_end=54.0)
 
-
-# for after rigid registration
 def save_individual_images_from_image_stack(
         image_stack, output_folder='individual_images'):
     '''
     Save each image in an image stack. The images are saved in a new folder.
+    Useful for after running an image series through Rigid Registration.
 
     Parameters
     ----------
-
     image_stack : rigid registration image stack object
-
     output_folder : string
         Name of the folder in which all individual images from
         the stack will be saved.
 
+    '''
+    # Save each image as a 32 bit tiff )cqn be displayed in DM
+    image_stack_32bit = np.float32(image_stack)
+    folder = os.mkdir(output_folder)
+    # Find the number of images, change to an integer for the loop.
+    for i in range(int(image_stack_32bit[0, 0, :].shape[0])):
+        im = image_stack_32bit[:, :, i]
+        imwrite(os.path.join(folder, f'images_aligned_{i:04}.tif'), im)
+
+
+def load_prismatic_mrc_with_hyperspy(
+        prismatic_mrc_filename,
+        save_name='calibrated_data_'):
+    '''
+    We are aware this is currently producing errors with new versions of
+    Prismatic.
+
+    Open a prismatic .mrc file and save as a hyperspy object.
+    Also plots saves a png.
+
+    Parameters
+    ----------
+    prismatic_mrc_filename : string
+        name of the outputted prismatic .mrc file.
+
     Returns
     -------
-
-    n/a
+    Hyperspy Signal 2D
 
     Examples
     --------
 
+    >>> from temul.io import load_prismatic_mrc_with_hyperspy
+    >>> load_prismatic_mrc_with_hyperspy("temul/example_data/prismatic/"
+    ...         "prism_2Doutput_prismatic_simulation.mrc")
+    <Signal2D, title: , dimensions: (|1182, 773)>
+
     '''
 
-    # Save each image as a 32 bit tiff )cqn be displayed in DM
-    image_stack_32bit = np.float32(image_stack)
-    folder = './' + output_folder + '/'
-    create_new_folder(create_new_folder)
-    i = 0
-    delta = 1
-    # Find the number of images, change to an integer for the loop.
-    while i < int(image_stack_32bit[0, 0, :].shape[0]):
-        im = image_stack_32bit[:, :, i]
-        i_filled = str(i).zfill(4)
-        imwrite(folder + 'images_aligned_%s.tif' % i_filled, im)
-        i = i + delta
+    # if '.mrc' not in prismatic_mrc_filename:
+    #     prismatic_mrc_filename = prismatic_mrc_filename + 'mrc'
+    # if 'prism_2Doutput_' not in prismatic_mrc_filename:
+    #     prismatic_mrc_filename = 'prism_2Doutput' + prismatic_mrc_filename
 
-# save_individual_images_from_image_stack(image_stack=s.stack_registered)
+    simulation = hs.load(prismatic_mrc_filename)
+    simulation.axes_manager[0].name = 'extra_dimension'
+    simulation = simulation.sum('extra_dimension')
+
+    if save_name is not None:
+        simulation.save(save_name, overwrite=True)
+        simulation.plot()
+        plt.title(save_name, fontsize=20)
+        plt.gca().axes.get_xaxis().set_visible(False)
+        plt.gca().axes.get_yaxis().set_visible(False)
+        plt.tight_layout()
+        plt.savefig(fname=save_name + '.png',
+                    transparent=True, frameon=False, bbox_inches='tight',
+                    pad_inches=None, dpi=300, labels=False)
+        # plt.close()
+
+    return simulation

@@ -1,0 +1,304 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Masked FFT and iFFT &mdash; TEMUL Toolkit v0.1-alpha documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'./',
+              VERSION:'v0.1-alpha',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Line Intensity Profile Comparisons" href="line_profile_tutorial.html" />
+    <link rel="prev" title="Plot Lattice Structure Maps" href="structure_map_tutorial.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> TEMUL Toolkit
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                Version 0.1-alpha
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_temul.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Plotting Polarisation and Movement Vectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structure_map_tutorial.html">Plot Lattice Structure Maps</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Masked FFT and iFFT</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#load-the-example-image">Load the Example Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#choose-the-mask-coordinates">Choose the Mask Coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plot-the-masked-ifft">Plot the Masked iFFT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run-fft-masking-for-multiple-images">Run FFT masking for Multiple Images</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="line_profile_tutorial.html">Line Intensity Profile Comparisons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dg_visualiser_tutorial.html">Interactive Image Filtering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_doc.html">API documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">TEMUL Toolkit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Masked FFT and iFFT</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/masked_fft_tutorial.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="masked-fft-and-ifft">
+<span id="masked-fft-tutorial"></span><h1>Masked FFT and iFFT<a class="headerlink" href="#masked-fft-and-ifft" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="code python docutils literal notranslate"><span class="name"><span class="pre">temul</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">signal_processing</span></span></code> module allows one to choose the masking coordinates with
+<code class="code python docutils literal notranslate"><span class="name"><span class="pre">choose_mask_coordinates</span></span></code> and easily returnt the masked fast Fourier Transform (FFT) with
+<code class="code python docutils literal notranslate"><span class="name"><span class="pre">get_masked_ifft</span></span></code>. This can useful in various scenarios, from understanding
+the diffraction space spots and how they relate to the real space structure,
+to <a class="reference external" href="https://onlinelibrary.wiley.com/doi/abs/10.1111/jmi.12876">revealing domain walls</a>
+and finding initial atom positions for difficult images.</p>
+<div class="section" id="load-the-example-image">
+<h2>Load the Example Image<a class="headerlink" href="#load-the-example-image" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.signal_processing</span> <span class="kn">as</span> <span class="nn">tmlsig</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="kn">import</span> <span class="n">get_polarisation_dummy_dataset</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">atom_lattice</span> <span class="o">=</span> <span class="n">get_polarisation_dummy_dataset</span><span class="p">(</span><span class="n">image_noise</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image</span> <span class="o">=</span> <span class="n">atom_lattice</span><span class="o">.</span><span class="n">sublattice_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">signal</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/image_uncalibrated.png"><img alt="_images/image_uncalibrated.png" src="_images/image_uncalibrated.png" style="width: 381.0px; height: 322.2px;" /></a>
+</div>
+<div class="section" id="choose-the-mask-coordinates">
+<h2>Choose the Mask Coordinates<a class="headerlink" href="#choose-the-mask-coordinates" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mask_coords</span> <span class="o">=</span> <span class="n">tmlsig</span><span class="o">.</span><span class="n">choose_mask_coordinates</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/choose_mask_coords.gif"><img alt="_images/choose_mask_coords.gif" class="align-center" src="_images/choose_mask_coords.gif" style="width: 480.0px; height: 360.0px;" /></a>
+</div>
+<div class="section" id="plot-the-masked-ifft">
+<h2>Plot the Masked iFFT<a class="headerlink" href="#plot-the-masked-ifft" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mask_radius</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># pixels, default is also 10 pixels</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image_ifft</span> <span class="o">=</span> <span class="n">tmlsig</span><span class="o">.</span><span class="n">get_masked_ifft</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">mask_coords</span><span class="p">,</span>
+<span class="gp">... </span>                                    <span class="n">mask_radius</span><span class="o">=</span><span class="n">mask_radius</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image_ifft</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/ifft_1.png"><img alt="_images/ifft_1.png" src="_images/ifft_1.png" style="width: 387.59999999999997px; height: 334.2px;" /></a>
+<p>Reverse the masking with <cite>keep_masked_area=False</cite></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">image_ifft</span> <span class="o">=</span> <span class="n">tmlsig</span><span class="o">.</span><span class="n">get_masked_ifft</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">mask_coords</span><span class="p">,</span>
+<span class="gp">... </span>                                    <span class="n">keep_masked_area</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image_ifft</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/ifft_2.png"><img alt="_images/ifft_2.png" src="_images/ifft_2.png" style="width: 432.0px; height: 347.4px;" /></a>
+<p>Plot the FFT with masks overlaid by using <cite>plot_masked_fft=True</cite></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">image_ifft</span> <span class="o">=</span> <span class="n">tmlsig</span><span class="o">.</span><span class="n">get_masked_ifft</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">mask_coords</span><span class="p">,</span>
+<span class="gp">... </span>                                    <span class="n">plot_masked_fft</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/ifft_3.png"><img alt="_images/ifft_3.png" src="_images/ifft_3.png" style="width: 320.0px; height: 290.5px;" /></a>
+<p>If the input image is already a Fourier transform</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fft_image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">shift</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>  <span class="c1"># Check out Hyperspy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image_ifft</span> <span class="o">=</span> <span class="n">tmlsig</span><span class="o">.</span><span class="n">get_masked_ifft</span><span class="p">(</span><span class="n">fft_image</span><span class="p">,</span> <span class="n">mask_coords</span><span class="p">,</span>
+<span class="gp">... </span>                                    <span class="n">image_space</span><span class="o">=</span><span class="s1">&#39;fourier&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="run-fft-masking-for-multiple-images">
+<h2>Run FFT masking for Multiple Images<a class="headerlink" href="#run-fft-masking-for-multiple-images" title="Permalink to this headline">¶</a></h2>
+<p>If you have multiple images, you can easily apply the mask to them all in a
+simple <code class="code python docutils literal notranslate"><span class="keyword"><span class="pre">for</span></span></code> loop. Of course, you can also save the images after plotting.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hyperspy.io</span> <span class="kn">import</span> <span class="n">load</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">image</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">image_ifft</span> <span class="o">=</span> <span class="n">tmlsig</span><span class="o">.</span><span class="n">get_masked_ifft</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">mask_coords</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">image_ifft</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="line_profile_tutorial.html" class="btn btn-neutral float-right" title="Line Intensity Profile Comparisons" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="structure_map_tutorial.html" class="btn btn-neutral float-left" title="Plot Lattice Structure Maps" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Eoghan O&#39;Connell
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

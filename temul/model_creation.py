@@ -1,15 +1,16 @@
-
 from temul.intensity_tools import get_sublattice_intensity
 from temul.element_tools import split_and_sort_element
 
-import atomap.api as am
-from atomap.atom_finding_refining import get_atom_positions_in_difference_image
+import temul.external.atomap_devel_012.api as am_dev
+from temul.external.atomap_devel_012.atom_finding_refining import (
+    get_atom_positions_in_difference_image)
 
 import matplotlib.pyplot as plt
 import scipy
 import numpy as np
 from numpy import log
 import hyperspy.api as hs
+from hyperspy._signals.signal2d import Signal2D
 import pandas as pd
 from collections import Counter
 
@@ -20,17 +21,14 @@ def count_element_in_pandas_df(element, dataframe):
 
     Parameters
     ----------
-
     element : string
         element symbol
-
     dataframe : pandas dataframe
         The dataframe must have column headers as elements or element
         configurations
 
     Returns
     -------
-
     Counter object
 
     Examples
@@ -40,9 +38,9 @@ def count_element_in_pandas_df(element, dataframe):
     >>> header = ['Se_1', 'Mo_1', 'S_2']
     >>> counts = [[9, 4, 3], [8, 6, 2]]
     >>> df = pd.DataFrame(data=counts, columns=header)
-    >>> Mo_count = count_element_in_pandas_df(element='Mo', dataframe=df)
-    >>> Mo_count
-    Counter({0: 4, 1: 6})
+    >>> Se_count = count_element_in_pandas_df(element='Se', dataframe=df)
+    >>> Se_count
+    Counter({0: 9, 1: 8})
 
     '''
     count_of_element = Counter()
@@ -70,33 +68,25 @@ def count_all_individual_elements(individual_element_list, dataframe):
 
     Parameters
     ----------
-
     individual_element_list : list
-
     dataframe : pandas dataframe
         The dataframe must have column headers as elements or element
         configurations
 
     Returns
     -------
-
-    dict object with each individual element as dict.key and their
-    count as dict.value
+    dict object with each key=individual element and value=element count
 
     Examples
     --------
     >>> import pandas as pd
     >>> from temul.model_creation import count_all_individual_elements
-    >>> header = ['Se_1', 'Mo_1', 'S_2']
-    >>> counts = [[9, 4, 3], [8, 6, 2]]
+    >>> header = ['Se_1', 'Mo_1']
+    >>> counts = [[9, 4], [8, 6]]
     >>> df = pd.DataFrame(data=counts, columns=header)
-    >>> individual_element_list = ['Mo', 'S', 'Se']
+    >>> individual_element_list = ['Mo', 'S']
     >>> element_count = count_all_individual_elements(
     ...     individual_element_list, dataframe=df)
-    >>> element_count
-    {'Mo': Counter({0: 4, 1: 6}),
-     'S': Counter({0: 15, 1: 12}),
-     'Se': Counter({0: 9, 1: 8})}
 
     '''
 
@@ -118,23 +108,20 @@ def count_atoms_in_sublattice_list(sublattice_list, filename=None):
 
     Parameters
     ----------
-
     sublattice_list : list of atomap sublattice(s)
-
     filename : string, default None
         name with which the image will be saved
 
     Returns
     -------
-
     Counter object
 
     Examples
     --------
-
     >>> from temul.model_creation import count_atoms_in_sublattice_list
-    >>> import atomap.api as am
-    >>> atom_lattice = am.dummy_data.get_simple_atom_lattice_two_sublattices()
+    >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
+    >>> # import atomap.dummy_data as dummy_data
+    >>> atom_lattice = dummy_data.get_simple_atom_lattice_two_sublattices()
     >>> sub1 = atom_lattice.sublattice_list[0]
     >>> sub2 = atom_lattice.sublattice_list[1]
 
@@ -142,12 +129,12 @@ def count_atoms_in_sublattice_list(sublattice_list, filename=None):
     ...     sub1.atom_list[i].elements = 'Ti_2'
     >>> for i in range(0, len(sub2.atom_list)):
     ...     sub2.atom_list[i].elements = 'Cl_1'
-
     >>> added_atoms = count_atoms_in_sublattice_list(
     ...     sublattice_list=[sub1, sub2])
 
     Compare before and after
-    >>> at_lat_before = am.dummy_data.get_simple_atom_lattice_two_sublattices()
+
+    >>> at_lat_before = dummy_data.get_simple_atom_lattice_two_sublattices()
     >>> no_added_atoms = count_atoms_in_sublattice_list(
     ...    sublattice_list=at_lat_before.sublattice_list)
 
@@ -186,7 +173,6 @@ def count_atoms_in_sublattice_list(sublattice_list, filename=None):
 
 def compare_count_atoms_in_sublattice_list(counter_list):
     '''
-
     Compare the count of atomap elements in two counter_lists gotten by
     count_atoms_in_sublattice_list()
 
@@ -196,23 +182,20 @@ def compare_count_atoms_in_sublattice_list(counter_list):
 
     Parameters
     ----------
-
     counter_list : list of two Counter objects
 
     Returns
     -------
-
     Boolean True if the counters are equal,
     boolean False is the counters are not equal.
 
     Examples
     --------
-
     >>> from temul.model_creation import (
     ...     count_atoms_in_sublattice_list,
     ...     compare_count_atoms_in_sublattice_list)
-    >>> import atomap.api as am
-    >>> atom_lattice = am.dummy_data.get_simple_atom_lattice_two_sublattices()
+    >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
+    >>> atom_lattice = dummy_data.get_simple_atom_lattice_two_sublattices()
     >>> sub1 = atom_lattice.sublattice_list[0]
     >>> sub2 = atom_lattice.sublattice_list[1]
 
@@ -220,12 +203,11 @@ def compare_count_atoms_in_sublattice_list(counter_list):
     ...     sub1.atom_list[i].elements = 'Ti_2'
     >>> for i in range(0, len(sub2.atom_list)):
     ...     sub2.atom_list[i].elements = 'Cl_1'
-
     >>> added_atoms = count_atoms_in_sublattice_list(
     ...     sublattice_list=[sub1, sub2],
     ...     filename=atom_lattice.name)
 
-    >>> at_lat_before = am.dummy_data.get_simple_atom_lattice_two_sublattices()
+    >>> at_lat_before = dummy_data.get_simple_atom_lattice_two_sublattices()
     >>> no_added_atoms = count_atoms_in_sublattice_list(
     ...     sublattice_list=at_lat_before.sublattice_list,
     ...     filename=at_lat_before.name)
@@ -233,7 +215,8 @@ def compare_count_atoms_in_sublattice_list(counter_list):
     >>> compare_count_atoms_in_sublattice_list([added_atoms, no_added_atoms])
     False
 
-    # To stop a refinement loop
+    This function can also be used to stop a refinement loop by using an
+    if break loop:
     # >>> if compare_count_atoms_in_sublattice_list(counter_list) is True:
     # >>>    break
     '''
@@ -245,16 +228,6 @@ def compare_count_atoms_in_sublattice_list(counter_list):
         raise ValueError('len(counter_list) must be 2')
 
     return True if counter0 == counter1 else False
-
-
-'''
-This is the first loop to refine the simulation:
-refining the atom_position's assigned atoms without
-changing the atom_position location. Using intensity of current positions only
-'''
-
-# aim hereis to change the elements in the sublattice to something that will
-#   make the simulation agree more with the experiment
 
 
 def get_most_common_sublattice_element(sublattice, info='element'):
@@ -271,9 +244,10 @@ def get_most_common_sublattice_element(sublattice, info='element'):
 
     Examples
     --------
-    >>> import atomap.api as am
     >>> from temul.model_creation import get_most_common_sublattice_element
-    >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
+    >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
+    >>> # import atomap.dummy_data as dummy_data
+    >>> sublattice = dummy_data.get_simple_cubic_sublattice()
     >>> for i, atom in enumerate(sublattice.atom_list):
     ...     if i % 3 == 0:
     ...         atom.elements = 'Ti_3'
@@ -309,10 +283,7 @@ def change_sublattice_atoms_via_intensity(
         darker_or_brighter,
         element_list,
         verbose=False):
-    # get the index in sublattice from the image_difference_intensity() output,
-    #   which is the image_diff_array input here.
-    # then, depending on whether the image_diff_array is for atoms that should
-    # be brighter or darker, set a new element to that sublattice atom_position
+
     '''
     Change the elements in a sublattice object to a higher or lower combined
     atomic (Z) number.
@@ -320,9 +291,13 @@ def change_sublattice_atoms_via_intensity(
     agrees with the simulated image in a realistic manner.
     See image_difference_intensity()
 
+    Get the index in sublattice from the image_difference_intensity() output,
+    which is the image_diff_array input here.
+    Then, depending on whether the image_diff_array is for atoms that should
+    be brighter or darker, set a new element to that sublattice atom_position
+
     Parameters
     ----------
-
     sublattice : Atomap Sublattice object
         the elements of this sublattice will be changed
     image_diff_array : Numpy 2D array
@@ -341,16 +316,15 @@ def change_sublattice_atoms_via_intensity(
         respectively.
     element_list : list
         list of element configurations
-
-    Returns
-    -------
-
-    n/a - changes sublattice elements inplace
+    verbose : Bool, default False
+        If set to True then atom warnings will be printed as output.
 
     Examples
     --------
     >>> from temul.model_creation import change_sublattice_atoms_via_intensity
-    >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
+    >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
+    >>> # import atomap.dummy_data as dummy_data
+    >>> sublattice = dummy_data.get_simple_cubic_sublattice()
     >>> for i in range(0, len(sublattice.atom_list)):
     ...     sublattice.atom_list[i].elements = 'Mo_1'
     ...     sublattice.atom_list[i].z_height = [0.5]
@@ -433,15 +407,13 @@ def change_sublattice_atoms_via_intensity(
                 raise ValueError("You don't have any smaller atoms")
             elif new_atom_index >= len(element_list):
                 raise ValueError("You don't have any bigger atoms")
-#                new_atom = element_list[new_atom_index]
+
             try:
                 new_atom
             except NameError:
                 pass
             else:
                 sublattice.atom_list[p].elements = new_atom
-
-#            sublattice.atom_list[p].elements = new_atom
 
 
 def image_difference_intensity(sublattice,
@@ -462,7 +434,6 @@ def image_difference_intensity(sublattice,
 
     Parameters
     ----------
-
     sublattice : Atomap Sublattice object
         Elements of this sublattice will be refined
     sim_image : HyperSpy 2D signal
@@ -484,17 +455,15 @@ def image_difference_intensity(sublattice,
     change_sublattice : bool, default False
         If change_sublattice is set to True, all incorrect element assignments
         will be corrected inplace.
-
-
-    Returns
-    -------
-    Nothing - changes the elements within the sublattice object.
+    verbose : Bool, default False
+        If set to True then atom warnings will be printed as output.
 
     Example
     -------
-
-    >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
-    >>> sim_image = am.dummy_data.get_simple_cubic_with_vacancies_signal()
+    >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
+    >>> # import atomap.dummy_data as dummy_data
+    >>> sublattice = dummy_data.get_simple_cubic_sublattice()
+    >>> sim_image = dummy_data.get_simple_cubic_with_vacancies_signal()
     >>> for i in range(0, len(sublattice.atom_list)):
     ...     sublattice.atom_list[i].elements = 'Mo_1'
     ...     sublattice.atom_list[i].z_height = [0.5]
@@ -504,9 +473,10 @@ def image_difference_intensity(sublattice,
     ...                            element_list=element_list)
 
     with some image noise and plotting the images
-    >>> sublattice = am.dummy_data.get_simple_cubic_sublattice(
+
+    >>> sublattice = dummy_data.get_simple_cubic_sublattice(
     ...     image_noise=True)
-    >>> sim_image = am.dummy_data.get_simple_cubic_with_vacancies_signal()
+    >>> sim_image = dummy_data.get_simple_cubic_with_vacancies_signal()
     >>> for i in range(0, len(sublattice.atom_list)):
     ...     sublattice.atom_list[i].elements = 'Mo_1'
     ...     sublattice.atom_list[i].z_height = [0.5]
@@ -520,10 +490,10 @@ def image_difference_intensity(sublattice,
     # np.array().T needs to be taken away for newer atomap versions
     sublattice_atom_positions = np.array(sublattice.atom_positions).T
 
-    diff_image = hs.signals.Signal2D(sublattice.image - sim_image.data)
+    diff_image = Signal2D(sublattice.image - sim_image.data)
 
     # create sublattice for the 'difference' data
-    diff_sub = am.Sublattice(
+    diff_sub = am_dev.Sublattice(
         atom_position_list=sublattice_atom_positions, image=diff_image)
 
     if percent_to_nn is not None:
@@ -548,7 +518,8 @@ def image_difference_intensity(sublattice,
     std_dev_ints = np.std(diff_mean_ints)
 
     # plot the mean and std dev on each side of intensities histogram
-    std_from_mean = np.array([mean_ints - std_dev_ints, mean_ints + std_dev_ints,
+    std_from_mean = np.array([mean_ints - std_dev_ints,
+                              mean_ints + std_dev_ints,
                               mean_ints - (2 * std_dev_ints), mean_ints +
                               (2 * std_dev_ints),
                               mean_ints - (3 * std_dev_ints), mean_ints +
@@ -595,9 +566,9 @@ def image_difference_intensity(sublattice,
         pass
 
     if filename is not None:
-        #        sublattice.plot()
-        #        sim_image.plot()
-        #        diff_image.plot()
+        # sublattice.plot()
+        # sim_image.plot()
+        # diff_image.plot()
         diff_sub.plot()
         plt.gca().axes.get_xaxis().set_visible(False)
         plt.gca().axes.get_yaxis().set_visible(False)
@@ -625,9 +596,6 @@ def image_difference_intensity(sublattice,
             transparent=True, frameon=False, bbox_inches='tight',
             pad_inches=None, dpi=300, labels=False)
 
-    else:
-        pass
-
 
 def image_difference_position_new_sub(sublattice_list,
                                       sim_image,
@@ -647,7 +615,6 @@ def image_difference_position_new_sub(sublattice_list,
 
     Parameters
     ----------
-
     sublattice_list : list of atomap sublattice objects
     sim_image : simulated image used for comparison with sublattice image
     pixel_threshold : int
@@ -678,16 +645,16 @@ def image_difference_position_new_sub(sublattice_list,
 
     Returns
     -------
-    Atomap sublattice object
+    Atomap Sublattice object
 
     Examples
     --------
-
     >>> from temul.model_creation import image_difference_position
-    >>> import atomap.api as am
-    >>> sublattice = am.dummy_data.get_simple_cubic_with_vacancies_sublattice(
+    >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
+    >>> # import atomap.dummy_data as dummy_data
+    >>> sublattice = dummy_data.get_simple_cubic_with_vacancies_sublattice(
     ...                                             image_noise=True)
-    >>> sim_image = am.dummy_data.get_simple_cubic_signal()
+    >>> sim_image = dummy_data.get_simple_cubic_signal()
     >>> for i in range(0, len(sublattice.atom_list)):
     ...         sublattice.atom_list[i].elements = 'Mo_1'
     ...         sublattice.atom_list[i].z_height = '0.5'
@@ -712,9 +679,9 @@ def image_difference_position_new_sub(sublattice_list,
     '''
 
     image_for_sublattice = sublattice_list[0]
-    diff_image = hs.signals.Signal2D(
+    diff_image = Signal2D(
         image_for_sublattice.image - sim_image.data)
-    diff_image_inverse = hs.signals.Signal2D(
+    diff_image_inverse = Signal2D(
         sim_image.data - image_for_sublattice.image)
 
     # below function edit of get_atom_positions. Just allows num_peaks from
@@ -724,7 +691,7 @@ def image_difference_position_new_sub(sublattice_list,
     atom_positions_diff_image_inverse = get_atom_positions_in_difference_image(
         diff_image_inverse, num_peaks=num_peaks)
 
-    diff_image_sub = am.Sublattice(atom_positions_diff_image, diff_image)
+    diff_image_sub = am_dev.Sublattice(atom_positions_diff_image, diff_image)
     # diff_image_sub.find_nearest_neighbors()
     # diff_image_sub.refine_atom_positions_using_center_of_mass(
     #     percent_to_nn=percent_to_nn, mask_radius=mask_radius)
@@ -734,8 +701,8 @@ def image_difference_position_new_sub(sublattice_list,
 
     # sublattice.plot()
 
-    diff_image_sub_inverse = am.Sublattice(atom_positions_diff_image_inverse,
-                                           diff_image_inverse)
+    diff_image_sub_inverse = am_dev.Sublattice(
+        atom_positions_diff_image_inverse, diff_image_inverse)
     # diff_image_sub_inverse.find_nearest_neighbors()
     # diff_image_sub_inverse.refine_atom_positions_using_center_of_mass(
     #     percent_to_nn=percent_to_nn, mask_radius=mask_radius)
@@ -799,7 +766,7 @@ def image_difference_position_new_sub(sublattice_list,
     elif len(atom_positions_sub_new) != 0 and add_sublattice is True:
         print("New Atoms Found! Adding to a new sublattice")
 
-        sub_new = am.Sublattice(
+        sub_new = am_dev.Sublattice(
             atom_positions_sub_new, sublattice_list[0].image,
             name=sublattice_name, color='cyan')
 #        sub_new.refine_atom_positions_using_center_of_mass(
@@ -867,6 +834,98 @@ def scaling_z_contrast(numerator_sublattice, numerator_element,
     # Make sure that the intensity_type input has been chosen. Could
     #   make this more flexible, so that 'all' could be calculated in one go
     #   simple loop should do that.
+
+    '''
+    Find new atomic coordinates by comparing experimental to simulated image.
+    Create a new sublattice to store the new atomic coordinates.
+
+    The aim is to change the sublattice elements so that the experimental image
+    agrees with the simulated image in a realistic manner.
+
+    Parameters
+    ----------
+    numerator_sublattice : Sublattice object
+        Sublattice from which the numerator intensity will be calculated
+        according to Reference [1].
+    numerator_element : string
+        Element from which the numerator atomic number will be taken
+        according to Reference [1].
+    denominator_sublattice : Sublattice object
+        Sublattice from which the denominator intensity will be calculated
+        according to Reference [1].
+    denominator_element : string
+        Element from which the denominator atomic number will be taken
+        according to Reference [1].
+    intensity_type : string
+        Determines the method used to find the sublattice intensities.
+        The available methods are "max", "mean", "min", "total" and
+        "all".
+    method : string
+        Method used to calculate the intensity of the sublattices. Options are
+        "mean" or "mode".
+    remove_background_method : string
+        Determines the method used to remove the background_sublattice
+        intensities from the image. Options are "average" and "local".
+    background_sub : Sublattice object
+        The sublattice to be used if remove_background_method is used.
+    num_points : int
+        If remove_background_method="local", num_points is the number
+        of nearest neighbour values averaged from background_sublattice.
+    percent_to_nn : float, default 0.40
+        Determines the boundary of the area surrounding each atomic
+        column, as fraction of the distance to the nearest neighbour.
+    mask_radius : float
+        Radius of the atomic column in pixels. If chosen, `percent_to_nn` must
+        be None.
+    split_symbol : string, default '_'
+        The symbols used to split the element into its name
+        and count.
+        The first string '_' is used to split the name and count
+        of the element.
+        The second string has not been implemented within this function.
+
+    Returns
+    -------
+    Four floats:
+    scaling_ratio, scaling_exponent, sublattice0_intensity_method,
+    sublattice1_intensity_method
+
+    References
+    ----------
+    .. [1] Reference: Krivanek et al. Nature 464, 10.1038/nature08879, (2010)
+
+    Examples
+    --------
+    >>> from temul.model_creation import image_difference_position
+    >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
+    >>> sublattice = dummy_data.get_simple_cubic_with_vacancies_sublattice(
+    ...                                             image_noise=True)
+    >>> sim_image = dummy_data.get_simple_cubic_signal()
+    >>> for i in range(0, len(sublattice.atom_list)):
+    ...         sublattice.atom_list[i].elements = 'Mo_1'
+    ...         sublattice.atom_list[i].z_height = '0.5'
+
+    Check without adding a new sublattice
+
+    >>> image_difference_position_new_sub(sublattice_list=[sublattice],
+    ...                           sim_image=sim_image,
+    ...                           pixel_threshold=1,
+    ...                           percent_to_nn=None,
+    ...                           mask_radius=5,
+    ...                           num_peaks=5,
+    ...                           add_sublattice=False)
+
+    Add a new sublattice
+
+    >>> sub_new = image_difference_position_new_sub(
+    ...                                   sublattice_list=[sublattice],
+    ...                                   sim_image=sim_image,
+    ...                                   pixel_threshold=10,
+    ...                                   num_peaks=5,
+    ...                                   add_sublattice=True)
+    New Atoms Found! Adding to a new sublattice
+
+    '''
     if intensity_type == 'all':
         TypeError
         print('intensity_type must be "max", "mean", or "min"')
@@ -967,17 +1026,12 @@ def auto_generate_sublattice_element_list(material_type,
     return(element_list)
 
 
-'''
 # manipulating the adatoms. Issue here is that if we just look for
-# #  vacancies, Se_1 and Mo_1, then we'd just get more Se_1.
-# #  need to find a way of "locking in" those limits..
-
+# vacancies, Se_1 and Mo_1, then we'd just get more Se_1.
+# need to find a way of "locking in" those limits..
 # Calculate the middle point and limits of the distribution for a
 # given element_list.
 # Need to add Mike's histogram display
-'''
-
-
 def find_middle_and_edge_intensities(sublattice,
                                      element_list,
                                      standard_element,
@@ -1192,7 +1246,8 @@ def sort_sublattice_intensities(sublattice,
             elements_of_sublattice = []
             for p in range(0, (len(limit_intensity_list) - 1)):
                 for i in range(0, len(sublattice.atom_list)):
-                    if limit_intensity_list[p] * scalar < sublattice_intensity[i] < limit_intensity_list[p + 1] * scalar:
+                    if limit_intensity_list[p] * scalar < sublattice_intensity[
+                            i] < limit_intensity_list[p + 1] * scalar:
                         sublattice.atom_list[i].elements = element_list[p]
                         elements_of_sublattice.append(
                             sublattice.atom_list[i].elements)
@@ -1208,7 +1263,8 @@ def sort_sublattice_intensities(sublattice,
             elements_of_sublattice = []
             for p in range(0, (len(limit_intensity_list) - 1)):
                 for i in range(0, len(sublattice.atom_list)):
-                    if limit_intensity_list[p] < sublattice_intensity[i] < limit_intensity_list[p + 1]:
+                    if limit_intensity_list[p] < sublattice_intensity[
+                            i] < limit_intensity_list[p + 1]:
                         sublattice.atom_list[i].elements = element_list[p]
                         elements_of_sublattice.append(
                             sublattice.atom_list[i].elements)
@@ -1218,10 +1274,12 @@ def sort_sublattice_intensities(sublattice,
                 if sublattice_intensity[i] > limit_intensity_list[-1]:
                     sublattice.atom_list[i].elements = element_list[-1]
                 else:
-                    sublattice.atom_list[i].elements = get_most_common_sublattice_element(
+                    sublattice.atom_list[
+                        i].elements = get_most_common_sublattice_element(
                         sublattice)
-                    # print("Warning: An element has not been assigned ({}). It "
-                    #      "will be given the value {}.".format(i, sublattice.atom_list[i].elements))
+            # print("Warning: An element has not been assigned ({}). It "
+            #      "will be given the value {}.".format(i,
+            #       sublattice.atom_list[i].elements))
                 elements_of_sublattice.append(sublattice.atom_list[i].elements)
             else:
                 pass
@@ -1254,115 +1312,192 @@ def assign_z_height(sublattice, lattice_type, material):
     for i in range(0, len(sublattice.atom_list)):
         if material == 'mose2_one_layer':
             if lattice_type == 'chalcogen':
-                if len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] == 1:
+                if len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 1 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][2] == 1:
                     sublattice.atom_list[i].z_height = '0.758'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] == 2:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 1 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][2] == 2:
                     sublattice.atom_list[i].z_height = '0.242, 0.758'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] > 2:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 1 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][2] > 2:
                     sublattice.atom_list[i].z_height = '0.242, 0.758, 0.9'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 2 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[1][2] == 1:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 2 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][
+                            2] == 1 and split_and_sort_element(
+                                element=sublattice.atom_list[i].elements)[
+                                    1][2] == 1:
                     sublattice.atom_list[i].z_height = '0.242, 0.758'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 2 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] > 1:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 2 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][2] > 1:
                     sublattice.atom_list[i].z_height = '0.242, 0.758, 0.9'
                 else:
                     sublattice.atom_list[i].z_height = '0.758'
-                    # raise ValueError("z_height is limited to only a handful of positions")
+                    # raise ValueError("z_height is limited to only a "
+                    # "handful of positions")
             elif lattice_type == 'transition_metal':
-                if len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] == 1:
+                if len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 1 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][2] == 1:
                     sublattice.atom_list[i].z_height = '0.5'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] == 2:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 1 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][2] == 2:
                     sublattice.atom_list[i].z_height = '0.5, 0.95'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] > 2:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 1 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][2] > 2:
                     sublattice.atom_list[i].z_height = '0.5, 0.95, 1'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 2 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[1][2] == 1:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 2 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][
+                            2] == 1 and split_and_sort_element(
+                                element=sublattice.atom_list[i].elements)[
+                                    1][2] == 1:
                     sublattice.atom_list[i].z_height = '0.5, 0.95'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 2 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] > 1:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 2 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][2] > 1:
                     sublattice.atom_list[i].z_height = '0.5, 0.95, 1'
                 else:
                     sublattice.atom_list[i].z_height = '0.5'
-                    # raise ValueError("z_height is limited to only a handful of positions")
+                    # raise ValueError("z_height is limited to only a "
+                    # "handful of positions")
             elif lattice_type == 'background':
-                # if sublattice.atom_list[i].elements == 'H_0' or sublattice.atom_list[i].elements == 'vacancy':
+                # if sublattice.atom_list[
+                # i].elements == 'H_0' or sublattice.atom_list[
+                # i].elements == 'vacancy':
                 sublattice.atom_list[i].z_height = '0.95'
-                # elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] == 1:
+                # elif len(split_and_sort_element(element=sublattice.atom_list[
+                # i].elements)) == 1 and split_and_sort_element(
+                # element=sublattice.atom_list[i].elements)[0][2] == 1:
                 #    sublattice.atom_list[i].z_height = [0.9]
                 # else:
                 #    sublattice.atom_list[i].z_height = []
 
             else:
                 print(
-                    "You must include a suitable lattice_type. This feature is limited")
+                    "You must include a suitable lattice_type. "
+                    "This function is limited")
 
         if material == 'mos2_one_layer':
             if lattice_type == 'chalcogen':
-                if len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] == 1:
+                if len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 1 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][2] == 1:
                     # from L Mattheis, PRB, 1973
                     sublattice.atom_list[i].z_height = '0.757'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] == 2:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 1 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][2] == 2:
                     sublattice.atom_list[i].z_height = '0.242, 0.757'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] > 2:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 1 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][2] > 2:
                     sublattice.atom_list[i].z_height = '0.242, 0.757, 0.95'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 2 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[1][2] == 1:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 2 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][
+                            2] == 1 and split_and_sort_element(
+                                element=sublattice.atom_list[i].elements)[
+                                    1][2] == 1:
                     sublattice.atom_list[i].z_height = '0.242, 0.757'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 2 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] > 1:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 2 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][2] > 1:
                     sublattice.atom_list[i].z_height = '0.242, 0.757, 0.95'
                 else:
                     sublattice.atom_list[i].z_height = '0.757'
-                # raise ValueError("z_height is limited to only a handful of positions")
+                # raise ValueError("z_height is limited to only a "
+                # "handful of positions")
             elif lattice_type == 'transition_metal':
-                if len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] == 1:
+                if len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 1 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][2] == 1:
                     sublattice.atom_list[i].z_height = '0.5'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] == 2:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 1 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][2] == 2:
                     sublattice.atom_list[i].z_height = '0.5, 0.95'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] > 2:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 1 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][2] > 2:
                     sublattice.atom_list[i].z_height = '0.5, 0.95, 1'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 2 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[1][2] == 1:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 2 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][
+                            2] == 1 and split_and_sort_element(
+                                element=sublattice.atom_list[i].elements)[
+                                    1][2] == 1:
                     sublattice.atom_list[i].z_height = '0.5, 0.95'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 2 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] > 1:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                    i].elements)) == 2 and split_and_sort_element(
+                        element=sublattice.atom_list[i].elements)[0][2] > 1:
                     sublattice.atom_list[i].z_height = '0.5, 0.95, 1'
                 else:
                     sublattice.atom_list[i].z_height = '0.5'
-                # raise ValueError("z_height is limited to only a handful of positions")
+                # raise ValueError("z_height is limited to only a "
+                # "handful of positions")
             elif lattice_type == 'background':
-                # if sublattice.atom_list[i].elements == 'H_0' or sublattice.atom_list[i].elements == 'vacancy':
+                # if sublattice.atom_list[
+                # i].elements == 'H_0' or sublattice.atom_list[
+                # i].elements == 'vacancy':
                 sublattice.atom_list[i].z_height = '0.95'
-                # elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] == 1:
+                # elif len(split_and_sort_element(element=sublattice.atom_list[
+                # i].elements)) == 1 and split_and_sort_element(
+                # element=sublattice.atom_list[i].elements)[0][2] == 1:
                 #    sublattice.atom_list[i].z_height = [0.9]
                 # else:
                 #    sublattice.atom_list[i].z_height = []
 
             else:
                 print(
-                    "You must include a suitable lattice_type. This feature is limited")
+                    "You must include a suitable lattice_type. "
+                    "This function is limited")
 
         if material == 'mos2_two_layer':  # from L Mattheis, PRB, 1973
             if lattice_type == 'TM_top':
-                if len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 3:
+                if len(split_and_sort_element(element=sublattice.atom_list[
+                        i].elements)) == 3:
                     sublattice.atom_list[i].z_height = '0.1275, 0.3725, 0.75'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 2:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                        i].elements)) == 2:
                     sublattice.atom_list[i].z_height = '0.1275, 0.3725, 0.75'
                 else:
                     sublattice.atom_list[i].z_height = '0.95'
-                    # raise ValueError("z_height is limited to only a handful of positions")
+                    # raise ValueError("z_height is limited to only a "
+                    # "handful of positions")
             elif lattice_type == 'TM_bot':
-                if len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 3:
+                if len(split_and_sort_element(element=sublattice.atom_list[
+                        i].elements)) == 3:
                     sublattice.atom_list[i].z_height = '0.25, 0.6275, 0.8725'
-                elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 2:
+                elif len(split_and_sort_element(element=sublattice.atom_list[
+                        i].elements)) == 2:
                     sublattice.atom_list[i].z_height = '0.25, 0.6275, 0.8725'
                 else:
                     sublattice.atom_list[i].z_height = '0.95'
-                # raise ValueError("z_height is limited to only a handful of positions")
+                # raise ValueError("z_height is limited to only a "
+                # "handful of positions")
             elif lattice_type == 'background':
-                # if sublattice.atom_list[i].elements == 'H_0' or sublattice.atom_list[i].elements == 'vacancy':
+                # if sublattice.atom_list[
+                # i].elements == 'H_0' or sublattice.atom_list[
+                # i].elements == 'vacancy':
                 sublattice.atom_list[i].z_height = '0.95'
-                # elif len(split_and_sort_element(element=sublattice.atom_list[i].elements)) == 1 and split_and_sort_element(element=sublattice.atom_list[i].elements)[0][2] == 1:
+                # elif len(split_and_sort_element(element=sublattice.atom_list[
+                # i].elements)) == 1 and split_and_sort_element(
+                # element=sublattice.atom_list[i].elements)[0][2] == 1:
                 #    sublattice.atom_list[i].z_height = [0.9]
                 # else:
                 #    sublattice.atom_list[i].z_height = []
 
             else:
                 print(
-                    "You must include a suitable lattice_type. This feature is limited")
+                    "You must include a suitable lattice_type. "
+                    "This function is limited")
 # MoS2 0.2429640475, 0.7570359525
 
 
@@ -1612,9 +1747,14 @@ def assign_z_height_to_sublattice(sublattice,
 
 def create_dataframe_for_cif(sublattice_list, element_list):
     """
+    Outputs a dataframe from the inputted sublattice(s), which can then be
+    input to temul.io.write_cif_from_dataframe().
+
     Parameters
     ----------
-
+    sublattice_list : list of Atomap Sublattice objects
+    element_list : list of strings
+        Each string must be an element symbol from the periodic table.
     """
     dfObj = pd.DataFrame(columns=['_atom_site_label',
                                   '_atom_site_occupancy',
@@ -1634,8 +1774,10 @@ def create_dataframe_for_cif(sublattice_list, element_list):
                 # this loop cycles through the length of the split element eg,
                 # 2 for 'Se_1.S_1' and
                 #   outputs an atom label and z_height for each
-                for k in range(0, len(split_and_sort_element(sublattice.atom_list[i].elements))):
-                    if split_and_sort_element(sublattice.atom_list[i].elements)[k][2] >= 1:
+                for k in range(0, len(split_and_sort_element(
+                        sublattice.atom_list[i].elements))):
+                    if split_and_sort_element(sublattice.atom_list[
+                            i].elements)[k][2] >= 1:
                         atom_label = split_and_sort_element(
                             sublattice.atom_list[i].elements)[k][1]
 
@@ -1649,35 +1791,51 @@ def create_dataframe_for_cif(sublattice_list, element_list):
                         # this loop checks the number of atoms that share
                         # the same x and y coords.
                         # len(sublattice.atom_list[i].z_height)):
-                        for p in range(0, split_and_sort_element(sublattice.atom_list[i].elements)[k][2]):
+                        for p in range(0, split_and_sort_element(
+                                sublattice.atom_list[i].elements)[k][2]):
 
-                            if "," in sublattice.atom_list[i].z_height and split_and_sort_element(sublattice.atom_list[i].elements)[k][2] > 1:
+                            if "," in sublattice.atom_list[
+                                i].z_height and split_and_sort_element(
+                                    sublattice.atom_list[i].elements)[k][
+                                        2] > 1:
                                 atom_z_height = float(
-                                    sublattice.atom_list[i].z_height.split(",")[p])
+                                    sublattice.atom_list[
+                                        i].z_height.split(",")[p])
                             else:
                                 pass
 
-                            dfObj = dfObj.append({'_atom_site_label': atom_label,
-                                                  '_atom_site_occupancy': 1.0,
-                                                  '_atom_site_fract_x': format(sublattice.atom_list[i].pixel_x / len(sublattice.image[0, :]), '.6f'),
-                                                  '_atom_site_fract_y': format((len(sublattice.image[:, 0]) - sublattice.atom_list[i].pixel_y) / len(sublattice.image[:, 0]), '.6f'),
-                                                  # great touch
-                                                  '_atom_site_fract_z': format(atom_z_height, '.6f'),
-                                                  '_atom_site_adp_type': 'Biso',
-                                                  '_atom_site_B_iso_or_equiv': format(1.0, '.6f'),
-                                                  '_atom_site_type_symbol': atom_label},
-                                                 ignore_index=True)  # insert row
+                            dfObj = dfObj.append(
+                                {'_atom_site_label': atom_label,
+                                 '_atom_site_occupancy': 1.0,
+                                 '_atom_site_fract_x': format(
+                                     sublattice.atom_list[i].pixel_x / len(
+                                         sublattice.image[0, :]), '.6f'),
+                                 '_atom_site_fract_y': format(
+                                     (len(sublattice.image[:, 0]) -
+                                      sublattice.atom_list[i].pixel_y) /
+                                     len(sublattice.image[:, 0]), '.6f'),
+                                 # great touch
+                                 '_atom_site_fract_z': format(
+                                     atom_z_height, '.6f'),
+                                 '_atom_site_adp_type': 'Biso',
+                                 '_atom_site_B_iso_or_equiv': format(
+                                     1.0, '.6f'),
+                                 '_atom_site_type_symbol': atom_label},
+                                ignore_index=True)  # insert row
 
     # value += split_and_sort_element(sublattice.atom_list[i].elements)[k][2]
     # need an option to save to the cuurent directory should be easy
     #        dfObj.to_pickle('atom_lattice_atom_position_table.pkl')
-    #        dfObj.to_csv('atom_lattice_atom_position_table.csv', sep=',', index=False)
+    #        dfObj.to_csv('atom_lattice_atom_position_table.csv', sep=',',
+    # index=False)
     return dfObj
 
-    # element_list = ['S_0', 'S_1', 'S_2', 'S_2.C_1', 'S_2.C_2', 'Mo_1', 'Mo_0']
+    # element_list = [
+    # 'S_0', 'S_1', 'S_2', 'S_2.C_1', 'S_2.C_2', 'Mo_1', 'Mo_0']
     # example_df = create_dataframe_for_cif(atom_lattice, element_list)
 
-    # '_atom_site_fract_z' : format( (sublattice.atom_list[i].z_height)[p+(k*k)], '.6f'), #great touch
+    # '_atom_site_fract_z' : format( (sublattice.atom_list[i].z_height)[
+    # p+(k*k)], '.6f'), #great touch
 
 
 def change_sublattice_pseudo_inplace(new_atom_positions, old_sublattice):
@@ -1695,7 +1853,7 @@ def change_sublattice_pseudo_inplace(new_atom_positions, old_sublattice):
     Examples
     --------
     >>> from temul.model_creation import change_sublattice_pseudo_inplace
-    >>> from atomap.sublattice import Sublattice
+    >>> from temul.external.atomap_devel_012.api import Sublattice
     >>> import numpy as np
     >>> atom_positions = [[1, 5], [2, 4]]
     >>> image_data = np.random.random((7, 7))
@@ -1732,9 +1890,9 @@ def change_sublattice_pseudo_inplace(new_atom_positions, old_sublattice):
 
     combined_atom_positions = atom_position_list + new_atom_positions
 
-    new_sublattice = am.Sublattice(combined_atom_positions, image,
-                                   original_image, name, color,
-                                   pixel_size)
+    new_sublattice = am_dev.Sublattice(combined_atom_positions, image,
+                                       original_image, name, color,
+                                       pixel_size)
 
     for old_info, new_info in zip(old_sublattice.atom_list,
                                   new_sublattice.atom_list):
@@ -1800,27 +1958,31 @@ def image_difference_position(sublattice,
     sublattice_name : string, default 'sub_new'
         the outputted sublattice object name and sublattice.name the new
         sublattice will be given
+    inplace : Bool, default True
+        If set to True, the input `sublattice` will be changed inplace and the
+        sublattice returned. If set to False, these changes will be output only
+        to a new sublattice.
 
     Returns
     -------
-    Atomap Sublattice object, with added positions if found.
+    Atomap Sublattice object if `inplace=False`. See the `inplace` parameter
+    for details.
 
     Examples
     --------
-
     >>> from temul.model_creation import (image_difference_position,
     ...                                   change_sublattice_pseudo_inplace)
-    >>> import atomap.api as am
-    >>> sublattice = am.dummy_data.get_simple_cubic_with_vacancies_sublattice(
+    >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
+    >>> sublattice = dummy_data.get_simple_cubic_with_vacancies_sublattice(
     ...                                             image_noise=True)
-    >>> sim_image = am.dummy_data.get_simple_cubic_signal()
+    >>> sim_image = dummy_data.get_simple_cubic_signal()
     >>> for i in range(0, len(sublattice.atom_list)):
     ...         sublattice.atom_list[i].elements = 'Mo_1'
     ...         sublattice.atom_list[i].z_height = '0.5'
     >>> len(sublattice.atom_list)
     397
 
-    >>> sublattice = image_difference_position(sublattice_to_refine=sublattice,
+    >>> sublattice = image_difference_position(sublattice=sublattice,
     ...                           sim_image=sim_image,
     ...                           pixel_threshold=10,
     ...                           percent_to_nn=None,
@@ -1833,16 +1995,12 @@ def image_difference_position(sublattice,
     400
 
     One can now sort these atom positions into elements.
-
-    Returns
-    -------
-    Atomap Sublattice object
     '''
 
     image_for_sublattice = sublattice.signal
-    diff_image = hs.signals.Signal2D(
+    diff_image = Signal2D(
         image_for_sublattice.data - sim_image.data)
-    diff_image_inverse = hs.signals.Signal2D(
+    diff_image_inverse = Signal2D(
         sim_image.data - image_for_sublattice.data)
 
     # below function edit of get_atom_positions. Just allows num_peaks from
@@ -1852,7 +2010,7 @@ def image_difference_position(sublattice,
     atom_positions_diff_image_inverse = get_atom_positions_in_difference_image(
         diff_image_inverse, num_peaks=num_peaks)
 
-    diff_image_sub = am.Sublattice(atom_positions_diff_image, diff_image)
+    diff_image_sub = am_dev.Sublattice(atom_positions_diff_image, diff_image)
     # diff_image_sub.find_nearest_neighbors()
     # diff_image_sub.refine_atom_positions_using_center_of_mass(
     #     percent_to_nn=percent_to_nn, mask_radius=mask_radius)
@@ -1862,8 +2020,8 @@ def image_difference_position(sublattice,
 
     # sublattice.plot()
 
-    diff_image_sub_inverse = am.Sublattice(atom_positions_diff_image_inverse,
-                                           diff_image_inverse)
+    diff_image_sub_inverse = am_dev.Sublattice(
+        atom_positions_diff_image_inverse, diff_image_inverse)
     # diff_image_sub_inverse.find_nearest_neighbors()
     # diff_image_sub_inverse.refine_atom_positions_using_center_of_mass(
     #     percent_to_nn=percent_to_nn, mask_radius=mask_radius)

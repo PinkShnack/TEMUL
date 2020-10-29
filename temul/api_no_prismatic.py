@@ -1,3 +1,9 @@
+'''
+
+NOT YET IMPLEMENTED
+
+# Currently, model_refiner.py and simulations.py use pyprismatic
+
 # import all files in TEMUL/temul
 # Call this file if you have everything installed
 
@@ -36,7 +42,6 @@ from temul.io import (
     batch_convert_emd_to_image,
     convert_vesta_xyz_to_prismatic_xyz,
     create_dataframe_for_xyz,
-    create_new_folder,
     dm3_stack_to_tiff_stack,
     load_data_and_sampling,
     save_individual_images_from_image_stack,
@@ -49,3 +54,4 @@ import temul.example_data as example_data
 
 from atomap.dummy_data import (
     get_distorted_cubic_signal, get_distorted_cubic_sublattice)
+'''

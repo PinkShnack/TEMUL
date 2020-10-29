@@ -12,10 +12,10 @@ from temul.model_creation import (count_atoms_in_sublattice_list,
                                   assign_z_height)
 from temul.io import (create_dataframe_for_xyz,
                       write_cif_from_dataframe,
-                      create_new_folder)
+                      load_prismatic_mrc_with_hyperspy)
 
+import temul.external.atomap_devel_012.api as am_dev
 import pyprismatic as pr
-import atomap.api as am
 import matplotlib.pyplot as plt
 import hyperspy.api as hs
 import pandas as pd
@@ -49,12 +49,11 @@ def simulate_and_filter_and_calibrate_with_prismatic(
         algorithm="prism",
         numThreads=2):
     '''
-    Simulate an xyz coordinate model with pyprismatic
-    fast simulation software.
+    Simulate an xyz coordinate model with the PyPrismatic fast simulation
+    software.
 
     Parameters
     ----------
-
     xyz_filename : string
         filename of the xyz coordinate model. Must be in the prismatic format.
         See http://prism-em.com/docs-inputs/ for more information.
@@ -84,16 +83,9 @@ def simulate_and_filter_and_calibrate_with_prismatic(
     probeStep, E0 ... etc.
         See function simulate_with_prismatic()
 
-
     Returns
     -------
-    Simulated image as a hyperspy object
-
-    Examples
-    --------
-
-    # >>> simulate_and_calibrate_with_prismatic()
-    ######## need to include an example reference_image here
+    Hyperspy Signal2D
 
     '''
 
@@ -159,12 +151,11 @@ def simulate_and_calibrate_with_prismatic(
         algorithm="prism",
         numThreads=2):
     '''
-    Simulate an xyz coordinate model with pyprismatic
-    fast simulation software.
+    Simulate an xyz coordinate model with the PyPrismatic fast simulation
+    software.
 
     Parameters
     ----------
-
     xyz_filename : string
         filename of the xyz coordinate model. Must be in the prismatic format.
         See http://prism-em.com/docs-inputs/ for more information.
@@ -194,16 +185,9 @@ def simulate_and_calibrate_with_prismatic(
     probeStep, E0 ... etc.
         See function simulate_with_prismatic()
 
-
     Returns
     -------
-    Simulated image as a hyperspy object
-
-    Examples
-    --------
-
-    # >>> simulate_and_calibrate_with_prismatic()
-    ######## need to include an example reference_image here
+    Hyperspy Signal2D
 
     '''
 
@@ -290,22 +274,22 @@ def simulate_with_prismatic(xyz_filename,
         If this is set to None, the cell dimension values from the .xyz file
         will be used (default). If it is specified, it will overwrite the .xyz
         file values.
-    tileXYZ : tuple, deault None
+    tileXYZ : tuple, default None
         A tuple of length 3. Example (5, 5, 2) would multiply the model in x
         and y by 5, and z by 2.
         Default of None is just set to (1, 1, 1)
 
     Returns
     -------
-    Simulated image as a 2D mrc file
+    Simulated image as a 2D .mrc file
 
     Examples
     --------
-
     >>> from temul.simulations import simulate_with_prismatic
+    >>> import temul.example_data as example_data
+    >>> file_path = path_to_example_data_MoS2_hex_prismatic()
     >>> simulate_with_prismatic(
-    ...     xyz_filename="example_data/prismatic/"
-    ...         "MoS2_hex_prismatic.xyz",
+    ...     xyz_filename=file_path,
     ...     filename='prismatic_simulation',
     ...     probeStep=1.0, reference_image=None, E0=60e3,
     ...     integrationAngleMin=0.085,
@@ -390,81 +374,7 @@ def simulate_with_prismatic(xyz_filename,
     pr_sim.go()
 
 
-def load_prismatic_mrc_with_hyperspy(
-        prismatic_mrc_filename,
-        save_name='calibrated_data_'):
-    '''
-    Open a prismatic .mrc file and save as a hyperspy object.
-    Also plots save saves a png.
-
-    Parameters
-    ----------
-
-    prismatic_mrc_filename : string
-        name of the outputted prismatic .mrc file.
-
-    Returns
-    -------
-    Hyperspy Signal 2D of the simulation
-
-    Examples
-    --------
-
-    >>> from temul.simulations import load_prismatic_mrc_with_hyperspy
-    >>> load_prismatic_mrc_with_hyperspy(
-    ...     prismatic_mrc_filename="example_data/prismatic/"
-    ...         "prism_2Doutput_prismatic_simulation.mrc",
-    ...     save_name='calibrated_data_')
-    <Signal2D, title: , dimensions: (|1182, 773)>
-
-    '''
-
-    # if '.mrc' not in prismatic_mrc_filename:
-    #     prismatic_mrc_filename = prismatic_mrc_filename + 'mrc'
-    # if 'prism_2Doutput_' not in prismatic_mrc_filename:
-    #     prismatic_mrc_filename = 'prism_2Doutput' + prismatic_mrc_filename
-
-    simulation = hs.load(prismatic_mrc_filename)
-    simulation.axes_manager[0].name = 'extra_dimension'
-    simulation = simulation.sum('extra_dimension')
-
-    if save_name is not None:
-        simulation.save(save_name, overwrite=True)
-        simulation.plot()
-        plt.title(save_name, fontsize=20)
-        plt.gca().axes.get_xaxis().set_visible(False)
-        plt.gca().axes.get_yaxis().set_visible(False)
-        plt.tight_layout()
-        plt.savefig(fname=save_name + '.png',
-                    transparent=True, frameon=False, bbox_inches='tight',
-                    pad_inches=None, dpi=300, labels=False)
-        # plt.close()
-
-    return simulation
-
-
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Mar 13 13:12:44 2019
-
-@author: eoghan.oconnell
-"""
-
-
-'''
-directory = 'G:/SuperStem visit/Feb 2019 data/2019_02_18_QMR_S1262_MoS2-Se-10eV
-/005_rigid_reg/Try_5/32bit/images_aligned_0'
-os.chdir(directory)
-
-image_refine_via_intensity_loop(atom_lattice_name='Atom_Lattice_total.hdf5',
-                               change_sublattice=True,
-                                   plot_details=False,
-                                   intensity_type='total',
-                                   intensity_refine_name = 'intensity_refine_',
-                                   folder_name = 'refinement_of_intensity')
-'''
-
-
+# Purpose built for an in-house use-case
 def image_refine_via_intensity_loop(atom_lattice,
                                     change_sublattice,
                                     calibration_separation,
@@ -677,7 +587,7 @@ def image_refine_via_intensity_loop(atom_lattice,
                 # .diff(periods=2) gets the difference between each row,
                 # and the row two above it [-4:] slices this new difference
                 # df to get the final four rows # .all(axis=1) checks if
-                # all row elements are zero or NaN and returns False
+                # all row elements are zero or NaN and gives back False
                 # .all() check if all four of these results are False
                 # Basically checking that the intensity refinement is
                 # repeating every second iteration
@@ -793,7 +703,7 @@ def image_refine_via_intensity_loop(atom_lattice,
     atom_lattice_int_ref_name = 'Atom_Lattice_' + \
         intensity_type + '_refined' + saving_suffix
 
-    atom_lattice_int_ref = am.Atom_Lattice(
+    atom_lattice_int_ref = am_dev.Atom_Lattice(
         image=atom_lattice_signal,
         name=atom_lattice_int_ref_name,
         sublattice_list=atom_lattice.sublattice_list)
@@ -814,7 +724,7 @@ def image_refine_via_intensity_loop(atom_lattice,
         pad_inches=None, dpi=300, labels=False)
     plt.close()
 
-    create_new_folder('./' + folder_name + '/')
+    os.mkdir(folder_name)
     intensity_refine_filenames = glob('*' + intensity_refine_name + '*')
     for intensity_refine_file in intensity_refine_filenames:
         # print(position_refine_file, position_refine_name + '/' +
@@ -823,28 +733,7 @@ def image_refine_via_intensity_loop(atom_lattice,
                   '/' + intensity_refine_file)
 
 
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Apr 26 17:33:48 2019
-
-@author: Eoghan.OConnell
-"""
-
-
-'''
-directory = 'G:/SuperStem visit/Feb 2019 data/2019_02_18_QMR_S1262_MoS2-Se-10eV
-/005_rigid_reg/Try_5/32bit/images_aligned_0'
-os.chdir(directory)
-image_refine_via_position_loop(atom_lattice_name='Atom_Lattice_total.hdf5',
-                               add_sublattice=True,
-                                   plot_details=False,
-                                   intensity_type='total',
-                                   pixel_threshold=15,
-                                   position_refine_name = 'position_refine_',
-                                   folder_name = 'refinement_of_position')
-'''
-
-
+# Purpose built for an in-house use-case
 def image_refine_via_position_loop(image,
                                    sublattice_list,
                                    filename,
@@ -1037,14 +926,14 @@ def image_refine_via_position_loop(image,
     df_position_refine.to_csv(filename + '.csv', sep=',', index=False)
 
     '''Save Atom Lattice Object'''
-    atom_lattice = am.Atom_Lattice(image=image.data,
-                                   name='All Sublattices ' + filename,
-                                   sublattice_list=sublattice_list)
+    atom_lattice = am_dev.Atom_Lattice(image=image.data,
+                                       name='All Sublattices ' + filename,
+                                       sublattice_list=sublattice_list)
     atom_lattice.save(filename="Atom_Lattice_" +
                       filename + ".hdf5", overwrite=True)
 
     folder_name = filename + "_pos_ref_data"
-    create_new_folder('./' + folder_name + '/')
+    os.mkdir(folder_name)
     position_refine_filenames = glob('*' + filename + '*')
     for position_refine_file in position_refine_filenames:
         os.rename(position_refine_file, folder_name +

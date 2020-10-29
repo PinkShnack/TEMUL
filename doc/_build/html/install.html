@@ -1,0 +1,248 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Installation &mdash; TEMUL Toolkit v0.1-alpha documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'./',
+              VERSION:'v0.1-alpha',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Getting started" href="using_temul.html" />
+    <link rel="prev" title="Welcome to TEMUL Toolkit’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> TEMUL Toolkit
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                Version 0.1-alpha
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_temul.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Plotting Polarisation and Movement Vectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structure_map_tutorial.html">Plot Lattice Structure Maps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="masked_fft_tutorial.html">Masked FFT and iFFT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="line_profile_tutorial.html">Line Intensity Profile Comparisons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dg_visualiser_tutorial.html">Interactive Image Filtering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_doc.html">API documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">TEMUL Toolkit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Installation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/install.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="installation">
+<span id="install"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p>The TEMUL Toolkit can be installed easily with PIP.</p>
+<p><code class="code bash docutils literal notranslate"><span class="pre">$</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">temul-toolkit</span></code></p>
+<p>Then, it can be imported with the name “temul”. For example, to import the
+<code class="code python docutils literal notranslate"><span class="name"><span class="pre">polarisation</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">py</span></span></code> module, use:</p>
+<p><code class="code python docutils literal notranslate"><span class="keyword namespace"><span class="pre">import</span></span> <span class="name namespace"><span class="pre">temul.polarisation</span></span> <span class="keyword namespace"><span class="pre">as</span></span> <span class="name namespace"><span class="pre">tmlpol</span></span></code></p>
+<p>Note 1: If you wish to use the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">simulations</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">py</span></span></code> or <code class="code python docutils literal notranslate"><span class="name"><span class="pre">model_refiner</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">py</span></span></code>
+modules, you will need to install PyPrismatic.</p>
+<p>Note 2: If you’re using any of the functions or classes that require element quantification:</p>
+<blockquote>
+<div><ul class="simple">
+<li>navigate to the “temul/external” directory, copy the “atomap_devel_012” folder and paste that in your “site-packages” directory.</li>
+<li>Then, when using atomap to create sublattices and quantify elements call atomap like this: <code class="code python docutils literal notranslate"><span class="keyword namespace"><span class="pre">import</span></span> <span class="name namespace"><span class="pre">atomap_devel_012.api</span></span> <span class="keyword namespace"><span class="pre">as</span></span> <span class="name namespace"><span class="pre">am</span></span></code>.</li>
+<li>This development version is slowly being folded into the master branch here: <a class="reference external" href="https://gitlab.com/atomap/atomap/-/issues/93">https://gitlab.com/atomap/atomap/-/issues/93</a> and any help or tips on implementation are welcome!</li>
+</ul>
+</div></blockquote>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="using_temul.html" class="btn btn-neutral float-right" title="Getting started" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to TEMUL Toolkit’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Eoghan O&#39;Connell
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
