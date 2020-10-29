@@ -1,7 +1,8 @@
 
 
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html4" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -25,11 +26,20 @@
   <![endif]-->
   
     
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'./',
+              VERSION:'v0.1-alpha',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -92,6 +102,7 @@
 <li class="toctree-l1"><a class="reference internal" href="structure_map_tutorial.html">Plot Lattice Structure Maps</a></li>
 <li class="toctree-l1"><a class="reference internal" href="masked_fft_tutorial.html">Masked FFT and iFFT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="line_profile_tutorial.html">Line Intensity Profile Comparisons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dg_visualiser_tutorial.html">Interactive Image Filtering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_doc.html">API documentation</a></li>
 </ul>
 
@@ -176,6 +187,7 @@
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
  | <a href="#U"><strong>U</strong></a>
+ | <a href="#V"><strong>V</strong></a>
  | <a href="#W"><strong>W</strong></a>
  
 </div>
@@ -280,13 +292,15 @@
 </li>
       <li><a href="api_doc.html#temul.signal_processing.double_gaussian_fft_filter">double_gaussian_fft_filter() (in module temul.signal_processing)</a>
 </li>
+      <li><a href="api_doc.html#temul.signal_processing.double_gaussian_fft_filter_optimised">double_gaussian_fft_filter_optimised() (in module temul.signal_processing)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_doc.html#temul.model_refiner.Model_Refiner.element_count">element_count() (temul.model_refiner.Model_Refiner property)</a>
+      <li><a href="api_doc.html#temul.model_refiner.Model_Refiner.element_count">element_count (temul.model_refiner.Model_Refiner attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -430,39 +444,16 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api_doc.html#temul.signal_processing.make_gaussian">make_gaussian() (in module temul.signal_processing)</a>
 </li>
+      <li><a href="api_doc.html#temul.signal_processing.make_gaussian_pos_neg">make_gaussian_pos_neg() (in module temul.signal_processing)</a>
+</li>
       <li><a href="api_doc.html#temul.signal_processing.mean_and_std_nearest_neighbour_distances">mean_and_std_nearest_neighbour_distances() (in module temul.signal_processing)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api_doc.html#temul.signal_processing.measure_image_errors">measure_image_errors() (in module temul.signal_processing)</a>
 </li>
       <li><a href="api_doc.html#temul.model_refiner.Model_Refiner">Model_Refiner (class in temul.model_refiner)</a>
 </li>
-      <li>
-    module
-
-      <ul>
-        <li><a href="api_doc.html#module-temul.dummy_data">temul.dummy_data</a>
-</li>
-        <li><a href="api_doc.html#module-temul.element_tools">temul.element_tools</a>
-</li>
-        <li><a href="api_doc.html#module-temul.example_data">temul.example_data</a>
-</li>
-        <li><a href="api_doc.html#module-temul.intensity_tools">temul.intensity_tools</a>
-</li>
-        <li><a href="api_doc.html#module-temul.io">temul.io</a>
-</li>
-        <li><a href="api_doc.html#module-temul.model_creation">temul.model_creation</a>
-</li>
-        <li><a href="api_doc.html#module-temul.polarisation">temul.polarisation</a>
-</li>
-        <li><a href="api_doc.html#module-temul.signal_plotting">temul.signal_plotting</a>
-</li>
-        <li><a href="api_doc.html#module-temul.signal_processing">temul.signal_processing</a>
-</li>
-        <li><a href="api_doc.html#module-temul.simulations">temul.simulations</a>
-</li>
-      </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api_doc.html#temul.signal_processing.mse">mse() (in module temul.signal_processing)</a>
 </li>
   </ul></td>
@@ -575,78 +566,28 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li>
-    temul.dummy_data
-
-      <ul>
-        <li><a href="api_doc.html#module-temul.dummy_data">module</a>
+      <li><a href="api_doc.html#module-temul.dummy_data">temul.dummy_data (module)</a>
 </li>
-      </ul></li>
-      <li>
-    temul.element_tools
-
-      <ul>
-        <li><a href="api_doc.html#module-temul.element_tools">module</a>
+      <li><a href="api_doc.html#module-temul.element_tools">temul.element_tools (module)</a>
 </li>
-      </ul></li>
-      <li>
-    temul.example_data
-
-      <ul>
-        <li><a href="api_doc.html#module-temul.example_data">module</a>
+      <li><a href="api_doc.html#module-temul.example_data">temul.example_data (module)</a>
 </li>
-      </ul></li>
-      <li>
-    temul.intensity_tools
-
-      <ul>
-        <li><a href="api_doc.html#module-temul.intensity_tools">module</a>
+      <li><a href="api_doc.html#module-temul.intensity_tools">temul.intensity_tools (module)</a>
 </li>
-      </ul></li>
-      <li>
-    temul.io
-
-      <ul>
-        <li><a href="api_doc.html#module-temul.io">module</a>
+      <li><a href="api_doc.html#module-temul.io">temul.io (module)</a>
 </li>
-      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li>
-    temul.model_creation
-
-      <ul>
-        <li><a href="api_doc.html#module-temul.model_creation">module</a>
+      <li><a href="api_doc.html#module-temul.model_creation">temul.model_creation (module)</a>
 </li>
-      </ul></li>
-      <li>
-    temul.polarisation
-
-      <ul>
-        <li><a href="api_doc.html#module-temul.polarisation">module</a>
+      <li><a href="api_doc.html#module-temul.polarisation">temul.polarisation (module)</a>
 </li>
-      </ul></li>
-      <li>
-    temul.signal_plotting
-
-      <ul>
-        <li><a href="api_doc.html#module-temul.signal_plotting">module</a>
+      <li><a href="api_doc.html#module-temul.signal_plotting">temul.signal_plotting (module)</a>
 </li>
-      </ul></li>
-      <li>
-    temul.signal_processing
-
-      <ul>
-        <li><a href="api_doc.html#module-temul.signal_processing">module</a>
+      <li><a href="api_doc.html#module-temul.signal_processing">temul.signal_processing (module)</a>
 </li>
-      </ul></li>
-      <li>
-    temul.simulations
-
-      <ul>
-        <li><a href="api_doc.html#module-temul.simulations">module</a>
+      <li><a href="api_doc.html#module-temul.simulations">temul.simulations (module)</a>
 </li>
-      </ul></li>
       <li><a href="api_doc.html#temul.signal_processing.toggle_atom_refine_position_automatically">toggle_atom_refine_position_automatically() (in module temul.signal_processing)</a>
 </li>
   </ul></td>
@@ -666,6 +607,14 @@
       <li><a href="api_doc.html#temul.model_refiner.Model_Refiner.update_refinement_history">update_refinement_history() (temul.model_refiner.Model_Refiner method)</a>
 </li>
       <li><a href="api_doc.html#temul.model_refiner.Model_Refiner.update_sublattices_positions">update_sublattices_positions() (temul.model_refiner.Model_Refiner method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="V">V</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_doc.html#temul.signal_processing.visualise_dg_filter">visualise_dg_filter() (in module temul.signal_processing)</a>
 </li>
   </ul></td>
 </tr></table>

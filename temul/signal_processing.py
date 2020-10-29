@@ -5,7 +5,6 @@ from temul.signal_plotting import choose_points_on_image
 from temul.external.atomap_devel_012.sublattice import Sublattice
 from temul.external.atomap_devel_012.atom_finding_refining import (
     get_atom_positions, _make_circular_mask)
-import temul.external.atomap_devel_012.api as am_dev
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -27,6 +26,7 @@ import copy
 from tqdm import trange
 import collections
 import warnings
+from matplotlib.widgets import Slider, Button
 warnings.simplefilter("error", OptimizeWarning)
 
 
@@ -783,13 +783,71 @@ def make_gaussian(size, fwhm, center=None):
         y0 = center[1]
 
     arr = np.array((np.exp(-4 * np.log(2) * ((x - x0)**2 +
-                    (y - y0)**2) / fwhm**2)))
+                                             (y - y0)**2) / fwhm**2)))
 
     return(arr)
 
 
-def double_gaussian_fft_filter(image, d_inner, d_outer, delta=0.05,
-                               sampling=None, units=None, filename=None):
+def make_gaussian_pos_neg(size, fwhm_neg, fwhm_pos, neg_min=0.9, center=None):
+    ''' See double_gaussian_fft_filter for details '''
+    arr_pos = make_gaussian(size, fwhm=fwhm_pos, center=center)
+    nD_Gaussian_pos = Signal2D(arr_pos)
+
+    arr_neg = make_gaussian(size, fwhm=fwhm_neg, center=center)
+    nD_Gaussian_neg = Signal2D(arr_neg) * -1 * neg_min
+
+    return(nD_Gaussian_pos, nD_Gaussian_neg)
+
+
+def double_gaussian_fft_filter(image, fwhm_neg, fwhm_pos, neg_min=0.9):
+    '''
+    Filter an image with a bandpass-like filter.
+
+    Parameters
+    ----------
+    image : Hyperspy Signal2D
+    fwhm_neg, fwhm_pos : float
+        Initial guess in pixels of full width at half maximum (fwhm) of
+        inner (negative) and outer (positive) Gaussian to be applied to fft,
+        respectively.
+        Use the visualise_dg_filter function to find the optimium values.
+    neg_min : float, default 0.9
+        Effective amplitude of the negative Gaussian.
+
+    Examples
+    --------
+    >>> import temul.signal_processing as tmlsig
+    >>> from temul.example_data import load_Se_implanted_MoS2_data
+    >>> image = load_Se_implanted_MoS2_data()
+
+    Use the visualise_dg_filter to find suitable FWHMs
+
+    >>> tmlsig.visualise_dg_filter(image)
+
+    then use these values to carry out the double_gaussian_fft_filter
+
+    >>> filtered_image = tmlsig.double_gaussian_fft_filter(image, 50, 150)
+    >>> image.plot()
+    >>> filtered_image.plot()
+
+    '''
+    image_fft = image.fft(shift=True)
+    fft_data = image_fft.amplitude.data
+
+    nD_Gaussian_pos, nD_Gaussian_neg = make_gaussian_pos_neg(
+        fft_data.shape[-1], fwhm_neg, fwhm_pos, neg_min)
+    dg_filter = nD_Gaussian_pos + nD_Gaussian_neg
+
+    convolution = image_fft * dg_filter
+    convolution_ifft = convolution.ifft()
+    convolution_ifft.axes_manager = image.axes_manager
+    convolution_ifft.metadata.General.title = "Filtered Image"
+    return convolution_ifft
+
+
+def double_gaussian_fft_filter_optimised(image, d_inner, d_outer, delta=0.05,
+                                         sampling=None, units=None,
+                                         filename=None):
     '''
     Filter an image with an double Gaussian (band-pass) filter. The function
     will automatically find the optimum magnitude of the negative inner
@@ -886,29 +944,15 @@ def double_gaussian_fft_filter(image, d_inner, d_outer, delta=0.05,
     # Get FFT of the image
     image_fft = image.fft(shift=True)
 
-    # Positive Gaussian
-    arr = make_gaussian(size=len(image.data), fwhm=fwhm_pos_gaus, center=None)
-    nD_Gaussian = Signal2D(arr)
-    # nD_Gaussian.plot()
-    # plt.close()
-
-    # negative gauss
-    arr_neg = make_gaussian(size=len(image.data),
-                            fwhm=fwhm_neg_gaus, center=None)
-    # Note that this step isn't actually neccessary for the computation,
-    #   we could just subtract when making the double gaussian below.
-    #   However, we do it this way so that we can save a plot of the negative
-    # gaussian!
-    # np_arr_neg = np_arr_neg
-    nD_Gaussian_neg = Signal2D(arr_neg)
-    # nD_Gaussian_neg.plot()
+    nD_Gaussian, nD_Gaussian_neg = make_gaussian_pos_neg(
+        len(image.data), fwhm_pos_gaus, fwhm_neg_gaus, 1, center=None)
 
     neg_gauss_amplitude = 0.0
     int_and_gauss_array = []
     for neg_gauss_amplitude in np.arange(0, 1 + delta, delta):
 
         # while neg_gauss_amplitude <= 1:
-        nD_Gaussian_neg_scaled = nD_Gaussian_neg * -1 * \
+        nD_Gaussian_neg_scaled = nD_Gaussian_neg * \
             neg_gauss_amplitude  # NEED TO FIGURE out best number here!
 
         # Double Gaussian
@@ -1084,8 +1128,165 @@ def double_gaussian_fft_filter(image, d_inner, d_outer, delta=0.05,
     return(image_filtered)
 
 
+def visualise_dg_filter(image, d_inner=7.7, d_outer=21, slider_min=0.1,
+                        slider_max=300, slider_step=0.1, plot_lims=(0, 1),
+                        figsize=(15, 7)):
+    '''
+
+    Parameters
+    ----------
+    image : Hyperspy Signal2D
+        This image.axes_manager scale should be calibrated.
+    d_inner : float, default 7.7
+        Initial 'guess' of full width at half maximum (fwhm) of
+        inner (negative) gaussian to be applied to fft.
+        Can be changed with sliders during visualisation.
+    d_outer : float, default 14
+        Initial 'guess' of full width at half maximum (fwhm) of
+        outer (positive) gaussian to be applied to fft.
+        Can be changed with sliders during visualisation.
+    slider_min : float, default 0.1
+        Minimum value on sliders
+    slider_max : float, default 300
+        Maximum value on sliders
+    slider_step : float, default 0.1
+        Step size on sliders
+    plot_lims : tuple, default (0, 1)
+        Used to plot a smaller section of the FFT image, which can be useful if
+        the information is very small (far away!). Default plots the whole
+        image.
+
+    Examples
+    --------
+    >>> import temul.signal_processing as tmlsig
+    >>> from temul.example_data import load_Se_implanted_MoS2_data
+    >>> image = load_Se_implanted_MoS2_data()
+    >>> tmlsig.visualise_dg_filter(image)
+
+    '''
+
+    # Get FFT of the image
+    image_fft = image.fft(shift=True)
+    fft_data = image_fft.amplitude.data
+    sampling = image.axes_manager[0].scale
+    # units = image.axes_manager[0].units
+
+    physical_image_size = sampling * len(image.data)
+    fourier_sampling = 1 / physical_image_size
+
+    # Get radius
+    fwhm_neg_gaus = d_inner / fourier_sampling
+    fwhm_pos_gaus = d_outer / fourier_sampling
+    r_fwhm_neg_gaus = fwhm_neg_gaus / 2
+    r_fwhm_pos_gaus = fwhm_pos_gaus / 2
+
+    # Plot circles to represent d_inner and d_outer
+    # circles only represent fwhm of two gaussians (inner -ve, outer +ve)
+    # definitely a better way of plotting these
+    half_image_len = len(fft_data) / 2
+    inner_color = 'r'
+    outer_color = 'b'
+    alpha = 0.4
+    inner_circle = plt.Circle((half_image_len, half_image_len),
+                              r_fwhm_neg_gaus, color=inner_color, alpha=alpha)
+    outer_circle = plt.Circle((half_image_len, half_image_len),
+                              r_fwhm_pos_gaus, color=outer_color, alpha=alpha)
+
+    # Make a subplot to show DG filter
+    _, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=figsize)
+    plt.subplots_adjust(bottom=0.25)
+    # fig.set_figheight(100)
+    # fig.set_figwidth(100)
+    ax1.imshow(np.log(fft_data))
+    plt.xlim(image.data.shape[-1] * plot_lims[0],
+             image.data.shape[-1] * plot_lims[1])
+    plt.ylim(image.data.shape[-2] * plot_lims[0],
+             image.data.shape[-2] * plot_lims[1])
+
+    ax1.add_artist(outer_circle)
+    ax1.add_artist(inner_circle)
+
+    # Make sliders
+    axcolor = 'lightgoldenrodyellow'
+    ax_d_inner = plt.axes([0.25, 0.15, 0.5, 0.03], facecolor=axcolor)
+    ax_d_outer = plt.axes([0.25, 0.1, 0.5, 0.03], facecolor=axcolor)
+
+    d_inner_slider = Slider(ax_d_inner, 'Inner FWHM (pix)',
+                            slider_min, slider_max, color=inner_color,
+                            alpha=alpha,
+                            valinit=r_fwhm_neg_gaus, valstep=slider_step)
+    d_outer_slider = Slider(ax_d_outer, 'Outer FWHM (pix)',
+                            slider_min, slider_max, color=outer_color,
+                            alpha=alpha,
+                            valinit=r_fwhm_pos_gaus, valstep=slider_step)
+
+    def update(val):
+        outer_circle.radius = d_outer_slider.val
+        inner_circle.radius = d_inner_slider.val
+
+        plt.draw()
+
+    d_inner_slider.on_changed(update)
+    d_outer_slider.on_changed(update)
+
+    # Setup reset button
+    resetax = plt.axes([0.8, 0.025, 0.1, 0.05])  # left, bottom, width, height
+    reset_button = Button(resetax, 'Reset', color=axcolor, hovercolor='0.975')
+
+    def reset(event):
+        d_inner_slider.reset()
+        d_outer_slider.reset()
+
+        outer_circle.radius = d_outer_slider.valinit
+        inner_circle.radius = d_inner_slider.valinit
+
+        plt.draw()
+
+    reset_button.on_clicked(reset)
+
+    # Setup filter button
+    filterax = plt.axes([0.1, 0.025, 0.1, 0.05])
+    filter_button = Button(filterax, 'Filter',
+                           color=axcolor, hovercolor='0.975')
+
+    def filter_image(event):
+        # image.plot()
+        d_inner = d_inner_slider.val
+        d_outer = d_outer_slider.val
+        # array = make_gaussian(fft_data.shape[-1], d_outer*100)
+
+        nD_Gaussian_pos, nD_Gaussian_neg = make_gaussian_pos_neg(
+            fft_data.shape[-1], d_inner, d_outer, 0.9, center=None)
+        dg_filter = nD_Gaussian_pos + nD_Gaussian_neg
+
+        convolution = image_fft * dg_filter
+
+        ax2.imshow(np.log(convolution.amplitude.data))
+
+        convolution_ifft = convolution.ifft()
+        convolution_ifft.axes_manager = image.axes_manager
+        ax3.imshow(convolution_ifft.data)
+        plt.show()
+
+    for ax in [ax1, ax2, ax3]:
+        ax.set_axis_off()
+    ax1.set_title("FFT Widget")
+    ax2.set_title("Convolution")
+    ax3.set_title("Filtered Image")
+
+    filter_button.on_clicked(filter_image)
+    resetax._button = reset_button
+    filterax._button = filter_button
+
+
+'''
+Cropping and Calibrating
+'''
+
 # cropping done in the scale, so nm, pixel, or whatever you have
 # cropping_area = choose_points_on_image(image.data)
+
+
 def crop_image_hs(image, cropping_area, scalebar_true=True, filename=None):
     '''
     Crop a Hyperspy Signal2D by providing the `cropping_area`. See the example
@@ -1800,4 +2001,4 @@ def get_masked_ifft(image, mask_coords, mask_radius=10, image_space="real",
 
 
 def sine_wave_function_strain_gradient(x, a, b, c, d):
-    return a * np.sin((2*np.pi*(x+b))/c) + d
+    return a * np.sin((2 * np.pi * (x + b)) / c) + d

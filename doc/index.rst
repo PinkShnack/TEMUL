@@ -32,6 +32,7 @@ atomic resolution images. It is mostly built upon the data structure of
    structure_map_tutorial
    masked_fft_tutorial
    line_profile_tutorial
+   dg_visualiser_tutorial
    api_doc
 
 .. PTO_supercrystal_hadjimichael
