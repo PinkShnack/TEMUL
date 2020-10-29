@@ -839,6 +839,17 @@ def make_gaussian(size, fwhm, center):
     return(arr)
 
 
+def make_gaussian_pos_neg(size, fwhm_neg, fwhm_pos, center=None):
+
+    arr_pos = make_gaussian(size, fwhm=fwhm_pos, center=center)
+    nD_Gaussian_pos = Signal2D(arr_pos)
+
+    arr_neg = make_gaussian(size, fwhm=fwhm_neg, center=center)
+    nD_Gaussian_neg = Signal2D(arr_neg) * -1
+
+    return(nD_Gaussian_pos, nD_Gaussian_neg)
+
+
 def double_gaussian_fft_filter(image, filename,
                                d_inner, d_outer, real_space_sampling,
                                delta=0.05, units='nm'):
@@ -1199,7 +1210,7 @@ def visualise_dg_filter(image, d_inner=7.7, d_outer=14, slider_min=0.1,
     # circles only represent fwhm of two gaussians (inner -ve, outer +ve)
     # definitely a better way of plotting these
     outer_circle = plt.Circle((len(fft_power_apodized.data)/2,
-                              len(fft_power_apodized.data)/2),
+                               len(fft_power_apodized.data)/2),
                               d_outer_scaled/2, color='b', alpha=0.5)
     ax.add_artist(outer_circle)
 
@@ -1257,7 +1268,8 @@ def visualise_dg_filter(image, d_inner=7.7, d_outer=14, slider_min=0.1,
                                                 d_outer=d_outer,
                                                 real_space_sampling=sampling,
                                                 delta=0.05, units='nm')
-        s_gaussian.metadata.General.title = "Double Gaussian Filtered Image (d_inner= %.2f, d_outer= %.2f)" % (d_inner, d_outer)
+        s_gaussian.metadata.General.title = "Double Gaussian Filtered Image (d_inner= %.2f, d_outer= %.2f)" % (
+            d_inner, d_outer)
         s_gaussian.plot()
 
     filter_button.on_clicked(filter_image)
