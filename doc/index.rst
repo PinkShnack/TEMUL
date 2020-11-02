@@ -59,6 +59,20 @@ Code Documentation
 See the :ref:`api_doc` for examples and a full list of modules and functions.
 
 
+Cite
+----
+
+To cite the latest TEMUL Toolkit version, use the following DOI:
+
+.. image:: https://www.zenodo.org/badge/203785298.svg
+   :target: https://www.zenodo.org/badge/latestdoi/203785298
+
+For example: Eoghan O'Connell, Michael Hennessy, & Eoin Moynihan. (2020, November 2). PinkShnack/TEMUL: Initial Temul-Toolkit Release (Version 0.1.1). Zenodo. http://doi.org/10.5281/zenodo.4185974
+
+If you wish to cite an older release of the TEMUL Toolkit, click on the above
+badge to find the relevant version.
+
+
 Contribute
 ----------
 

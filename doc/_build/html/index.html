@@ -223,14 +223,14 @@ atomic resolution images. It is mostly built upon the data structure of
 <p><code class="code bash docutils literal notranslate"><span class="pre">$</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">temul-toolkit</span></code></p>
 <p>Then, it can be imported with the name “temul”. For example, to import the
 <code class="code python docutils literal notranslate"><span class="name"><span class="pre">polarisation</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">py</span></span></code> module, use:</p>
-<p><code class="code python docutils literal notranslate"><span class="keyword namespace"><span class="pre">import</span></span> <span class="name namespace"><span class="pre">temul.polarisation</span></span> <span class="keyword namespace"><span class="pre">as</span></span> <span class="name namespace"><span class="pre">tmlpol</span></span></code></p>
+<p><code class="code python docutils literal notranslate"><span class="keyword namespace"><span class="pre">import</span></span> <span class="name namespace"><span class="pre">temul.polarisation</span></span> <span class="keyword"><span class="pre">as</span></span> <span class="name namespace"><span class="pre">tmlpol</span></span></code></p>
 <p>Note 1: If you wish to use the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">simulations</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">py</span></span></code> or <code class="code python docutils literal notranslate"><span class="name"><span class="pre">model_refiner</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">py</span></span></code>
 modules, you will need to install PyPrismatic.</p>
 <p>Note 2: If you’re using any of the functions or classes that require element quantification:</p>
 <blockquote>
 <div><ul class="simple">
 <li>navigate to the “temul/external” directory, copy the “atomap_devel_012” folder and paste that in your “site-packages” directory.</li>
-<li>Then, when using atomap to create sublattices and quantify elements call atomap like this: <code class="code python docutils literal notranslate"><span class="keyword namespace"><span class="pre">import</span></span> <span class="name namespace"><span class="pre">atomap_devel_012.api</span></span> <span class="keyword namespace"><span class="pre">as</span></span> <span class="name namespace"><span class="pre">am</span></span></code>.</li>
+<li>Then, when using atomap to create sublattices and quantify elements call atomap like this: <code class="code python docutils literal notranslate"><span class="keyword namespace"><span class="pre">import</span></span> <span class="name namespace"><span class="pre">atomap_devel_012.api</span></span> <span class="keyword"><span class="pre">as</span></span> <span class="name namespace"><span class="pre">am</span></span></code>.</li>
 <li>This development version is slowly being folded into the master branch here: <a class="reference external" href="https://gitlab.com/atomap/atomap/-/issues/93">https://gitlab.com/atomap/atomap/-/issues/93</a> and any help or tips on implementation are welcome!</li>
 </ul>
 </div></blockquote>
@@ -246,6 +246,14 @@ is described and examples of their use given.</p>
 <div class="section" id="code-documentation">
 <h2>Code Documentation<a class="headerlink" href="#code-documentation" title="Permalink to this headline">¶</a></h2>
 <p>See the <a class="reference internal" href="api_doc.html#api-doc"><span class="std std-ref">API documentation</span></a> for examples and a full list of modules and functions.</p>
+</div>
+<div class="section" id="cite">
+<h2>Cite<a class="headerlink" href="#cite" title="Permalink to this headline">¶</a></h2>
+<p>To cite the latest TEMUL Toolkit version, use the following DOI:</p>
+<a class="reference external image-reference" href="https://www.zenodo.org/badge/latestdoi/203785298"><img alt="https://www.zenodo.org/badge/203785298.svg" src="https://www.zenodo.org/badge/203785298.svg" /></a>
+<p>For example: Eoghan O’Connell, Michael Hennessy, &amp; Eoin Moynihan. (2020, November 2). PinkShnack/TEMUL: Initial Temul-Toolkit Release (Version 0.1.1). Zenodo. <a class="reference external" href="http://doi.org/10.5281/zenodo.4185974">http://doi.org/10.5281/zenodo.4185974</a></p>
+<p>If you wish to cite an older release of the TEMUL Toolkit, click on the above
+badge to find the relevant version.</p>
 </div>
 <div class="section" id="contribute">
 <h2>Contribute<a class="headerlink" href="#contribute" title="Permalink to this headline">¶</a></h2>

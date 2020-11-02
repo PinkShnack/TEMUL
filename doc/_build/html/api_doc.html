@@ -314,7 +314,7 @@ comparison_image.</p>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.model_refiner</span> <span class="k">import</span> <span class="p">(</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.model_refiner</span> <span class="kn">import</span> <span class="p">(</span>
 <span class="gp">... </span>    <span class="n">get_model_refiner_with_12_vacancies_refined</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">refiner</span> <span class="o">=</span> <span class="n">get_model_refiner_with_12_vacancies_refined</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">image_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -365,7 +365,7 @@ positions if new atom positions are found.</p>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.model_refiner</span> <span class="k">import</span> <span class="p">(</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.model_refiner</span> <span class="kn">import</span> <span class="p">(</span>
 <span class="gp">... </span>    <span class="n">get_model_refiner_one_sublattice_3_vacancies</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">refiner</span> <span class="o">=</span> <span class="n">get_model_refiner_one_sublattice_3_vacancies</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">refiner</span><span class="o">.</span><span class="n">sublattice_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
@@ -540,7 +540,7 @@ function <cite>construct_zone_axes()</cite>.</li>
 </table>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">atomap.api</span> <span class="k">as</span> <span class="nn">am</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="k">import</span> <span class="p">(</span><span class="n">atom_deviation_from_straight_line_fit</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="kn">import</span> <span class="p">(</span><span class="n">atom_deviation_from_straight_line_fit</span><span class="p">,</span>
 <span class="gp">... </span>                                <span class="n">plot_polarisation_vectors</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">atom_lattice</span> <span class="o">=</span> <span class="n">am</span><span class="o">.</span><span class="n">dummy_data</span><span class="o">.</span><span class="n">get_polarization_film_atom_lattice</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span> <span class="o">=</span> <span class="n">atom_lattice</span><span class="o">.</span><span class="n">sublattice_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -584,9 +584,9 @@ parallel to the chosen axis (‘x’ or ‘y’).</p>
 </table>
 <p class="rubric">Example</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">atomap.dummy_data</span> <span class="k">import</span> <span class="n">get_distorted_cubic_sublattice</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">atomap.dummy_data</span> <span class="kn">import</span> <span class="n">get_distorted_cubic_sublattice</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="k">import</span> <span class="n">atom_to_atom_distance_grouped_mean</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="kn">import</span> <span class="n">atom_to_atom_distance_grouped_mean</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span> <span class="o">=</span> <span class="n">get_distorted_cubic_sublattice</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">construct_zone_axes</span><span class="p">(</span><span class="n">atom_plane_tolerance</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
@@ -638,7 +638,7 @@ perfect structure.</p>
 </table>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">atomap.api</span> <span class="k">as</span> <span class="nn">am</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="k">import</span> <span class="p">(</span><span class="n">plot_polarisation_vectors</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="kn">import</span> <span class="p">(</span><span class="n">plot_polarisation_vectors</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">combine_atom_deviations_from_zone_axes</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">atom_lattice</span> <span class="o">=</span> <span class="n">am</span><span class="o">.</span><span class="n">dummy_data</span><span class="o">.</span><span class="n">get_polarization_film_atom_lattice</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span> <span class="o">=</span> <span class="n">atom_lattice</span><span class="o">.</span><span class="n">sublattice_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -688,7 +688,7 @@ will be kept and all others deleted.</li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="k">import</span> <span class="n">delete_atom_planes_from_sublattice</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="kn">import</span> <span class="n">delete_atom_planes_from_sublattice</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">atomap.dummy_data</span> <span class="k">as</span> <span class="nn">dd</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">atom_lattice</span> <span class="o">=</span> <span class="n">dd</span><span class="o">.</span><span class="n">get_polarization_film_atom_lattice</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span> <span class="o">=</span> <span class="n">atom_lattice</span><span class="o">.</span><span class="n">sublattice_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -726,7 +726,7 @@ will be kept and all others deleted.</li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="k">import</span> <span class="n">find_polarisation_vectors</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="kn">import</span> <span class="n">find_polarisation_vectors</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pos_A</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">8</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pos_B</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="mi">2</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">find_polarisation_vectors</span><span class="p">(</span><span class="n">pos_A</span><span class="p">,</span> <span class="n">pos_B</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
@@ -799,7 +799,7 @@ split into an 8x8 grid.</li>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">atomap.api</span> <span class="k">as</span> <span class="nn">am</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="k">import</span> <span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="kn">import</span> <span class="p">(</span>
 <span class="gp">... </span>   <span class="n">combine_atom_deviations_from_zone_axes</span><span class="p">,</span>
 <span class="gp">... </span>   <span class="n">plot_polarisation_vectors</span><span class="p">,</span> <span class="n">get_average_polarisation_in_regions</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">atom_lattice</span> <span class="o">=</span> <span class="n">am</span><span class="o">.</span><span class="n">dummy_data</span><span class="o">.</span><span class="n">get_polarization_film_atom_lattice</span><span class="p">()</span>
@@ -859,7 +859,7 @@ split into an 8x8 grid.</li>
 </table>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">atomap.api</span> <span class="k">as</span> <span class="nn">am</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="k">import</span> <span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="kn">import</span> <span class="p">(</span>
 <span class="gp">... </span>    <span class="n">combine_atom_deviations_from_zone_axes</span><span class="p">,</span> <span class="n">plot_polarisation_vectors</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">get_average_polarisation_in_regions_square</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">atom_lattice</span> <span class="o">=</span> <span class="n">am</span><span class="o">.</span><span class="n">dummy_data</span><span class="o">.</span><span class="n">get_polarization_film_atom_lattice</span><span class="p">()</span>
@@ -921,8 +921,8 @@ unit cell.</li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="k">import</span> <span class="n">get_divide_into</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">atomap.dummy_data</span> <span class="k">import</span> <span class="n">get_simple_cubic_sublattice</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="kn">import</span> <span class="n">get_divide_into</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">atomap.dummy_data</span> <span class="kn">import</span> <span class="n">get_simple_cubic_sublattice</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span> <span class="o">=</span> <span class="n">get_simple_cubic_sublattice</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span><span class="o">.</span><span class="n">construct_zone_axes</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cell_info</span> <span class="o">=</span> <span class="n">get_divide_into</span><span class="p">(</span><span class="n">sublattice</span><span class="p">,</span> <span class="n">averaging_by</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
@@ -970,7 +970,7 @@ lists of the x, y, and strain values.</li>
 </table>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">atomap.api</span> <span class="k">as</span> <span class="nn">am</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="k">import</span> <span class="n">get_strain_map</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="kn">import</span> <span class="n">get_strain_map</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">atom_lattice</span> <span class="o">=</span> <span class="n">am</span><span class="o">.</span><span class="n">dummy_data</span><span class="o">.</span><span class="n">get_polarization_film_atom_lattice</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span> <span class="o">=</span> <span class="n">atom_lattice</span><span class="o">.</span><span class="n">sublattice_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">find_nearest_neighbors</span><span class="p">()</span>
@@ -1006,7 +1006,7 @@ by sampling (nm/pix).</li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="k">import</span> <span class="n">get_vector_magnitudes</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="kn">import</span> <span class="n">get_vector_magnitudes</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># list input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">vector_mags</span> <span class="o">=</span> <span class="n">get_vector_magnitudes</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="n">v</span><span class="p">)</span>
@@ -1037,7 +1037,7 @@ constructed by an Atomap sublattice object.</p>
 </table>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">atomap.api</span> <span class="k">as</span> <span class="nn">am</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="k">import</span> <span class="n">plot_atom_deviation_from_all_zone_axes</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="kn">import</span> <span class="n">plot_atom_deviation_from_all_zone_axes</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">atom_lattice</span> <span class="o">=</span> <span class="n">am</span><span class="o">.</span><span class="n">dummy_data</span><span class="o">.</span><span class="n">get_polarization_film_atom_lattice</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span> <span class="o">=</span> <span class="n">atom_lattice</span><span class="o">.</span><span class="n">sublattice_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">find_nearest_neighbors</span><span class="p">()</span>
@@ -1111,8 +1111,8 @@ the vector arrows.</li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="k">import</span> <span class="n">plot_polarisation_vectors</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="k">import</span> <span class="n">get_polarisation_dummy_dataset</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="kn">import</span> <span class="n">plot_polarisation_vectors</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="kn">import</span> <span class="n">get_polarisation_dummy_dataset</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">atom_lattice</span> <span class="o">=</span> <span class="n">get_polarisation_dummy_dataset</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span> <span class="o">=</span> <span class="n">atom_lattice</span><span class="o">.</span><span class="n">sublattice_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeB</span> <span class="o">=</span> <span class="n">atom_lattice</span><span class="o">.</span><span class="n">sublattice_list</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -1221,7 +1221,7 @@ matplotlib-scalebar for more custom features.</p>
 </div>
 <p>Plot a contourf for quadrant visualisation using a custom matplotlib cmap:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.signal_plotting</span> <span class="k">as</span> <span class="nn">tmlplot</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">matplotlib.colors</span> <span class="k">import</span> <span class="n">from_levels_and_colors</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">matplotlib.colors</span> <span class="kn">import</span> <span class="n">from_levels_and_colors</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">zest</span> <span class="o">=</span> <span class="n">tmlplot</span><span class="o">.</span><span class="n">hex_to_rgb</span><span class="p">(</span><span class="n">tmlplot</span><span class="o">.</span><span class="n">color_palettes</span><span class="p">(</span><span class="s1">&#39;zesty&#39;</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">zest</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">zest</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>  <span class="c1"># make the -180 and 180 degree colour the same</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">expanded_zest</span> <span class="o">=</span> <span class="n">tmlplot</span><span class="o">.</span><span class="n">expand_palette</span><span class="p">(</span><span class="n">zest</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
@@ -1275,7 +1275,7 @@ Useful for seeing the overall tetragonality of a lattice.</li>
 </table>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">atomap.api</span> <span class="k">as</span> <span class="nn">am</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="k">import</span> <span class="n">ratio_of_lattice_spacings</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="kn">import</span> <span class="n">ratio_of_lattice_spacings</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">atom_lattice</span> <span class="o">=</span> <span class="n">am</span><span class="o">.</span><span class="n">dummy_data</span><span class="o">.</span><span class="n">get_polarization_film_atom_lattice</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span> <span class="o">=</span> <span class="n">atom_lattice</span><span class="o">.</span><span class="n">sublattice_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">find_nearest_neighbors</span><span class="p">()</span>
@@ -1329,7 +1329,7 @@ lists of the x, y, and angle values.</li>
 </table>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">atomap.api</span> <span class="k">as</span> <span class="nn">am</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="k">import</span> <span class="n">rotation_of_atom_planes</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="kn">import</span> <span class="n">rotation_of_atom_planes</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">atom_lattice</span> <span class="o">=</span> <span class="n">am</span><span class="o">.</span><span class="n">dummy_data</span><span class="o">.</span><span class="n">get_polarization_film_atom_lattice</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span> <span class="o">=</span> <span class="n">atom_lattice</span><span class="o">.</span><span class="n">sublattice_list</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">find_nearest_neighbors</span><span class="p">()</span>
@@ -1380,7 +1380,7 @@ different style (e.g., contour map), or you want the angle information:</p>
 </table>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">atomap.api</span> <span class="k">as</span> <span class="nn">am</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.element_tools</span> <span class="k">import</span> <span class="n">atomic_radii_in_pixels</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.element_tools</span> <span class="kn">import</span> <span class="n">atomic_radii_in_pixels</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">image</span> <span class="o">=</span> <span class="n">am</span><span class="o">.</span><span class="n">dummy_data</span><span class="o">.</span><span class="n">get_simple_cubic_signal</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1423,7 +1423,7 @@ a periodictable.core.Element object for further use.</p>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.element_tools</span> <span class="k">import</span> <span class="n">get_and_return_element</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.element_tools</span> <span class="kn">import</span> <span class="n">get_and_return_element</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Moly</span> <span class="o">=</span> <span class="n">get_and_return_element</span><span class="p">(</span><span class="n">element_symbol</span><span class="o">=</span><span class="s1">&#39;Mo&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Moly</span><span class="o">.</span><span class="n">symbol</span><span class="p">)</span>
 <span class="go">Mo</span>
@@ -1503,7 +1503,7 @@ an atomic column configuration.</li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.element_tools</span> <span class="k">import</span> <span class="n">split_and_sort_element</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.element_tools</span> <span class="kn">import</span> <span class="n">split_and_sort_element</span>
 </pre></div>
 </div>
 <p>simple atomic column</p>
@@ -1545,7 +1545,7 @@ column, as fraction of the distance to the nearest neighbour.</li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.intensity_tools</span> <span class="k">import</span> <span class="n">get_pixel_count_from_image_slice</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.intensity_tools</span> <span class="kn">import</span> <span class="n">get_pixel_count_from_image_slice</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.external.atomap_devel_012.dummy_data</span> <span class="k">as</span> <span class="nn">dummy_data</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span> <span class="o">=</span> <span class="n">dummy_data</span><span class="o">.</span><span class="n">get_simple_cubic_sublattice</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span><span class="o">.</span><span class="n">find_nearest_neighbors</span><span class="p">()</span>
@@ -1597,7 +1597,7 @@ be None.</li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.intensity_tools</span> <span class="k">import</span> <span class="n">get_sublattice_intensity</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.intensity_tools</span> <span class="kn">import</span> <span class="n">get_sublattice_intensity</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.external.atomap_devel_012.dummy_data</span> <span class="k">as</span> <span class="nn">dummy_data</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span> <span class="o">=</span> <span class="n">dummy_data</span><span class="o">.</span><span class="n">get_simple_cubic_sublattice</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span><span class="o">.</span><span class="n">find_nearest_neighbors</span><span class="p">()</span>
@@ -1666,7 +1666,7 @@ be None.</li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.intensity_tools</span> <span class="k">import</span> <span class="n">remove_average_background</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.intensity_tools</span> <span class="kn">import</span> <span class="n">remove_average_background</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.external.atomap_devel_012.dummy_data</span> <span class="k">as</span> <span class="nn">dummy_data</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># import atomap.dummy_data as dummy_data</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span> <span class="o">=</span> <span class="n">dummy_data</span><span class="o">.</span><span class="n">get_simple_cubic_sublattice</span><span class="p">()</span>
@@ -1713,7 +1713,7 @@ be None.</li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.intensity_tools</span> <span class="k">import</span> <span class="n">remove_local_background</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.intensity_tools</span> <span class="kn">import</span> <span class="n">remove_local_background</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.external.atomap_devel_012.dummy_data</span> <span class="k">as</span> <span class="nn">dummy_data</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span> <span class="o">=</span> <span class="n">dummy_data</span><span class="o">.</span><span class="n">get_simple_cubic_sublattice</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span><span class="o">.</span><span class="n">find_nearest_neighbors</span><span class="p">()</span>
@@ -1801,7 +1801,7 @@ respectively.</li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.model_creation</span> <span class="k">import</span> <span class="n">change_sublattice_atoms_via_intensity</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.model_creation</span> <span class="kn">import</span> <span class="n">change_sublattice_atoms_via_intensity</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.external.atomap_devel_012.dummy_data</span> <span class="k">as</span> <span class="nn">dummy_data</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># import atomap.dummy_data as dummy_data</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span> <span class="o">=</span> <span class="n">dummy_data</span><span class="o">.</span><span class="n">get_simple_cubic_sublattice</span><span class="p">()</span>
@@ -1840,8 +1840,8 @@ new_atom_positions.</p>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.model_creation</span> <span class="k">import</span> <span class="n">change_sublattice_pseudo_inplace</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.external.atomap_devel_012.api</span> <span class="k">import</span> <span class="n">Sublattice</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.model_creation</span> <span class="kn">import</span> <span class="n">change_sublattice_pseudo_inplace</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.external.atomap_devel_012.api</span> <span class="kn">import</span> <span class="n">Sublattice</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">atom_positions</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">image_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
@@ -1902,7 +1902,7 @@ True. This can be used to  stop refinement loops if neccessary.</p>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.model_creation</span> <span class="k">import</span> <span class="p">(</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.model_creation</span> <span class="kn">import</span> <span class="p">(</span>
 <span class="gp">... </span>    <span class="n">count_atoms_in_sublattice_list</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">compare_count_atoms_in_sublattice_list</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.external.atomap_devel_012.dummy_data</span> <span class="k">as</span> <span class="nn">dummy_data</span>
@@ -1983,7 +1983,7 @@ configurations</li>
 </table>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.model_creation</span> <span class="k">import</span> <span class="n">count_all_individual_elements</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.model_creation</span> <span class="kn">import</span> <span class="n">count_all_individual_elements</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">header</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Se_1&#39;</span><span class="p">,</span> <span class="s1">&#39;Mo_1&#39;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">counts</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">counts</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">header</span><span class="p">)</span>
@@ -2017,7 +2017,7 @@ configurations</li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.model_creation</span> <span class="k">import</span> <span class="n">count_atoms_in_sublattice_list</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.model_creation</span> <span class="kn">import</span> <span class="n">count_atoms_in_sublattice_list</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.external.atomap_devel_012.dummy_data</span> <span class="k">as</span> <span class="nn">dummy_data</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># import atomap.dummy_data as dummy_data</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">atom_lattice</span> <span class="o">=</span> <span class="n">dummy_data</span><span class="o">.</span><span class="n">get_simple_atom_lattice_two_sublattices</span><span class="p">()</span>
@@ -2066,7 +2066,7 @@ configurations</li>
 </table>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.model_creation</span> <span class="k">import</span> <span class="n">count_element_in_pandas_df</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.model_creation</span> <span class="kn">import</span> <span class="n">count_element_in_pandas_df</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">header</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Se_1&#39;</span><span class="p">,</span> <span class="s1">&#39;Mo_1&#39;</span><span class="p">,</span> <span class="s1">&#39;S_2&#39;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">counts</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">counts</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">header</span><span class="p">)</span>
@@ -2136,7 +2136,7 @@ so that the middle_intensity_list[-1] == max_element_intensity</p>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.model_creation</span> <span class="k">import</span> <span class="n">get_most_common_sublattice_element</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.model_creation</span> <span class="kn">import</span> <span class="n">get_most_common_sublattice_element</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.external.atomap_devel_012.dummy_data</span> <span class="k">as</span> <span class="nn">dummy_data</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># import atomap.dummy_data as dummy_data</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span> <span class="o">=</span> <span class="n">dummy_data</span><span class="o">.</span><span class="n">get_simple_cubic_sublattice</span><span class="p">()</span>
@@ -2273,7 +2273,7 @@ to a new sublattice.</li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.model_creation</span> <span class="k">import</span> <span class="p">(</span><span class="n">image_difference_position</span><span class="p">,</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.model_creation</span> <span class="kn">import</span> <span class="p">(</span><span class="n">image_difference_position</span><span class="p">,</span>
 <span class="gp">... </span>                                  <span class="n">change_sublattice_pseudo_inplace</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.external.atomap_devel_012.dummy_data</span> <span class="k">as</span> <span class="nn">dummy_data</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span> <span class="o">=</span> <span class="n">dummy_data</span><span class="o">.</span><span class="n">get_simple_cubic_with_vacancies_sublattice</span><span class="p">(</span>
@@ -2347,7 +2347,7 @@ sublattice will be given</li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.model_creation</span> <span class="k">import</span> <span class="n">image_difference_position</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.model_creation</span> <span class="kn">import</span> <span class="n">image_difference_position</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.external.atomap_devel_012.dummy_data</span> <span class="k">as</span> <span class="nn">dummy_data</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># import atomap.dummy_data as dummy_data</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span> <span class="o">=</span> <span class="n">dummy_data</span><span class="o">.</span><span class="n">get_simple_cubic_with_vacancies_sublattice</span><span class="p">(</span>
@@ -2509,7 +2509,7 @@ The second string has not been implemented within this function.</li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.model_creation</span> <span class="k">import</span> <span class="n">image_difference_position</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.model_creation</span> <span class="kn">import</span> <span class="n">image_difference_position</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.external.atomap_devel_012.dummy_data</span> <span class="k">as</span> <span class="nn">dummy_data</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span> <span class="o">=</span> <span class="n">dummy_data</span><span class="o">.</span><span class="n">get_simple_cubic_with_vacancies_sublattice</span><span class="p">(</span>
 <span class="gp">... </span>                                            <span class="n">image_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -2683,7 +2683,7 @@ Default of None is just set to (1, 1, 1)</li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.simulations</span> <span class="k">import</span> <span class="n">simulate_with_prismatic</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.simulations</span> <span class="kn">import</span> <span class="n">simulate_with_prismatic</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.example_data</span> <span class="k">as</span> <span class="nn">example_data</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">file_path</span> <span class="o">=</span> <span class="n">path_to_example_data_MoS2_hex_prismatic</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">simulate_with_prismatic</span><span class="p">(</span>
@@ -2740,8 +2740,8 @@ refined.</li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="k">import</span> <span class="n">get_simple_cubic_signal</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_processing</span> <span class="k">import</span> <span class="p">(</span><span class="n">choose_points_on_image</span><span class="p">,</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="kn">import</span> <span class="n">get_simple_cubic_signal</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_processing</span> <span class="kn">import</span> <span class="p">(</span><span class="n">choose_points_on_image</span><span class="p">,</span>
 <span class="gp">... </span>            <span class="n">calibrate_intensity_distance_with_sublattice_roi</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">image</span> <span class="o">=</span> <span class="n">get_simple_cubic_signal</span><span class="p">()</span>
@@ -2820,10 +2820,10 @@ and <cite>cropping_area</cite>.</li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">scipy.ndimage.filters</span> <span class="k">import</span> <span class="n">gaussian_filter</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">scipy.ndimage.filters</span> <span class="kn">import</span> <span class="n">gaussian_filter</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.example_data</span> <span class="k">as</span> <span class="nn">example_data</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_processing</span> <span class="k">import</span> <span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_processing</span> <span class="kn">import</span> <span class="p">(</span>
 <span class="gp">... </span>    <span class="n">compare_two_image_and_create_filtered_image</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">experiment</span> <span class="o">=</span> <span class="n">example_data</span><span class="o">.</span><span class="n">load_Se_implanted_MoS2_data</span><span class="p">()</span> <span class="c1"># example</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">experiment</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">gaussian_filter</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
@@ -2866,8 +2866,8 @@ calibrated to a unit other than pixel.</li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="k">import</span> <span class="n">get_simple_cubic_signal</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_processing</span> <span class="k">import</span> <span class="p">(</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="kn">import</span> <span class="n">get_simple_cubic_signal</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_processing</span> <span class="kn">import</span> <span class="p">(</span>
 <span class="gp">... </span>    <span class="n">choose_points_on_image</span><span class="p">,</span> <span class="n">crop_image_hs</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">image</span> <span class="o">=</span> <span class="n">get_simple_cubic_signal</span><span class="p">()</span>
@@ -2907,7 +2907,7 @@ Use the visualise_dg_filter function to find the optimium values.</li>
 </table>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.signal_processing</span> <span class="k">as</span> <span class="nn">tmlsig</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.example_data</span> <span class="k">import</span> <span class="n">load_Se_implanted_MoS2_data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.example_data</span> <span class="kn">import</span> <span class="n">load_Se_implanted_MoS2_data</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">image</span> <span class="o">=</span> <span class="n">load_Se_implanted_MoS2_data</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -2964,7 +2964,7 @@ filtered variables table.</li>
 </table>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.example_data</span> <span class="k">as</span> <span class="nn">example_data</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_processing</span> <span class="k">import</span> <span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_processing</span> <span class="kn">import</span> <span class="p">(</span>
 <span class="gp">... </span>    <span class="n">double_gaussian_fft_filter</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">experiment</span> <span class="o">=</span> <span class="n">example_data</span><span class="o">.</span><span class="n">load_Se_implanted_MoS2_data</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">experiment</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
@@ -3000,7 +3000,7 @@ amplitude.</li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_processing</span> <span class="k">import</span> <span class="p">(</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_processing</span> <span class="kn">import</span> <span class="p">(</span>
 <span class="gp">... </span>    <span class="n">get_xydata_from_list_of_intensities</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">fit_1D_gaussian_to_data</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">amp</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">0.5</span>
@@ -3040,9 +3040,9 @@ to a float.</li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="k">import</span> <span class="p">(</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="kn">import</span> <span class="p">(</span>
 <span class="gp">... </span>    <span class="n">get_simple_cubic_sublattice_positions_on_vac</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_processing</span> <span class="k">import</span> <span class="n">get_cell_image</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_processing</span> <span class="kn">import</span> <span class="n">get_cell_image</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span> <span class="o">=</span> <span class="n">get_simple_cubic_sublattice_positions_on_vac</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cell_image</span> <span class="o">=</span> <span class="n">get_cell_image</span><span class="p">(</span><span class="n">sublattice</span><span class="o">.</span><span class="n">image</span><span class="p">,</span> <span class="n">sublattice</span><span class="o">.</span><span class="n">x_position</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">sublattice</span><span class="o">.</span><span class="n">y_position</span><span class="p">)</span>
@@ -3103,8 +3103,8 @@ to matplotlib plotting issues.</li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="k">import</span> <span class="n">get_simple_cubic_signal</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_processing</span> <span class="k">import</span> <span class="p">(</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="kn">import</span> <span class="n">get_simple_cubic_signal</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_processing</span> <span class="kn">import</span> <span class="p">(</span>
 <span class="gp">... </span>    <span class="n">choose_mask_coordinates</span><span class="p">,</span> <span class="n">get_masked_ifft</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">image</span> <span class="o">=</span> <span class="n">get_simple_cubic_signal</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mask_coords</span> <span class="o">=</span> <span class="n">choose_mask_coordinates</span><span class="p">(</span><span class="n">image</span><span class="p">)</span> <span class="c1"># use this on the image!</span>
@@ -3164,7 +3164,7 @@ must be a better way of doing this? maybe automate the binning choice</li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_processing</span> <span class="k">import</span> <span class="n">get_xydata_from_list_of_intensities</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_processing</span> <span class="kn">import</span> <span class="n">get_xydata_from_list_of_intensities</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">amp</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">0.5</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sub1_inten</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span> <span class="o">=</span> <span class="n">get_xydata_from_list_of_intensities</span><span class="p">(</span><span class="n">sub1_inten</span><span class="p">,</span>
@@ -3224,7 +3224,7 @@ center of the array.</li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_processing</span> <span class="k">import</span> <span class="n">make_gaussian</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_processing</span> <span class="kn">import</span> <span class="n">make_gaussian</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">array</span> <span class="o">=</span> <span class="n">make_gaussian</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">im</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
@@ -3268,8 +3268,8 @@ attribute is updated.</li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="k">import</span> <span class="n">get_simple_cubic_sublattice</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_processing</span> <span class="k">import</span> <span class="p">(</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="kn">import</span> <span class="n">get_simple_cubic_sublattice</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_processing</span> <span class="kn">import</span> <span class="p">(</span>
 <span class="gp">... </span>    <span class="n">mean_and_std_nearest_neighbour_distances</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span> <span class="o">=</span> <span class="n">get_simple_cubic_sublattice</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mean</span><span class="p">,</span> <span class="n">std</span> <span class="o">=</span> <span class="n">mean_and_std_nearest_neighbour_distances</span><span class="p">(</span><span class="n">sublattice</span><span class="p">)</span>
@@ -3303,7 +3303,7 @@ between two images.</p>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="k">import</span> <span class="n">get_simple_cubic_signal</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="kn">import</span> <span class="n">get_simple_cubic_signal</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">imageA</span> <span class="o">=</span> <span class="n">get_simple_cubic_signal</span><span class="p">()</span><span class="o">.</span><span class="n">data</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">imageB</span> <span class="o">=</span> <span class="n">get_simple_cubic_signal</span><span class="p">(</span><span class="n">image_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mse_number</span><span class="p">,</span> <span class="n">ssm_number</span> <span class="o">=</span> <span class="n">measure_image_errors</span><span class="p">(</span><span class="n">imageA</span><span class="p">,</span> <span class="n">imageB</span><span class="p">)</span>
@@ -3339,7 +3339,7 @@ between two images.</p>
 <dl class="function">
 <dt id="temul.signal_processing.plot_gaussian_fit">
 <code class="descclassname">temul.signal_processing.</code><code class="descname">plot_gaussian_fit</code><span class="sig-paren">(</span><em>xdata</em>, <em>ydata</em>, <em>function</em>, <em>amp</em>, <em>mu</em>, <em>sigma</em>, <em>gauss_art='r--'</em>, <em>gauss_label='Gauss Fit'</em>, <em>plot_data=True</em>, <em>data_art='ko'</em>, <em>data_label='Data Points'</em>, <em>plot_fill=False</em>, <em>facecolor='r'</em>, <em>alpha=0.5</em><span class="sig-paren">)</span><a class="headerlink" href="#temul.signal_processing.plot_gaussian_fit" title="Permalink to this definition">¶</a></dt>
-<dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_processing</span> <span class="k">import</span> <span class="p">(</span><span class="n">fit_1D_gaussian_to_data</span><span class="p">,</span>
+<dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_processing</span> <span class="kn">import</span> <span class="p">(</span><span class="n">fit_1D_gaussian_to_data</span><span class="p">,</span>
 <span class="gp">... </span>                                <span class="n">plot_gaussian_fit</span><span class="p">,</span>
 <span class="gp">... </span>                                <span class="n">return_fitting_of_1D_gaussian</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">amp</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">0.5</span>
@@ -3422,7 +3422,7 @@ gaussian fit of the data.</p>
 amp, mu, sigma : see fit_1D_gaussian_to_data() for more details</p>
 <p>optimised parameters (popt) and estimated covariance (pcov) of the
 fitted gaussian function.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_processing</span> <span class="k">import</span> <span class="p">(</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_processing</span> <span class="kn">import</span> <span class="p">(</span>
 <span class="gp">... </span>    <span class="n">get_xydata_from_list_of_intensities</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">return_fitting_of_1D_gaussian</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">fit_1D_gaussian_to_data</span><span class="p">)</span>
@@ -3490,9 +3490,9 @@ column, as fraction of the distance to the nearest neighbour.</li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="k">import</span> <span class="p">(</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="kn">import</span> <span class="p">(</span>
 <span class="gp">... </span>    <span class="n">get_simple_cubic_sublattice_positions_on_vac</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_processing</span> <span class="k">import</span> <span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_processing</span> <span class="kn">import</span> <span class="p">(</span>
 <span class="gp">... </span>    <span class="n">toggle_atom_refine_position_automatically</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span> <span class="o">=</span> <span class="n">get_simple_cubic_sublattice_positions_on_vac</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span><span class="o">.</span><span class="n">find_nearest_neighbors</span><span class="p">()</span>
@@ -3540,7 +3540,7 @@ image.</li>
 </table>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.signal_processing</span> <span class="k">as</span> <span class="nn">tmlsig</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.example_data</span> <span class="k">import</span> <span class="n">load_Se_implanted_MoS2_data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.example_data</span> <span class="kn">import</span> <span class="n">load_Se_implanted_MoS2_data</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">image</span> <span class="o">=</span> <span class="n">load_Se_implanted_MoS2_data</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tmlsig</span><span class="o">.</span><span class="n">visualise_dg_filter</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
 </pre></div>
@@ -3675,7 +3675,7 @@ image crop will be taken.</li>
 </table>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">atomap.api</span> <span class="k">as</span> <span class="nn">am</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_plotting</span> <span class="k">import</span> <span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_plotting</span> <span class="kn">import</span> <span class="p">(</span>
 <span class="gp">... </span>    <span class="n">compare_images_line_profile_two_images</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">imageA</span> <span class="o">=</span> <span class="n">am</span><span class="o">.</span><span class="n">dummy_data</span><span class="o">.</span><span class="n">get_simple_cubic_signal</span><span class="p">(</span><span class="n">image_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">imageB</span> <span class="o">=</span> <span class="n">am</span><span class="o">.</span><span class="n">dummy_data</span><span class="o">.</span><span class="n">get_simple_cubic_signal</span><span class="p">()</span>
@@ -3779,7 +3779,7 @@ Grabs starting two, middle two, last two values in hex, multiplies by
 </div>
 <p>Create a matplotlib cmap from a palette with the help of
 matplotlib.colors.from_levels_and_colors()</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">matplotlib.colors</span> <span class="k">import</span> <span class="n">from_levels_and_colors</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">matplotlib.colors</span> <span class="kn">import</span> <span class="n">from_levels_and_colors</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">zest</span> <span class="o">=</span> <span class="n">tmlplot</span><span class="o">.</span><span class="n">hex_to_rgb</span><span class="p">(</span><span class="n">tmlplot</span><span class="o">.</span><span class="n">color_palettes</span><span class="p">(</span><span class="s1">&#39;zesty&#39;</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">zest</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">zest</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>  <span class="c1"># make the top and bottom colour the same</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cmap</span><span class="p">,</span> <span class="n">norm</span> <span class="o">=</span> <span class="n">from_levels_and_colors</span><span class="p">(</span>
@@ -3906,7 +3906,7 @@ name of the file given by “prismatic_xyz_filename”.</li>
 </table>
 <p class="rubric">Examples</p>
 <p>See example_data for the vesta xyz file.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.io</span> <span class="k">import</span> <span class="n">convert_vesta_xyz_to_prismatic_xyz</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.io</span> <span class="kn">import</span> <span class="n">convert_vesta_xyz_to_prismatic_xyz</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">prismatic_xyz</span> <span class="o">=</span> <span class="n">convert_vesta_xyz_to_prismatic_xyz</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="s1">&#39;temul/example_data/prismatic/example_MoS2_vesta_xyz.xyz&#39;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="s1">&#39;temul/example_data/prismatic/MoS2_hex_prismatic.xyz&#39;</span><span class="p">,</span>
@@ -4001,7 +4001,7 @@ Also plots saves a png.</p>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.io</span> <span class="k">import</span> <span class="n">load_prismatic_mrc_with_hyperspy</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.io</span> <span class="kn">import</span> <span class="n">load_prismatic_mrc_with_hyperspy</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">load_prismatic_mrc_with_hyperspy</span><span class="p">(</span><span class="s2">&quot;temul/example_data/prismatic/&quot;</span>
 <span class="gp">... </span>        <span class="s2">&quot;prism_2Doutput_prismatic_simulation.mrc&quot;</span><span class="p">)</span>
 <span class="go">&lt;Signal2D, title: , dimensions: (|1182, 773)&gt;</span>
@@ -4078,7 +4078,7 @@ with temul.model_creation.create_dataframe_for_cif().</p>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="k">import</span> <span class="n">get_distorted_cubic_signal_adjustable</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="kn">import</span> <span class="n">get_distorted_cubic_signal_adjustable</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">get_distorted_cubic_signal_adjustable</span><span class="p">(</span><span class="n">y_offset</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
@@ -4108,7 +4108,7 @@ with temul.model_creation.create_dataframe_for_cif().</p>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="k">import</span> <span class="n">get_distorted_cubic_sublattice_adjustable</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="kn">import</span> <span class="n">get_distorted_cubic_sublattice_adjustable</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span> <span class="o">=</span> <span class="n">get_distorted_cubic_sublattice_adjustable</span><span class="p">(</span><span class="n">y_offset</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
@@ -4135,7 +4135,7 @@ are shifted in the film.</p>
 </table>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="k">import</span> <span class="n">get_polarisation_dummy_dataset</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="kn">import</span> <span class="n">get_polarisation_dummy_dataset</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">atom_lattice</span> <span class="o">=</span> <span class="n">get_polarisation_dummy_dataset</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">atom_lattice</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span> <span class="o">=</span> <span class="n">atom_lattice</span><span class="o">.</span><span class="n">sublattice_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -4152,7 +4152,7 @@ are shifted in the film.</p>
 </pre></div>
 </div>
 <p>You can they use the plot_polarisation_vectors function to visualise:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="k">import</span> <span class="n">plot_polarisation_vectors</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="kn">import</span> <span class="n">plot_polarisation_vectors</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">unit_vector</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plot_style</span><span class="o">=</span><span class="s2">&quot;vector&quot;</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">overlay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;yellow&#39;</span><span class="p">,</span>
@@ -4224,7 +4224,7 @@ vacancies.</li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="k">import</span> <span class="n">get_simple_cubic_sublattice</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="kn">import</span> <span class="n">get_simple_cubic_sublattice</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span> <span class="o">=</span> <span class="n">get_simple_cubic_sublattice</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
@@ -4264,7 +4264,7 @@ account in the plot_polarisation_vectors function, but not here.</p>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="k">import</span> <span class="n">polarisation_colorwheel_test_dataset</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="kn">import</span> <span class="n">polarisation_colorwheel_test_dataset</span>
 </pre></div>
 </div>
 <p>Use a cyclic colormap for better understanding of vectors</p>
