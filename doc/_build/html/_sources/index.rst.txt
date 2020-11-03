@@ -21,6 +21,8 @@ atomic resolution images. It is mostly built upon the data structure of
    Just navigate to the "publication_examples" folder and click on the ".ipynb" files.
 
 
+.. include:: news.rst
+
 
 .. toctree::
    :maxdepth: 2

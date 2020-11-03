@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Welcome to TEMUL Toolkit’s documentation! &mdash; TEMUL Toolkit v0.1-alpha documentation</title>
+  <title>Welcome to TEMUL Toolkit’s documentation! &mdash; TEMUL Toolkit v0.1.2 documentation</title>
   
 
   
@@ -28,7 +28,7 @@
       <script type="text/javascript">
           var DOCUMENTATION_OPTIONS = {
               URL_ROOT:'./',
-              VERSION:'v0.1-alpha',
+              VERSION:'v0.1.2',
               LANGUAGE:'None',
               COLLAPSE_INDEX:false,
               FILE_SUFFIX:'.html',
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                Version 0.1-alpha
+                Version 0.1.2
               </div>
             
           
@@ -174,6 +174,23 @@
 <p>The TEMUL Toolkit is a suit of functions and classes for analysis and visualisation of
 atomic resolution images. It is mostly built upon the data structure of
 <a class="reference external" href="https://hyperspy.org/">HyperSpy</a> and <a class="reference external" href="https://atomap.org/">Atomap</a>.</p>
+<div class="section" id="news">
+<span id="install"></span><h2>News<a class="headerlink" href="#news" title="Permalink to this headline">¶</a></h2>
+<p><strong>03/11/2020: Version 0.1.2 released</strong></p>
+<p>This version contains minor changes from the 0.1.1 release. It removes pyCifRW
+as a dependency, due to PyCifRW requiring Microsoft Visual Studio.</p>
+<p><strong>02/11/2020: Version 0.1.1 released</strong></p>
+<p>This version contains many changes to the TEMUL Toolkit.</p>
+<blockquote>
+<div><ul class="simple">
+<li>More parameters have been added to the polarisation module’s <code class="code python docutils literal notranslate"><span class="name"><span class="pre">plot_polarisation_vectors</span></span></code> function. Check out the walkthrough <a class="reference internal" href="polarisation_vectors_tutorial.html#polarisation-vectors-tutorial"><span class="std std-ref">here</span></a> for more info!</li>
+<li><a class="reference internal" href="dg_visualiser_tutorial.html#dg-visualiser-tutorial"><span class="std std-ref">Interactive double Gaussian filtering</span></a> with the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">visualise_dg_filter</span></span></code> function in the signal_processing module. Thanks to <a class="reference external" href="https://github.com/michaelhennessyjr">Michael Hennessy</a> for the help!</li>
+<li>The <code class="code python docutils literal notranslate"><span class="name"><span class="pre">calculate_atom_plane_curvature</span></span></code> function has been added, creating the lattice_structure_tools module.</li>
+<li>Strain, rotation, and c/a mapping can now be done <a class="reference internal" href="structure_map_tutorial.html#structure-map-tutorial"><span class="std std-ref">here</span></a>.</li>
+<li>Masked FFT filtering to obtain iFFTs. See <a class="reference internal" href="masked_fft_tutorial.html#masked-fft-tutorial"><span class="std std-ref">this guide</span></a> to see some code!</li>
+<li>Example walk-throughs for many features of the TEMUL Toolkit are now on this website! Check out the menu on the left to get started!</li>
+</ul>
+</div></blockquote>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Contents</span></p>
 <ul>
@@ -217,16 +234,20 @@ atomic resolution images. It is mostly built upon the data structure of
 </li>
 </ul>
 </div>
+</div>
 <div class="section" id="installation">
-<span id="install"></span><h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<p>The TEMUL Toolkit can be installed easily with PIP.</p>
+<span id="id1"></span><h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>The TEMUL Toolkit can be installed easily with PIP (see exceptions below if you’re having issues!).</p>
 <p><code class="code bash docutils literal notranslate"><span class="pre">$</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">temul-toolkit</span></code></p>
 <p>Then, it can be imported with the name “temul”. For example, to import the
 <code class="code python docutils literal notranslate"><span class="name"><span class="pre">polarisation</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">py</span></span></code> module, use:</p>
 <p><code class="code python docutils literal notranslate"><span class="keyword namespace"><span class="pre">import</span></span> <span class="name namespace"><span class="pre">temul.polarisation</span></span> <span class="keyword"><span class="pre">as</span></span> <span class="name namespace"><span class="pre">tmlpol</span></span></code></p>
-<p>Note 1: If you wish to use the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">simulations</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">py</span></span></code> or <code class="code python docutils literal notranslate"><span class="name"><span class="pre">model_refiner</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">py</span></span></code>
-modules, you will need to install PyPrismatic.</p>
-<p>Note 2: If you’re using any of the functions or classes that require element quantification:</p>
+<p>Note 1: If you want to use the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">io</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">write_cif_from_dataframe</span></span></code> function, you
+will need to install pyCifRW version 4.3. This requires Visual Studio.</p>
+<p>Note 2: If you wish to use the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">simulations</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">py</span></span></code> or <code class="code python docutils literal notranslate"><span class="name"><span class="pre">model_refiner</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">py</span></span></code>
+modules, you will need to install PyPrismatic. This requires Visual Studio and other
+dependencies.</p>
+<p>Note 3: If you’re using any of the functions or classes that require element quantification:</p>
 <blockquote>
 <div><ul class="simple">
 <li>navigate to the “temul/external” directory, copy the “atomap_devel_012” folder and paste that in your “site-packages” directory.</li>

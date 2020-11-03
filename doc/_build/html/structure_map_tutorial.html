@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Plot Lattice Structure Maps &mdash; TEMUL Toolkit v0.1-alpha documentation</title>
+  <title>Plot Lattice Structure Maps &mdash; TEMUL Toolkit v0.1.2 documentation</title>
   
 
   
@@ -28,7 +28,7 @@
       <script type="text/javascript">
           var DOCUMENTATION_OPTIONS = {
               URL_ROOT:'./',
-              VERSION:'v0.1-alpha',
+              VERSION:'v0.1.2',
               LANGUAGE:'None',
               COLLAPSE_INDEX:false,
               FILE_SUFFIX:'.html',
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                Version 0.1-alpha
+                Version 0.1.2
               </div>
             
           
@@ -185,9 +185,9 @@ we will use a dummy dataset to show the different ways each map can be created.
 In future, tutorials on published experimental data will also be available.</p>
 <div class="section" id="prepare-and-plot-the-dummy-dataset">
 <h2>Prepare and Plot the dummy dataset<a class="headerlink" href="#prepare-and-plot-the-dummy-dataset" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.polarisation</span> <span class="kn">as</span> <span class="nn">tmlp</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.polarisation</span> <span class="k">as</span> <span class="nn">tmlp</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="kn">import</span> <span class="n">get_polarisation_dummy_dataset</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">atom_lattice</span> <span class="o">=</span> <span class="n">get_polarisation_dummy_dataset</span><span class="p">(</span><span class="n">image_noise</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">atom_lattice</span> <span class="o">=</span> <span class="n">get_polarisation_dummy_dataset</span><span class="p">(</span><span class="n">image_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span> <span class="o">=</span> <span class="n">atom_lattice</span><span class="o">.</span><span class="n">sublattice_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeB</span> <span class="o">=</span> <span class="n">atom_lattice</span><span class="o">.</span><span class="n">sublattice_list</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">construct_zone_axes</span><span class="p">()</span>
@@ -218,7 +218,7 @@ can be done with Hyperspy, read their <a class="reference external" href="https:
 <p>Setting the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">filename</span></span></code> parameter to any string will save the outputted plot
 and the .hspy signal (Hyperspy’s hdf5 format). This applies to all structure maps
 discussed in this tutorial.</p>
-<p>Setting <code class="code python docutils literal notranslate"><span class="name"><span class="pre">return_x_y_z</span></span><span class="operator"><span class="pre">=</span></span><span class="name builtin pseudo"><span class="pre">False</span></span></code> will return the strain map along with the
+<p>Setting <code class="code python docutils literal notranslate"><span class="name"><span class="pre">return_x_y_z</span></span><span class="operator"><span class="pre">=</span></span><span class="keyword constant"><span class="pre">False</span></span></code> will return the strain map along with the
 x and y coordinates along with their corresponding strain values. One can then
 use these values externally, e.g., create a matplotlib tricontour plot). This
 applies to all structure maps discussed in this tutorial.</p>
@@ -229,7 +229,7 @@ applies to all structure maps discussed in this tutorial.</p>
 successive atoms and the horizontal for all atoms in the given zone axis. See
 <a class="reference external" href="https://atomap.org/analysing_atom_lattices.html#angle-between-atoms">Atomap</a>
 for other options.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">degrees</span><span class="o">=</span><span class="bp">True</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">degrees</span><span class="o">=</span><span class="kc">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">rotation_map</span> <span class="o">=</span> <span class="n">tmlp</span><span class="o">.</span><span class="n">rotation_of_atom_planes</span><span class="p">(</span><span class="n">sublatticeB</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
 <span class="gp">... </span>                    <span class="n">units</span><span class="o">=</span><span class="n">units</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="n">sampling</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="n">degrees</span><span class="p">)</span>
 
@@ -258,7 +258,7 @@ two sublattice zone axes. Useful for plotting the <em>c</em>/<em>a</em> Ratio.</
 <a class="reference internal image-reference" href="_images/spacings_0.png"><img alt="_images/spacings_0.png" src="_images/spacings_0.png" style="width: 193.0px; height: 157.0px;" /></a>
 <a class="reference internal image-reference" href="_images/spacings_1.png"><img alt="_images/spacings_1.png" src="_images/spacings_1.png" style="width: 192.5px; height: 158.0px;" /></a>
 <a class="reference internal image-reference" href="_images/spacings_ratio_01.png"><img alt="_images/spacings_ratio_01.png" src="_images/spacings_ratio_01.png" style="width: 191.0px; height: 156.0px;" /></a>
-<p>One can also use <code class="code python docutils literal notranslate"><span class="name"><span class="pre">ideal_ratio_one</span></span><span class="operator"><span class="pre">=</span></span><span class="name builtin pseudo"><span class="pre">False</span></span></code> to view the direction of tetragonality.</p>
+<p>One can also use <code class="code python docutils literal notranslate"><span class="name"><span class="pre">ideal_ratio_one</span></span><span class="operator"><span class="pre">=</span></span><span class="keyword constant"><span class="pre">False</span></span></code> to view the direction of tetragonality.</p>
 </div>
 </div>
 

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Line Intensity Profile Comparisons &mdash; TEMUL Toolkit v0.1-alpha documentation</title>
+  <title>Line Intensity Profile Comparisons &mdash; TEMUL Toolkit v0.1.2 documentation</title>
   
 
   
@@ -28,7 +28,7 @@
       <script type="text/javascript">
           var DOCUMENTATION_OPTIONS = {
               URL_ROOT:'./',
-              VERSION:'v0.1-alpha',
+              VERSION:'v0.1.2',
               LANGUAGE:'None',
               COLLAPSE_INDEX:false,
               FILE_SUFFIX:'.html',
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                Version 0.1-alpha
+                Version 0.1.2
               </div>
             
           
@@ -191,9 +191,9 @@ and simulated images.</p>
 <p>Here we load some dummy data using a variation of Atomap’s
 <code class="code python docutils literal notranslate"><span class="name"><span class="pre">get_simple_cubic_signal</span></span></code> function.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="kn">import</span> <span class="n">get_simple_cubic_signal</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">imageA</span> <span class="o">=</span> <span class="n">get_simple_cubic_signal</span><span class="p">(</span><span class="n">image_noise</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">amplitude</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">imageA</span> <span class="o">=</span> <span class="n">get_simple_cubic_signal</span><span class="p">(</span><span class="n">image_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">amplitude</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">imageA</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">imageB</span> <span class="o">=</span> <span class="n">get_simple_cubic_signal</span><span class="p">(</span><span class="n">image_noise</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">amplitude</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">imageB</span> <span class="o">=</span> <span class="n">get_simple_cubic_signal</span><span class="p">(</span><span class="n">image_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">amplitude</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">imageB</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sampling</span><span class="p">,</span> <span class="n">units</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="s1">&#39;nm&#39;</span>
 </pre></div>
@@ -207,7 +207,7 @@ and simulated images.</p>
 choose points on the image. This time we use <code class="code python docutils literal notranslate"><span class="name"><span class="pre">choose_points_on_image</span></span></code>.
 We need to choose four points for the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">compare_images_line_profile_one_image</span></span></code>
 function, as it draws two line profiles over one image.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.signal_plotting</span> <span class="kn">as</span> <span class="nn">tmlplt</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.signal_plotting</span> <span class="k">as</span> <span class="nn">tmlplt</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">line_profile_positions</span> <span class="o">=</span> <span class="n">tmlplt</span><span class="o">.</span><span class="n">choose_points_on_image</span><span class="p">(</span><span class="n">imageA</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">line_profile_positions</span>
 <span class="go">[[61.75132848177407, 99.25182885155715],</span>
@@ -236,7 +236,7 @@ Then, we plot this line intensity profile over the same position in two images.<
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/choose_points_of_image_2points.gif"><img alt="_images/choose_points_of_image_2points.gif" class="align-center" src="_images/choose_points_of_image_2points.gif" style="width: 480.0px; height: 360.0px;" /></a>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tmlplt</span><span class="o">.</span><span class="n">compare_images_line_profile_two_images</span><span class="p">(</span><span class="n">imageA</span><span class="p">,</span> <span class="n">imageB</span><span class="p">,</span>
 <span class="gp">... </span>            <span class="n">line_profile_positions</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">reduce_func</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span>
 <span class="gp">... </span>            <span class="n">sampling</span><span class="o">=</span><span class="n">sampling</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">units</span><span class="p">,</span> <span class="n">crop_offset</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>

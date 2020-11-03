@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installation &mdash; TEMUL Toolkit v0.1-alpha documentation</title>
+  <title>Installation &mdash; TEMUL Toolkit v0.1.2 documentation</title>
   
 
   
@@ -28,7 +28,7 @@
       <script type="text/javascript">
           var DOCUMENTATION_OPTIONS = {
               URL_ROOT:'./',
-              VERSION:'v0.1-alpha',
+              VERSION:'v0.1.2',
               LANGUAGE:'None',
               COLLAPSE_INDEX:false,
               FILE_SUFFIX:'.html',
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                Version 0.1-alpha
+                Version 0.1.2
               </div>
             
           
@@ -172,18 +172,21 @@
             
   <div class="section" id="installation">
 <span id="install"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<p>The TEMUL Toolkit can be installed easily with PIP.</p>
+<p>The TEMUL Toolkit can be installed easily with PIP (see exceptions below if you’re having issues!).</p>
 <p><code class="code bash docutils literal notranslate"><span class="pre">$</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">temul-toolkit</span></code></p>
 <p>Then, it can be imported with the name “temul”. For example, to import the
 <code class="code python docutils literal notranslate"><span class="name"><span class="pre">polarisation</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">py</span></span></code> module, use:</p>
-<p><code class="code python docutils literal notranslate"><span class="keyword namespace"><span class="pre">import</span></span> <span class="name namespace"><span class="pre">temul.polarisation</span></span> <span class="keyword namespace"><span class="pre">as</span></span> <span class="name namespace"><span class="pre">tmlpol</span></span></code></p>
-<p>Note 1: If you wish to use the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">simulations</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">py</span></span></code> or <code class="code python docutils literal notranslate"><span class="name"><span class="pre">model_refiner</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">py</span></span></code>
-modules, you will need to install PyPrismatic.</p>
-<p>Note 2: If you’re using any of the functions or classes that require element quantification:</p>
+<p><code class="code python docutils literal notranslate"><span class="keyword namespace"><span class="pre">import</span></span> <span class="name namespace"><span class="pre">temul.polarisation</span></span> <span class="keyword"><span class="pre">as</span></span> <span class="name namespace"><span class="pre">tmlpol</span></span></code></p>
+<p>Note 1: If you want to use the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">io</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">write_cif_from_dataframe</span></span></code> function, you
+will need to install pyCifRW version 4.3. This requires Visual Studio.</p>
+<p>Note 2: If you wish to use the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">simulations</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">py</span></span></code> or <code class="code python docutils literal notranslate"><span class="name"><span class="pre">model_refiner</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">py</span></span></code>
+modules, you will need to install PyPrismatic. This requires Visual Studio and other
+dependencies.</p>
+<p>Note 3: If you’re using any of the functions or classes that require element quantification:</p>
 <blockquote>
 <div><ul class="simple">
 <li>navigate to the “temul/external” directory, copy the “atomap_devel_012” folder and paste that in your “site-packages” directory.</li>
-<li>Then, when using atomap to create sublattices and quantify elements call atomap like this: <code class="code python docutils literal notranslate"><span class="keyword namespace"><span class="pre">import</span></span> <span class="name namespace"><span class="pre">atomap_devel_012.api</span></span> <span class="keyword namespace"><span class="pre">as</span></span> <span class="name namespace"><span class="pre">am</span></span></code>.</li>
+<li>Then, when using atomap to create sublattices and quantify elements call atomap like this: <code class="code python docutils literal notranslate"><span class="keyword namespace"><span class="pre">import</span></span> <span class="name namespace"><span class="pre">atomap_devel_012.api</span></span> <span class="keyword"><span class="pre">as</span></span> <span class="name namespace"><span class="pre">am</span></span></code>.</li>
 <li>This development version is slowly being folded into the master branch here: <a class="reference external" href="https://gitlab.com/atomap/atomap/-/issues/93">https://gitlab.com/atomap/atomap/-/issues/93</a> and any help or tips on implementation are welcome!</li>
 </ul>
 </div></blockquote>
