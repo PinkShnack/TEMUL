@@ -13,12 +13,15 @@ The TEMUL Toolkit is a suit of functions and classes for analysis and visualisat
 atomic resolution images. It is mostly built upon the data structure of 
 `HyperSpy <https://hyperspy.org/>`_ and `Atomap <https://atomap.org/>`_.
 
+..  Interactive Examples
+   --------------------
+   .. image:: https://mybinder.org/badge_logo.svg
+      :target: https://mybinder.org/v2/gh/PinkShnack/TEMUL/master
+   Click the button above to start some data analysis from published scientific papers!
+   Just navigate to the "publication_examples" folder and click on the ".ipynb" files.
 
-Documentation
--------------
 
-See the :ref:`api_doc` for examples and a full list of modules and functions.
-
+.. include:: news.rst
 
 
 .. toctree::
@@ -29,11 +32,13 @@ See the :ref:`api_doc` for examples and a full list of modules and functions.
    using_temul
    polarisation_vectors_tutorial
    structure_map_tutorial
-   PTO_Junction_moore
-   PTO_supercrystal_hadjimichael
    masked_fft_tutorial
    line_profile_tutorial
+   dg_visualiser_tutorial
    api_doc
+
+.. PTO_supercrystal_hadjimichael
+.. PTO_Junction_moore
 
 
 .. Look how easy it is to use:
@@ -49,6 +54,26 @@ See the :ref:`api_doc` for examples and a full list of modules and functions.
 .. include:: install.rst
 
 .. include:: using_temul.rst
+
+
+Code Documentation
+------------------
+
+See the :ref:`api_doc` for examples and a full list of modules and functions.
+
+
+Cite
+----
+
+To cite the latest TEMUL Toolkit version, use the following DOI:
+
+.. image:: https://www.zenodo.org/badge/203785298.svg
+   :target: https://www.zenodo.org/badge/latestdoi/203785298
+
+For example: Eoghan O'Connell, Michael Hennessy, & Eoin Moynihan. (2020, November 2). PinkShnack/TEMUL: Initial Temul-Toolkit Release (Version 0.1.1). Zenodo. http://doi.org/10.5281/zenodo.4185974
+
+If you wish to cite an older release of the TEMUL Toolkit, click on the above
+badge to find the relevant version.
 
 
 Contribute

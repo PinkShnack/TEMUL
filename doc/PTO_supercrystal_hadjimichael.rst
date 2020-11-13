@@ -10,11 +10,16 @@ Calculation of Atom Plane Curvature
 This tutorial follows the python scripts and jupyter notebooks found in the
 "publication_examples/PTO_supercrystal_hadjimichael" folder in the
 `TEMUL repository <https://github.com/PinkShnack/TEMUL>`_. The data and scripts
-used below can be downloaded from there.
+used below can be downloaded from there. You can also interact with the data
+without needing any downloads. Just click this button and navigate to that same folder:
+
+.. image:: https://mybinder.org/badge_logo.svg
+    :target: https://mybinder.org/v2/gh/PinkShnack/TEMUL/master
+
 The :python:`calculate_atom_plane_curvature` function has been adapted from the
 MATLAB script written by Dr. Marios Hadjimichael for the publication
 "M. Hadjimichael *et al*, Metal-ferroelectric supercrystals with periodically
-curved metallic layers, Nature Materials 2020". This MATLAB script can also be
+curved metallic layers, 2020". This MATLAB script can also be
 found in the same folder.
 
 The :python:`calculate_atom_plane_curvature` function in the
@@ -97,23 +102,23 @@ Set the extra initial fitting parameters
 Calculate the Curvature of Atom Planes
 --------------------------------------
 
-We want to see the curvature (approx. as strain gradient) in the SRO Sublattice
+We want to see the curvature in the SRO Sublattice
 
 .. code-block:: python
 
-    >>> str_grad_map = calculate_atom_plane_curvature(sublattice2, zone_vector_index,
+    >>> curvature_map = calculate_atom_plane_curvature(sublattice2, zone_vector_index,
     ...                     sampling=sampling, units=units, cmap=cmap, title=title,
     ...                     atom_planes=atom_planes, **kwargs)
 
 .. image:: ../publication_examples/PTO_supercrystal_hadjimichael/data/Curvature_Map_Example.png
-    :scale: 50 %
+    :scale: 90 %
 
 When using :python:`plot_and_return_fits=True`, the function will return the curve
 fittings, and plot each plane (plots not displayed).
 
 .. code-block:: python
 
-    >>> str_grad_map, fittings = calculate_atom_plane_curvature(sublattice2,
+    >>> curvature_map, fittings = calculate_atom_plane_curvature(sublattice2,
     ...                     zone_vector_index, sampling=sampling, units=units,
     ...                     cmap=cmap, title=title, atom_planes=atom_planes, **kwargs,
     ...                     plot_and_return_fits=True)

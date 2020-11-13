@@ -1,4 +1,16 @@
 
+'''
+Lead Titanate (PTO) domain wall junction data analysis walk-through
+
+The data from this notebook is published in:
+
+Kalani Moore, Michele Conroy, Eoghan N. O'Connell, Charlotte Cochard, Jennifer
+Mackel, Alan Harvey, Thomas E. Hooper, Andrew J. Bell, J. Marty Gregg, Ursel
+Bangert, Highly Charged 180° Head-to-Head Domain Walls in PbTiO3, Nature
+Communications Physics, 2020.
+
+'''
+
 import temul.polarisation as tmlp
 from temul.signal_plotting import compare_images_line_profile_one_image
 import atomap.api as am

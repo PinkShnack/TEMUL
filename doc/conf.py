@@ -25,9 +25,9 @@ copyright = '2020, Eoghan O\'Connell'
 author = 'Eoghan O\'Connell'
 
 # The short X.Y version
-version = 'Version 0.1-alpha'
+version = 'Version 0.1.2'
 # The full version, including alpha/beta/rc tags
-release = 'v0.1-alpha'
+release = 'v0.1.2'
 
 
 # -- General configuration ---------------------------------------------------

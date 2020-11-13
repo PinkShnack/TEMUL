@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 from tifffile import imwrite
 import numpy as np
 import hyperspy.api as hs
-import CifFile
 import pandas as pd
 from glob import glob
 import os
@@ -315,6 +314,7 @@ def write_cif_from_dataframe(dataframe,
     """
 
     # create cif
+    import CifFile
     cif_file = CifFile.CifFile()
 
     # create block to hold values

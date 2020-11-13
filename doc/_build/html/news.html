@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Search &mdash; TEMUL Toolkit v0.1.2 documentation</title>
+  <title>News &mdash; TEMUL Toolkit v0.1.2 documentation</title>
   
 
   
@@ -20,7 +20,6 @@
   
 
   
-    
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -35,9 +34,8 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-    <script type="text/javascript" src="_static/searchtools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="#" /> 
+    <link rel="search" title="Search" href="search.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -68,7 +66,7 @@
 
           
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="#" method="get">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -92,10 +90,6 @@
 <li class="toctree-l1"><a class="reference internal" href="using_temul.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Plotting Polarisation and Movement Vectors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="structure_map_tutorial.html">Plot Lattice Structure Maps</a></li>
-<li class="toctree-l1"><a class="reference internal" href="masked_fft_tutorial.html">Masked FFT and iFFT</a></li>
-<li class="toctree-l1"><a class="reference internal" href="line_profile_tutorial.html">Line Intensity Profile Comparisons</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dg_visualiser_tutorial.html">Interactive Image Filtering</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api_doc.html">API documentation</a></li>
 </ul>
 
             
@@ -142,12 +136,14 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Search</li>
+      <li>News</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
+            <a href="_sources/news.rst.txt" rel="nofollow"> View page source</a>
+          
         
       </li>
     
@@ -159,18 +155,25 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <noscript>
-  <div id="fallback" class="admonition warning">
-    <p class="last">
-      Please activate JavaScript to enable the search functionality.
-    </p>
-  </div>
-  </noscript>
+  <div class="section" id="news">
+<span id="install"></span><h1>News<a class="headerlink" href="#news" title="Permalink to this headline">¶</a></h1>
+<p><strong>03/11/2020: Version 0.1.2 released</strong></p>
+<p>This version contains minor changes from the 0.1.1 release. It removes pyCifRW
+as a dependency, due to PyCifRW requiring Microsoft Visual Studio.</p>
+<p><strong>02/11/2020: Version 0.1.1 released</strong></p>
+<p>This version contains many changes to the TEMUL Toolkit.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>More parameters have been added to the polarisation module’s <code class="code python docutils literal notranslate"><span class="name"><span class="pre">plot_polarisation_vectors</span></span></code> function. Check out the walkthrough <a class="reference internal" href="polarisation_vectors_tutorial.html#polarisation-vectors-tutorial"><span class="std std-ref">here</span></a> for more info!</p></li>
+<li><p><a class="reference internal" href="dg_visualiser_tutorial.html#dg-visualiser-tutorial"><span class="std std-ref">Interactive double Gaussian filtering</span></a> with the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">visualise_dg_filter</span></span></code> function in the signal_processing module. Thanks to <a class="reference external" href="https://github.com/michaelhennessyjr">Michael Hennessy</a> for the help!</p></li>
+<li><p>The <code class="code python docutils literal notranslate"><span class="name"><span class="pre">calculate_atom_plane_curvature</span></span></code> function has been added, creating the lattice_structure_tools module.</p></li>
+<li><p>Strain, rotation, and c/a mapping can now be done <a class="reference internal" href="structure_map_tutorial.html#structure-map-tutorial"><span class="std std-ref">here</span></a>.</p></li>
+<li><p>Masked FFT filtering to obtain iFFTs. See <a class="reference internal" href="masked_fft_tutorial.html#masked-fft-tutorial"><span class="std std-ref">this guide</span></a> to see some code!</p></li>
+<li><p>Example walk-throughs for many features of the TEMUL Toolkit are now on this website! Check out the menu on the left to get started!</p></li>
+</ul>
+</div></blockquote>
+</div>
 
-  
-  <div id="search-results">
-  
-  </div>
 
            </div>
            
@@ -215,14 +218,7 @@
   
   
     
-  
-  <script type="text/javascript">
-    jQuery(function() { Search.loadIndex("searchindex.js"); });
-  </script>
-  
-  <script type="text/javascript" id="searchindexloader"></script>
    
-
 
 </body>
 </html>

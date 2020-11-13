@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>API documentation &mdash; TEMUL Toolkit v0.1-alpha documentation</title>
+  <title>API documentation &mdash; TEMUL Toolkit v0.1.2 documentation</title>
   
 
   
@@ -35,8 +35,7 @@
 
     
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Line Intensity Profile Comparisons" href="line_profile_tutorial.html" /> 
+    <link rel="search" title="Search" href="search.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -60,7 +59,7 @@
             
             
               <div class="version">
-                Version 0.1-alpha
+                Version 0.1.2
               </div>
             
           
@@ -86,35 +85,11 @@
             
             
               <p class="caption"><span class="caption-text">Contents</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="using_temul.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Plotting Polarisation and Movement Vectors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="structure_map_tutorial.html">Plot Lattice Structure Maps</a></li>
-<li class="toctree-l1"><a class="reference internal" href="PTO_Junction_moore.html">Analysis of PTO Domain Wall Junction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="PTO_supercrystal_hadjimichael.html">Calculation of Atom Plane Curvature</a></li>
-<li class="toctree-l1"><a class="reference internal" href="masked_fft_tutorial.html">Masked FFT and iFFT</a></li>
-<li class="toctree-l1"><a class="reference internal" href="line_profile_tutorial.html">Line Intensity Profile Comparisons</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">API documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#classes">Classes</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#model-refiner">Model Refiner</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#modules">Modules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#module-temul.polarisation">Polarisation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-temul.element_tools">Element Tools</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-temul.intensity_tools">Intensity Tools</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-temul.model_creation">Model Creation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-temul.simulations">Image Simulation Functions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-temul.signal_processing">Signal Processing</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-temul.signal_plotting">Signal Plotting</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-temul.io">Input/Output (io)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-temul.dummy_data">Dummy Data</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-temul.example_data">Example Data</a></li>
-</ul>
-</li>
-</ul>
-</li>
 </ul>
 
             
@@ -2723,7 +2698,45 @@ calibrated to a unit other than pixel.</p></li>
 
 <dl class="py function">
 <dt id="temul.signal_processing.double_gaussian_fft_filter">
-<code class="sig-prename descclassname">temul.signal_processing.</code><code class="sig-name descname">double_gaussian_fft_filter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">d_inner</span></em>, <em class="sig-param"><span class="n">d_outer</span></em>, <em class="sig-param"><span class="n">delta</span><span class="o">=</span><span class="default_value">0.05</span></em>, <em class="sig-param"><span class="n">sampling</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">units</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">filename</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.signal_processing.double_gaussian_fft_filter" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">temul.signal_processing.</code><code class="sig-name descname">double_gaussian_fft_filter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">fwhm_neg</span></em>, <em class="sig-param"><span class="n">fwhm_pos</span></em>, <em class="sig-param"><span class="n">neg_min</span><span class="o">=</span><span class="default_value">0.9</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.signal_processing.double_gaussian_fft_filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filter an image with a bandpass-like filter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<em>Hyperspy Signal2D</em>) – </p></li>
+<li><p><strong>fwhm_neg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Initial guess in pixels of full width at half maximum (fwhm) of
+inner (negative) and outer (positive) Gaussian to be applied to fft,
+respectively.
+Use the visualise_dg_filter function to find the optimium values.</p></li>
+<li><p><strong>fwhm_pos</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Initial guess in pixels of full width at half maximum (fwhm) of
+inner (negative) and outer (positive) Gaussian to be applied to fft,
+respectively.
+Use the visualise_dg_filter function to find the optimium values.</p></li>
+<li><p><strong>neg_min</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>default 0.9</em>) – Effective amplitude of the negative Gaussian.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.signal_processing</span> <span class="k">as</span> <span class="nn">tmlsig</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.example_data</span> <span class="kn">import</span> <span class="n">load_Se_implanted_MoS2_data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image</span> <span class="o">=</span> <span class="n">load_Se_implanted_MoS2_data</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Use the visualise_dg_filter to find suitable FWHMs</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tmlsig</span><span class="o">.</span><span class="n">visualise_dg_filter</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>then use these values to carry out the double_gaussian_fft_filter</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">filtered_image</span> <span class="o">=</span> <span class="n">tmlsig</span><span class="o">.</span><span class="n">double_gaussian_fft_filter</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">150</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">filtered_image</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="temul.signal_processing.double_gaussian_fft_filter_optimised">
+<code class="sig-prename descclassname">temul.signal_processing.</code><code class="sig-name descname">double_gaussian_fft_filter_optimised</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">d_inner</span></em>, <em class="sig-param"><span class="n">d_outer</span></em>, <em class="sig-param"><span class="n">delta</span><span class="o">=</span><span class="default_value">0.05</span></em>, <em class="sig-param"><span class="n">sampling</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">units</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">filename</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.signal_processing.double_gaussian_fft_filter_optimised" title="Permalink to this definition">¶</a></dt>
 <dd><p>Filter an image with an double Gaussian (band-pass) filter. The function
 will automatically find the optimum magnitude of the negative inner
 Gaussian.</p>
@@ -3004,6 +3017,12 @@ center of the array.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt id="temul.signal_processing.make_gaussian_pos_neg">
+<code class="sig-prename descclassname">temul.signal_processing.</code><code class="sig-name descname">make_gaussian_pos_neg</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">size</span></em>, <em class="sig-param"><span class="n">fwhm_neg</span></em>, <em class="sig-param"><span class="n">fwhm_pos</span></em>, <em class="sig-param"><span class="n">neg_min</span><span class="o">=</span><span class="default_value">0.9</span></em>, <em class="sig-param"><span class="n">center</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.signal_processing.make_gaussian_pos_neg" title="Permalink to this definition">¶</a></dt>
+<dd><p>See double_gaussian_fft_filter for details</p>
+</dd></dl>
+
+<dl class="py function">
 <dt id="temul.signal_processing.mean_and_std_nearest_neighbour_distances">
 <code class="sig-prename descclassname">temul.signal_processing.</code><code class="sig-name descname">mean_and_std_nearest_neighbour_distances</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sublattice</span></em>, <em class="sig-param"><span class="n">nearest_neighbours</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">sampling</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.signal_processing.mean_and_std_nearest_neighbour_distances" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates mean and standard deviation of the distance from each atom to
@@ -3263,6 +3282,37 @@ column, as fraction of the distance to the nearest neighbour.</p></li>
 </div>
 <p>Visually check which atoms will not be refined (red dots)</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span><span class="o">.</span><span class="n">toggle_atom_refine_position_with_gui</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="temul.signal_processing.visualise_dg_filter">
+<code class="sig-prename descclassname">temul.signal_processing.</code><code class="sig-name descname">visualise_dg_filter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">d_inner</span><span class="o">=</span><span class="default_value">7.7</span></em>, <em class="sig-param"><span class="n">d_outer</span><span class="o">=</span><span class="default_value">21</span></em>, <em class="sig-param"><span class="n">slider_min</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">slider_max</span><span class="o">=</span><span class="default_value">300</span></em>, <em class="sig-param"><span class="n">slider_step</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">plot_lims</span><span class="o">=</span><span class="default_value">0, 1</span></em>, <em class="sig-param"><span class="n">figsize</span><span class="o">=</span><span class="default_value">15, 7</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.signal_processing.visualise_dg_filter" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<em>Hyperspy Signal2D</em>) – This image.axes_manager scale should be calibrated.</p></li>
+<li><p><strong>d_inner</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>default 7.7</em>) – Initial ‘guess’ of full width at half maximum (fwhm) of
+inner (negative) gaussian to be applied to fft.
+Can be changed with sliders during visualisation.</p></li>
+<li><p><strong>d_outer</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>default 14</em>) – Initial ‘guess’ of full width at half maximum (fwhm) of
+outer (positive) gaussian to be applied to fft.
+Can be changed with sliders during visualisation.</p></li>
+<li><p><strong>slider_min</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>default 0.1</em>) – Minimum value on sliders</p></li>
+<li><p><strong>slider_max</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>default 300</em>) – Maximum value on sliders</p></li>
+<li><p><strong>slider_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>default 0.1</em>) – Step size on sliders</p></li>
+<li><p><strong>plot_lims</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a><em>, </em><em>default</em><em> (</em><em>0</em><em>, </em><em>1</em><em>)</em>) – Used to plot a smaller section of the FFT image, which can be useful if
+the information is very small (far away!). Default plots the whole
+image.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.signal_processing</span> <span class="k">as</span> <span class="nn">tmlsig</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.example_data</span> <span class="kn">import</span> <span class="n">load_Se_implanted_MoS2_data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image</span> <span class="o">=</span> <span class="n">load_Se_implanted_MoS2_data</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tmlsig</span><span class="o">.</span><span class="n">visualise_dg_filter</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -4055,13 +4105,6 @@ the colormap should be the same as the edges, such as colorcet’s CET_C4s.</p>
            
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-      
-        <a href="line_profile_tutorial.html" class="btn btn-neutral float-left" title="Line Intensity Profile Comparisons" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>
