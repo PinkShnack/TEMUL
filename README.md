@@ -15,6 +15,11 @@ To cite the TEMUL toolkit, use the following DOI:
 
 [![DOI](https://www.zenodo.org/badge/203785298.svg)](https://www.zenodo.org/badge/latestdoi/203785298)
 
+
+## Test Notebook
+
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/PinkShnack/TEMUL/kalani_PTO_paper_walkthrough)
+
 <!--
 ## Interactive Notebooks in the Browser
 

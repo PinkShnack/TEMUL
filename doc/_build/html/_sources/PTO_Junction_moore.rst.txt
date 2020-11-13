@@ -12,6 +12,11 @@ This tutorial follows the python scripts and jupyter notebooks found in the
 `TEMUL repository <https://github.com/PinkShnack/TEMUL>`_. The data and scripts
 used below can be downloaded from there.
 
+Use the notebook interactively now with MyBinder, just click the launch button below
+
+.. image:: https://mybinder.org/badge_logo.svg
+ :target: https://mybinder.org/v2/gh/PinkShnack/TEMUL/kalani_PTO_paper_walkthrough
+
 
 Import the Modules and Load the Data
 ------------------------------------
