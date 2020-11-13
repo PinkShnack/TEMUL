@@ -19,7 +19,7 @@ Import the Modules and Load the Data
 .. code-block:: python
 
     >>> import temul.polarisation as tmlp
-    >>> from temul.signal_plotting import compare_images_line_profile_one_image
+    >>> import temul.signal_plotting as tmlplt
     >>> import atomap.api as am
     >>> import hyperspy.api as hs
     >>> import numpy as np
@@ -102,7 +102,7 @@ For more details on this function, see :ref:`this tutorial <line_profile_tutoria
 .. code-block:: python
 
     >>> kwargs = {'vmin': vmin, 'vmax': vmax, 'cmap': cmap}
-    >>> compare_images_line_profile_one_image(strain_map, line_profile_positions,
+    >>> tmlplt.compare_images_line_profile_one_image(strain_map, line_profile_positions,
     ...                               linewidth=100, arrow='h', linetrace=0.05,
     ...                               **kwargs)
 
@@ -124,9 +124,9 @@ the turning of the lattice across the junction.
     >>> cmap = 'inferno'
     >>> angle_offset = -2  # degrees
     >>> rotation_map = tmlp.rotation_of_atom_planes(
-    >>>                     sublattice1, zone_vector_index_A, units=units,
-    >>>                     angle_offset, degrees=True, sampling=sampling,
-    >>>                     vmin=vmin, vmax=vmax, cmap=cmap)
+    ...                     sublattice1, zone_vector_index_A, units=units,
+    ...                     angle_offset, degrees=True, sampling=sampling,
+    ...                     vmin=vmin, vmax=vmax, cmap=cmap)
 
 .. image:: ../publication_examples/PTO_Junction_moore/data/rotation_map.png
     :scale: 50 %
@@ -138,17 +138,17 @@ For more details on this function, see :ref:`this tutorial <line_profile_tutoria
 .. code-block:: python
 
     >>> kwargs = {'vmin': vmin, 'vmax': vmax, 'cmap': cmap}
-    >>> compare_images_line_profile_one_image(rotation_map, line_profile_positions,
-    >>>                                linewidth=100, arrow='h', linetrace=0.05,
-    >>>                                **kwargs)
+    >>> tmlplt.compare_images_line_profile_one_image(
+    ...     rotation_map, line_profile_positions, linewidth=100, arrow='h',
+    ...     linetrace=0.05, **kwargs)
 
 .. image:: ../publication_examples/PTO_Junction_moore/data/ratio_map_line_profile.png
     :scale: 50 %
 
 
 
-Create the Lattice Rotation Map
--------------------------------
+Create the Lattice c/a Ratio Map
+--------------------------------
 
 Now plot the c/a ratio map of the Pb Sublattice
 
@@ -159,9 +159,9 @@ Now plot the c/a ratio map of the Pb Sublattice
     >>> cmap = 'inferno'
     >>> ideal_ratio_one = True  # values under 1 will be divided by themselves
     >>> ca_ratio_map = tmlp.ratio_of_lattice_spacings(
-    >>>                    sublattice1, zone_vector_index_B,
-    >>>                    zone_vector_index_A, ideal_ratio_one, sampling=sampling,
-    >>>                    units=units, vmin=vmin, vmax=vmax, cmap=cmap)
+    ...                    sublattice1, zone_vector_index_B,
+    ...                    zone_vector_index_A, ideal_ratio_one, sampling=sampling,
+    ...                    units=units, vmin=vmin, vmax=vmax, cmap=cmap)
 
 .. image:: ../publication_examples/PTO_Junction_moore/data/ratio_map.png
     :scale: 50 %
@@ -169,9 +169,57 @@ Now plot the c/a ratio map of the Pb Sublattice
 .. code-block:: python
 
     >>> kwargs = {'vmin': vmin, 'vmax': vmax, 'cmap': cmap}
-    >>> compare_images_line_profile_one_image(ca_ratio_map, line_profile_positions,
-    >>>                               linewidth=100, arrow='h', linetrace=0.05,
-    >>>                               **kwargs)
+    >>> tmlplt.compare_images_line_profile_one_image(
+    ...     ca_ratio_map, line_profile_positions, linewidth=100, arrow='h',
+    ...     linetrace=0.05, **kwargs)
 
 .. image:: ../publication_examples/PTO_Junction_moore/data/ratio_map_line_profile.png
+    :scale: 50 %
+
+
+
+
+Map the Polarisation
+--------------------
+In this case, the PTO structure near the junction is highly strained.
+Therefore, we can't use the the Atomap
+get_polarization_from_second_sublattice function.
+
+.. code-block:: python
+
+    >>> atom_positions_actual = np.array(
+    ...     [sublattice2.x_position, sublattice2.y_position]).T
+    >>> atom_positions_ideal = np.load('atom_positions_orig_2.npy')
+    >>> u, v = tmlp.find_polarisation_vectors(
+    ...     atom_positions_actual, atom_positions_ideal)
+    >>> x, y = atom_positions_actual.T.tolist()
+
+
+Plot the polarisation vectors (zoom in to get a better look, the top left is
+off zone).
+
+.. code-block:: python
+
+    >>> tmlp.plot_polarisation_vectors(
+    ...     x=x, y=y, u=u, v=v, image=image.data,
+    ...     sampling=sampling, units=units, unit_vector=False, overlay=True,
+    ...     color='yellow', plot_style='vector', title='Polarisation',
+    ...     monitor_dpi=250, save=None)
+
+.. image:: ../publication_examples/PTO_Junction_moore/data/Polarisation_magnitude_vector.png
+    :scale: 50 %
+
+
+Plot the angle information as a colorwheel
+
+.. code-block:: python
+
+    >>> plt.style.use("grayscale")
+    >>> tmlp.plot_polarisation_vectors(
+    ...     x=x, y=y, u=u, v=v, image=image.data, save=None,
+    ...     sampling=sampling, units=units, unit_vector=True, overlay=True,
+    ...     color='yellow', plot_style='colorwheel', title='Polarisation',
+    ...     monitor_dpi=250, vector_rep='angle', degrees=True)
+
+.. image:: ../publication_examples/PTO_Junction_moore/data/Polarisation_angle_colorwheel.png
     :scale: 50 %
