@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html4" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -25,11 +25,20 @@
   <![endif]-->
   
     
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'./',
+              VERSION:'v0.1.2',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -95,6 +104,11 @@
 <li class="toctree-l1"><a class="reference internal" href="using_temul.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Plotting Polarisation and Movement Vectors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="structure_map_tutorial.html">Plot Lattice Structure Maps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="masked_fft_tutorial.html">Masked FFT and iFFT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="line_profile_tutorial.html">Line Intensity Profile Comparisons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dg_visualiser_tutorial.html">Interactive Image Filtering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PTO_Junction_moore.html">Analysis of PTO Domain Wall Junction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_doc.html">API documentation</a></li>
 </ul>
 
             
@@ -171,16 +185,20 @@
 <div class="section" id="installation-problems-notes">
 <h2>Installation Problems &amp; Notes<a class="headerlink" href="#installation-problems-notes" title="Permalink to this headline">¶</a></h2>
 <ul>
-<li><p>If installing on Windows, you will need Visual Studio C++ Build Tools. Download it <a class="reference external" href="https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2019">here</a>. After downloading, choose the “C++ Build Tools” Workload and click install.</p></li>
-<li><p>Matplotlib seems to have issues with iPython at the moment. Install matplotlib==3.2 until this issue is resolved by Matplotlib. See <a class="reference external" href="https://stackoverflow.com/questions/64291087/matplotlib-module-sip-has-no-attribute-setapi">here</a> for more details.</p></li>
-<li><p>If you want to use the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">io</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">write_cif_from_dataframe</span></span></code> function, you will need to install pyCifRW version 4.3. This requires Visual Studio.</p></li>
-<li><p>If you wish to use the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">simulations</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">py</span></span></code> or <code class="code python docutils literal notranslate"><span class="name"><span class="pre">model_refiner</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">py</span></span></code> modules, you will need to install PyPrismatic. This requires Visual Studio and other dependencies.</p></li>
-<li><p>If you’re using any of the functions or classes that require element quantification:</p>
+<li><p class="first">If installing on Windows, you will need Visual Studio C++ Build Tools. Download it <a class="reference external" href="https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2019">here</a>. After downloading, choose the “C++ Build Tools” Workload and click install.</p>
+</li>
+<li><p class="first">Matplotlib seems to have issues with iPython at the moment. Install matplotlib==3.2 until this issue is resolved by Matplotlib. See <a class="reference external" href="https://stackoverflow.com/questions/64291087/matplotlib-module-sip-has-no-attribute-setapi">here</a> for more details.</p>
+</li>
+<li><p class="first">If you want to use the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">io</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">write_cif_from_dataframe</span></span></code> function, you will need to install pyCifRW version 4.3. This requires Visual Studio.</p>
+</li>
+<li><p class="first">If you wish to use the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">simulations</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">py</span></span></code> or <code class="code python docutils literal notranslate"><span class="name"><span class="pre">model_refiner</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">py</span></span></code> modules, you will need to install PyPrismatic. This requires Visual Studio and other dependencies.</p>
+</li>
+<li><p class="first">If you’re using any of the functions or classes that require element quantification:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>navigate to the “temul/external” directory, copy the “atomap_devel_012” folder and paste that in your “site-packages” directory.</p></li>
-<li><p>Then, when using atomap to create sublattices and quantify elements call atomap like this: <code class="code python docutils literal notranslate"><span class="keyword namespace"><span class="pre">import</span></span> <span class="name namespace"><span class="pre">atomap_devel_012.api</span></span> <span class="keyword"><span class="pre">as</span></span> <span class="name namespace"><span class="pre">am</span></span></code>.</p></li>
-<li><p>This development version is slowly being folded into the master branch here: <a class="reference external" href="https://gitlab.com/atomap/atomap/-/issues/93">https://gitlab.com/atomap/atomap/-/issues/93</a> and any help or tips on implementation are welcome!</p></li>
+<li>navigate to the “temul/external” directory, copy the “atomap_devel_012” folder and paste that in your “site-packages” directory.</li>
+<li>Then, when using atomap to create sublattices and quantify elements call atomap like this: <code class="code python docutils literal notranslate"><span class="keyword namespace"><span class="pre">import</span></span> <span class="name namespace"><span class="pre">atomap_devel_012.api</span></span> <span class="keyword"><span class="pre">as</span></span> <span class="name namespace"><span class="pre">am</span></span></code>.</li>
+<li>This development version is slowly being folded into the master branch here: <a class="reference external" href="https://gitlab.com/atomap/atomap/-/issues/93">https://gitlab.com/atomap/atomap/-/issues/93</a> and any help or tips on implementation are welcome!</li>
 </ul>
 </div></blockquote>
 </li>

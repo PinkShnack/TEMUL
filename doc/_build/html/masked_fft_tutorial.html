@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html4" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -25,17 +25,28 @@
   <![endif]-->
   
     
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'./',
+              VERSION:'v0.1.2',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Line Intensity Profile Comparisons" href="line_profile_tutorial.html" />
+    <link rel="prev" title="Plot Lattice Structure Maps" href="structure_map_tutorial.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -85,11 +96,22 @@
             
             
               <p class="caption"><span class="caption-text">Contents</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="using_temul.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Plotting Polarisation and Movement Vectors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="structure_map_tutorial.html">Plot Lattice Structure Maps</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Masked FFT and iFFT</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#load-the-example-image">Load the Example Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#choose-the-mask-coordinates">Choose the Mask Coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plot-the-masked-ifft">Plot the Masked iFFT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run-fft-masking-for-multiple-images">Run FFT masking for Multiple Images</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="line_profile_tutorial.html">Line Intensity Profile Comparisons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dg_visualiser_tutorial.html">Interactive Image Filtering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PTO_Junction_moore.html">Analysis of PTO Domain Wall Junction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_doc.html">API documentation</a></li>
 </ul>
 
             
@@ -229,6 +251,15 @@ simple <code class="code python docutils literal notranslate"><span class="keywo
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="line_profile_tutorial.html" class="btn btn-neutral float-right" title="Line Intensity Profile Comparisons" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="structure_map_tutorial.html" class="btn btn-neutral float-left" title="Plot Lattice Structure Maps" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>

@@ -35,10 +35,10 @@ atomic resolution images. It is mostly built upon the data structure of
    masked_fft_tutorial
    line_profile_tutorial
    dg_visualiser_tutorial
+   PTO_Junction_moore
    api_doc
 
 .. PTO_supercrystal_hadjimichael
-.. PTO_Junction_moore
 
 
 .. Look how easy it is to use:

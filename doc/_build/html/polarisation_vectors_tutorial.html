@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html4" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -25,11 +25,20 @@
   <![endif]-->
   
     
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'./',
+              VERSION:'v0.1.2',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -96,6 +105,11 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="structure_map_tutorial.html">Plot Lattice Structure Maps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="masked_fft_tutorial.html">Masked FFT and iFFT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="line_profile_tutorial.html">Line Intensity Profile Comparisons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dg_visualiser_tutorial.html">Interactive Image Filtering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PTO_Junction_moore.html">Analysis of PTO Domain Wall Junction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_doc.html">API documentation</a></li>
 </ul>
 
             
@@ -199,7 +213,7 @@ but if not, use Hyperspy’s <code class="code python docutils literal notransla
 <h2>Find the Vector Coordinates using Atomap<a class="headerlink" href="#find-the-vector-coordinates-using-atomap" title="Permalink to this headline">¶</a></h2>
 <p>Using the <a class="reference external" href="https://atomap.org/">Atomap</a> package, we can easily get the
 polarisation vectors for regular structures.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">construct_zone_axes</span><span class="p">()</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">construct_zone_axes</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">za0</span><span class="p">,</span> <span class="n">za1</span> <span class="o">=</span> <span class="n">sublatticeA</span><span class="o">.</span><span class="n">zones_axis_average_distances</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">s_p</span> <span class="o">=</span> <span class="n">sublatticeA</span><span class="o">.</span><span class="n">get_polarization_from_second_sublattice</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">za0</span><span class="p">,</span> <span class="n">za1</span><span class="p">,</span> <span class="n">sublatticeB</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>

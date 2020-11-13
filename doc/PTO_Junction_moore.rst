@@ -207,7 +207,7 @@ off zone).
     ...     monitor_dpi=250, save=None)
 
 .. image:: ../publication_examples/PTO_Junction_moore/data/Polarisation_magnitude_vector.png
-    :scale: 50 %
+    :scale: 25 %
 
 
 Plot the angle information as a colorwheel
@@ -222,4 +222,4 @@ Plot the angle information as a colorwheel
     ...     monitor_dpi=250, vector_rep='angle', degrees=True)
 
 .. image:: ../publication_examples/PTO_Junction_moore/data/Polarisation_angle_colorwheel.png
-    :scale: 50 %
+    :scale: 25 %
