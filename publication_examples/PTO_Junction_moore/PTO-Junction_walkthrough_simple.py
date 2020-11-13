@@ -11,8 +11,9 @@ Communications Physics, 2020.
 
 '''
 
+import matplotlib.pyplot as plt
 import temul.polarisation as tmlp
-from temul.signal_plotting import compare_images_line_profile_one_image
+import temul.signal_plotting as tmlplt
 import atomap.api as am
 import hyperspy.api as hs
 import numpy as np
@@ -36,7 +37,8 @@ sublattice1.construct_zone_axes(atom_plane_tolerance=1)
 # Set up parameters for plotting the strain, rotation, and c/a ratio maps:
 zone_vector_index_A = 0
 zone_vector_index_B = 1
-# Note that sometimes the 0 and 1 axes are constructed first or second, so you may have to swap them.
+# Note that sometimes the 0 and 1 axes are constructed first or second,
+# so you may have to swap them.
 
 filename = None  # Set to a string if you want to save the map
 
@@ -49,12 +51,14 @@ Check the documentation here: temul-toolkit.readthedocs.io
 '''
 Plot the line profiles with temul.signal_plotting functions
 You can also choose your own line_profile_positions with
-am.add_atoms_with_gui(image) and use the skimage.profile_line for
+tmlplt.choose_points_on_image(image) and use the skimage.profile_line for
 customisability.
 '''
+# tmlplt.choose_points_on_image(image)
 line_profile_positions = np.load('line_profile_positions.npy')
 
 
+''' Strain Map '''
 # We want to see the strain map of the Pb Sublattice in the y-axis direction
 vmin = -15
 vmax = 30
@@ -66,11 +70,12 @@ strain_map = tmlp.get_strain_map(sublattice1, zone_vector_index_A,
                                  units=units, vmin=vmin, vmax=vmax, cmap=cmap)
 
 kwargs = {'vmin': vmin, 'vmax': vmax, 'cmap': cmap}
-compare_images_line_profile_one_image(strain_map, line_profile_positions,
-                                      linewidth=100, arrow='h', linetrace=0.05,
-                                      **kwargs)
+tmlplt. compare_images_line_profile_one_image(
+    strain_map, line_profile_positions, linewidth=100, arrow='h',
+    linetrace=0.05, **kwargs)
 
 
+''' Rotation Map '''
 # Now plot the rotation map of the Pb Sublattice in the x-axis direction to see
 # the turning of the lattice across the junction.
 vmin = -5
@@ -79,16 +84,17 @@ cmap = 'inferno'
 angle_offset = -2  # degrees
 
 rotation_map = tmlp.rotation_of_atom_planes(
-                    sublattice1, zone_vector_index_A,
-                    angle_offset, degrees=True, sampling=sampling, units=units,
-                    vmin=vmin, vmax=vmax, cmap=cmap)
+    sublattice1, zone_vector_index_B,
+    angle_offset, degrees=True, sampling=sampling, units=units,
+    vmin=vmin, vmax=vmax, cmap=cmap)
 
 kwargs = {'vmin': vmin, 'vmax': vmax, 'cmap': cmap}
-compare_images_line_profile_one_image(rotation_map, line_profile_positions,
-                                      linewidth=100, arrow='h', linetrace=0.05,
-                                      **kwargs)
+tmlplt.compare_images_line_profile_one_image(
+    rotation_map, line_profile_positions, linewidth=100, arrow='h',
+    linetrace=0.05, **kwargs)
 
 
+''' c/a ratio Map '''
 # Now plot the c/a ratio map of the Pb Sublattice
 vmin = 1
 vmax = 1.15
@@ -96,30 +102,44 @@ cmap = 'inferno'
 ideal_ratio_one = True  # values under 1 will be divided by themselves
 
 ca_ratio_map = tmlp.ratio_of_lattice_spacings(
-                    sublattice1, zone_vector_index_B,
-                    zone_vector_index_A, ideal_ratio_one, sampling=sampling,
-                    units=units, vmin=vmin, vmax=vmax, cmap=cmap)
+    sublattice1, zone_vector_index_B,
+    zone_vector_index_A, ideal_ratio_one, sampling=sampling,
+    units=units, cmap=cmap)
+
+ca_ratio_map.plot(vmin=vmin, vmax=vmax, cmap=cmap)
 
 kwargs = {'vmin': vmin, 'vmax': vmax, 'cmap': cmap}
-compare_images_line_profile_one_image(ca_ratio_map, line_profile_positions,
-                                      linewidth=100, arrow='h', linetrace=0.05,
-                                      **kwargs)
+tmlplt.compare_images_line_profile_one_image(
+    ca_ratio_map, line_profile_positions, linewidth=100, arrow='h',
+    linetrace=0.05, **kwargs)
 
-''' Polarisation needs to be done with old method,
-    atomap doesn't work it seems'''
-# Plot the polarisation vectors (zoom in to get a better look)
-s_polarization = sublattice1.get_polarization_from_second_sublattice(
-    zone_vector_index_A, zone_vector_index_B, sublattice2)
 
-vector_list = s_polarization.metadata.vector_list
-x = [i[0] for i in vector_list]
-y = [i[1] for i in vector_list]
-u = [i[2] for i in vector_list]
-v = [i[3] for i in vector_list]
+''' Polarisation Mapping '''
+# In this case, the PTO structure near the junction is highly strained
+# Therefore, we can't use the the Atomap
+# get_polarization_from_second_sublattice function.
 
+
+atom_positions_actual = np.array(
+    [sublattice2.x_position, sublattice2.y_position]).T
+atom_positions_ideal = np.load('atom_positions_orig_2.npy')
+
+u, v = tmlp.find_polarisation_vectors(
+    atom_positions_actual, atom_positions_ideal)
+x, y = atom_positions_actual.T.tolist()
+
+# Plot the polarisation vectors (zoom in to get a better look, the top left is
+# off zone)
 tmlp.plot_polarisation_vectors(
-        x=x, y=y, u=u, v=v, image=image.data,
-        sampling=sampling, units=units, unit_vector=False, overlay=True,
-        color='yellow', plot_style='vector', title='Polarisation')
+    x=x, y=y, u=u, v=v, image=image.data,
+    sampling=sampling, units=units, unit_vector=False, overlay=True,
+    color='yellow', plot_style='vector', title='Polarisation',
+    monitor_dpi=250)
 
-''' Background subtraction to be added '''
+# Plot the angle information as a colorwheel
+plt.style.use("grayscale")
+tmlp.plot_polarisation_vectors(
+    x=x, y=y, u=u, v=v, image=image.data,
+    sampling=sampling, units=units, unit_vector=True, overlay=True,
+    color='yellow', plot_style='colormap', title='Polarisation',
+    monitor_dpi=250, vector_rep='angle', cmap='cet_colorwheel')
