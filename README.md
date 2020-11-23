@@ -18,9 +18,9 @@ To cite the TEMUL toolkit, use the following DOI:
 
 ## Interactive Notebooks in the Browser
 
-polar_tut_ipynb branch:
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/PinkShnack/TEMUL/master)
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/PinkShnack/TEMUL/polar_tut_ipynb)
+To walkthrough some code documentation ipynb examples, click on the above button and navigate to the "code_tutorials" folder.
 
 <!--
 Jupyter Notebooks and MyBinder allow us to analyse data in the browser without needing any downloads. The below "launch binder" button will allow you to analyse data published in the listed scientific papers in the "publication_examples" folder.
