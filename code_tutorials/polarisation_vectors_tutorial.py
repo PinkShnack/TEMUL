@@ -54,7 +54,7 @@ so that they are automatically set.
 
 # Vector magnitude plot with red arrows:
 
-plot_polarisation_vectors(x, y, u, v, image=image,
+tml.plot_polarisation_vectors(x, y, u, v, image=image,
                           unit_vector=False, save=None,
                           plot_style='vector', color='r',
                           overlay=False, title='Vector Arrows',

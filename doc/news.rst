@@ -9,7 +9,7 @@ News
 **03/11/2020: Version 0.1.2 released**
 
 This version contains minor changes from the 0.1.1 release. It removes pyCifRW
-as a dependency, due to PyCifRW requiring Microsoft Visual Studio.
+as a dependency.
 
 
 **02/11/2020: Version 0.1.1 released**
