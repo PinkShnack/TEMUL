@@ -289,7 +289,7 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
     given parameters (fitting tools).
 
     Examples
-    -------
+    --------
 
     sub_ints_all = [sub1_ints, sub2_ints]
     marker_list = [['Sub1', '.'],['Sub2', 'x']]
@@ -519,7 +519,7 @@ def measure_image_errors(imageA, imageB, filename=None):
     two floats (mse_number, ssm_number)
 
     Examples
-    -------
+    --------
     >>> from temul.dummy_data import get_simple_cubic_signal
     >>> imageA = get_simple_cubic_signal().data
     >>> imageB = get_simple_cubic_signal(image_noise=True).data
@@ -816,17 +816,17 @@ def double_gaussian_fft_filter(image, fwhm_neg, fwhm_pos, neg_min=0.9):
 
     Examples
     --------
-    >>> import temul.signal_processing as tmlsig
+    >>> import temul.api as tml
     >>> from temul.example_data import load_Se_implanted_MoS2_data
     >>> image = load_Se_implanted_MoS2_data()
 
     Use the visualise_dg_filter to find suitable FWHMs
 
-    >>> tmlsig.visualise_dg_filter(image)
+    >>> tml.visualise_dg_filter(image)
 
     then use these values to carry out the double_gaussian_fft_filter
 
-    >>> filtered_image = tmlsig.double_gaussian_fft_filter(image, 50, 150)
+    >>> filtered_image = tml.double_gaussian_fft_filter(image, 50, 150)
     >>> image.plot()
     >>> filtered_image.plot()
 
@@ -887,11 +887,10 @@ def double_gaussian_fft_filter_optimised(image, d_inner, d_outer, delta=0.05,
     Examples
     --------
     >>> import temul.example_data as example_data
-    >>> from temul.signal_processing import (
-    ...     double_gaussian_fft_filter)
-    >>> experiment = example_data.load_Se_implanted_MoS2_data()
-    >>> experiment.plot()
-    >>> filtered_image = double_gaussian_fft_filter(experiment, 7.48, 14.96)
+    >>> import temul.api as tml
+    >>> image = example_data.load_Se_implanted_MoS2_data()
+    >>> image.plot()
+    >>> filtered_image = tml.double_gaussian_fft_filter(image, 7.48, 14.96)
     >>> filtered_image.plot()
 
     '''
@@ -1158,10 +1157,10 @@ def visualise_dg_filter(image, d_inner=7.7, d_outer=21, slider_min=0.1,
 
     Examples
     --------
-    >>> import temul.signal_processing as tmlsig
+    >>> import temul.api as tml
     >>> from temul.example_data import load_Se_implanted_MoS2_data
     >>> image = load_Se_implanted_MoS2_data()
-    >>> tmlsig.visualise_dg_filter(image)
+    >>> tml.visualise_dg_filter(image)
 
     '''
 
@@ -1313,14 +1312,16 @@ def crop_image_hs(image, cropping_area, scalebar_true=True, filename=None):
     Examples
     -------
     >>> from temul.dummy_data import get_simple_cubic_signal
-    >>> from temul.signal_processing import (
-    ...     choose_points_on_image, crop_image_hs)
+    >>> import temul.api as tml
     >>> import matplotlib.pyplot as plt
     >>> image = get_simple_cubic_signal()
     >>> image.plot()
-    >>> cropping_area = choose_points_on_image(image.data) # choose two points
+
+    Choose two points on the image, top left and bottom right of crop
+
+    >>> cropping_area = tml.choose_points_on_image(image.data)
     >>> cropping_area = [[5,5],[50,50]] # use above line if trying yourself!
-    >>> # image_cropped = crop_image_hs(image, cropping_area, False)
+    >>> # image_cropped = tml.crop_image_hs(image, cropping_area, False)
     >>> # image_cropped.plot()
 
     '''
@@ -1437,16 +1438,14 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
     Examples
     -------
     >>> from temul.dummy_data import get_simple_cubic_signal
-    >>> from temul.signal_processing import (choose_points_on_image,
-    ...             calibrate_intensity_distance_with_sublattice_roi)
+    >>> import temul.api as tml
     >>> import matplotlib.pyplot as plt
     >>> image = get_simple_cubic_signal()
     >>> image.plot()
-    >>> crop_a = choose_points_on_image(image.data) # manually
-    >>> crop_a = [[10,10],[100,100]] #use above line if trying yourself!
-
-    calibrate_intensity_distance_with_sublattice_roi(image, crop_a, 10)
-    image.plot()
+    >>> crop_a = tml.choose_points_on_image(image.data) #  manually
+    >>> crop_a = [[10,10],[100,100]] #  use above line if trying yourself!
+    >>> # tml.calibrate_intensity_distance_with_sublattice_roi(image, crop_a, 10)
+    >>> # image.plot()
 
     '''
     llim, tlim = cropping_area[0]
@@ -1551,14 +1550,13 @@ def toggle_atom_refine_position_automatically(sublattice,
     -------
     >>> from temul.dummy_data import (
     ...     get_simple_cubic_sublattice_positions_on_vac)
-    >>> from temul.signal_processing import (
-    ...     toggle_atom_refine_position_automatically)
+    >>> import temul.api as tml
     >>> sublattice = get_simple_cubic_sublattice_positions_on_vac()
     >>> sublattice.find_nearest_neighbors()
     >>> sublattice.plot()
     >>> min_cut_off_percent = 0.75
     >>> max_cut_off_percent = 1.25
-    >>> false_list_sublattice =  toggle_atom_refine_position_automatically(
+    >>> false_list_sublattice =  tml.toggle_atom_refine_position_automatically(
     ...         sublattice, min_cut_off_percent, max_cut_off_percent,
     ...         range_type='internal', method='mode', percent_to_nn=0.05)
     >>> len(false_list_sublattice) # check how many atoms will not be refined
@@ -1930,35 +1928,35 @@ def get_masked_ifft(image, mask_coords, mask_radius=10, image_space="real",
     Examples
     --------
     >>> from temul.dummy_data import get_simple_cubic_signal
-    >>> from temul.signal_processing import (
-    ...     choose_mask_coordinates, get_masked_ifft)
+    >>> import temul.api as tml
     >>> image = get_simple_cubic_signal()
-    >>> mask_coords = choose_mask_coordinates(image) # use this on the image!
+    >>> mask_coords = tml.choose_mask_coordinates(image) #  manually
     >>> mask_coords = [[170.2, 170.8],[129.8, 130]]
-    >>> image_ifft = get_masked_ifft(image, mask_coords)
+    >>> image_ifft = tml.get_masked_ifft(image, mask_coords)
     >>> image_ifft.plot()
 
     Plot the masked fft:
 
-    >>> image_ifft = get_masked_ifft(image, mask_coords, plot_masked_fft=True)
+    >>> image_ifft = tml.get_masked_ifft(image, mask_coords,
+    ...                                  plot_masked_fft=True)
 
     Use unmasked fft area and plot the masked fft:
 
-    >>> image_ifft = get_masked_ifft(image, mask_coords, plot_masked_fft=True,
-    ...     keep_masked_area=False)
+    >>> image_ifft = tml.get_masked_ifft(
+    ...     image, mask_coords, plot_masked_fft=True, keep_masked_area=False)
     >>> image_ifft.plot()
 
     If the input image is already a Fourier transform:
 
     >>> fft_image = image.fft(shift=True)
-    >>> image_ifft = get_masked_ifft(fft_image, mask_coords,
+    >>> image_ifft = tml.get_masked_ifft(fft_image, mask_coords,
     ...     image_space='fourier')
     >>> image_ifft.plot()
 
     '''
-    if image_space == 'real':
+    if image_space.lower() == 'real':
         fft = image.fft(shift=True)
-    elif image_space == 'fourier':
+    elif image_space.lower() == 'fourier':
         fft = image
 
     if len(mask_coords) == 0:

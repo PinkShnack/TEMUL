@@ -52,8 +52,8 @@ function, as it draws two line profiles over one image.
 
 .. code-block:: python
 
-    >>> import temul.signal_plotting as tmlplt
-    >>> line_profile_positions = tmlplt.choose_points_on_image(imageA)
+    >>> import temul.api as tml
+    >>> line_profile_positions = tml.choose_points_on_image(imageA)
     >>> line_profile_positions
     [[61.75132848177407, 99.25182885155715],
      [178.97030854763057, 96.60281235289372],
@@ -68,7 +68,7 @@ Now run the comparison function to display the two line intensity profiles.
 
 .. code-block:: python
 
-    >>> tmlplt.compare_images_line_profile_one_image(
+    >>> tml.compare_images_line_profile_one_image(
     ...             imageA, line_profile_positions, linewidth=5,
     ...             sampling=sampling, units=units, arrow='h', linetrace=1)
 
@@ -85,7 +85,7 @@ Then, we plot this line intensity profile over the same position in two images.
 
 .. code-block:: python
 
-    >>> line_profile_positions = tmlplt.choose_points_on_image(imageA)
+    >>> line_profile_positions = tml.choose_points_on_image(imageA)
     >>> line_profile_positions
     [[127.31448682369383, 46.93375300295452],
      [127.97674094835968, 176.7355614374623]]
@@ -97,7 +97,7 @@ Then, we plot this line intensity profile over the same position in two images.
 .. code-block:: python
 
     >>> import numpy as np
-    >>> tmlplt.compare_images_line_profile_two_images(imageA, imageB,
+    >>> tml.compare_images_line_profile_two_images(imageA, imageB,
     ...             line_profile_positions, linewidth=5, reduce_func=np.mean,
     ...             sampling=sampling, units=units, crop_offset=50,
     ...             imageA_title="Image A", imageB_title="Image B")

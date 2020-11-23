@@ -56,28 +56,28 @@ def calculate_atom_plane_curvature(sublattice, zone_vector_index,
     Examples
     --------
     >>> from temul.dummy_data import sine_wave_sublattice
-    >>> from temul.lattice_structure_tools import (
-    ...     calculate_atom_plane_curvature)
+    >>> import temul.api as tml
     >>> sublattice = sine_wave_sublattice()
     >>> sublattice.construct_zone_axes(atom_plane_tolerance=1)
     >>> sublattice.plot()
     >>> sampling = 0.05 #  nm/pix
     >>> cmap='bwr'
-    >>> curvature_map = calculate_atom_plane_curvature(sublattice,
+    >>> curvature_map = tml.calculate_atom_plane_curvature(sublattice,
     ...         zone_vector_index=0, sampling=sampling, units='nm', cmap=cmap)
 
     Just compute several atom planes:
 
-    >>> curvature_map = calculate_atom_plane_curvature(sublattice, 0,
+    >>> curvature_map = tml.calculate_atom_plane_curvature(sublattice, 0,
     ...         atom_planes=(0,3), sampling=sampling, units='nm', cmap=cmap)
 
     You can also provide initial fitting estimations via scipy's curve_fit:
 
     >>> p0 = [2, 1, 1, 15]
     >>> kwargs = {'p0': p0}
-    >>> curvature_map, fittings = calculate_atom_plane_curvature(sublattice,
-    ...         zone_vector_index=0, atom_planes=(0,3), sampling=sampling,
-    ...         units='nm', cmap=cmap, **kwargs, plot_and_return_fits=True)
+    >>> curvature_map, fittings = tml.calculate_atom_plane_curvature(
+    ...     sublattice, zone_vector_index=0, atom_planes=(0,3),
+    ...     sampling=sampling, units='nm', cmap=cmap, **kwargs,
+    ...     plot_and_return_fits=True)
 
     Returns
     -------
@@ -148,7 +148,7 @@ def calculate_atom_plane_curvature(sublattice, zone_vector_index,
     curvature_map.axes_manager[1].units = units
 
     curvature_map.plot(vmin=vmin, vmax=vmax, cmap=cmap,
-                             colorbar=False)
+                       colorbar=False)
     # need to put in colorbar axis units like in get_strain_map
     plt.gca().axes.get_xaxis().set_visible(False)
     plt.gca().axes.get_yaxis().set_visible(False)

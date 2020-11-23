@@ -187,13 +187,12 @@ def compare_images_line_profile_two_images(imageA, imageB,
     Examples
     --------
     >>> import atomap.api as am
-    >>> from temul.signal_plotting import (
-    ...     compare_images_line_profile_two_images)
+    >>> import temul.api as tml
     >>> imageA = am.dummy_data.get_simple_cubic_signal(image_noise=True)
     >>> imageB = am.dummy_data.get_simple_cubic_signal()
-    >>> # line_profile_positions = am.add_atoms_with_gui(imageA)
+    >>> # line_profile_positions = tml.choose_points_on_image(imageA)
     >>> line_profile_positions = [[81.58, 69.70], [193.10, 184.08]]
-    >>> compare_images_line_profile_two_images(
+    >>> tml.compare_images_line_profile_two_images(
     ...     imageA, imageB, line_profile_positions,
     ...     linewidth=3, sampling=0.012, crop_offset=30)
 
@@ -201,12 +200,12 @@ def compare_images_line_profile_two_images(imageA, imageB,
 
     >>> import numpy as np
     >>> reduce_func = np.sum # can be any ufunc!
-    >>> compare_images_line_profile_two_images(
+    >>> tml.compare_images_line_profile_two_images(
     ...     imageA, imageB, line_profile_positions, reduce_func=reduce_func,
     ...     linewidth=3, sampling=0.012, crop_offset=30)
 
     >>> reduce_func = lambda x: np.sum(x**0.5)
-    >>> compare_images_line_profile_two_images(
+    >>> tml.compare_images_line_profile_two_images(
     ...     imageA, imageB, line_profile_positions, reduce_func=reduce_func,
     ...     linewidth=3, sampling=0.012, crop_offset=30)
 
@@ -217,7 +216,7 @@ def compare_images_line_profile_two_images(imageA, imageB,
     >>> imageA.data = imageA.data/np.max(imageA.data)
     >>> imageB = imageA.deepcopy()
     >>> line_profile_positions = [[301.42, 318.9], [535.92, 500.82]]
-    >>> compare_images_line_profile_two_images(
+    >>> tml.compare_images_line_profile_two_images(
     ...     imageA, imageB, line_profile_positions, reduce_func=None,
     ...     imageB_intensity_offset=0.1)
 

@@ -37,7 +37,7 @@ Import the Modules and Load the Data
 
 .. code-block:: python
 
-    >>> from temul.lattice_structure_tools import calculate_atom_plane_curvature
+    >>> import temul.api as tml
     >>> import atomap.api as am
     >>> import hyperspy.api as hs
     >>> import os
@@ -106,7 +106,7 @@ We want to see the curvature in the SRO Sublattice
 
 .. code-block:: python
 
-    >>> curvature_map = calculate_atom_plane_curvature(sublattice2, zone_vector_index,
+    >>> curvature_map = tml.calculate_atom_plane_curvature(sublattice2, zone_vector_index,
     ...                     sampling=sampling, units=units, cmap=cmap, title=title,
     ...                     atom_planes=atom_planes, **kwargs)
 
@@ -118,7 +118,7 @@ fittings, and plot each plane (plots not displayed).
 
 .. code-block:: python
 
-    >>> curvature_map, fittings = calculate_atom_plane_curvature(sublattice2,
+    >>> curvature_map, fittings = tml.calculate_atom_plane_curvature(sublattice2,
     ...                     zone_vector_index, sampling=sampling, units=units,
     ...                     cmap=cmap, title=title, atom_planes=atom_planes, **kwargs,
     ...                     plot_and_return_fits=True)
