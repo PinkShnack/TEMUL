@@ -80,7 +80,7 @@ def plot_polarisation_vectors(
         x, y, u, v, image, sampling=None, units='pix',
         plot_style='vector', vector_rep='magnitude',
         overlay=True, unit_vector=False, degrees=False, angle_offset=None,
-        save='polarisation_image', title="",
+        save='polarisation_image', title="", image_cmap='gray',
         color='yellow', cmap=None, alpha=1.0,
         monitor_dpi=96, pivot='middle', angles='xy',
         scale_units='xy', scale=None, headwidth=3.0, headlength=5.0,
@@ -130,6 +130,8 @@ def plot_polarisation_vectors(
         If set to `save=None`, the array will not be saved.
     title : string, default ""
         Title of the plot.
+    image_cmap : str, default 'gray'
+        Matplotlib cmap that will be used for the overlay image.
     color : string, default "r"
         Color of the arrows when `plot_style="vector" or "contour".
     cmap : matplotlib colormap, default "viridis"
@@ -227,8 +229,8 @@ def plot_polarisation_vectors(
     >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           unit_vector=True, plot_style='contour',
     ...                           overlay=False, pivot='middle', save=None,
-    ...                           color='darkgray', cmap='viridis',
-    ...                           monitor_dpi=50)
+    ...                           color='darkgray', cmap='plasma',
+    ...                           monitor_dpi=50, image_cmap='viridis')
 
     Plot a partly transparent angle tricontourf map with vector arrows:
 
@@ -313,7 +315,7 @@ def plot_polarisation_vectors(
                                             angle_offset=angle_offset)
 
     vector_label = angle_label(
-            vector_rep=vector_rep, units=units, degrees=degrees)
+        vector_rep=vector_rep, units=units, degrees=degrees)
 
     if unit_vector:
         # Normalise the data for uniform arrow size
@@ -416,7 +418,7 @@ def plot_polarisation_vectors(
         cbar.ax.set_ylabel(vector_label, fontsize=14)
 
     if overlay:
-        plt.imshow(image)
+        plt.imshow(image, cmap=image_cmap)
 
     if no_axis_info:
         plt.gca().axes.get_xaxis().set_visible(False)
@@ -1595,7 +1597,7 @@ def angle_label(vector_rep="magnitude", units='pix', degrees=False):
             vector_label = "Angle (rad)"
     else:
         raise ValueError(
-                "`vector_rep` must be either 'magnitude' or 'angle'.")
+            "`vector_rep` must be either 'magnitude' or 'angle'.")
     return(vector_label)
 
 
