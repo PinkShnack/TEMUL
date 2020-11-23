@@ -13,7 +13,7 @@ will also be available.
 
 %matplotlib nbagg
 
-from temul.polarisation import plot_polarisation_vectors
+import temul.api as tml
 from temul.dummy_data import get_polarisation_dummy_dataset
 atom_lattice = get_polarisation_dummy_dataset(image_noise=True)
 sublatticeA = atom_lattice.sublattice_list[0]
@@ -54,7 +54,7 @@ so that they are automatically set.
 
 # Vector magnitude plot with red arrows:
 
-plot_polarisation_vectors(x, y, u, v, image=image,
+tml.plot_polarisation_vectors(x, y, u, v, image=image,
                           unit_vector=False, save=None,
                           plot_style='vector', color='r',
                           overlay=False, title='Vector Arrows',
