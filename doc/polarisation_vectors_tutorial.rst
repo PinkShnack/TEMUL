@@ -3,6 +3,50 @@
 .. include:: define_roles.rst
 
 
+============================
+Finding Polarisation Vectors
+============================
+
+There are several methods available in the TEMUL Toolkit and
+`Atomap <https://atomap.org/>`_ packages for finding polarisation vectors in
+atomic resolution images. These are briefly described here, followed by a use-case
+example of each. 
+
+Current functions:
+
+1. Using Atomap's :python:`get_polarization_from_second_sublattice` Sublattice
+   method. Great for "standard" polarised structures with two sublattices.
+2. Using the TEMUL :python:`find_polarisation_vectors` function. Useful for
+   structures that Atomap's :python:`get_polarization_from_second_sublattice` can't
+   handle.
+3. Using the TEMUL :python:`atom_deviation_from_straight_line_fit` function.
+   Useful for calculating polarisation from a single sublattice, similar to and
+   based off: J. Gonnissen *et al*, Direct Observation of Ferroelectric Domain Walls in
+   LiNbO3: Wall‐Meanders, Kinks, and Local Electric Charges, 26, 42, 2016,
+    DOI: 10.1002/adfm.201603489.
+
+
+For "standard" Polarised Structures (e.g., PTO)
+-----------------------------------------------
+Atomap's :python:`get_polarization_from_second_sublattice` Sublattice method will
+be sufficent for most users when dealing with the classic PTO-style polarisation,
+wherein the atoms in a sublattice are polarised with respect to a second sublattice.
+
+.. code-block:: python
+
+    >>> from temul.polarisation import plot_polarisation_vectors
+    >>> from temul.dummy_data import get_polarisation_dummy_dataset
+    >>> atom_lattice = get_polarisation_dummy_dataset(image_noise=True)
+    >>> sublatticeA = atom_lattice.sublattice_list[0]
+    >>> sublatticeB = atom_lattice.sublattice_list[1]
+    >>> image = sublatticeA.signal
+    >>> image.plot()
+
+.. image:: tutorial_images/polarisation_vectors_tutorial/image_uncalibrated.png
+    :scale: 60 %
+
+
+
 ==========================================
 Plotting Polarisation and Movement Vectors
 ==========================================
