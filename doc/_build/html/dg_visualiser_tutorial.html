@@ -99,7 +99,8 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="using_temul.html">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Plotting Polarisation and Movement Vectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Finding Polarisation Vectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html#plotting-polarisation-and-movement-vectors">Plotting Polarisation and Movement Vectors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="structure_map_tutorial.html">Plot Lattice Structure Maps</a></li>
 <li class="toctree-l1"><a class="reference internal" href="masked_fft_tutorial.html">Masked FFT and iFFT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="line_profile_tutorial.html">Line Intensity Profile Comparisons</a></li>
@@ -185,7 +186,7 @@ tutorial, we will see how to use the function on experimental data.</p>
 <h2>Load the Experimental Image<a class="headerlink" href="#load-the-experimental-image" title="Permalink to this headline">¶</a></h2>
 <p>Here we load an example experimental atomic resolution image stored in the
 TEMUL package.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.signal_processing</span> <span class="k">as</span> <span class="nn">tmlsig</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.api</span> <span class="k">as</span> <span class="nn">tml</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.example_data</span> <span class="kn">import</span> <span class="n">load_Se_implanted_MoS2_data</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">image</span> <span class="o">=</span> <span class="n">load_Se_implanted_MoS2_data</span><span class="p">()</span>
 </pre></div>
@@ -195,7 +196,7 @@ TEMUL package.</p>
 <h2>Interactively Filter the Experimental Image<a class="headerlink" href="#interactively-filter-the-experimental-image" title="Permalink to this headline">¶</a></h2>
 <p>Run the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">visualise_dg_filter</span></span></code> function. There are lots of other parameters
 too for customisation.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tmlsig</span><span class="o">.</span><span class="n">visualise_dg_filter</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tml</span><span class="o">.</span><span class="n">visualise_dg_filter</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/dg_visualiser.gif"><img alt="_images/dg_visualiser.gif" src="_images/dg_visualiser.gif" style="width: 638.0px; height: 358.0px;" /></a>
@@ -213,7 +214,7 @@ convolution.</p>
 <h2>Return the Filtered Image<a class="headerlink" href="#return-the-filtered-image" title="Permalink to this headline">¶</a></h2>
 <p>When we have suitable FWHMs for the inner and outer Gaussians, we can use
 the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">double_gaussian_fft_filter</span></span></code> function the return a filtered image.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">filtered_image</span> <span class="o">=</span> <span class="n">tmlsig</span><span class="o">.</span><span class="n">double_gaussian_fft_filter</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">150</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">filtered_image</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">double_gaussian_fft_filter</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">150</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">image</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">filtered_image</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>

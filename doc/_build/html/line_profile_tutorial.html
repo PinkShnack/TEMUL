@@ -99,7 +99,8 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="using_temul.html">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Plotting Polarisation and Movement Vectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Finding Polarisation Vectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html#plotting-polarisation-and-movement-vectors">Plotting Polarisation and Movement Vectors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="structure_map_tutorial.html">Plot Lattice Structure Maps</a></li>
 <li class="toctree-l1"><a class="reference internal" href="masked_fft_tutorial.html">Masked FFT and iFFT</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Line Intensity Profile Comparisons</a><ul>
@@ -207,8 +208,8 @@ and simulated images.</p>
 choose points on the image. This time we use <code class="code python docutils literal notranslate"><span class="name"><span class="pre">choose_points_on_image</span></span></code>.
 We need to choose four points for the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">compare_images_line_profile_one_image</span></span></code>
 function, as it draws two line profiles over one image.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.signal_plotting</span> <span class="k">as</span> <span class="nn">tmlplt</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">line_profile_positions</span> <span class="o">=</span> <span class="n">tmlplt</span><span class="o">.</span><span class="n">choose_points_on_image</span><span class="p">(</span><span class="n">imageA</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.api</span> <span class="k">as</span> <span class="nn">tml</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">line_profile_positions</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">choose_points_on_image</span><span class="p">(</span><span class="n">imageA</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">line_profile_positions</span>
 <span class="go">[[61.75132848177407, 99.25182885155715],</span>
 <span class="go"> [178.97030854763057, 96.60281235289372],</span>
@@ -218,7 +219,7 @@ function, as it draws two line profiles over one image.</p>
 </div>
 <a class="reference internal image-reference" href="_images/choose_points_of_image_4points.gif"><img alt="_images/choose_points_of_image_4points.gif" class="align-center" src="_images/choose_points_of_image_4points.gif" style="width: 480.0px; height: 360.0px;" /></a>
 <p>Now run the comparison function to display the two line intensity profiles.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tmlplt</span><span class="o">.</span><span class="n">compare_images_line_profile_one_image</span><span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tml</span><span class="o">.</span><span class="n">compare_images_line_profile_one_image</span><span class="p">(</span>
 <span class="gp">... </span>            <span class="n">imageA</span><span class="p">,</span> <span class="n">line_profile_positions</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
 <span class="gp">... </span>            <span class="n">sampling</span><span class="o">=</span><span class="n">sampling</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">units</span><span class="p">,</span> <span class="n">arrow</span><span class="o">=</span><span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="n">linetrace</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
@@ -229,7 +230,7 @@ function, as it draws two line profiles over one image.</p>
 <h2>Compare two Images with Line Profile<a class="headerlink" href="#compare-two-images-with-line-profile" title="Permalink to this headline">¶</a></h2>
 <p>Using <code class="code python docutils literal notranslate"><span class="name"><span class="pre">choose_points_on_image</span></span></code>, we now choose two points on one image.
 Then, we plot this line intensity profile over the same position in two images.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">line_profile_positions</span> <span class="o">=</span> <span class="n">tmlplt</span><span class="o">.</span><span class="n">choose_points_on_image</span><span class="p">(</span><span class="n">imageA</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">line_profile_positions</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">choose_points_on_image</span><span class="p">(</span><span class="n">imageA</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">line_profile_positions</span>
 <span class="go">[[127.31448682369383, 46.93375300295452],</span>
 <span class="go"> [127.97674094835968, 176.7355614374623]]</span>
@@ -237,7 +238,7 @@ Then, we plot this line intensity profile over the same position in two images.<
 </div>
 <a class="reference internal image-reference" href="_images/choose_points_of_image_2points.gif"><img alt="_images/choose_points_of_image_2points.gif" class="align-center" src="_images/choose_points_of_image_2points.gif" style="width: 480.0px; height: 360.0px;" /></a>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">tmlplt</span><span class="o">.</span><span class="n">compare_images_line_profile_two_images</span><span class="p">(</span><span class="n">imageA</span><span class="p">,</span> <span class="n">imageB</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tml</span><span class="o">.</span><span class="n">compare_images_line_profile_two_images</span><span class="p">(</span><span class="n">imageA</span><span class="p">,</span> <span class="n">imageB</span><span class="p">,</span>
 <span class="gp">... </span>            <span class="n">line_profile_positions</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">reduce_func</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span>
 <span class="gp">... </span>            <span class="n">sampling</span><span class="o">=</span><span class="n">sampling</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">units</span><span class="p">,</span> <span class="n">crop_offset</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
 <span class="gp">... </span>            <span class="n">imageA_title</span><span class="o">=</span><span class="s2">&quot;Image A&quot;</span><span class="p">,</span> <span class="n">imageB_title</span><span class="o">=</span><span class="s2">&quot;Image B&quot;</span><span class="p">)</span>

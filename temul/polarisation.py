@@ -2,15 +2,12 @@
 import hyperspy
 import numpy as np
 import scipy
-from scipy.optimize import curve_fit
-from scipy.misc import derivative
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 from matplotlib.cm import ScalarMappable
 from decimal import Decimal
 import colorcet as cc
 from matplotlib_scalebar.scalebar import ScaleBar
-from temul.signal_processing import sine_wave_function_strain_gradient
 
 
 # good to have an example of getting atom_positions_A and B from sublattice
@@ -337,9 +334,9 @@ def plot_polarisation_vectors(
             x, y, u, v, color=color, pivot=pivot, angles=angles,
             scale_units=scale_units, scale=scale, headwidth=headwidth,
             headlength=headlength, headaxislength=headaxislength)
-        length = np.max(np.hypot(u, v)) / 2
-        ax.quiverkey(Q, 0.9, 1.025, length,
-                     label='{:.0E} {}'.format(Decimal(length), units),
+        length = np.max(np.hypot(u, v))
+        ax.quiverkey(Q, 0.8, 1.025, length,
+                     label='{:.2E} {}'.format(Decimal(length), units),
                      labelpos='E', coordinates='axes')
 
     elif plot_style == "colormap":
@@ -381,7 +378,7 @@ def plot_polarisation_vectors(
 
         if vector_rep == "angle":
             if degrees:
-                min_angle, max_angle = -180, 180 + 0.0001  # fixes display issues
+                min_angle, max_angle = -180, 180 + 0.0001  # fix display issues
             elif not degrees:
                 min_angle, max_angle = -np.pi, np.pi
 
@@ -608,14 +605,302 @@ def delete_atom_planes_from_sublattice(sublattice,
         del sublattice.atom_planes_by_zone_vector[zone_vec_needed][i]
 
 
-# atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
-# sublatticeA = atom_lattice.sublattice_list[0]
-# delete_atom_planes_from_sublattice(sublattice=sublatticeA,
-#                                    zone_axis_index=0,
-#                                    divisible_by=3,
-#                                    offset_from_zero=0,
-#                                    opposite=True)
-# sublatticeA.plot_planes()
+def _fit_line_clusters(arr, n, second_fit_rigid=True, plot=False):
+    '''
+    Fits the data in an array to two straight lines using the
+    first `n` and second (last) `n` array value pairs.
+
+    The slope of the first fitting will be used for the
+    second fitting. Setting `second_fit_rigid` = False will reverse this
+    behaviour.
+
+    Parameters
+    ----------
+    arr : 2D array-like
+        Array-like (e.g., NumPy 2D array) in the form [[x1, y1], [x2, y2]...]
+    n : int
+        The number of arr value pairs used at the beginning and end of the arr
+        to fit a straight line.
+    second_fit_rigid : Bool, default True
+        Used to decide whether the first or second fitting's slope will be
+        rigid during fitting. With `second_fit_rigid` = True, the slope of the
+        second fitting will be defined as the slope as the first fitting. The
+        y-intercept is free to move.
+    plot : Bool, default False
+        Whether to plot the arr data, first and second fitting, and the
+        line constructed halfway between the two.
+
+    Returns
+    -------
+    x, line_C, m_fit
+        x arr values, halfway fitting line, slope of fit
+    x, line_C, m_fit, line_A, line_B, c_fit, c_fit_rigid
+        If plot is True, the above will be returned along with the first line
+        fitting, second line fitting, first y-intercept, second y-intercept.
+
+    See Also
+    --------
+    get_xyuv_from_line_fit : uses _fit_line_clusters to get xyuv from arr
+    atom_deviation_from_straight_line_fit : Gets xyuv for Sublattice object
+
+    Examples
+    --------
+    >>> arr = np.array([[1, 2], [2, 2], [3, 2], [4, 2], [5, 2.05],
+    ...                 [6, 1], [7, 1], [8, 1], [9, 1], [10, 0.75]])
+    >>> fittings = _fit_line_clusters(
+    ...     arr, n=5, second_fit_rigid=True, plot=True)
+
+    Use the lower (second) cluster to fit the data, making the first cluster
+    rigid
+
+    >>> fittings = _fit_line_clusters(
+    ...     arr, n=5, second_fit_rigid=False, plot=True)
+
+    '''
+    x = arr[:, 0]
+    y = arr[:, 1]
+
+    x_i = x[0:n]
+    y_i = y[0:n]
+
+    x_f = x[-n:len(x)]
+    y_f = y[-n:len(y)]
+
+    if second_fit_rigid:
+        m_fit, c_fit = np.polyfit(x_i, y_i, 1)
+        c_fit_rigid = np.mean(y_f - m_fit * x_f)
+    elif not second_fit_rigid:
+        m_fit, c_fit = np.polyfit(x_f, y_f, 1)
+        c_fit_rigid = np.mean(y_i - m_fit * x_i)
+
+    # use the first slope to get the intercept of the second
+    line_A = m_fit * x + c_fit
+    line_B = m_fit * x + c_fit_rigid
+    c_halfway = (c_fit + c_fit_rigid)/2
+    line_C = m_fit * x + c_halfway
+
+    if plot:
+        plt.figure()
+        plt.scatter(x, y)
+        plt.plot(x, line_A, c='orange', label='first fit')
+        plt.plot(x, line_B, c='green', label='second fit')
+        plt.plot(x, line_C, c='k', label='halfway fit')
+        plt.legend(loc='upper right')
+        plt.show()
+
+    if plot:
+        return(x, line_C, m_fit, line_A, line_B, c_fit, c_fit_rigid)
+    else:
+        return(x, line_C, m_fit)
+
+
+def get_xyuv_from_line_fit(arr, n, second_fit_rigid=True, plot=False):
+    '''
+    Fits the data in an array to two straight lines using the
+    first `n` and second (last) `n` array value pairs. Computes the distance of
+    each array value pair from the line halfway between the two fitted lines.
+
+    The slope of the first fitting will be used for the
+    second fitting. Setting `second_fit_rigid` = False will reverse this
+    behaviour.
+
+    Parameters
+    ----------
+    arr : 2D array-like
+        Array-like (e.g., NumPy 2D array) in the form [[x1, y1], [x2, y2]...]
+    n : int
+        The number of arr value pairs used at the beginning and end of the arr
+        to fit a straight line.
+    second_fit_rigid : Bool, default True
+        Used to decide whether the first or second fitting's slope will be
+        rigid during fitting. With `second_fit_rigid=True`, the slope of the
+        second fitting will be defined as the slope as the first fitting. The
+        y-intercept is free to move.
+    plot : Bool, default False
+        Whether to plot the arr data, first and second fitting, and the
+        line constructed halfway between the two.
+
+    Returns
+    -------
+    x, y, u, v : lists of equal length
+        x, y are the original arr coordinates. u, v are the vector components
+        pointing towards the halfway line from the arr coordinates.
+        These can be input to `plot_polarisation_vectors()` for visualisation.
+
+    See Also
+    --------
+    atom_deviation_from_straight_line_fit : Gets xyuv for Sublattice object
+
+    Examples
+    --------
+    >>> arr = np.array([[1, 2], [2, 2], [3, 2], [4, 2], [5, 2.05],
+    ...                 [6, 1], [7, 1], [8, 1], [9, 1], [10, 0.75]])
+    >>> x, y, u, v = get_xyuv_from_line_fit(
+    ...     arr, n=5, second_fit_rigid=True, plot=True)
+
+    Use the lower (second) cluster to fit the data, making the first cluster
+    rigid
+
+    >>> x, y, u, v = get_xyuv_from_line_fit(
+    ...     arr, n=5, second_fit_rigid=False, plot=True)
+
+    '''
+    arr = np.asarray(arr)
+    fittings = _fit_line_clusters(arr=arr, n=n,
+                                  second_fit_rigid=second_fit_rigid, plot=plot)
+
+    x, line_C, m_fit = fittings[0], fittings[1], fittings[2]
+
+    slope_neg_inv = -(1 / m_fit)
+    angle = np.arctan(slope_neg_inv)  # * (180/np.pi)
+
+    # start xy coord for straight line fit
+    p1 = np.array((x[0], line_C[0]), ndmin=2)
+    # end xy coord for straight line fit
+    p2 = np.array((x[-1], line_C[-1]), ndmin=2)
+
+    x_list = []
+    y_list = []
+    u_list = []
+    v_list = []
+    for original_pos in arr:
+        distance = np.cross(p2 - p1, original_pos -
+                            p1) / np.linalg.norm(p2 - p1)
+        distance = float(distance)
+        u = distance * np.cos(angle)
+        v = distance * np.sin(angle)
+        x_list.append(original_pos[0])
+        y_list.append(original_pos[1])
+        u_list.append(u)
+        v_list.append(v)
+
+    return(x_list, y_list, u_list, v_list)
+
+
+def atom_deviation_from_straight_line_fit(
+        sublattice, axis_number, n, second_fit_rigid=True, plot=False):
+    '''
+    Fits the atomic columns in an atom plane to two straight lines using the
+    first `n` and second (last) `n` atomic columns. Computes the distance of
+    each atomic column from the line halfway between the two fitted lines, as
+    described in [1]. This is done for every sublattice atom plane along the
+    chosen `axis_number`.
+
+    The slope of the first fitting will be used for the
+    second fitting. Setting `second_fit_rigid` = False will reverse this
+    behaviour.
+
+    Parameters
+    ----------
+    sublattice : Atomap Sublattice object
+    axis_number : int
+        The index of the zone axis (translation symmetry) found by the Atomap
+        function `construct_zone_axes()`. For sublattices with heavily
+        deviating atomic columns, you may need to use
+        sublattice.construct_zone_axes(atom_plane_tolerance=1).
+    n : int
+        The number of columns used at the beginning and end of each atom plane
+        to fit a straight line.
+    second_fit_rigid : Bool, default True
+        Used to decide whether the first or second fitting's slope will be
+        rigid during fitting. With `second_fit_rigid=True`, the slope of the
+        second fitting will be defined as the slope as the first fitting. The
+        y-intercept is free to move.
+    plot : Bool, default False
+        Whether to plot the atom plane data, first and second fitting, and the
+        line constructed halfway between the two.
+
+    Returns
+    -------
+    x, y, u, v : lists of equal length
+        x, y are the original atom position coordinates `sublattice.x_position`
+        and `sublattice.y_position` for the coordinates included in the chosen
+        `axis_number`. u, v are the polarisation vector components pointing
+        towards the halfway line from the atom position coordinates.
+        These can be input to `plot_polarisation_vectors()` for visualisation.
+
+    See Also
+    --------
+    get_xyuv_from_line_fit : uses `_fit_line_clusters` to get xyuv from arr
+
+    References
+    ----------
+    .. [1] Reference: Julie Gonnissen, Dmitry Batuk, Guillaume F. Nataf,
+           Lewys Jones, Artem M. Abakumov, Sandra Van Aert, Dominique
+           Schryvers, Ekhard K. H. Salje, Direct Observation of Ferroelectric
+           Domain Walls in LiNbO3: Wall‐Meanders, Kinks, and Local Electric
+           Charges, 26, 42, 2016, DOI: 10.1002/adfm.201603489
+
+    Examples
+    --------
+    >>> import temul.api as tml
+    >>> import temul.dummy_data as dd
+    >>> sublattice = dd.get_polarised_single_sublattice()
+    >>> sublattice.construct_zone_axes(atom_plane_tolerance=1)
+
+    Choose `n`: how many atom columns should be used to fit the line on each
+    side of the atom planes. If `n` is too large, the fitting will appear
+    incorrect.
+
+    >>> n = 5
+    >>> x, y, u, v = tml.atom_deviation_from_straight_line_fit(
+    ...     sublattice, 0, n)
+    >>> tml.plot_polarisation_vectors(x, y, u, v, image=sublattice.image,
+    ...                               unit_vector=False, save=None,
+    ...                               plot_style='vector', color='r',
+    ...                               overlay=True, monitor_dpi=50)
+
+    Plot with angle and up/down. Note that the data ranges from -90 to +90
+    degrees, so the appropriate diverging cmap should be chosen.
+
+    >>> tml.plot_polarisation_vectors(x, y, u, v, image=sublattice.image,
+    ...                       vector_rep='angle', save=None, degrees=True,
+    ...                       plot_style='colormap', cmap='cet_coolwarm',
+    ...                       overlay=True, monitor_dpi=50)
+
+    Let's look at some rotated data
+
+    >>> sublattice = dd.get_polarised_single_sublattice_rotated(
+    ...     image_noise=True, rotation=45)
+    >>> sublattice.construct_zone_axes(atom_plane_tolerance=0.9)
+    >>> # sublattice.plot_planes()
+    >>> n = 3  # plot the sublattice to see why 3 is suitable here!
+    >>> x, y, u, v = tml.atom_deviation_from_straight_line_fit(
+    ...     sublattice, 0, n)
+    >>> tml.plot_polarisation_vectors(x, y, u, v, image=sublattice.image,
+    ...                       vector_rep='angle', save=None, degrees=True,
+    ...                       plot_style='colormap', cmap='cet_coolwarm',
+    ...                       overlay=True, monitor_dpi=50)
+
+    '''
+
+    if sublattice.zones_axis_average_distances is None:
+        raise Exception(
+            "zones_axis_average_distances is empty. "
+            "Has sublattice.construct_zone_axes() been run? You may need to "
+            "use sublattice.construct_zone_axes(atom_plane_tolerance=1).")
+    else:
+        zon_vec_needed = sublattice.zones_axis_average_distances[axis_number]
+
+    x_list = []
+    y_list = []
+    u_list = []
+    v_list = []
+    for i, atom_plane in enumerate(sublattice.atom_plane_list):
+
+        if sublattice.atom_plane_list[i].zone_vector == zon_vec_needed:
+
+            arr = np.array([atom_plane.get_x_position_list(),
+                            atom_plane.get_y_position_list()]).T
+
+            x, y, u, v = get_xyuv_from_line_fit(
+                arr=arr, n=n, second_fit_rigid=second_fit_rigid, plot=plot)
+            x_list.extend(x)
+            y_list.extend(y)
+            u_list.extend(u)
+            v_list.extend(v)
+
+    return(x_list, y_list, u_list, v_list)
 
 
 def _truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
@@ -625,9 +910,9 @@ def _truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
     return new_cmap
 
 
-def atom_deviation_from_straight_line_fit(sublattice,
-                                          axis_number: int = 0,
-                                          save: str = ''):
+def full_atom_plane_deviation_from_straight_line_fit(sublattice,
+                                                     axis_number: int = 0,
+                                                     save: str = ''):
     '''
     Fit the atoms in an atom plane to a straight line and find the deviation
     of each atom position from that straight line fit.
@@ -652,14 +937,16 @@ def atom_deviation_from_straight_line_fit(sublattice,
     Examples
     --------
     >>> import atomap.api as am
-    >>> from temul.polarisation import (atom_deviation_from_straight_line_fit,
-    ...                                 plot_polarisation_vectors)
+    >>> from temul.polarisation import (
+    ...     full_atom_plane_deviation_from_straight_line_fit,
+    ...     plot_polarisation_vectors)
     >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
     >>> sublatticeA = atom_lattice.sublattice_list[0]
     >>> sublatticeA.find_nearest_neighbors()
     >>> sublatticeA.refine_atom_positions_using_center_of_mass()
     >>> sublatticeA.construct_zone_axes()
-    >>> x,y,u,v = atom_deviation_from_straight_line_fit(sublatticeA, save=None)
+    >>> x,y,u,v = full_atom_plane_deviation_from_straight_line_fit(
+    ...     sublatticeA, save=None)
     >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           unit_vector=False, save=None, monitor_dpi=50)
 
@@ -793,7 +1080,7 @@ def plot_atom_deviation_from_all_zone_axes(
 
     for axis_number in range(len(sublattice.zones_axis_average_distances)):
 
-        x, y, u, v = atom_deviation_from_straight_line_fit(
+        x, y, u, v = full_atom_plane_deviation_from_straight_line_fit(
             sublattice=sublattice, axis_number=axis_number,
             save=None)
 
@@ -874,7 +1161,7 @@ def combine_atom_deviations_from_zone_axes(
 
     for axis_number in axes_list:
 
-        x, y, u, v = atom_deviation_from_straight_line_fit(
+        x, y, u, v = full_atom_plane_deviation_from_straight_line_fit(
             sublattice=sublattice, axis_number=axis_number,
             save=None)
 
@@ -1032,9 +1319,9 @@ def get_average_polarisation_in_regions(x, y, u, v, image, divide_into=8):
 
     Returns
     -------
-    Four lists: x_new, y_new, u_new, v_new.
-    x_new and y_new are the central coordinates of the divided regions.
-    u_new and v_new are the averaged polarisation vectors.
+    x_new, y_new, u_new, v_new : lists of equal length
+        x_new and y_new are the central coordinates of the divided regions.
+        u_new and v_new are the averaged polarisation vectors.
 
     Examples
     --------
@@ -1134,9 +1421,9 @@ def get_average_polarisation_in_regions_square(x, y, u, v, image,
 
     Returns
     -------
-    Four lists: x_new, y_new, u_new, v_new.
-    x_new and y_new are the central coordinates of the divided regions.
-    u_new and v_new are the averaged polarisation vectors.
+    x_new, y_new, u_new, v_new : lists of equal length
+        x_new and y_new are the central coordinates of the divided regions.
+        u_new and v_new are the averaged polarisation vectors.
 
     Examples
     --------

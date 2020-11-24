@@ -20,7 +20,7 @@ Load the Example Image
 
 .. code-block:: python
 
-    >>> import temul.signal_processing as tmlsig
+    >>> import temul.api as tml
     >>> from temul.dummy_data import get_polarisation_dummy_dataset
     >>> atom_lattice = get_polarisation_dummy_dataset(image_noise=True)
     >>> image = atom_lattice.sublattice_list[0].signal
@@ -35,7 +35,7 @@ Choose the Mask Coordinates
 
 .. code-block:: python
 
-    >>> mask_coords = tmlsig.choose_mask_coordinates(image, norm="log")
+    >>> mask_coords = tml.choose_mask_coordinates(image, norm="log")
 
 .. image:: tutorial_images/masked_fft_tutorial/choose_mask_coords.gif
     :scale: 60 %
@@ -50,7 +50,7 @@ Plot the Masked iFFT
 .. code-block:: python
 
     >>> mask_radius = 10  # pixels, default is also 10 pixels
-    >>> image_ifft = tmlsig.get_masked_ifft(image, mask_coords, 
+    >>> image_ifft = tml.get_masked_ifft(image, mask_coords, 
     ...                                     mask_radius=mask_radius)
     >>> image_ifft.plot()
 
@@ -61,7 +61,7 @@ Reverse the masking with `keep_masked_area=False`
 
 .. code-block:: python
 
-    >>> image_ifft = tmlsig.get_masked_ifft(image, mask_coords, 
+    >>> image_ifft = tml.get_masked_ifft(image, mask_coords, 
     ...                                     keep_masked_area=False)
     >>> image_ifft.plot()
 
@@ -72,7 +72,7 @@ Plot the FFT with masks overlaid by using `plot_masked_fft=True`
 
 .. code-block:: python
 
-    >>> image_ifft = tmlsig.get_masked_ifft(image, mask_coords, 
+    >>> image_ifft = tml.get_masked_ifft(image, mask_coords, 
     ...                                     plot_masked_fft=True)
 
 .. image:: tutorial_images/masked_fft_tutorial/ifft_3.png
@@ -84,7 +84,7 @@ If the input image is already a Fourier transform
 .. code-block:: python
 
     >>> fft_image = image.fft(shift=True)  # Check out Hyperspy
-    >>> image_ifft = tmlsig.get_masked_ifft(fft_image, mask_coords,
+    >>> image_ifft = tml.get_masked_ifft(fft_image, mask_coords,
     ...                                     image_space='fourier')
 
 
@@ -100,5 +100,5 @@ simple :python:`for` loop. Of course, you can also save the images after plottin
     >>> from hyperspy.io import load
     >>> for file in files:
     ...     image = load(file)
-    ...     image_ifft = tmlsig.get_masked_ifft(image, mask_coords)
+    ...     image_ifft = tml.get_masked_ifft(image, mask_coords)
     ...     image_ifft.plot()

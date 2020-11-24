@@ -102,7 +102,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="using_temul.html">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Plotting Polarisation and Movement Vectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Finding Polarisation Vectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html#plotting-polarisation-and-movement-vectors">Plotting Polarisation and Movement Vectors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="structure_map_tutorial.html">Plot Lattice Structure Maps</a></li>
 <li class="toctree-l1"><a class="reference internal" href="masked_fft_tutorial.html">Masked FFT and iFFT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="line_profile_tutorial.html">Line Intensity Profile Comparisons</a></li>
@@ -177,9 +178,8 @@
 <span id="install"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
 <p>The TEMUL Toolkit can be installed easily with PIP (those using Windows may need to download VS C++ Build Tools, see below).</p>
 <p><code class="code bash docutils literal notranslate"><span class="pre">$</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">temul-toolkit</span></code></p>
-<p>Then, it can be imported with the name “temul”. For example, to import the
-<code class="code python docutils literal notranslate"><span class="name"><span class="pre">polarisation</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">py</span></span></code> module, use:</p>
-<p><code class="code python docutils literal notranslate"><span class="keyword namespace"><span class="pre">import</span></span> <span class="name namespace"><span class="pre">temul.polarisation</span></span> <span class="keyword"><span class="pre">as</span></span> <span class="name namespace"><span class="pre">tmlp</span></span></code></p>
+<p>Then, it can be imported with the name “temul”. For example, to import most of the temul functionality use:</p>
+<p><code class="code python docutils literal notranslate"><span class="keyword namespace"><span class="pre">import</span></span> <span class="name namespace"><span class="pre">temul.api</span></span> <span class="keyword"><span class="pre">as</span></span> <span class="name namespace"><span class="pre">tml</span></span></code></p>
 <p>Matplotlib 3.3 currently has compatability issues with iPython, see below for the fix.</p>
 <div class="section" id="installation-problems-notes">
 <h2>Installation Problems &amp; Notes<a class="headerlink" href="#installation-problems-notes" title="Permalink to this headline">¶</a></h2>

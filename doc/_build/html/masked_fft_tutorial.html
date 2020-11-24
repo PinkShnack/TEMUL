@@ -99,7 +99,8 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="using_temul.html">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Plotting Polarisation and Movement Vectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Finding Polarisation Vectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html#plotting-polarisation-and-movement-vectors">Plotting Polarisation and Movement Vectors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="structure_map_tutorial.html">Plot Lattice Structure Maps</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Masked FFT and iFFT</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#load-the-example-image">Load the Example Image</a></li>
@@ -186,7 +187,7 @@ to <a class="reference external" href="https://onlinelibrary.wiley.com/doi/abs/1
 and finding initial atom positions for difficult images.</p>
 <div class="section" id="load-the-example-image">
 <h2>Load the Example Image<a class="headerlink" href="#load-the-example-image" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.signal_processing</span> <span class="k">as</span> <span class="nn">tmlsig</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.api</span> <span class="k">as</span> <span class="nn">tml</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="kn">import</span> <span class="n">get_polarisation_dummy_dataset</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">atom_lattice</span> <span class="o">=</span> <span class="n">get_polarisation_dummy_dataset</span><span class="p">(</span><span class="n">image_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">image</span> <span class="o">=</span> <span class="n">atom_lattice</span><span class="o">.</span><span class="n">sublattice_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">signal</span>
@@ -197,7 +198,7 @@ and finding initial atom positions for difficult images.</p>
 </div>
 <div class="section" id="choose-the-mask-coordinates">
 <h2>Choose the Mask Coordinates<a class="headerlink" href="#choose-the-mask-coordinates" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mask_coords</span> <span class="o">=</span> <span class="n">tmlsig</span><span class="o">.</span><span class="n">choose_mask_coordinates</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mask_coords</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">choose_mask_coordinates</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/choose_mask_coords.gif"><img alt="_images/choose_mask_coords.gif" class="align-center" src="_images/choose_mask_coords.gif" style="width: 480.0px; height: 360.0px;" /></a>
@@ -205,28 +206,28 @@ and finding initial atom positions for difficult images.</p>
 <div class="section" id="plot-the-masked-ifft">
 <h2>Plot the Masked iFFT<a class="headerlink" href="#plot-the-masked-ifft" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mask_radius</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># pixels, default is also 10 pixels</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">image_ifft</span> <span class="o">=</span> <span class="n">tmlsig</span><span class="o">.</span><span class="n">get_masked_ifft</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">mask_coords</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image_ifft</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">get_masked_ifft</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">mask_coords</span><span class="p">,</span>
 <span class="gp">... </span>                                    <span class="n">mask_radius</span><span class="o">=</span><span class="n">mask_radius</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">image_ifft</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/ifft_1.png"><img alt="_images/ifft_1.png" src="_images/ifft_1.png" style="width: 387.59999999999997px; height: 334.2px;" /></a>
 <p>Reverse the masking with <cite>keep_masked_area=False</cite></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">image_ifft</span> <span class="o">=</span> <span class="n">tmlsig</span><span class="o">.</span><span class="n">get_masked_ifft</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">mask_coords</span><span class="p">,</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">image_ifft</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">get_masked_ifft</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">mask_coords</span><span class="p">,</span>
 <span class="gp">... </span>                                    <span class="n">keep_masked_area</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">image_ifft</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/ifft_2.png"><img alt="_images/ifft_2.png" src="_images/ifft_2.png" style="width: 432.0px; height: 347.4px;" /></a>
 <p>Plot the FFT with masks overlaid by using <cite>plot_masked_fft=True</cite></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">image_ifft</span> <span class="o">=</span> <span class="n">tmlsig</span><span class="o">.</span><span class="n">get_masked_ifft</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">mask_coords</span><span class="p">,</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">image_ifft</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">get_masked_ifft</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">mask_coords</span><span class="p">,</span>
 <span class="gp">... </span>                                    <span class="n">plot_masked_fft</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/ifft_3.png"><img alt="_images/ifft_3.png" src="_images/ifft_3.png" style="width: 320.0px; height: 290.5px;" /></a>
 <p>If the input image is already a Fourier transform</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fft_image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">shift</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># Check out Hyperspy</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">image_ifft</span> <span class="o">=</span> <span class="n">tmlsig</span><span class="o">.</span><span class="n">get_masked_ifft</span><span class="p">(</span><span class="n">fft_image</span><span class="p">,</span> <span class="n">mask_coords</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image_ifft</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">get_masked_ifft</span><span class="p">(</span><span class="n">fft_image</span><span class="p">,</span> <span class="n">mask_coords</span><span class="p">,</span>
 <span class="gp">... </span>                                    <span class="n">image_space</span><span class="o">=</span><span class="s1">&#39;fourier&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -238,7 +239,7 @@ simple <code class="code python docutils literal notranslate"><span class="keywo
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hyperspy.io</span> <span class="kn">import</span> <span class="n">load</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">image</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
-<span class="gp">... </span>    <span class="n">image_ifft</span> <span class="o">=</span> <span class="n">tmlsig</span><span class="o">.</span><span class="n">get_masked_ifft</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">mask_coords</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">image_ifft</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">get_masked_ifft</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">mask_coords</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="n">image_ifft</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>

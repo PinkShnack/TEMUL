@@ -6,6 +6,12 @@
 News
 ----
 
+.. new version additions:
+    Corrected atom_deviation_from_straight_line_fit function.
+    Added documentation for how to find the polarisation vectors
+    Added "code_tutorials" ipynb examples
+    Corrected plot_polarisation_vectors vector quiver key
+
 **03/11/2020: Version 0.1.2 released**
 
 This version contains minor changes from the 0.1.1 release. It removes pyCifRW
