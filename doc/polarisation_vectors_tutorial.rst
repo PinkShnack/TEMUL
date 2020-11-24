@@ -32,7 +32,7 @@ Atomap's :python:`get_polarization_from_second_sublattice` Sublattice method wil
 be sufficent for most users when dealing with the classic PTO-style polarisation,
 wherein the atoms in a sublattice are polarised with respect to a second sublattice.
 
-See the second part of this tutorial on how to plot this in many different ways
+See the second section of this tutorial on how to plot this in many different ways
 using :python:`plot_polarisation_vectors`!
 
 .. code-block:: python
@@ -70,7 +70,7 @@ structures that Atomap's :python:`get_polarization_from_second_sublattice` can't
 handle. It is a little more involved and requires some extra preparation when 
 creating the sublattices. 
 
-See the second part of this tutorial on how to plot this in many different ways
+See the second section of this tutorial on how to plot this in many different ways
 using :python:`plot_polarisation_vectors`!
 
 .. code-block:: python
@@ -113,8 +113,71 @@ polarisation in the structure. Don't forget to save these arrays for further use
     ...                         plot_style='vector', color='r',
     ...                         overlay=True, monitor_dpi=45)
 
+
 .. image:: tutorial_images/polarisation_vectors_tutorial/find_vectors_polar_dd.png
     :scale: 60 %
+
+
+
+For Single Polarised Sublattices (e.g., LNO)
+-----------------------------------------------------
+When dealing with structures in which the polarisation must be extracted from a
+single sublattice (one type of chemical atomic column, the TEMUL
+:python:`atom_deviation_from_straight_line_fit` function
+may be an option. It is based off the description by J. Gonnissen *et al*,
+Direct Observation of Ferroelectric Domain Walls in LiNbO3: Wall‐Meanders,
+Kinks, and Local Electric Charges, 26, 42, 2016, DOI: 10.1002/adfm.201603489.
+
+See the second section of this tutorial on how to plot this in many different ways
+using :python:`plot_polarisation_vectors`!
+
+.. code-block:: python
+
+    >>> import temul.api as tml
+    >>> import temul.dummy_data as dd
+    >>> sublattice = dd.get_polarised_single_sublattice()
+    >>> sublattice.construct_zone_axes(atom_plane_tolerance=1)
+    >>> sublattice.plot_planes()
+    
+    Choose `n`: how many atom columns should be used to fit the line on each
+    side of the atom planes. If `n` is too large, the fitting will appear
+    incorrect.
+
+    >>> n = 5
+    >>> x, y, u, v = tml.atom_deviation_from_straight_line_fit(
+    ...     sublattice, 0, n)
+    >>> tml.plot_polarisation_vectors(x, y, u, v, image=sublattice.image,
+    ...                               unit_vector=False, save=None,
+    ...                               plot_style='vector', color='r',
+    ...                               overlay=True, monitor_dpi=50)
+
+.. image:: tutorial_images/polarisation_vectors_tutorial/deviation_zone_0.png
+    :scale: 50 %
+.. image:: tutorial_images/polarisation_vectors_tutorial/deviation_vectors_polar_dd.png
+    :scale: 50 %
+
+
+Let's look at some rotated data
+
+.. code-block:: python
+
+    >>> sublattice = dd.get_polarised_single_sublattice_rotated(
+    ...     image_noise=True, rotation=45)
+    >>> sublattice.construct_zone_axes(atom_plane_tolerance=0.9)
+    >>> sublattice.plot_planes()
+    >>> n = 3  # plot the sublattice to see why 3 is suitable here!
+    >>> x, y, u, v = tml.atom_deviation_from_straight_line_fit(
+    ...     sublattice, 0, n)
+    >>> tml.plot_polarisation_vectors(x, y, u, v, image=sublattice.image,
+    ...                       vector_rep='angle', save=None, degrees=True,
+    ...                       plot_style='colormap', cmap='cet_coolwarm',
+    ...                       overlay=True, monitor_dpi=50)
+
+.. image:: tutorial_images/polarisation_vectors_tutorial/deviation_zone_0_rot.png
+    :scale: 50 %
+.. image:: tutorial_images/polarisation_vectors_tutorial/deviation_vectors_polar_dd_rot.png
+    :scale: 50 %
+
 
 
 ==========================================

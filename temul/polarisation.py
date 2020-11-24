@@ -866,7 +866,7 @@ def atom_deviation_from_straight_line_fit(
     >>> sublattice = dd.get_polarised_single_sublattice_rotated(
     ...     image_noise=True, rotation=45)
     >>> sublattice.construct_zone_axes(atom_plane_tolerance=0.9)
-    >>> sublattice.plot_planes()
+    >>> # sublattice.plot_planes()
     >>> n = 3  # plot the sublattice to see why 3 is suitable here!
     >>> x, y, u, v = tml.atom_deviation_from_straight_line_fit(
     ...     sublattice, 0, n)
