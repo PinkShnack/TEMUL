@@ -26,25 +26,95 @@ Current functions:
     DOI: 10.1002/adfm.201603489.
 
 
-For "standard" Polarised Structures (e.g., PTO)
+For standard Polarised Structures (e.g., PTO)
 -----------------------------------------------
 Atomap's :python:`get_polarization_from_second_sublattice` Sublattice method will
 be sufficent for most users when dealing with the classic PTO-style polarisation,
 wherein the atoms in a sublattice are polarised with respect to a second sublattice.
 
+See the second part of this tutorial on how to plot this in many different ways
+using :python:`plot_polarisation_vectors`!
+
 .. code-block:: python
 
-    >>> from temul.polarisation import plot_polarisation_vectors
+    >>> import temul.api as tml
     >>> from temul.dummy_data import get_polarisation_dummy_dataset
     >>> atom_lattice = get_polarisation_dummy_dataset(image_noise=True)
     >>> sublatticeA = atom_lattice.sublattice_list[0]
     >>> sublatticeB = atom_lattice.sublattice_list[1]
-    >>> image = sublatticeA.signal
-    >>> image.plot()
+    >>> sublatticeA.construct_zone_axes()
+    >>> za0, za1 = sublatticeA.zones_axis_average_distances[0:2]
+    >>> s_p = sublatticeA.get_polarization_from_second_sublattice(
+    ...     za0, za1, sublatticeB)
+    >>> vector_list = s_p.metadata.vector_list
+    >>> x, y = [i[0] for i in vector_list], [i[1] for i in vector_list]
+    >>> u, v = [i[2] for i in vector_list], [i[3] for i in vector_list]
+    >>> sampling, units =  0.05, 'nm'
+    >>> tml.plot_polarisation_vectors(x, y, u, v, image=atom_lattice.image,
+    ...                           sampling=sampling, units=units,
+    ...                           unit_vector=False, save=None, scalebar=True,
+    ...                           plot_style='vector', color='r',
+    ...                           overlay=True, monitor_dpi=45)
 
-.. image:: tutorial_images/polarisation_vectors_tutorial/image_uncalibrated.png
+
+.. image:: tutorial_images/polarisation_vectors_tutorial/basic_vectors_polar_dd.png
     :scale: 60 %
 
+
+
+For nonstandard Polarised Structures (e.g., Boracite)
+-----------------------------------------------------
+When the above function can't isn't suitable, the TEMUL
+:python:`find_polarisation_vectors` function may be an option. It is useful for
+structures that Atomap's :python:`get_polarization_from_second_sublattice` can't
+handle. It is a little more involved and requires some extra preparation when 
+creating the sublattices. 
+
+See the second part of this tutorial on how to plot this in many different ways
+using :python:`plot_polarisation_vectors`!
+
+.. code-block:: python
+
+    >>> import temul.api as tml
+    >>> import atomap.api as am
+    >>> import numpy as np
+    >>> from temul.dummy_data import get_polarisation_dummy_dataset_bora
+    >>> signal = get_polarisation_dummy_dataset_bora(True).signal
+    >>> atom_positions = am.get_atom_positions(signal, separation=7)
+    >>> sublatticeA = am.Sublattice(atom_positions, image=signal.data)
+    >>> sublatticeA.find_nearest_neighbors()
+    >>> sublatticeA.refine_atom_positions_using_center_of_mass()
+    >>> sublatticeA.construct_zone_axes()
+    >>> zone_axis_001 = sublatticeA.zones_axis_average_distances[0]
+    >>> atom_positions2 = sublatticeA.find_missing_atoms_from_zone_vector(
+    ...     zone_axis_001, vector_fraction=0.5)
+    >>> sublatticeB = am.Sublattice(atom_positions2, image=signal.data,
+    ...                             color='blue')
+    >>> sublatticeB.find_nearest_neighbors()
+    >>> sublatticeB.refine_atom_positions_using_center_of_mass(percent_to_nn=0.2)
+    >>> atom_positions2_refined = np.array([sublatticeB.x_position,
+    ...                                     sublatticeB.y_position]).T
+    >>> atom_positions2 = np.asarray(atom_positions2).T
+
+
+We then use the original, ideal positions "atom_positions2" and the refined
+positions "atom_positions2_refined" to calculate and visualise the
+polarisation in the structure. Don't forget to save these arrays for further use!
+
+.. code-block:: python
+
+    >>> u, v = tml.find_polarisation_vectors(atom_positions2,
+    ...                                      atom_positions2_refined)
+    >>> x, y = sublatticeB.x_position.tolist(), sublatticeB.y_position.tolist()
+    >>> sampling, units =  0.1, 'nm'
+    >>> tml.plot_polarisation_vectors(x, y, u, v, image=signal.data,
+    ...                         sampling=sampling, units=units, scalebar=True,
+    ...                         unit_vector=False, save=None,
+    ...                         plot_style='vector', color='r',
+    ...                         overlay=True, monitor_dpi=45)
+
+.. image:: tutorial_images/polarisation_vectors_tutorial/find_vectors_polar_dd.png
+    :scale: 60 %
 
 
 ==========================================
