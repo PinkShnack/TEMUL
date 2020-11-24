@@ -98,7 +98,8 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="using_temul.html">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Plotting Polarisation and Movement Vectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Finding Polarisation Vectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html#plotting-polarisation-and-movement-vectors">Plotting Polarisation and Movement Vectors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="structure_map_tutorial.html">Plot Lattice Structure Maps</a></li>
 <li class="toctree-l1"><a class="reference internal" href="masked_fft_tutorial.html">Masked FFT and iFFT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="line_profile_tutorial.html">Line Intensity Profile Comparisons</a></li>
@@ -322,6 +323,8 @@
 </li>
       <li><a href="api_doc.html#temul.signal_processing.fit_1D_gaussian_to_data">fit_1D_gaussian_to_data() (in module temul.signal_processing)</a>
 </li>
+      <li><a href="api_doc.html#temul.polarisation.full_atom_plane_deviation_from_straight_line_fit">full_atom_plane_deviation_from_straight_line_fit() (in module temul.polarisation)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -354,17 +357,23 @@
 </li>
       <li><a href="api_doc.html#temul.element_tools.get_individual_elements_from_element_list">get_individual_elements_from_element_list() (in module temul.element_tools)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api_doc.html#temul.signal_processing.get_masked_ifft">get_masked_ifft() (in module temul.signal_processing)</a>
 </li>
       <li><a href="api_doc.html#temul.model_creation.get_max_number_atoms_z">get_max_number_atoms_z() (in module temul.model_creation)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api_doc.html#temul.model_creation.get_most_common_sublattice_element">get_most_common_sublattice_element() (in module temul.model_creation)</a>
 </li>
       <li><a href="api_doc.html#temul.intensity_tools.get_pixel_count_from_image_slice">get_pixel_count_from_image_slice() (in module temul.intensity_tools)</a>
 </li>
       <li><a href="api_doc.html#temul.dummy_data.get_polarisation_dummy_dataset">get_polarisation_dummy_dataset() (in module temul.dummy_data)</a>
+</li>
+      <li><a href="api_doc.html#temul.dummy_data.get_polarisation_dummy_dataset_bora">get_polarisation_dummy_dataset_bora() (in module temul.dummy_data)</a>
+</li>
+      <li><a href="api_doc.html#temul.dummy_data.get_polarised_single_sublattice">get_polarised_single_sublattice() (in module temul.dummy_data)</a>
+</li>
+      <li><a href="api_doc.html#temul.dummy_data.get_polarised_single_sublattice_rotated">get_polarised_single_sublattice_rotated() (in module temul.dummy_data)</a>
 </li>
       <li><a href="api_doc.html#temul.model_creation.get_positions_from_sublattices">get_positions_from_sublattices() (in module temul.model_creation)</a>
 </li>
@@ -383,6 +392,8 @@
       <li><a href="api_doc.html#temul.polarisation.get_vector_magnitudes">get_vector_magnitudes() (in module temul.polarisation)</a>
 </li>
       <li><a href="api_doc.html#temul.signal_processing.get_xydata_from_list_of_intensities">get_xydata_from_list_of_intensities() (in module temul.signal_processing)</a>
+</li>
+      <li><a href="api_doc.html#temul.polarisation.get_xyuv_from_line_fit">get_xyuv_from_line_fit() (in module temul.polarisation)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -446,10 +457,12 @@
 </li>
       <li><a href="api_doc.html#temul.signal_processing.make_gaussian_pos_neg">make_gaussian_pos_neg() (in module temul.signal_processing)</a>
 </li>
-      <li><a href="api_doc.html#temul.signal_processing.mean_and_std_nearest_neighbour_distances">mean_and_std_nearest_neighbour_distances() (in module temul.signal_processing)</a>
+      <li><a href="api_doc.html#temul.dummy_data.make_polarised_sublattice_bora_return">make_polarised_sublattice_bora_return() (in module temul.dummy_data)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_doc.html#temul.signal_processing.mean_and_std_nearest_neighbour_distances">mean_and_std_nearest_neighbour_distances() (in module temul.signal_processing)</a>
+</li>
       <li><a href="api_doc.html#temul.signal_processing.measure_image_errors">measure_image_errors() (in module temul.signal_processing)</a>
 </li>
       <li><a href="api_doc.html#temul.model_refiner.Model_Refiner">Model_Refiner (class in temul.model_refiner)</a>

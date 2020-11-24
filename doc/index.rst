@@ -13,12 +13,16 @@ The TEMUL Toolkit is a suit of functions and classes for analysis and visualisat
 atomic resolution images. It is mostly built upon the data structure of 
 `HyperSpy <https://hyperspy.org/>`_ and `Atomap <https://atomap.org/>`_.
 
-..  Interactive Examples
-   --------------------
-   .. image:: https://mybinder.org/badge_logo.svg
-      :target: https://mybinder.org/v2/gh/PinkShnack/TEMUL/master
-   Click the button above to start some data analysis from published scientific papers!
-   Just navigate to the "publication_examples" folder and click on the ".ipynb" files.
+Interactive Examples
+--------------------
+.. image:: https://mybinder.org/badge_logo.svg
+   :target: https://mybinder.org/v2/gh/PinkShnack/TEMUL/master
+
+Click the button above to start some data analysis (it may take a few minutes to load). 
+The "code_tutorials" folder contains walkthroughs of some of the documentation
+examples from this website.
+The "publication_examples" folder will allow you to analyse data from published scientific papers!
+Just navigate to whichever of these folders you want click on the ".ipynb" files.
 
 
 .. include:: news.rst

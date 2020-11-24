@@ -10,7 +10,7 @@ Finding Polarisation Vectors
 There are several methods available in the TEMUL Toolkit and
 `Atomap <https://atomap.org/>`_ packages for finding polarisation vectors in
 atomic resolution images. These are briefly described here, followed by a use-case
-example of each. 
+of each. 
 
 Current functions:
 
@@ -22,8 +22,7 @@ Current functions:
 3. Using the TEMUL :python:`atom_deviation_from_straight_line_fit` function.
    Useful for calculating polarisation from a single sublattice, similar to and
    based off: J. Gonnissen *et al*, Direct Observation of Ferroelectric Domain Walls in
-   LiNbO3: Wall‐Meanders, Kinks, and Local Electric Charges, 26, 42, 2016,
-    DOI: 10.1002/adfm.201603489.
+   LiNbO3: Wall‐Meanders, Kinks, and Local Electric Charges, 26, 42, 2016, DOI: 10.1002/adfm.201603489.
 
 
 For standard Polarised Structures (e.g., PTO)
@@ -58,11 +57,10 @@ using :python:`plot_polarisation_vectors`!
 
 
 .. image:: tutorial_images/polarisation_vectors_tutorial/basic_vectors_polar_dd.png
-    :scale: 60 %
+    :scale: 75 %
 
 
-
-For nonstandard Polarised Structures (e.g., Boracite)
+For nonstandard Polarised Structures (e.g., Boracites)
 -----------------------------------------------------
 When the above function can't isn't suitable, the TEMUL
 :python:`find_polarisation_vectors` function may be an option. It is useful for
@@ -97,7 +95,7 @@ using :python:`plot_polarisation_vectors`!
     >>> atom_positions2 = np.asarray(atom_positions2).T
 
 
-We then use the original, ideal positions "atom_positions2" and the refined
+We then use the original (ideal) positions "atom_positions2" and the refined
 positions "atom_positions2_refined" to calculate and visualise the
 polarisation in the structure. Don't forget to save these arrays for further use!
 
@@ -115,11 +113,11 @@ polarisation in the structure. Don't forget to save these arrays for further use
 
 
 .. image:: tutorial_images/polarisation_vectors_tutorial/find_vectors_polar_dd.png
-    :scale: 60 %
+    :scale: 75 %
 
 
 
-For Single Polarised Sublattices (e.g., LNO)
+For single Polarised Sublattices (e.g., LNO)
 -----------------------------------------------------
 When dealing with structures in which the polarisation must be extracted from a
 single sublattice (one type of chemical atomic column, the TEMUL
@@ -152,9 +150,9 @@ using :python:`plot_polarisation_vectors`!
     ...                               overlay=True, monitor_dpi=50)
 
 .. image:: tutorial_images/polarisation_vectors_tutorial/deviation_zone_0.png
-    :scale: 50 %
+    :scale: 45 %
 .. image:: tutorial_images/polarisation_vectors_tutorial/deviation_vectors_polar_dd.png
-    :scale: 50 %
+    :scale: 70 %
 
 
 Let's look at some rotated data
@@ -174,9 +172,9 @@ Let's look at some rotated data
     ...                       overlay=True, monitor_dpi=50)
 
 .. image:: tutorial_images/polarisation_vectors_tutorial/deviation_zone_0_rot.png
-    :scale: 50 %
+    :scale: 45 %
 .. image:: tutorial_images/polarisation_vectors_tutorial/deviation_vectors_polar_dd_rot.png
-    :scale: 50 %
+    :scale: 45 %
 
 
 
@@ -189,6 +187,13 @@ polarisation/movement of atoms in an atomic resolution image. In this tutorial,
 we will use a dummy dataset to show the different ways the :python:`plot_polarisation_vectors`
 function can display data. In future, tutorials on published experimental data
 will also be available.
+
+To go through the below examples in a live Jupyter Notebook session, click the button below
+and choose "code_tutorials/polarisation_vectors_tutorial.ipynb" (it may take a few minutes to load). 
+
+.. image:: https://mybinder.org/badge_logo.svg
+   :target: https://mybinder.org/v2/gh/PinkShnack/TEMUL/master
+
 
 
 Prepare and Plot the dummy dataset
@@ -226,7 +231,7 @@ but if not, use Hyperspy's :python:`axes_manager` for calibration.
 Zoom in on the image to see how the atoms look in the different regions.
 
 .. image:: tutorial_images/polarisation_vectors_tutorial/image_calibrated_labelled_atoms.png
-    :scale: 60 %
+    :scale: 55 %
 
 Find the Vector Coordinates using Atomap
 ----------------------------------------

@@ -19,7 +19,7 @@ Prepare and Plot the dummy dataset
 
 .. code-block:: python
 
-    >>> import temul.polarisation as tmlp
+    >>> import temul.api as tml
     >>> from temul.dummy_data import get_polarisation_dummy_dataset
     >>> atom_lattice = get_polarisation_dummy_dataset(image_noise=True)
     >>> sublatticeA = atom_lattice.sublattice_list[0]
@@ -38,7 +38,7 @@ Plot the Lattice Strain Map
 ---------------------------
 
 By inputting the calculated or theoretical atom plane separation distance as the
-:python:`theoretical_value` parameter in :python:`tmlp.get_strain_map` below,
+:python:`theoretical_value` parameter in :python:`tml.get_strain_map` below,
 we can plot a strain map. The distance *l* is calculated as the distance between
 each atom plane in the given zone axis. More details on this can be found on the
 `Atomap <https://atomap.org/analysing_atom_lattices.html#distance-between-monolayers>`_
@@ -47,7 +47,7 @@ website.
 .. code-block:: python
     
     >>> theor_val = 1.9
-    >>> strain_map = tmlp.get_strain_map(sublatticeB, zone_axis_index=0,
+    >>> strain_map = tml.get_strain_map(sublatticeB, zone_axis_index=0,
     ...            units=units, sampling=sampling, theoretical_value=theor_val)
 
 .. image:: tutorial_images/structure_map_tutorial/strain_map_0.png
@@ -79,7 +79,7 @@ for other options.
 .. code-block:: python
 
     >>> degrees=True
-    >>> rotation_map = tmlp.rotation_of_atom_planes(sublatticeB, 0,
+    >>> rotation_map = tml.rotation_of_atom_planes(sublatticeB, 0,
     ...                     units=units, sampling=sampling, degrees=degrees)
 
     '''
@@ -88,7 +88,7 @@ for other options.
     '''
 
     >>> angle_offset = 45
-    >>> rotation_map = tmlp.rotation_of_atom_planes(sublatticeB, 0,
+    >>> rotation_map = tml.rotation_of_atom_planes(sublatticeB, 0,
     ...                     units=units, sampling=sampling, degrees=degrees,
     ...                     angle_offset=angle_offset, title='Offset of 45, Index')
 
@@ -108,7 +108,7 @@ two sublattice zone axes. Useful for plotting the *c*/*a* Ratio.
 
 .. code-block:: python
 
-    >>> ratio_map = tmlp.ratio_of_lattice_spacings(sublatticeB, 0, 1,
+    >>> ratio_map = tml.ratio_of_lattice_spacings(sublatticeB, 0, 1,
     ...                 units=units, sampling=sampling)
 
 

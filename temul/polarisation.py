@@ -2,15 +2,12 @@
 import hyperspy
 import numpy as np
 import scipy
-from scipy.optimize import curve_fit
-from scipy.misc import derivative
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 from matplotlib.cm import ScalarMappable
 from decimal import Decimal
 import colorcet as cc
 from matplotlib_scalebar.scalebar import ScaleBar
-from temul.signal_processing import sine_wave_function_strain_gradient
 
 
 # good to have an example of getting atom_positions_A and B from sublattice
@@ -381,7 +378,7 @@ def plot_polarisation_vectors(
 
         if vector_rep == "angle":
             if degrees:
-                min_angle, max_angle = -180, 180 + 0.0001  # fixes display issues
+                min_angle, max_angle = -180, 180 + 0.0001  # fix display issues
             elif not degrees:
                 min_angle, max_angle = -np.pi, np.pi
 
@@ -643,7 +640,7 @@ def _fit_line_clusters(arr, n, second_fit_rigid=True, plot=False):
 
     See Also
     --------
-    get_xyuv_from_line_fit : uses _fit_line_clusters to get xyuv values from arr
+    get_xyuv_from_line_fit : uses _fit_line_clusters to get xyuv from arr
     atom_deviation_from_straight_line_fit : Gets xyuv for Sublattice object
 
     Examples
@@ -824,15 +821,15 @@ def atom_deviation_from_straight_line_fit(
 
     See Also
     --------
-    get_xyuv_from_line_fit : uses _fit_line_clusters to get xyuv values from arr
+    get_xyuv_from_line_fit : uses `_fit_line_clusters` to get xyuv from arr
 
     References
     ----------
     .. [1] Reference: Julie Gonnissen, Dmitry Batuk, Guillaume F. Nataf,
-    Lewys Jones, Artem M. Abakumov, Sandra Van Aert, Dominique Schryvers,
-    Ekhard K. H. Salje, Direct Observation of Ferroelectric Domain Walls in
-    LiNbO3: Wall‐Meanders, Kinks, and Local Electric Charges, 26, 42, 2016,
-    DOI: 10.1002/adfm.201603489
+           Lewys Jones, Artem M. Abakumov, Sandra Van Aert, Dominique
+           Schryvers, Ekhard K. H. Salje, Direct Observation of Ferroelectric
+           Domain Walls in LiNbO3: Wall‐Meanders, Kinks, and Local Electric
+           Charges, 26, 42, 2016, DOI: 10.1002/adfm.201603489
 
     Examples
     --------
@@ -854,7 +851,7 @@ def atom_deviation_from_straight_line_fit(
     ...                               overlay=True, monitor_dpi=50)
 
     Plot with angle and up/down. Note that the data ranges from -90 to +90
-    degrees, so the appropriate diverging cmap should be chosen. 
+    degrees, so the appropriate diverging cmap should be chosen.
 
     >>> tml.plot_polarisation_vectors(x, y, u, v, image=sublattice.image,
     ...                       vector_rep='angle', save=None, degrees=True,
@@ -940,14 +937,16 @@ def full_atom_plane_deviation_from_straight_line_fit(sublattice,
     Examples
     --------
     >>> import atomap.api as am
-    >>> from temul.polarisation import (full_atom_plane_deviation_from_straight_line_fit,
-    ...                                 plot_polarisation_vectors)
+    >>> from temul.polarisation import (
+    ...     full_atom_plane_deviation_from_straight_line_fit,
+    ...     plot_polarisation_vectors)
     >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
     >>> sublatticeA = atom_lattice.sublattice_list[0]
     >>> sublatticeA.find_nearest_neighbors()
     >>> sublatticeA.refine_atom_positions_using_center_of_mass()
     >>> sublatticeA.construct_zone_axes()
-    >>> x,y,u,v = full_atom_plane_deviation_from_straight_line_fit(sublatticeA, save=None)
+    >>> x,y,u,v = full_atom_plane_deviation_from_straight_line_fit(
+    ...     sublatticeA, save=None)
     >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           unit_vector=False, save=None, monitor_dpi=50)
 
