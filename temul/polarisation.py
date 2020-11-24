@@ -337,9 +337,9 @@ def plot_polarisation_vectors(
             x, y, u, v, color=color, pivot=pivot, angles=angles,
             scale_units=scale_units, scale=scale, headwidth=headwidth,
             headlength=headlength, headaxislength=headaxislength)
-        length = np.max(np.hypot(u, v)) / 2
-        ax.quiverkey(Q, 0.9, 1.025, length,
-                     label='{:.0E} {}'.format(Decimal(length), units),
+        length = np.max(np.hypot(u, v))
+        ax.quiverkey(Q, 0.8, 1.025, length,
+                     label='{:.2E} {}'.format(Decimal(length), units),
                      labelpos='E', coordinates='axes')
 
     elif plot_style == "colormap":
