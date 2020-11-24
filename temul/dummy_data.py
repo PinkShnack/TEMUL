@@ -5,9 +5,13 @@ import matplotlib.pyplot as plt
 import colorcet as cc
 from temul.external.atomap_devel_012.sublattice import Sublattice
 from temul.external.atomap_devel_012.atom_lattice import Atom_Lattice
-
+from temul.external.atomap_devel_012.atom_finding_refining import (
+    get_atom_positions)
+import scipy
 
 # some of the below have been adapted from Atomap:
+
+
 def _make_simple_cubic_testdata(image_noise=False, amplitude=1,
                                 with_vacancies=False):
     """
@@ -294,6 +298,8 @@ def sine_wave_sublattice():
     # sublattice.plot()
     return(sublattice)
 # adapted/copied from atomap
+
+
 def _make_rigid_sublattice(image_noise=False):
     test_data = MakeTestData(312, 312)
     x0, y0 = np.mgrid[5:312:20, 5:312:20]
@@ -301,7 +307,7 @@ def _make_rigid_sublattice(image_noise=False):
     y0_list = y0.flatten()
     amplitude0 = np.ones(len(x0_list)) * 20
     test_data.add_atom_list(
-            x0_list, y0_list, sigma_x=3, sigma_y=3, amplitude=amplitude0)
+        x0_list, y0_list, sigma_x=3, sigma_y=3, amplitude=amplitude0)
     if image_noise:
         test_data.add_image_noise(mu=0, sigma=0.004)
     return test_data
@@ -327,7 +333,7 @@ def _make_polarised_sublattice(image_noise=False):
         y0_list = y0.flatten()
         amplitude0 = np.ones(len(x0_list)) * 8
         test_data.add_atom_list(
-                x0_list, y0_list, sigma_x=3, sigma_y=3, amplitude=amplitude0)
+            x0_list, y0_list, sigma_x=3, sigma_y=3, amplitude=amplitude0)
 
     if image_noise:
         test_data.add_image_noise(mu=0, sigma=0.004)
@@ -388,6 +394,116 @@ def get_polarisation_dummy_dataset(image_noise=False):
     sublattice1.original_image = image
     sublattice1._plot_color = 'b'
     atom_lattice = Atom_Lattice(
-            image=image, name='Test Polarisation Dataset',
-            sublattice_list=[sublattice0, sublattice1])
+        image=image, name='Test Polarisation Dataset',
+        sublattice_list=[sublattice0, sublattice1])
     return atom_lattice
+
+
+# adapted/copied from atomap
+def _make_rigid_sublattice_bora(image_noise=False):
+    im_size = 320
+    dist = 20
+    test_data = MakeTestData(im_size, im_size)
+    x0, y0 = np.mgrid[5:im_size:dist, 5:im_size:dist]
+    x0_list = x0.flatten()
+    y0_list = y0.flatten()
+    amplitude0 = np.ones(len(x0_list)) * 20
+    test_data.add_atom_list(
+        x0_list, y0_list, sigma_x=3, sigma_y=3, amplitude=amplitude0)
+    if image_noise:
+        test_data.add_image_noise(mu=0, sigma=0.004)
+    return test_data
+
+
+# adapted/copied from atomap
+def _make_polarised_sublattice_bora(image_noise=False):
+    im_size = 320
+    dist = 20
+    test_data = MakeTestData(im_size, im_size)
+    p = 2  # pixel_shift
+    x0a, y0a = np.mgrid[5+p:im_size/2+p:dist,         15:im_size:dist]  # left
+    x0b, y0b = np.mgrid[3+(im_size/2)-p:im_size:dist, 15:im_size:dist]  # right
+    x0 = np.concatenate((x0a, x0b), axis=1)
+    y0 = np.concatenate((y0a, y0b), axis=1)
+    x0_list = x0.flatten()
+    y0_list = y0.flatten()
+    amplitude0 = np.ones(len(x0_list)) * 5
+    test_data.add_atom_list(
+        x0_list, y0_list, sigma_x=3, sigma_y=3, amplitude=amplitude0)
+    # test_data.signal.plot()
+    if image_noise:
+        test_data.add_image_noise(mu=0, sigma=0.004)
+    return test_data
+
+
+def get_polarisation_dummy_dataset_bora(image_noise=False):
+    test_data0 = _make_rigid_sublattice_bora(image_noise=image_noise)
+    test_data1 = _make_polarised_sublattice_bora(image_noise=image_noise)
+    image = test_data0.signal.data + test_data1.signal.data
+
+    sublattice0 = test_data0.sublattice
+    sublattice1 = test_data1.sublattice
+    sublattice0.image = image
+    sublattice1.image = image
+    sublattice0.original_image = image
+    sublattice1.original_image = image
+    sublattice1._plot_color = 'b'
+    atom_lattice = Atom_Lattice(
+        image=image, name='Test Polarisation Dataset',
+        sublattice_list=[sublattice0, sublattice1])
+    # atom_lattice.plot()
+    return atom_lattice
+
+
+# adapted/copied from atomap
+def make_polarised_sublattice_bora_return(image_noise=False):
+    im_size = 320
+    dist = 20
+    test_data = MakeTestData(im_size, im_size)
+    p = 0  # pixel_shift
+    x0a, y0a = np.mgrid[5+p:im_size/2+p:dist,         15:im_size:dist]  # left
+    x0b, y0b = np.mgrid[3+(im_size/2)-p:im_size:dist, 15:im_size:dist]  # right
+    x0 = np.concatenate((x0a, x0b), axis=1)
+    y0 = np.concatenate((y0a, y0b), axis=1)
+    x0_list = x0.flatten()
+    y0_list = y0.flatten()
+    amplitude0 = np.ones(len(x0_list)) * 5
+    test_data.add_atom_list(
+        x0_list, y0_list, sigma_x=3, sigma_y=3, amplitude=amplitude0)
+    # test_data.signal.plot()
+    if image_noise:
+        test_data.add_image_noise(mu=0, sigma=0.004)
+    return test_data.sublattice
+
+
+def get_polarised_single_sublattice(image_noise=False):
+    im_size = 320
+    dist = 20
+    test_data = MakeTestData(im_size, im_size)
+    p = 2  # pixel_shift
+    x0a, y0a = np.mgrid[5:im_size/2:dist, 10+p:im_size:dist]  # left
+    x0b, y0b = np.mgrid[3+(im_size/2):im_size:dist, 10-p:im_size:dist]  # right
+    x0 = np.concatenate((x0a, x0b), axis=1)
+    y0 = np.concatenate((y0a, y0b), axis=1)
+    x0_list = x0.flatten()
+    y0_list = y0.flatten()
+    amplitude0 = np.ones(len(x0_list)) * 20
+    test_data.add_atom_list(
+        x0_list, y0_list, sigma_x=3, sigma_y=3, amplitude=amplitude0)
+    # test_data.signal.plot()
+    if image_noise:
+        test_data.add_image_noise(mu=0, sigma=0.004)
+    return test_data.sublattice
+
+
+def get_polarised_single_sublattice_rotated(image_noise=False, rotation=45):
+    sublattice = get_polarised_single_sublattice(image_noise=image_noise)
+    sig = sublattice.signal
+    sig.map(scipy.ndimage.rotate, angle=rotation, reshape=False)
+    # sig.plot()
+    atom_positions = get_atom_positions(sig, separation=7)
+    rot_sublattice = Sublattice(atom_positions, image=sig.data)
+    rot_sublattice.find_nearest_neighbors()
+    rot_sublattice.refine_atom_positions_using_center_of_mass()
+    # rot_sublattice.plot()
+    return rot_sublattice
