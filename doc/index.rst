@@ -36,12 +36,11 @@ Just navigate to whichever of these folders you want click on the ".ipynb" files
    using_temul
    polarisation_vectors_tutorial
    structure_map_tutorial
+   PTO_supercrystal_hadjimichael
    masked_fft_tutorial
    line_profile_tutorial
    dg_visualiser_tutorial
    api_doc
-
-.. PTO_supercrystal_hadjimichael
 
 
 .. Look how easy it is to use:

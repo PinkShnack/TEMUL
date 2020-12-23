@@ -11,7 +11,8 @@ This tutorial follows the python scripts and jupyter notebooks found in the
 "publication_examples/PTO_supercrystal_hadjimichael" folder in the
 `TEMUL repository <https://github.com/PinkShnack/TEMUL>`_. The data and scripts
 used below can be downloaded from there. You can also interact with the data
-without needing any downloads. Just click this button and navigate to that same folder:
+without needing any downloads. Just click this button and navigate to that same folder,
+where you will find the python scripts and interactive python notebooks:
 
 .. image:: https://mybinder.org/badge_logo.svg
     :target: https://mybinder.org/v2/gh/PinkShnack/TEMUL/master
