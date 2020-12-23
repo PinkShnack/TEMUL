@@ -20,13 +20,13 @@ To cite the TEMUL toolkit, use the following DOI:
 
 Jupyter Notebooks and MyBinder allow us to analyse data in the browser without needing any downloads using the below "launch binder" button.
 
-To run through some code documentation tutorials, go to the "code_tutorials" folder after clicking the button.
-
-To analyse data published in the listed scientific papers, go to the "publication_examples" folder after clicking the button.
-
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/PinkShnack/TEMUL/master)
 
 If the button does not work, try [this link instead](https://mybinder.org/v2/gh/PinkShnack/TEMUL/master). You also share this link with others for quick access.
+
+- To run through some code documentation tutorials, go to the "code_tutorials" folder after clicking the above button.
+
+- To analyse data published in the listed scientific papers, go to the "publication_examples" folder after clicking the above button.
 
 
 | Publication Details   | Folder Location in TEMUL  |
