@@ -18,12 +18,11 @@ To cite the TEMUL toolkit, use the following DOI:
 
 ## Interactive Notebooks in the Browser
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/PinkShnack/TEMUL/master)
+Jupyter Notebooks and MyBinder allow us to analyse data in the browser without needing any downloads using the below "launch binder" button.
 
-To walkthrough some code documentation ipynb examples, click on the above button and navigate to the "code_tutorials" folder.
+To run through some code documentation tutorials, go to the "code_tutorials" folder after clicking the button.
 
-<!--
-Jupyter Notebooks and MyBinder allow us to analyse data in the browser without needing any downloads. The below "launch binder" button will allow you to analyse data published in the listed scientific papers in the "publication_examples" folder.
+To analyse data published in the listed scientific papers, go to the "publication_examples" folder after clicking the button
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/PinkShnack/TEMUL/master)
 
@@ -33,4 +32,3 @@ If the button does not work, try [this link instead](https://mybinder.org/v2/gh/
 | Publication Details   | Folder Location in TEMUL  |
 | :------------------   | :-----------------------  |
 | M. Hadjimichael *et al*, Metal-ferroelectric supercrystals with periodically curved metallic layers, 2020        | publication_examples/PTO_supercrystal_hadjimichael              |
--->
