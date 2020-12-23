@@ -22,7 +22,7 @@ Jupyter Notebooks and MyBinder allow us to analyse data in the browser without n
 
 To run through some code documentation tutorials, go to the "code_tutorials" folder after clicking the button.
 
-To analyse data published in the listed scientific papers, go to the "publication_examples" folder after clicking the button
+To analyse data published in the listed scientific papers, go to the "publication_examples" folder after clicking the button.
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/PinkShnack/TEMUL/master)
 
