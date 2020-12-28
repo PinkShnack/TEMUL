@@ -75,14 +75,15 @@ def find_polarisation_vectors(atom_positions_A, atom_positions_B,
 
 def plot_polarisation_vectors(
         x, y, u, v, image, sampling=None, units='pix',
-        plot_style='vector', vector_rep='magnitude',
-        overlay=True, unit_vector=False, degrees=False, angle_offset=None,
-        save='polarisation_image', title="", image_cmap='gray',
-        color='yellow', cmap=None, alpha=1.0,
-        monitor_dpi=96, pivot='middle', angles='xy',
+        plot_style='vector', overlay=True, unit_vector=False,
+        vector_rep='magnitude', degrees=False, angle_offset=None,
+        save='polarisation_image', title="", color='yellow',
+        cmap=None, alpha=1.0, image_cmap='gray', monitor_dpi=96,
+        no_axis_info=True, ticks=None, scalebar=False,
+        antialiased=False, levels=20, remove_vectors=False,
+        quiver_units='width', pivot='middle', angles='xy',
         scale_units='xy', scale=None, headwidth=3.0, headlength=5.0,
-        headaxislength=4.5, no_axis_info=True, ticks=None, scalebar=False,
-        antialiased=False, levels=20, remove_vectors=False):
+        headaxislength=4.5, width=None, minshaft=1, minlength=1):
     '''
     Plot the polarisation vectors. These can be found with
     `find_polarisation_vectors()` or Atomap's
@@ -93,27 +94,29 @@ def plot_polarisation_vectors(
     See matplotlib's quiver function for more details.
 
     x, y : list or 1D NumPy array
-        xy coordinates on the image
+        xy coordinates of the vectors on the image.
     u, v : list or 1D NumPy array
-        uv vector components
+        uv vector components.
     image : 2D NumPy array
+        image is used to fit the image. Will flip the y axis, as used for
+        electron microscopy data (top left point is (0, 0) coordinate).
     sampling : float, default None
-        Pixel sampling of the image for calibration.
+        Pixel sampling (pixel size) of the image for calibration.
     units : string, default "pix"
         Units used to display the magnitude of the vectors.
     plot_style : string, default "vector"
         Options are "vector", "colormap", "contour", "colorwheel". Note that
         "colorwheel" will automatically plot the colorbar as an angle.
-    vector_rep : str, default "magnitude"
-        How the vectors are represented. This can be either their `magnitude`
-        or `angle`. One may want to use `angle` when plotting a contour map,
-        i.e., view the contours in terms of angles which can be useful for
-        visualising regions of different polarisation.
     overlay : Bool, default True
         If set to True, the `image` will be plotting behind the arrows
     unit_vector : Bool, default False
         Change the vectors magnitude to unit vectors for plotting purposes.
         Magnitude will still be displayed correctly for colormaps etc.
+    vector_rep : str, default "magnitude"
+        How the vectors are represented. This can be either their `magnitude`
+        or `angle`. One may want to use `angle` when plotting a contour map,
+        i.e., view the contours in terms of angles which can be useful for
+        visualising regions of different polarisation.
     degrees : Bool, default False
         Change between degrees and radian. Default is radian.
         If `plot_style="colorwheel"`, then setting `degrees=True` will convert
@@ -124,22 +127,23 @@ def plot_polarisation_vectors(
         when you want to offset the angle of the atom planes relative to the
         polarisation.
     save : string, default "polarisation_image"
-        If set to `save=None`, the array will not be saved.
+        If set to `save=None`, the image will not be saved.
     title : string, default ""
         Title of the plot.
-    image_cmap : str, default 'gray'
-        Matplotlib cmap that will be used for the overlay image.
     color : string, default "r"
         Color of the arrows when `plot_style="vector" or "contour".
     cmap : matplotlib colormap, default "viridis"
+        Matplotlib cmap used for the vector arrows.
     alpha : float, default 1.0
         Transparency of the matplotlib `cmap`. For `plot_style="colormap"` and
         `plot_style="colorwheel"`, this alpha applies to the vector arrows.
         For `plot_style="contour"` this alpha applies to the tricontourf map.
+    image_cmap : matplotlib colormap, default 'gray'
+        Matplotlib cmap that will be used for the overlay image.
     monitor_dpi : int, default 96
         The DPI of the monitor, generally 96 pixels. Used to scale the image
-        so that large images render correctly. Use a smaller value or
-        `monitor_dpi=None` to enlarge too-small images.
+        so that large images render correctly. Use a smaller value to enlarge
+        too-small images. `monitor_dpi=None` will ignore this param.
     no_axis_info :  Bool, default True
         This will remove the x and y axis labels and ticks from the plot if set
         to True.
@@ -439,7 +443,7 @@ def plot_polarisation_vectors(
         plt.gca().add_artist(scbar)
 
     # plt.tight_layout()
-    if save is not None:
+    if isinstance(save, str):
         plt.savefig(fname=save + '_' + plot_style + '.png',
                     transparent=True, frameon=False, bbox_inches='tight',
                     pad_inches=None, dpi=300, labels=False)
