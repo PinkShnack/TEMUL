@@ -313,6 +313,7 @@ def plot_polarisation_vectors(
     if sampling is not None:
         u, v = u * sampling, v * sampling
 
+    # get the magnitude or angle representation
     if vector_rep == "magnitude":
         vector_rep_val = get_vector_magnitudes(u, v)
     elif vector_rep == "angle":
@@ -323,32 +324,31 @@ def plot_polarisation_vectors(
     vector_label = angle_label(
         vector_rep=vector_rep, units=units, degrees=degrees)
 
+    # change all vector magnitudes to the same size
     if unit_vector:
-        # Normalise the data for uniform arrow size
         u_norm = u / np.sqrt(u ** 2.0 + v ** 2.0)
         v_norm = v / np.sqrt(u ** 2.0 + v ** 2.0)
         u = u_norm
         v = v_norm
 
     # setting up norm and cmap for colorbar scalar mappable
-
     if vector_rep == "angle":
         if degrees:
             min_val, max_val= -180, 180 + 0.0001  # fix display issues
         elif not degrees:
             min_val, max_val = -np.pi, np.pi
     elif vector_rep == "magnitude":
-        min_val, max_val = np.min(vector_rep_val), np.max(vector_rep_val)
+        min_val = np.min(vector_rep_val)
+        max_val = np.max(vector_rep_val) + 0.00000001
     norm = colors.Normalize(vmin=min_val, vmax=max_val)
-
 
     if monitor_dpi is not None:
         _, ax = plt.subplots(figsize=[image.shape[1] / monitor_dpi,
                                       image.shape[0] / monitor_dpi])
     else:
         _, ax = plt.subplots()
-
     ax.set_title(title, loc='left', fontsize=20)
+
     # plot_style options
     if plot_style == "vector":
         Q = ax.quiver(
@@ -425,7 +425,6 @@ def plot_polarisation_vectors(
         # cbar.ax.tick_params(labelsize=14)
         # cbar.set_ticks(ticks)
         # cbar.ax.set_ylabel(vector_label, fontsize=14)
-
 
     elif plot_style == "polar_colorwheel":
         pass
