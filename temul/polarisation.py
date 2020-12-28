@@ -349,11 +349,20 @@ def plot_polarisation_vectors(
             scale=scale, headwidth=headwidth, alpha=alpha,
             headlength=headlength, headaxislength=headaxislength)
 
-        norm = colors.Normalize(vmin=np.min(vector_rep_val),
-                                vmax=np.max(vector_rep_val))
+        if vector_rep == "angle":
+            if degrees:
+                min_val, max_val= -180, 180 + 0.0001  # fix display issues
+            elif not degrees:
+                min_val, max_val = -np.pi, np.pi
+        elif vector_rep == "magnitude":
+            min_val, max_val = np.min(vector_rep_val), np.max(vector_rep_val)
+
+        norm = colors.Normalize(vmin=min_val, vmax=max_val)
         sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
         sm.set_array([])
-        cbar = plt.colorbar(mappable=sm)
+        cbar = plt.colorbar(mappable=sm, fraction=0.046, pad=0.04,
+                            drawedges=False)
+        cbar.set_ticks(ticks)
         cbar.ax.set_ylabel(vector_label)
 
     elif plot_style == "colorwheel":
