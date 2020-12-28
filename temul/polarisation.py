@@ -265,7 +265,8 @@ def plot_polarisation_vectors(
     ...                           unit_vector=True, plot_style="colorwheel",
     ...                           vector_rep="angle",
     ...                           overlay=False, cmap=cc.cm.colorwheel,
-    ...                           degrees=True, save=None, monitor_dpi=50)
+    ...                           degrees=True, save=None, monitor_dpi=50,
+    ...                           ticks=[180, 90, 0, -90, -180])
 
     Plot with a custom scalebar, for example here we need it to be dark, see
     matplotlib-scalebar for more custom features.
@@ -329,6 +330,18 @@ def plot_polarisation_vectors(
         u = u_norm
         v = v_norm
 
+    # setting up norm and cmap for colorbar scalar mappable
+
+    if vector_rep == "angle":
+        if degrees:
+            min_val, max_val= -180, 180 + 0.0001  # fix display issues
+        elif not degrees:
+            min_val, max_val = -np.pi, np.pi
+    elif vector_rep == "magnitude":
+        min_val, max_val = np.min(vector_rep_val), np.max(vector_rep_val)
+    norm = colors.Normalize(vmin=min_val, vmax=max_val)
+
+
     if monitor_dpi is not None:
         _, ax = plt.subplots(figsize=[image.shape[1] / monitor_dpi,
                                       image.shape[0] / monitor_dpi])
@@ -353,27 +366,19 @@ def plot_polarisation_vectors(
         if cmap is None:
             cmap = 'viridis'
         ax.quiver(
-            x, y, u, v, vector_rep_val, color=color, cmap=cmap,
+            x, y, u, v, vector_rep_val, color=color, cmap=cmap, norm=norm,
             units=quiver_units, pivot=pivot, angles=angles,
             scale_units=scale_units, scale=scale, headwidth=headwidth,
             alpha=alpha, headlength=headlength, headaxislength=headaxislength,
             width=width, minshaft=minshaft, minlength=minlength)
 
-        if vector_rep == "angle":
-            if degrees:
-                min_val, max_val= -180, 180 + 0.0001  # fix display issues
-            elif not degrees:
-                min_val, max_val = -np.pi, np.pi
-        elif vector_rep == "magnitude":
-            min_val, max_val = np.min(vector_rep_val), np.max(vector_rep_val)
-
-        norm = colors.Normalize(vmin=min_val, vmax=max_val)
-        sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
-        sm.set_array([])
-        cbar = plt.colorbar(mappable=sm, fraction=0.046, pad=0.04,
-                            drawedges=False)
-        cbar.set_ticks(ticks)
-        cbar.ax.set_ylabel(vector_label)
+        # norm = colors.Normalize(vmin=min_val, vmax=max_val)
+        # sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
+        # sm.set_array([])
+        # cbar = plt.colorbar(mappable=sm, fraction=0.046, pad=0.04,
+        #                     drawedges=False)
+        # cbar.set_ticks(ticks)
+        # cbar.ax.set_ylabel(vector_label)
 
     elif plot_style == "colorwheel":
 
@@ -384,37 +389,28 @@ def plot_polarisation_vectors(
             cmap = cc.cm.colorwheel
 
         Q = ax.quiver(
-            x, y, u, v, vector_rep_val, cmap=cmap, alpha=alpha,
+            x, y, u, v, vector_rep_val, cmap=cmap, norm=norm, alpha=alpha,
             pivot=pivot, angles=angles, scale_units=scale_units,
             scale=scale, headwidth=headwidth, headlength=headlength,
             headaxislength=headaxislength, units=quiver_units, width=width,
             minshaft=minshaft, minlength=minlength)
-        plt.colorbar(Q, label=vector_label)
 
     elif plot_style == "contour":
 
         if cmap is None:
             cmap = 'viridis'
 
-        if vector_rep == "angle":
-            if degrees:
-                min_angle, max_angle = -180, 180 + 0.0001  # fix display issues
-            elif not degrees:
-                min_angle, max_angle = -np.pi, np.pi
-
         if isinstance(levels, list):
             levels_list = levels
         elif isinstance(levels, int):
             if vector_rep == "angle":
-                levels_list = np.linspace(min_angle, max_angle, levels)
+                levels_list = np.linspace(min_val, max_val, levels)
             elif vector_rep == "magnitude":
-                levels_list = np.linspace(np.min(vector_rep_val),
-                                          np.max(vector_rep_val)+0.00001,
-                                          levels)
+                levels_list = np.linspace(min_val, max_val, levels)
 
-        contour_map = plt.tricontourf(x, y, vector_rep_val, cmap=cmap,
-                                      alpha=alpha, antialiased=antialiased,
-                                      levels=levels_list)
+        contour_map = plt.tricontourf(
+            x, y, vector_rep_val, cmap=cmap, norm=norm, alpha=alpha,
+            antialiased=antialiased, levels=levels_list)
 
         if not remove_vectors:
             ax.quiver(
@@ -424,15 +420,29 @@ def plot_polarisation_vectors(
                 headlength=headlength, headaxislength=headaxislength,
                 minshaft=minshaft, minlength=minlength)
 
-        cbar = plt.colorbar(mappable=contour_map, fraction=0.046, pad=0.04,
-                            drawedges=False)
-        cbar.ax.tick_params(labelsize=14)
-        cbar.set_ticks(ticks)
-        cbar.ax.set_ylabel(vector_label, fontsize=14)
+        # cbar = plt.colorbar(mappable=contour_map, fraction=0.046, pad=0.04,
+        #                     drawedges=False)
+        # cbar.ax.tick_params(labelsize=14)
+        # cbar.set_ticks(ticks)
+        # cbar.ax.set_ylabel(vector_label, fontsize=14)
+
+
+    elif plot_style == "polar_colorwheel":
+        pass
 
     ax.set(aspect='equal')
     ax.set_xlim(0, image.shape[1])
     ax.set_ylim(image.shape[0], 0)
+
+    if (plot_style == "colormap" or plot_style == "colorwheel" or
+        plot_style == "contour"):
+
+        sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
+        sm.set_array([])
+        cbar = plt.colorbar(mappable=sm, fraction=0.046, pad=0.04,
+                            drawedges=False)
+        cbar.set_ticks(ticks)
+        cbar.ax.set_ylabel(vector_label)
 
     if overlay:
         plt.imshow(image, cmap=image_cmap)
