@@ -163,7 +163,11 @@ def plot_polarisation_vectors(
     remove_vectors : Bool, default False
         Applies only to `plot_style="contour"`. If set to True, do not plot
         the vector arrows.
-    See matplotlib's quiver function for the remaining parameters.
+    quiver_units : string, default 'width'
+        The units parameter from the matplotlib quiver function, not to be
+        confused with the `units` parameter above for the image units.
+    ax.quiver parameters
+        See matplotlib's quiver function for the remaining parameters.
 
     Examples
     --------
@@ -231,7 +235,7 @@ def plot_polarisation_vectors(
     ...                           unit_vector=True, plot_style='contour',
     ...                           overlay=False, pivot='middle', save=None,
     ...                           color='darkgray', cmap='plasma',
-    ...                           monitor_dpi=50, image_cmap='viridis')
+    ...                           monitor_dpi=50)
 
     Plot a partly transparent angle tricontourf map with vector arrows:
 
@@ -335,9 +339,10 @@ def plot_polarisation_vectors(
     # plot_style options
     if plot_style == "vector":
         Q = ax.quiver(
-            x, y, u, v, color=color, pivot=pivot, angles=angles,
-            scale_units=scale_units, scale=scale, headwidth=headwidth,
-            headlength=headlength, headaxislength=headaxislength)
+            x, y, u, v, units=quiver_units, color=color, pivot=pivot,
+            angles=angles, scale_units=scale_units, scale=scale,
+            headwidth=headwidth, headlength=headlength, minshaft=minshaft,
+            headaxislength=headaxislength, width=width, minlength=minlength)
         length = np.max(np.hypot(u, v))
         ax.quiverkey(Q, 0.8, 1.025, length,
                      label='{:.2E} {}'.format(Decimal(length), units),
@@ -349,9 +354,10 @@ def plot_polarisation_vectors(
             cmap = 'viridis'
         ax.quiver(
             x, y, u, v, vector_rep_val, color=color, cmap=cmap,
-            pivot=pivot, angles=angles, scale_units=scale_units,
-            scale=scale, headwidth=headwidth, alpha=alpha,
-            headlength=headlength, headaxislength=headaxislength)
+            units=quiver_units, pivot=pivot, angles=angles,
+            scale_units=scale_units, scale=scale, headwidth=headwidth,
+            alpha=alpha, headlength=headlength, headaxislength=headaxislength,
+            width=width, minshaft=minshaft, minlength=minlength)
 
         if vector_rep == "angle":
             if degrees:
@@ -380,8 +386,9 @@ def plot_polarisation_vectors(
         Q = ax.quiver(
             x, y, u, v, vector_rep_val, cmap=cmap, alpha=alpha,
             pivot=pivot, angles=angles, scale_units=scale_units,
-            scale=scale, headwidth=headwidth,
-            headlength=headlength, headaxislength=headaxislength)
+            scale=scale, headwidth=headwidth, headlength=headlength,
+            headaxislength=headaxislength, units=quiver_units, width=width,
+            minshaft=minshaft, minlength=minlength)
         plt.colorbar(Q, label=vector_label)
 
     elif plot_style == "contour":
@@ -411,21 +418,21 @@ def plot_polarisation_vectors(
 
         if not remove_vectors:
             ax.quiver(
-                x, y, u, v, color=color, pivot=pivot,
+                x, y, u, v, color=color, pivot=pivot, units=quiver_units,
                 angles=angles, scale_units=scale_units,
-                scale=scale, headwidth=headwidth,
-                headlength=headlength, headaxislength=headaxislength)
+                scale=scale, headwidth=headwidth, width=width,
+                headlength=headlength, headaxislength=headaxislength,
+                minshaft=minshaft, minlength=minlength)
 
-    ax.set(aspect='equal')
-    ax.set_xlim(0, image.shape[1])
-    ax.set_ylim(image.shape[0], 0)
-
-    if plot_style == 'contour':
         cbar = plt.colorbar(mappable=contour_map, fraction=0.046, pad=0.04,
                             drawedges=False)
         cbar.ax.tick_params(labelsize=14)
         cbar.set_ticks(ticks)
         cbar.ax.set_ylabel(vector_label, fontsize=14)
+
+    ax.set(aspect='equal')
+    ax.set_xlim(0, image.shape[1])
+    ax.set_ylim(image.shape[0], 0)
 
     if overlay:
         plt.imshow(image, cmap=image_cmap)
