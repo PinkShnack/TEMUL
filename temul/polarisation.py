@@ -107,8 +107,11 @@ def plot_polarisation_vectors(
     units : string, default "pix"
         Units used to display the magnitude of the vectors.
     plot_style : string, default "vector"
-        Options are "vector", "colormap", "contour", "colorwheel". Note that
-        "colorwheel" will automatically plot the colorbar as an angle.
+        Options are "vector", "colormap", "contour", "colorwheel",
+        "polar_colorwheel". Note that "colorwheel" will automatically plot the
+        colorbar as an angle. Also note that "polar_colorwheel" will
+        automatically generate a 2D RGB (HSV) list of colors that match with
+        the vector components (uv).
     overlay : Bool, default True
         If set to True, the `image` will be plotting behind the arrows
     unit_vector : Bool, default False
