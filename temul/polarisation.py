@@ -273,11 +273,9 @@ def plot_polarisation_vectors(
     "polar_colorwheel" plot showing a 2D polar color wheel:
 
     >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
-    ...                           unit_vector=False,
     ...                           plot_style="polar_colorwheel",
-    ...                           vector_rep="angle",
-    ...                           overlay=False,
-    ...                           degrees=True, save=None, monitor_dpi=50)
+    ...                           unit_vector=False, overlay=False,
+    ...                           save=None, monitor_dpi=50)
 
     Plot with a custom scalebar, for example here we need it to be dark, see
     matplotlib-scalebar for more custom features.
