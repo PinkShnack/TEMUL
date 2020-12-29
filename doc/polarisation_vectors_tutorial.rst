@@ -26,7 +26,7 @@ Current functions:
 
 
 For standard Polarised Structures (e.g., PTO)
------------------------------------------------
+---------------------------------------------
 Atomap's :python:`get_polarization_from_second_sublattice` Sublattice method will
 be sufficent for most users when dealing with the classic PTO-style polarisation,
 wherein the atoms in a sublattice are polarised with respect to a second sublattice.
@@ -61,7 +61,7 @@ using :python:`plot_polarisation_vectors`!
 
 
 For nonstandard Polarised Structures (e.g., Boracites)
------------------------------------------------------
+------------------------------------------------------
 When the above function can't isn't suitable, the TEMUL
 :python:`find_polarisation_vectors` function may be an option. It is useful for
 structures that Atomap's :python:`get_polarization_from_second_sublattice` can't
@@ -118,7 +118,7 @@ polarisation in the structure. Don't forget to save these arrays for further use
 
 
 For single Polarised Sublattices (e.g., LNO)
------------------------------------------------------
+--------------------------------------------
 When dealing with structures in which the polarisation must be extracted from a
 single sublattice (one type of chemical atomic column, the TEMUL
 :python:`atom_deviation_from_straight_line_fit` function
@@ -391,6 +391,19 @@ Plot a partly transparent angle tricontourf map with no vector arrows:
 
 .. image:: tutorial_images/polarisation_vectors_tutorial/colorwheel_angle.png
     :scale: 60 %
+
+
+"polar_colorwheel" plot showing a 2D polar color wheel, also useful for vortexes:
+
+.. code-block:: python
+
+    >>> plot_polarisation_vectors(x, y, u, v, image=image,
+    ...                           plot_style="polar_colorwheel",
+    ...                           unit_vector=False, overlay=False,
+    ...                           save=None, monitor_dpi=50)
+
+.. image:: tutorial_images/polarisation_vectors_tutorial/colorwheel_polar.png
+    :scale: 80 %
 
 
 Plot with a custom scalebar. In this example, we need it to be dark, see

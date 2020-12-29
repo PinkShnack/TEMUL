@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html4" lang="en" >
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -25,20 +25,11 @@
   <![endif]-->
   
     
-      <script type="text/javascript">
-          var DOCUMENTATION_OPTIONS = {
-              URL_ROOT:'./',
-              VERSION:'v0.1.2',
-              LANGUAGE:'None',
-              COLLAPSE_INDEX:false,
-              FILE_SUFFIX:'.html',
-              HAS_SOURCE:  true,
-              SOURCELINK_SUFFIX: '.txt'
-          };
-      </script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -189,15 +180,15 @@ atomic resolution images. These are briefly described here, followed by a use-ca
 of each.</p>
 <p>Current functions:</p>
 <ol class="arabic simple">
-<li>Using Atomap’s <code class="code python docutils literal notranslate"><span class="name"><span class="pre">get_polarization_from_second_sublattice</span></span></code> Sublattice
-method. Great for “standard” polarised structures with two sublattices.</li>
-<li>Using the TEMUL <code class="code python docutils literal notranslate"><span class="name"><span class="pre">find_polarisation_vectors</span></span></code> function. Useful for
+<li><p>Using Atomap’s <code class="code python docutils literal notranslate"><span class="name"><span class="pre">get_polarization_from_second_sublattice</span></span></code> Sublattice
+method. Great for “standard” polarised structures with two sublattices.</p></li>
+<li><p>Using the TEMUL <code class="code python docutils literal notranslate"><span class="name"><span class="pre">find_polarisation_vectors</span></span></code> function. Useful for
 structures that Atomap’s <code class="code python docutils literal notranslate"><span class="name"><span class="pre">get_polarization_from_second_sublattice</span></span></code> can’t
-handle.</li>
-<li>Using the TEMUL <code class="code python docutils literal notranslate"><span class="name"><span class="pre">atom_deviation_from_straight_line_fit</span></span></code> function.
+handle.</p></li>
+<li><p>Using the TEMUL <code class="code python docutils literal notranslate"><span class="name"><span class="pre">atom_deviation_from_straight_line_fit</span></span></code> function.
 Useful for calculating polarisation from a single sublattice, similar to and
 based off: J. Gonnissen <em>et al</em>, Direct Observation of Ferroelectric Domain Walls in
-LiNbO3: Wall‐Meanders, Kinks, and Local Electric Charges, 26, 42, 2016, DOI: 10.1002/adfm.201603489.</li>
+LiNbO3: Wall‐Meanders, Kinks, and Local Electric Charges, 26, 42, 2016, DOI: 10.1002/adfm.201603489.</p></li>
 </ol>
 <div class="section" id="for-standard-polarised-structures-e-g-pto">
 <h2>For standard Polarised Structures (e.g., PTO)<a class="headerlink" href="#for-standard-polarised-structures-e-g-pto" title="Permalink to this headline">¶</a></h2>
@@ -365,7 +356,7 @@ but if not, use Hyperspy’s <code class="code python docutils literal notransla
 <h2>Find the Vector Coordinates using Atomap<a class="headerlink" href="#find-the-vector-coordinates-using-atomap" title="Permalink to this headline">¶</a></h2>
 <p>Using the <a class="reference external" href="https://atomap.org/">Atomap</a> package, we can easily get the
 polarisation vectors for regular structures.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">construct_zone_axes</span><span class="p">()</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">construct_zone_axes</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">za0</span><span class="p">,</span> <span class="n">za1</span> <span class="o">=</span> <span class="n">sublatticeA</span><span class="o">.</span><span class="n">zones_axis_average_distances</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">s_p</span> <span class="o">=</span> <span class="n">sublatticeA</span><span class="o">.</span><span class="n">get_polarization_from_second_sublattice</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">za0</span><span class="p">,</span> <span class="n">za1</span><span class="p">,</span> <span class="n">sublatticeB</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
@@ -469,6 +460,14 @@ and vector arrows:</p>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/colorwheel_angle.png"><img alt="_images/colorwheel_angle.png" src="_images/colorwheel_angle.png" style="width: 455.4px; height: 365.4px;" /></a>
+<p>“polar_colorwheel” plot showing a 2D polar color wheel, also useful for vortexes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">plot_style</span><span class="o">=</span><span class="s2">&quot;polar_colorwheel&quot;</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">unit_vector</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/colorwheel_polar.png"><img alt="_images/colorwheel_polar.png" src="_images/colorwheel_polar.png" style="width: 384.8px; height: 380.8px;" /></a>
 <p>Plot with a custom scalebar. In this example, we need it to be dark, see
 matplotlib-scalebar for more custom features.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">scbar_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;dx&quot;</span><span class="p">:</span> <span class="mf">3.0321</span><span class="p">,</span> <span class="s2">&quot;units&quot;</span><span class="p">:</span> <span class="s2">&quot;pm&quot;</span><span class="p">,</span> <span class="s2">&quot;location&quot;</span><span class="p">:</span> <span class="s2">&quot;lower left&quot;</span><span class="p">,</span>
