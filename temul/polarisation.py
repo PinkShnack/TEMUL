@@ -8,6 +8,8 @@ from matplotlib.cm import ScalarMappable
 from decimal import Decimal
 import colorcet as cc
 from matplotlib_scalebar.scalebar import ScaleBar
+from temul.signal_plotting import (get_polar_2d_colorwheel_color_list,
+    _make_color_wheel)
 
 
 # good to have an example of getting atom_positions_A and B from sublattice
@@ -268,6 +270,15 @@ def plot_polarisation_vectors(
     ...                           degrees=True, save=None, monitor_dpi=50,
     ...                           ticks=[180, 90, 0, -90, -180])
 
+    "polar_colorwheel" plot showing a 2D polar color wheel:
+
+    >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    ...                           unit_vector=False,
+    ...                           plot_style="polar_colorwheel",
+    ...                           vector_rep="angle",
+    ...                           overlay=False,
+    ...                           degrees=True, save=None, monitor_dpi=50)
+
     Plot with a custom scalebar, for example here we need it to be dark, see
     matplotlib-scalebar for more custom features.
 
@@ -346,10 +357,10 @@ def plot_polarisation_vectors(
     norm = colors.Normalize(vmin=min_val, vmax=max_val)
 
     if monitor_dpi is not None:
-        _, ax = plt.subplots(figsize=[image.shape[1] / monitor_dpi,
+        fig, ax = plt.subplots(figsize=[image.shape[1] / monitor_dpi,
                                       image.shape[0] / monitor_dpi])
     else:
-        _, ax = plt.subplots()
+        fig, ax = plt.subplots()
     ax.set_title(title, loc='left', fontsize=20)
 
     # plot_style options
@@ -431,25 +442,19 @@ def plot_polarisation_vectors(
 
     elif plot_style == "polar_colorwheel":
 
-        # call funcs that creates
-        #   1. phase and mag 
-        #   2. colorwheel ax
-        # then gets color_list from phase and mag
-        # plots the colorwheel ax
+        ax.quiver(
+            x, y, u, v, color=color_list, pivot=pivot, units=quiver_units,
+            angles=angles, scale_units=scale_units, scale=scale,
+            headwidth=headwidth, width=width, headlength=headlength,
+            headaxislength=headaxislength, minshaft=minshaft,
+            minlength=minlength)
+
+    else:
+        raise NameError("The plot_style you have chosen is not available.")
 
     ax.set(aspect='equal')
     ax.set_xlim(0, image.shape[1])
     ax.set_ylim(image.shape[0], 0)
-
-    if (plot_style == "colormap" or plot_style == "colorwheel" or
-        plot_style == "contour"):
-
-        sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
-        sm.set_array([])
-        cbar = plt.colorbar(mappable=sm, fraction=0.046, pad=0.04,
-                            drawedges=False)
-        cbar.set_ticks(ticks)
-        cbar.ax.set_ylabel(vector_label)
 
     if overlay:
         plt.imshow(image, cmap=image_cmap)
@@ -465,6 +470,22 @@ def plot_polarisation_vectors(
     elif isinstance(scalebar, dict):
         scbar = ScaleBar(**scalebar)
         plt.gca().add_artist(scbar)
+
+    # colorbars
+    if (plot_style == "colormap" or plot_style == "colorwheel" or
+        plot_style == "contour"):
+
+        sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
+        sm.set_array([])
+        cbar = plt.colorbar(mappable=sm, fraction=0.046, pad=0.04,
+                            drawedges=False)
+        cbar.set_ticks(ticks)
+        cbar.ax.set_ylabel(vector_label)
+    
+    elif plot_style == "polar_colorwheel":
+        ax2 = fig.add_subplot(444)
+        _make_color_wheel(ax2, rotation=None)
+        ax2.set_axis_off()
 
     # plt.tight_layout()
     if isinstance(save, str):

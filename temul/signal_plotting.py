@@ -4,7 +4,7 @@ import hyperspy.api as hs
 # newest version of skimage not working with hspy
 from temul.external.skimage_devel_0162.profile import profile_line
 import matplotlib.pyplot as plt
-from matplotlib.pyplot import subplots_adjust
+from matplotlib.colors import hsv_to_rgb
 import matplotlib.dates as mdates
 import scipy.spatial as spatial
 from temul.intensity_tools import get_sublattice_intensity
@@ -78,7 +78,7 @@ def compare_images_line_profile_one_image(image,
 
     # -- Plot the line profile comparisons
     _, (ax1, ax2) = plt.subplots(nrows=2)  # figsize=(12, 4)
-    subplots_adjust(wspace=0.3)
+    plt.subplots_adjust(wspace=0.3)
 
     ax1.imshow(image.data, **kwargs)
     # ax1.plot([x0, x1], [y0, y1], color='r', marker='v', markersize=10,
@@ -276,7 +276,7 @@ def compare_images_line_profile_two_images(imageA, imageB,
     _, (ax1, ax2, ax3) = plt.subplots(
         figsize=figsize, ncols=3, gridspec_kw={'width_ratios': [1, 1, 3],
                                                'height_ratios': [1]})
-    subplots_adjust(wspace=0.1)
+    plt.subplots_adjust(wspace=0.1)
     ax1.imshow(imageA_crop)
     ax1.plot(crop_x0, crop_y0, color='r', marker=marker_A,
              markersize=arrow_markersize, alpha=1)
@@ -750,3 +750,54 @@ def get_polar_2d_colorwheel_color_list(u, v):
         raise ValueError("u and color_list should be the same length.")
 
     return color_list
+
+
+# code taken from PixStem
+def _make_color_wheel(ax, rotation=None):
+    x, y = np.mgrid[-2.0:2.0:500j, -2.0:2.0:500j]
+    r = (x ** 2 + y ** 2) ** 0.5
+    t = np.arctan2(x, y)
+    del x, y
+    if rotation is not None:
+        t += math.radians(rotation)
+        t = (t + np.pi) % (2 * np.pi) - np.pi
+
+    r_masked = np.ma.masked_where(
+        (2.0 < r) | (r < 1.0), r)
+    r_masked -= 1.0
+
+    mask = r_masked.mask
+    r_masked.data[r_masked.mask] = r_masked.mean()
+    rgb_array = _get_rgb_phase_magnitude_array(t, r_masked.data)
+    rgb_array = np.dstack((rgb_array, np.invert(mask)))
+
+    ax.imshow(rgb_array, interpolation='quadric', origin='lower')
+    # ax.set_axis_off()
+
+
+# code taken from PixStem
+def _get_rgb_phase_magnitude_array(
+        phase, magnitude, rotation=None,
+        magnitude_limits=None, max_phase=2 * np.pi):
+    phase = _find_phase(phase, rotation=rotation, max_phase=max_phase)
+    phase = phase / (2 * np.pi)
+
+    if magnitude_limits is not None:
+        np.clip(magnitude, magnitude_limits[0], magnitude_limits[1],
+                out=magnitude)
+    magnitude_max = magnitude.max()
+    if magnitude_max == 0:
+        magnitude_max = 1
+    magnitude = magnitude / magnitude_max
+    S = np.ones_like(phase)
+    HSV = np.dstack((phase, S, magnitude))
+    RGB = hsv_to_rgb(HSV)
+    return (RGB)
+
+
+# code taken from PixStem
+def _find_phase(phase, rotation=None, max_phase=2 * np.pi):
+    if rotation is not None:
+        phase = (phase + math.radians(rotation))
+    phase = phase % max_phase
+    return phase
