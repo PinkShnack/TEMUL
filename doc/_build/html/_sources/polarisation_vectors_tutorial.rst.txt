@@ -375,14 +375,14 @@ Plot a partly transparent angle tricontourf map with no vector arrows:
     ...                           antialiased=True, degrees=True)
 
 .. image:: tutorial_images/polarisation_vectors_tutorial/contour_angle_trans_overlay.png
-    :scale: 60 %
+    :scale: 70 %
 
 
 "colorwheel" plot of the vectors, useful for visualising vortexes:
 
 .. code-block:: python
 
-    >>> import colorcet as cc
+    >>> import colorcet as cc  # can also just use cmap="cet_colorwheel"
     >>> plot_polarisation_vectors(x, y, u, v, image=image,
     ...                           unit_vector=True, plot_style="colorwheel",
     ...                           vector_rep="angle",
@@ -390,7 +390,7 @@ Plot a partly transparent angle tricontourf map with no vector arrows:
     ...                           degrees=True, save=None, monitor_dpi=50)
 
 .. image:: tutorial_images/polarisation_vectors_tutorial/colorwheel_angle.png
-    :scale: 60 %
+    :scale: 70 %
 
 
 "polar_colorwheel" plot showing a 2D polar color wheel, also useful for vortexes:
@@ -402,8 +402,25 @@ Plot a partly transparent angle tricontourf map with no vector arrows:
     ...                           unit_vector=False, overlay=False,
     ...                           save=None, monitor_dpi=50)
 
+    # This plot may show the effect of the second dimension more clearly.
+    # Example taken from Matplotlib's Quiver documentation.
+    >>> import numpy as np
+    >>> X, Y = np.meshgrid(np.arange(0, 2 * np.pi, .2), np.arange(0, 2 * np.pi, .2))
+    >>> image_temp = np.ones_like(X)
+    >>> U = np.reshape(np.cos(X), 1024)
+    >>> V = np.reshape(np.sin(Y), 1024)
+    >>> X, Y = np.reshape(X, 1024), np.reshape(Y, 1024)
+    >>> ax = plot_polarisation_vectors(X, Y, U, -V, image=image_temp,
+    ...                           plot_style="polar_colorwheel",
+    ...                           overlay=False, invert_y_axis=False,
+    ...                           save=None, monitor_dpi=None)
+    >>> ax.invert_yaxis()
+
 .. image:: tutorial_images/polarisation_vectors_tutorial/colorwheel_polar.png
-    :scale: 80 %
+    :scale: 70 %
+
+.. image:: tutorial_images/polarisation_vectors_tutorial/quiver_2d_colorwheel.png
+    :scale: 55 %
 
 
 Plot with a custom scalebar. In this example, we need it to be dark, see

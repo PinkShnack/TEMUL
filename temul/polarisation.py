@@ -81,7 +81,7 @@ def plot_polarisation_vectors(
         vector_rep='magnitude', degrees=False, angle_offset=None,
         save='polarisation_image', title="", color='yellow',
         cmap=None, alpha=1.0, image_cmap='gray', monitor_dpi=96,
-        no_axis_info=True, ticks=None, scalebar=False,
+        no_axis_info=True, invert_y_axis=True, ticks=None, scalebar=False,
         antialiased=False, levels=20, remove_vectors=False,
         quiver_units='width', pivot='middle', angles='xy',
         scale_units='xy', scale=None, headwidth=3.0, headlength=5.0,
@@ -152,6 +152,10 @@ def plot_polarisation_vectors(
     no_axis_info :  Bool, default True
         This will remove the x and y axis labels and ticks from the plot if set
         to True.
+    invert_y_axis : Bool, default True
+        If set to true, this will flip the y axis, effectively setting the top
+        left corner of the image as the (0, 0) origin, as in scanning electron
+        microscopy images.
     ticks : colorbar ticks, default None
         None or list of ticks or Locator If None, ticks are determined
         automatically from the input.
@@ -173,6 +177,11 @@ def plot_polarisation_vectors(
         confused with the `units` parameter above for the image units.
     ax.quiver parameters
         See matplotlib's quiver function for the remaining parameters.
+
+    Returns
+    -------
+    ax : Axes
+        Matplotlib Axes object
 
     Examples
     --------
@@ -453,9 +462,10 @@ def plot_polarisation_vectors(
     else:
         raise NameError("The plot_style you have chosen is not available.")
 
-    ax.set(aspect='equal')
-    ax.set_xlim(0, image.shape[1])
-    ax.set_ylim(image.shape[0], 0)
+    if invert_y_axis:
+        ax.set(aspect='equal')
+        ax.set_xlim(0, image.shape[1])
+        ax.set_ylim(image.shape[0], 0)
 
     if overlay:
         plt.imshow(image, cmap=image_cmap)
@@ -493,6 +503,7 @@ def plot_polarisation_vectors(
         plt.savefig(fname=save + '_' + plot_style + '.png',
                     transparent=True, frameon=False, bbox_inches='tight',
                     pad_inches=None, dpi=300, labels=False)
+    return ax
 
 
 def get_angles_from_uv(u, v, degrees=False, angle_offset=None):
