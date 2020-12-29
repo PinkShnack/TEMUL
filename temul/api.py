@@ -44,6 +44,7 @@ from temul.polarisation import (
     get_divide_into, get_average_polarisation_in_regions,
     get_average_polarisation_in_regions_square, get_strain_map,
     rotation_of_atom_planes, ratio_of_lattice_spacings,
+    get_polar_2d_colorwheel_color_list,
 )
 
 from temul.signal_plotting import (

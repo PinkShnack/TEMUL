@@ -701,3 +701,52 @@ def choose_points_on_image(image, norm='linear', distance_threshold=4):
     coords = add_atoms_with_gui(image=image, norm=norm,
                                 distance_threshold=distance_threshold)
     return coords
+
+
+def create_rgb_array():
+    # make the 2(3)D RGB color array that is 360*100*3
+    V, H = np.mgrid[0:1:100j, 0:1:360j]
+    S = np.ones_like(V)
+    HSV = np.dstack((H,S,V))
+    RGB = hsv_to_rgb(HSV)
+    RGB_swapped = np.swapaxes(RGB, 0, 1)
+    return RGB_swapped
+
+
+def get_polar_2d_colorwheel_color_list(u, v):
+    
+    ''' make the color_list from the HSV/RGB colorwheel.
+    This color_list will be the same length as u and as v.
+    It works by indexing the angle of the RGB (hue in HSV) array,
+    then indexing the magnitude (r) in the RGB (value in HSV) array,
+    leaving only a single RGB color for each vector.
+    '''
+
+    rgb_array = create_rgb_array()
+
+    r = (u ** 2 + v ** 2) ** 0.5
+    theta = np.arctan2(v, u)
+
+    # change theta to degrees
+    theta_deg = theta * 180/np.pi
+
+    # normalise r between 0 and 1
+    r_norm = r/np.max(r)
+    # scale from 0 to 100 for indexing in loop
+    r_norm_100 = r_norm * 100
+
+    color_list = []
+    for i, (ri, thetai) in enumerate(zip(r_norm_100, theta_deg)):
+
+        # index the angle, leaving the relevant r array
+        # should probably sort out values > 359.5 better than the -1 below
+        r_color_list = rgb_array[int(round(thetai,0))-1]
+
+        # index for the r value in the r_color_list
+        indexed_r = r_color_list[int(round(ri, 0))-1]
+        color_list.append(indexed_r)
+    
+    if len(u) != len(color_list):
+        raise ValueError("u and color_list should be the same length.")
+
+    return color_list

@@ -324,6 +324,9 @@ def plot_polarisation_vectors(
     vector_label = angle_label(
         vector_rep=vector_rep, units=units, degrees=degrees)
 
+    if plot_style == "polar_colorwheel":
+        color_list = get_polar_2d_colorwheel_color_list(u, -v)
+
     # change all vector magnitudes to the same size
     if unit_vector:
         u_norm = u / np.sqrt(u ** 2.0 + v ** 2.0)
@@ -427,7 +430,12 @@ def plot_polarisation_vectors(
         # cbar.ax.set_ylabel(vector_label, fontsize=14)
 
     elif plot_style == "polar_colorwheel":
-        pass
+
+        # call funcs that creates
+        #   1. phase and mag 
+        #   2. colorwheel ax
+        # then gets color_list from phase and mag
+        # plots the colorwheel ax
 
     ax.set(aspect='equal')
     ax.set_xlim(0, image.shape[1])
