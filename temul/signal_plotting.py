@@ -10,6 +10,7 @@ import scipy.spatial as spatial
 from temul.intensity_tools import get_sublattice_intensity
 from temul.external.atomap_devel_012.initial_position_finding import (
     add_atoms_with_gui)
+import math
 
 
 # line_profile_positions = am.add_atoms_with_gui(s)
@@ -707,14 +708,14 @@ def create_rgb_array():
     # make the 2(3)D RGB color array that is 360*100*3
     V, H = np.mgrid[0:1:100j, 0:1:360j]
     S = np.ones_like(V)
-    HSV = np.dstack((H,S,V))
+    HSV = np.dstack((H, S, V))
     RGB = hsv_to_rgb(HSV)
     RGB_swapped = np.swapaxes(RGB, 0, 1)
     return RGB_swapped
 
 
 def get_polar_2d_colorwheel_color_list(u, v):
-    
+
     ''' make the color_list from the HSV/RGB colorwheel.
     This color_list will be the same length as u and as v.
     It works by indexing the angle of the RGB (hue in HSV) array,
@@ -740,12 +741,12 @@ def get_polar_2d_colorwheel_color_list(u, v):
 
         # index the angle, leaving the relevant r array
         # should probably sort out values > 359.5 better than the -1 below
-        r_color_list = rgb_array[int(round(thetai,0))-1]
+        r_color_list = rgb_array[int(round(thetai, 0))-1]
 
         # index for the r value in the r_color_list
         indexed_r = r_color_list[int(round(ri, 0))-1]
         color_list.append(indexed_r)
-    
+
     if len(u) != len(color_list):
         raise ValueError("u and color_list should be the same length.")
 
