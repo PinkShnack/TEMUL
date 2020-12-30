@@ -141,6 +141,14 @@ plot_polarisation_vectors(x, y, u, v, image=image,
                           degrees=True, save=None, monitor_dpi=50)
 
 
+# "polar_colorwheel" plot showing a 2D polar color wheel, also useful for
+# visualising vortexes:
+
+plot_polarisation_vectors(x, y, u, v, image=image,
+                          plot_style="polar_colorwheel",
+                          unit_vector=False, overlay=False,
+                          save=None, monitor_dpi=50)
+
 # Plot with a custom scalebar. In this example, we need it to be dark, see matplotlib-scalebar for more custom features.
 
 scbar_dict = {"dx": 3.0321, "units": "pm", "location": "lower left",

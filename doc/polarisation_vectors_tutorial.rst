@@ -26,7 +26,7 @@ Current functions:
 
 
 For standard Polarised Structures (e.g., PTO)
------------------------------------------------
+---------------------------------------------
 Atomap's :python:`get_polarization_from_second_sublattice` Sublattice method will
 be sufficent for most users when dealing with the classic PTO-style polarisation,
 wherein the atoms in a sublattice are polarised with respect to a second sublattice.
@@ -61,7 +61,7 @@ using :python:`plot_polarisation_vectors`!
 
 
 For nonstandard Polarised Structures (e.g., Boracites)
------------------------------------------------------
+------------------------------------------------------
 When the above function can't isn't suitable, the TEMUL
 :python:`find_polarisation_vectors` function may be an option. It is useful for
 structures that Atomap's :python:`get_polarization_from_second_sublattice` can't
@@ -118,7 +118,7 @@ polarisation in the structure. Don't forget to save these arrays for further use
 
 
 For single Polarised Sublattices (e.g., LNO)
------------------------------------------------------
+--------------------------------------------
 When dealing with structures in which the polarisation must be extracted from a
 single sublattice (one type of chemical atomic column, the TEMUL
 :python:`atom_deviation_from_straight_line_fit` function
@@ -375,14 +375,14 @@ Plot a partly transparent angle tricontourf map with no vector arrows:
     ...                           antialiased=True, degrees=True)
 
 .. image:: tutorial_images/polarisation_vectors_tutorial/contour_angle_trans_overlay.png
-    :scale: 60 %
+    :scale: 70 %
 
 
 "colorwheel" plot of the vectors, useful for visualising vortexes:
 
 .. code-block:: python
 
-    >>> import colorcet as cc
+    >>> import colorcet as cc  # can also just use cmap="cet_colorwheel"
     >>> plot_polarisation_vectors(x, y, u, v, image=image,
     ...                           unit_vector=True, plot_style="colorwheel",
     ...                           vector_rep="angle",
@@ -390,7 +390,37 @@ Plot a partly transparent angle tricontourf map with no vector arrows:
     ...                           degrees=True, save=None, monitor_dpi=50)
 
 .. image:: tutorial_images/polarisation_vectors_tutorial/colorwheel_angle.png
-    :scale: 60 %
+    :scale: 70 %
+
+
+"polar_colorwheel" plot showing a 2D polar color wheel, also useful for vortexes:
+
+.. code-block:: python
+
+    >>> plot_polarisation_vectors(x, y, u, v, image=image,
+    ...                           plot_style="polar_colorwheel",
+    ...                           unit_vector=False, overlay=False,
+    ...                           save=None, monitor_dpi=50)
+
+    # This plot may show the effect of the second dimension more clearly.
+    # Example taken from Matplotlib's Quiver documentation.
+    >>> import numpy as np
+    >>> X, Y = np.meshgrid(np.arange(0, 2 * np.pi, .2), np.arange(0, 2 * np.pi, .2))
+    >>> image_temp = np.ones_like(X)
+    >>> U = np.reshape(np.cos(X), 1024)
+    >>> V = np.reshape(np.sin(Y), 1024)
+    >>> X, Y = np.reshape(X, 1024), np.reshape(Y, 1024)
+    >>> ax = plot_polarisation_vectors(X, Y, U, -V, image=image_temp,
+    ...                           plot_style="polar_colorwheel",
+    ...                           overlay=False, invert_y_axis=False,
+    ...                           save=None, monitor_dpi=None)
+    >>> ax.invert_yaxis()
+
+.. image:: tutorial_images/polarisation_vectors_tutorial/colorwheel_polar.png
+    :scale: 70 %
+
+.. image:: tutorial_images/polarisation_vectors_tutorial/quiver_2d_colorwheel.png
+    :scale: 55 %
 
 
 Plot with a custom scalebar. In this example, we need it to be dark, see

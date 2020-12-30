@@ -11,6 +11,14 @@ News
     Added documentation for how to find the polarisation vectors
     Added "code_tutorials" ipynb examples
     Corrected plot_polarisation_vectors vector quiver key
+    Created "polar_colorwheel" `plot_style` for plot_polarisation_vectors by
+        using a HSV to RGB 2D colorwheel and mapping the angles and magnitudes to
+        these values. Used code from PixStem for colorwheel visualisation. 
+    Fixed norm and cmap scaling for the colorbar for "contour", "colorwheel" and
+        "colormap" plot_styles. Now they scale nicely and ticks can be input to all three.
+    Added invert_y_axis param for plot_polarisation_vectors function
+    plot_polarisation_vectors function now returns the Axes object
+    
 
 **03/11/2020: Version 0.1.2 released**
 
