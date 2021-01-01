@@ -1,10 +1,6 @@
 
-import os
 import numpy as np
 import atomap.api as am
-import hyperspy.api as hs
-import matplotlib.pyplot as plt
-import temul.api as tml
 
 ''' This file will find the sublattices in your image. Check out Atomap.org
     for lots of information on how to use atomap.
