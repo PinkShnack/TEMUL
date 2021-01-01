@@ -6,7 +6,8 @@ import temul.api as tml
 Don't be overwhelmed, plot_style is the most important input! Many of the rest
 you can ignore.
 
-Note: image, sampling, units are loaded from the initial loading step
+Note: image, sampling, units are loaded from the initial loading step, but you
+      can do that here.
 Note: u, v, x, y are all loaded from the previous step
 '''
 
@@ -39,18 +40,18 @@ width = None  # set to ~0.005 for chunky (thicker) arrows
 minshaft = 1
 minlength = 1
 headwidth = 3.0
-headlength = 5.0,
+headlength = 5.0
 headaxislength = 4.5
 quiver_units = 'width'
 pivot = 'middle'
-angles = 'xy',
+angles = 'xy'
 scale_units = 'xy'
 
 
 # plot the vectors!
-tml.plot_polarisation_vectors(
-    x, y, u, v, image, sampling=sampling, units=units,
-    plot_style=plot_style, overlay=Toverlayrue, unit_vector=unit_vector,
+ax_vectors = tml.plot_polarisation_vectors(
+    x, y, u, v, image.data, sampling=sampling, units=units,
+    plot_style=plot_style, overlay=overlay, unit_vector=unit_vector,
     vector_rep=vector_rep, degrees=degrees, angle_offset=angle_offset,
     save=save, title=title, color=color, cmap=cmap, alpha=alpha,
     image_cmap=image_cmap, monitor_dpi=monitor_dpi,

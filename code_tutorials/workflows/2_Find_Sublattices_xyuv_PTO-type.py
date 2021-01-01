@@ -1,6 +1,7 @@
 
 import numpy as np
 import atomap.api as am
+import temul.api as tml
 
 ''' This file will find the sublattices in your image. Check out Atomap.org
     for lots of information on how to use atomap.
@@ -69,20 +70,12 @@ along the atom plane lines. To visualise the atom planes, use
 sub1.plot_planes() which can take a long time for certain images.
 '''
 
-zone_axis_A = sub1.zones_axis_average_distances[0]
+zone_axis_A = sub1.zones_axis_average_distances[2]
 
 # use this function to choose a position between atoms defined by the
 # vector_fraction
-atom_positions2_part1 = sub1.find_missing_atoms_from_zone_vector(
+atom_positions2 = sub1.find_missing_atoms_from_zone_vector(
     zone_axis_A, vector_fraction=0.5)
-
-# for this boracite-type structure, you'll need to do it again in the
-# perperdicular direction!
-zone_axis_B = sub1.zones_axis_average_distances[1]
-atom_positions2_part2 = sub1.find_missing_atoms_from_zone_vector(
-    zone_axis_B, vector_fraction=0.5)
-
-atom_positions2 = atom_positions2_part1 + atom_positions2_part2
 
 # save these positions 
 np.save('atom_positions2_ideal.npy', arr=atom_positions2)
@@ -93,7 +86,7 @@ sub2 = am.Sublattice(atom_position_list=atom_positions2,
 sub2.find_nearest_neighbors()
 # sub2.plot()
 
-sub2.refine_atom_positions_using_2d_gaussian(percent_to_nn=0.2)
+sub2.refine_atom_positions_using_2d_gaussian(percent_to_nn=0.4)
 # sub2.refine_atom_positions_using_center_of_mass(percent_to_nn=0.2)
 
 np.save('atom_positions2_refined.npy', [sub2.x_position, sub2.y_position])
@@ -101,11 +94,11 @@ np.save('atom_positions2_refined.npy', [sub2.x_position, sub2.y_position])
 
 
 ''' Create and save the Atom Lattice Object - This contains our two
-    sublattices. 
+    sublattices.
 '''
 
 atom_lattice = am.Atom_Lattice(image=image.data,
-                               name='Boracite-type structure',
+                               name='PTO-type structure',
                                sublattice_list=[sub1, sub2])
 
 atom_lattice.save(filename="Atom_Lattice.hdf5", overwrite=True)
@@ -124,6 +117,6 @@ atom_positions_A = np.load('atom_positions2_ideal.npy')
 atom_positions_B = np.load('atom_positions2_refined.npy').T
 x, y = atom_positions_A[:, 0], atom_positions_A[:, 1]
 
-u, v = tml_pol.find_polarisation_vectors(atom_positions_A=atom_positions_A,
+u, v = tml.find_polarisation_vectors(atom_positions_A=atom_positions_A,
                                          atom_positions_B=atom_positions_B)
 u, v = np.asarray(u), np.asarray(v)

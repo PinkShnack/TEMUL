@@ -1,6 +1,7 @@
 
 import numpy as np
 import atomap.api as am
+import temul.api as tml
 
 ''' This file will find the sublattices in your image. Check out Atomap.org
     for lots of information on how to use atomap.
@@ -32,7 +33,7 @@ Note: If you have used the image filter file, then replace "image" with
 "image_ifft" or whatever you called your filtered file.    
 '''
 
-sep = 9  # just an example
+sep = 5  # just an example
 atom_positions1 = am.get_atom_positions(image, separation=sep, pca=True)
 
 # save these original sub1 positions!
@@ -57,65 +58,30 @@ sub1.refine_atom_positions_using_2d_gaussian(percent_to_nn=0.2)
 
 np.save('atom_positions1_refined.npy', [sub1.x_position, sub1.y_position])
 
-
-# this is needed to create the second sublattice:
 sub1.construct_zone_axes()
 # sub1.plot_planes()  # this can take a long time for large images!
 
-''' Create the second sublattice - sub2.
 
-We have to choose the zone_axes that will give you the correct atoms positions
-along the atom plane lines. To visualise the atom planes, use
-sub1.plot_planes() which can take a long time for certain images.
-'''
-
-zone_axis_A = sub1.zones_axis_average_distances[2]
-
-# use this function to choose a position between atoms defined by the
-# vector_fraction
-atom_positions2 = sub1.find_missing_atoms_from_zone_vector(
-    zone_axis_A, vector_fraction=0.5)
-
-# save these positions 
-np.save('atom_positions2_ideal.npy', arr=atom_positions2)
-
-
-sub2 = am.Sublattice(atom_position_list=atom_positions2,
-                     image=image, color='blue')
-sub2.find_nearest_neighbors()
-# sub2.plot()
-
-sub2.refine_atom_positions_using_2d_gaussian(percent_to_nn=0.2)
-# sub2.refine_atom_positions_using_center_of_mass(percent_to_nn=0.2)
-
-np.save('atom_positions2_refined.npy', [sub2.x_position, sub2.y_position])
-
-
-
-''' Create and save the Atom Lattice Object - This contains our two
-    sublattices.
+''' Create and save the Atom Lattice Object - This contains our sublattice.
 '''
 
 atom_lattice = am.Atom_Lattice(image=image.data,
-                               name='PTO-type structure',
-                               sublattice_list=[sub1, sub2])
+                               name='LNO-type structure',
+                               sublattice_list=[sub1])
 
 atom_lattice.save(filename="Atom_Lattice.hdf5", overwrite=True)
 
 
 
 ''' Now we need to get the (x, y) and (u, v) data for the polarisation vectors.
-    This requires the relevant sublattice's original "ideal" positions and
-    refined "actual" positions.
+    For the LNO-type material, we need to use just the first sublattice to
+    find the polarisation vectors.
     
-    We can use the temul toolkit to do this easily with the save information
-    from above.
+    We can use the temul toolkit to do this easily with the
+    atom_deviation_from_straight_line_fit function. 
 '''
 
-atom_positions_A = np.load('atom_positions2_ideal.npy')
-atom_positions_B = np.load('atom_positions2_refined.npy').T
-x, y = atom_positions_A[:, 0], atom_positions_A[:, 1]
-
-u, v = tml_pol.find_polarisation_vectors(atom_positions_A=atom_positions_A,
-                                         atom_positions_B=atom_positions_B)
-u, v = np.asarray(u), np.asarray(v)
+n = 15  # example
+zone_axis = 0  # example
+x, y, u, v = tml.atom_deviation_from_straight_line_fit(
+    sub1, zone_axis, n)
