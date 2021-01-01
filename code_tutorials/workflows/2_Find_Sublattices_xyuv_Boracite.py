@@ -104,7 +104,7 @@ np.save('atom_positions2_refined', [sub2.x_position, sub2.y_position])
     sublattices. 
 '''
 
-atom_lattice = am.Atom_Lattice(image=s.data,
+atom_lattice = am.Atom_Lattice(image=image.data,
                                name='Boracite-type structure',
                                sublattice_list=[sub1, sub2])
 
