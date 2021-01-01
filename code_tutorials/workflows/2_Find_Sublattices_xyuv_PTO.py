@@ -36,7 +36,7 @@ sep = 9  # just an example
 atom_positions1 = am.get_atom_positions(image, separation=sep, pca=True)
 
 # save these original sub1 positions!
-np.save('atom_positions1', arr=atom_positions1)
+np.save('atom_positions1.npy', arr=atom_positions1)
 
 # how to reload this file format
 # example_positions = np.load('atom_positions1.npy')
@@ -55,7 +55,7 @@ sub1.find_nearest_neighbors()
 sub1.refine_atom_positions_using_2d_gaussian(percent_to_nn=0.2)
 # sub1.refine_atom_positions_using_center_of_mass(percent_to_nn=0.2)
 
-np.save('atom_positions1_refined', [sub1.x_position, sub1.y_position])
+np.save('atom_positions1_refined.npy', [sub1.x_position, sub1.y_position])
 
 
 # this is needed to create the second sublattice:
@@ -77,7 +77,7 @@ atom_positions2 = sub1.find_missing_atoms_from_zone_vector(
     zone_axis_A, vector_fraction=0.5)
 
 # save these positions 
-np.save('atom_positions2_ideal', arr=atom_positions2)
+np.save('atom_positions2_ideal.npy', arr=atom_positions2)
 
 
 sub2 = am.Sublattice(atom_position_list=atom_positions2,
@@ -88,7 +88,7 @@ sub2.find_nearest_neighbors()
 sub2.refine_atom_positions_using_2d_gaussian(percent_to_nn=0.2)
 # sub2.refine_atom_positions_using_center_of_mass(percent_to_nn=0.2)
 
-np.save('atom_positions2_refined', [sub2.x_position, sub2.y_position])
+np.save('atom_positions2_refined.npy', [sub2.x_position, sub2.y_position])
 
 
 
@@ -101,3 +101,21 @@ atom_lattice = am.Atom_Lattice(image=image.data,
                                sublattice_list=[sub1, sub2])
 
 atom_lattice.save(filename="Atom_Lattice.hdf5", overwrite=True)
+
+
+
+''' Now we need to get the (x, y) and (u, v) data for the polarisation vectors.
+    This requires the relevant sublattice's original "ideal" positions and
+    refined "actual" positions.
+    
+    We can use the temul toolkit to do this easily with the save information
+    from above.
+'''
+
+atom_positions_A = np.load('atom_positions2_ideal.npy')
+atom_positions_B = np.load('atom_positions2_refined.npy').T
+x, y = atom_positions_A[:, 0], atom_positions_A[:, 1]
+
+u, v = tml_pol.find_polarisation_vectors(atom_positions_A=atom_positions_A,
+                                         atom_positions_B=atom_positions_B)
+u, v = np.asarray(u), np.asarray(v)

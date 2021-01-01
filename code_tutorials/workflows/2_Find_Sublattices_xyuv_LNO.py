@@ -36,7 +36,7 @@ sep = 9  # just an example
 atom_positions1 = am.get_atom_positions(image, separation=sep, pca=True)
 
 # save these original sub1 positions!
-np.save('atom_positions1', arr=atom_positions1)
+np.save('atom_positions1.npy', arr=atom_positions1)
 
 # how to reload this file format
 # example_positions = np.load('atom_positions1.npy')
@@ -55,7 +55,7 @@ sub1.find_nearest_neighbors()
 sub1.refine_atom_positions_using_2d_gaussian(percent_to_nn=0.2)
 # sub1.refine_atom_positions_using_center_of_mass(percent_to_nn=0.2)
 
-np.save('atom_positions1_refined', [sub1.x_position, sub1.y_position])
+np.save('atom_positions1_refined.npy', [sub1.x_position, sub1.y_position])
 
 sub1.construct_zone_axes()
 # sub1.plot_planes()  # this can take a long time for large images!
@@ -69,3 +69,18 @@ atom_lattice = am.Atom_Lattice(image=image.data,
                                sublattice_list=[sub1])
 
 atom_lattice.save(filename="Atom_Lattice.hdf5", overwrite=True)
+
+
+
+''' Now we need to get the (x, y) and (u, v) data for the polarisation vectors.
+    For the LNO-type material, we need to use just the first sublattice to
+    find the polarisation vectors.
+    
+    We can use the temul toolkit to do this easily with the
+    atom_deviation_from_straight_line_fit function. 
+'''
+
+n = 15  # example
+zone_axis = 0  # example
+x, y, u, v = tml.atom_deviation_from_straight_line_fit(
+    sublattice, zone_axis, n)
