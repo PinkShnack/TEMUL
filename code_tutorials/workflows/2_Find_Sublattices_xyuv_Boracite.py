@@ -17,138 +17,99 @@ types of materials.
 
 
 
-'''
-Pixel separation
-'''
-# have a look at the different pixel separations available (you can change them! Go mad)
-am.get_feature_separation(
-    s_ifft, separation_range=(9, 20), pca=True).plot()
+''' Get the Pixel separation between the atoms in your first sublattice
 
-# choose the best pixel separation
-# 12 for 2004, 9 for 2048
-atom_positions1 = am.get_atom_positions(s_ifft, separation=9, pca=True)
-atom_positions1 = am.add_atoms_with_gui(s, atom_list=atom_positions1)
+Note: If you have used the image filter file, then replace "image" with
+"image_ifft" or whatever you called your filtered file.
+'''
 
-# save these original positions!
+# look at the different pixel separations available, this can take some time.
+feat = am.get_feature_separation(image, separation_range=(5, 20), pca=True)
+feat.plot()
+
+
+''' If you're happy with one of the pixel separations, then set it below. If
+    you're not, you may need to change your separation_range or filter your
+    image with the "1b_Filter_Data.py" file.
+
+Note: If you have used the image filter file, then replace "image" with
+"image_ifft" or whatever you called your filtered file.    
+'''
+
+sep = 9  # just an example
+atom_positions1 = am.get_atom_positions(image, separation=sep, pca=True)
+
+# save these original sub1 positions!
 np.save('atom_positions1', arr=atom_positions1)
-# positions = np.load('atom_positions1_overfull.npy') # how to reload this file format
+
+# how to reload this file format
+# example_positions = np.load('atom_positions1.npy')
 
 
-''' Create the first sublattice - sub1 '''
+''' Create the first sublattice, which we call sub1. '''
 
-sub1 = am.Sublattice(
-    atom_position_list=atom_positions1, image=s, color='red')
+sub1 = am.Sublattice(atom_position_list=atom_positions1,
+                     image=image, color='red')
 sub1.find_nearest_neighbors()
-#sub1.plot()
 
+# you can plot the sublattice easily with:
+# sub1.plot()
+
+# You can refine the sublattice easily with a 2D Gaussian or COM algorithm:
 sub1.refine_atom_positions_using_2d_gaussian(percent_to_nn=0.2)
 # sub1.refine_atom_positions_using_center_of_mass(percent_to_nn=0.2)
 
-
-# change the marker size (can be useful for big images)
-sub1.get_atom_list_on_image(markersize=2).plot()
-
-plt.title('sub1', fontsize=20)
-plt.gca().axes.get_xaxis().set_visible(False)
-plt.gca().axes.get_yaxis().set_visible(False)
-plt.tight_layout()
-plt.savefig(fname='sub1.png',
-            transparent=True, frameon=False, bbox_inches='tight',
-            pad_inches=None, dpi=300, labels=False)
-plt.close()
+np.save('atom_positions1_refined', [sub1.x_position, sub1.y_position])
 
 
+# this is needed to create the second sublattice:
 sub1.construct_zone_axes()
-#sub1.plot_planes()  # this can take a long time for large images!
+# sub1.plot_planes()  # this can take a long time for large images!
 
+''' Create the second sublattice - sub2.
 
-# # side note: You can remove these atoms from the image if you like!
-# im_atoms_subtracted = amtools.remove_atoms_from_image_using_2d_gaussian(
-#     s.data, sub1)
+We have to choose the zone_axes that will give you the correct atoms positions
+along the atom plane lines. To visualise the atom planes, use
+sub1.plot_planes() which can take a long time for certain images.
+'''
 
-# # convert this numpy array to a hyperspy image object
-# im_atoms_subtracted = hs.signals.Signal2D(im_atoms_subtracted)
-# im_atoms_subtracted.plot()
-# im_atoms_subtracted.save('im_atoms_subtracted_im.hspy')
+zone_axis_A = sub1.zones_axis_average_distances[0]
 
-
-''' Part 2 - finding the other sublattices '''
-
-# choose the zone_axes that will give you the correct atoms positions along the lines
-zone_axis_001 = sub1.zones_axis_average_distances[0]
-
-# use this function to choose a position between atoms defined by the vector_fraction
+# use this function to choose a position between atoms defined by the
+# vector_fraction
 atom_positions2_part1 = sub1.find_missing_atoms_from_zone_vector(
-    zone_axis_001, vector_fraction=0.5)
+    zone_axis_A, vector_fraction=0.5)
 
-# for this structrue, you'll need to do it again in the perperdicular direction!
-zone_axis_002 = sub1.zones_axis_average_distances[1]
+# for this boracite-type structure, you'll need to do it again in the
+# perperdicular direction!
+zone_axis_B = sub1.zones_axis_average_distances[1]
 atom_positions2_part2 = sub1.find_missing_atoms_from_zone_vector(
-    zone_axis_002, vector_fraction=0.5)
+    zone_axis_B, vector_fraction=0.5)
 
 atom_positions2 = atom_positions2_part1 + atom_positions2_part2
 
-# atom_positions2 = am.add_atoms_with_gui(s, atom_list=atom_positions2)
-
+# save these positions 
 np.save('atom_positions2_ideal', arr=atom_positions2)
 
-''' Create the second sublattice - sub2 '''
-'''
-image_atoms_removed = at.remove_atoms_from_image_using_2d_gaussian(
-    image=s.data,
-    sublattice=sub1,
-    percent_to_nn=0.3)
 
-hs.signals.Signal2D(image_atoms_removed).plot()
-
-sub2 = am.Sublattice(atom_positions2, image=s, color='blue')
+sub2 = am.Sublattice(atom_position_list=atom_positions2,
+                     image=image, color='blue')
 sub2.find_nearest_neighbors()
 # sub2.plot()
 
-# t0 = time()
-sub2.refine_atom_positions_using_2d_gaussian(image_data=image_atoms_removed,
-                                             percent_to_nn=0.3)
-# t1 = time()-t0
-# print("This refinement took {:.2f} seconds".format(t1))
-
-sub2.refine_atom_positions_using_center_of_mass(image_data=image_atoms_removed,
-                                                percent_to_nn=0.4)
-'''
-
-sub2 = am.Sublattice(atom_positions2, image=s, color='blue')
-sub2.find_nearest_neighbors()
-#sub2.plot()
-
 sub2.refine_atom_positions_using_2d_gaussian(percent_to_nn=0.2)
-# sub2.refine_atom_positions_using_center_of_mass(percent_to_nn=0.3)
+# sub2.refine_atom_positions_using_center_of_mass(percent_to_nn=0.2)
 
 np.save('atom_positions2_refined', [sub2.x_position, sub2.y_position])
 
-sub2.get_atom_list_on_image(markersize=2).plot()
-
-plt.title('sub2', fontsize=20)
-plt.gca().axes.get_xaxis().set_visible(False)
-plt.gca().axes.get_yaxis().set_visible(False)
-plt.tight_layout()
-plt.savefig(fname='sub2.png',
-            transparent=True, frameon=False, bbox_inches='tight',
-            pad_inches=None, dpi=300, labels=False)
-plt.close()
 
 
-'''Save Atom Lattice Object - This contains our two sublattice'''
+''' Create and save the Atom Lattice Object - This contains our two
+    sublattices. 
+'''
+
 atom_lattice = am.Atom_Lattice(image=s.data,
-                               name='Both Sublattices UL Boracite First Test!',
+                               name='Boracite-type structure',
                                sublattice_list=[sub1, sub2])
 
 atom_lattice.save(filename="Atom_Lattice.hdf5", overwrite=True)
-
-atom_lattice.plot(markersize=4)
-plt.title('Atom Lattice', fontsize=20)
-plt.gca().axes.get_xaxis().set_visible(False)
-plt.gca().axes.get_yaxis().set_visible(False)
-plt.tight_layout()
-plt.savefig(fname='Atom Lattice.png',
-            transparent=True, frameon=False, bbox_inches='tight',
-            pad_inches=None, dpi=300, labels=False)
-
