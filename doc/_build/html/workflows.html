@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>News &mdash; TEMUL Toolkit v0.1.2 documentation</title>
+  <title>Analysis Workflows &mdash; TEMUL Toolkit v0.1.2 documentation</title>
   
 
   
@@ -35,7 +35,9 @@
 
     
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Finding Polarisation Vectors" href="polarisation_vectors_tutorial.html" />
+    <link rel="prev" title="Getting started" href="using_temul.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -85,10 +87,10 @@
             
             
               <p class="caption"><span class="caption-text">Contents</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="using_temul.html">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="workflows.html">Analysis Workflows</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Analysis Workflows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Finding Polarisation Vectors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html#plotting-polarisation-and-movement-vectors">Plotting Polarisation and Movement Vectors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="structure_map_tutorial.html">Plot Lattice Structure Maps</a></li>
@@ -143,13 +145,13 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>News</li>
+      <li>Analysis Workflows</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/news.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/workflows.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -162,23 +164,21 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="news">
-<span id="install"></span><h1>News<a class="headerlink" href="#news" title="Permalink to this headline">¶</a></h1>
-<p><strong>03/11/2020: Version 0.1.2 released</strong></p>
-<p>This version contains minor changes from the 0.1.1 release. It removes pyCifRW
-as a dependency.</p>
-<p><strong>02/11/2020: Version 0.1.1 released</strong></p>
-<p>This version contains many changes to the TEMUL Toolkit.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>More parameters have been added to the polarisation module’s <code class="code python docutils literal notranslate"><span class="name"><span class="pre">plot_polarisation_vectors</span></span></code> function. Check out the walkthrough <a class="reference internal" href="polarisation_vectors_tutorial.html#polarisation-vectors-tutorial"><span class="std std-ref">here</span></a> for more info!</p></li>
-<li><p><a class="reference internal" href="dg_visualiser_tutorial.html#dg-visualiser-tutorial"><span class="std std-ref">Interactive double Gaussian filtering</span></a> with the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">visualise_dg_filter</span></span></code> function in the signal_processing module. Thanks to <a class="reference external" href="https://github.com/michaelhennessyjr">Michael Hennessy</a> for the help!</p></li>
-<li><p>The <code class="code python docutils literal notranslate"><span class="name"><span class="pre">calculate_atom_plane_curvature</span></span></code> function has been added, creating the lattice_structure_tools module.</p></li>
-<li><p>Strain, rotation, and c/a mapping can now be done <a class="reference internal" href="structure_map_tutorial.html#structure-map-tutorial"><span class="std std-ref">here</span></a>.</p></li>
-<li><p>Masked FFT filtering to obtain iFFTs. See <a class="reference internal" href="masked_fft_tutorial.html#masked-fft-tutorial"><span class="std std-ref">this guide</span></a> to see some code!</p></li>
-<li><p>Example walk-throughs for many features of the TEMUL Toolkit are now on this website! Check out the menu on the left to get started!</p></li>
-</ul>
-</div></blockquote>
+  <div class="section" id="analysis-workflows">
+<span id="workflows"></span><h1>Analysis Workflows<a class="headerlink" href="#analysis-workflows" title="Permalink to this headline">¶</a></h1>
+<p>The TEMUL Toolkit contains some basic analysis workflows for the various
+ferroelectric material-types described in
+<a class="reference internal" href="polarisation_vectors_tutorial.html#polarisation-vectors-tutorial"><span class="std std-ref">Finding Polarisation Vectors</span></a>.</p>
+<p>The python scripts, jupyter notebooks and data can be downloaded from the
+<a class="reference external" href="https://github.com/PinkShnack/TEMUL">TEMUL repository</a> in the
+“code_tutorials/workflows” folder.</p>
+<p>You can also interact with the data without needing any downloads.
+Just click the button below and navigate to that same folder,
+where you will find the python scripts and interactive python notebooks:</p>
+<a class="reference external image-reference" href="https://mybinder.org/v2/gh/PinkShnack/TEMUL/master"><img alt="https://mybinder.org/badge_logo.svg" src="https://mybinder.org/badge_logo.svg" /></a>
+<p>More will be added to these workflows in future. If you have any ideas, please
+create an issue on <a class="reference external" href="https://github.com/PinkShnack/TEMUL/issues">GitHub</a> or
+create a pull request.</p>
 </div>
 
 
@@ -186,6 +186,15 @@ as a dependency.</p>
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="polarisation_vectors_tutorial.html" class="btn btn-neutral float-right" title="Finding Polarisation Vectors" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="using_temul.html" class="btn btn-neutral float-left" title="Getting started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
