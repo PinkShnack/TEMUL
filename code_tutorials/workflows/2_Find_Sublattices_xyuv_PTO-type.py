@@ -109,14 +109,28 @@ atom_lattice.save(filename="Atom_Lattice.hdf5", overwrite=True)
     This requires the relevant sublattice's original "ideal" positions and
     refined "actual" positions.
     
-    We can use the temul toolkit to do this easily with the save information
+    We can use Atomap or the Temul toolkit to do this easily with the save information
     from above.
 '''
 
+
+# Atomap method (if this doesn't work, try the Temul method below)
+
+za0, za1 = sub1.zones_axis_average_distances[0:2]
+s_p = sub1.get_polarization_from_second_sublattice(
+    za0, za1, sub2, color='cyan')
+vector_list = s_p.metadata.vector_list
+x, y = [i[0] for i in vector_list], [i[1] for i in vector_list]
+u, v = [i[2] for i in vector_list], [i[3] for i in vector_list]
+x, y, u, v = np.asarray(x), np.asarray(y), np.asarray(u), np.asarray(v)
+
+
+
+# Temul method, only use this if the above Atomap method doesn't work
 atom_positions_A = np.load('atom_positions2_ideal.npy')
 atom_positions_B = np.load('atom_positions2_refined.npy').T
 x, y = atom_positions_A[:, 0], atom_positions_A[:, 1]
 
 u, v = tml.find_polarisation_vectors(atom_positions_A=atom_positions_A,
-                                         atom_positions_B=atom_positions_B)
+                                     atom_positions_B=atom_positions_B)
 u, v = np.asarray(u), np.asarray(v)
