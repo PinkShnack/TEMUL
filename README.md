@@ -16,14 +16,6 @@ To cite the TEMUL toolkit, use the following DOI:
 [![DOI](https://www.zenodo.org/badge/203785298.svg)](https://www.zenodo.org/badge/latestdoi/203785298)
 
 
-<<<<<<< HEAD
-=======
-## Test Notebook
-
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/PinkShnack/TEMUL/kalani_PTO_paper_walkthrough)
-
-<!--
->>>>>>> d1c7383a812f92f68a36f9e2a5be7c197622d391
 ## Interactive Notebooks in the Browser
 
 Jupyter Notebooks and MyBinder allow us to analyse data in the browser without needing any downloads using the below "launch binder" button.
