@@ -21,6 +21,7 @@ News
     Added workflows webpage, .py and .ipynb files
     Added vector correction functions
     Added marios PTO paper links and notebook
+    Added Kalani PTO paper branch
     
 
 **03/11/2020: Version 0.1.2 released**
