@@ -58,7 +58,8 @@ sub1.refine_atom_positions_using_2d_gaussian(percent_to_nn=0.2)
 
 np.save('atom_positions1_refined.npy', [sub1.x_position, sub1.y_position])
 
-sub1.construct_zone_axes()
+# Use atom_plane_tolerance=1 for these deformed structures
+sub1.construct_zone_axes(atom_plane_tolerance=1)
 # sub1.plot_planes()  # this can take a long time for large images!
 
 
@@ -81,7 +82,7 @@ atom_lattice.save(filename="Atom_Lattice.hdf5", overwrite=True)
     atom_deviation_from_straight_line_fit function. 
 '''
 
-n = 15  # example
+n = 5  # example
 zone_axis = 0  # example
 x, y, u, v = tml.atom_deviation_from_straight_line_fit(
-    sub1, zone_axis, n)
+    sub1, zone_axis, n, plot=True)
