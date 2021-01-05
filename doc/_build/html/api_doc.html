@@ -682,6 +682,63 @@ perfect structure.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="temul.polarisation.correct_off_tilt_vectors">
+<code class="sig-prename descclassname">temul.polarisation.</code><code class="sig-name descname">correct_off_tilt_vectors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">v</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'com'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.polarisation.correct_off_tilt_vectors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Useful if your image is off-tilt (electron beam is not perfectly
+parallel to the atomic columns).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u</strong> (<em>1D numpy arrays</em>) – horizontal and vertical components of the (polarisation) vectors.</p></li>
+<li><p><strong>v</strong> (<em>1D numpy arrays</em>) – horizontal and vertical components of the (polarisation) vectors.</p></li>
+<li><p><strong>method</strong> (<em>string</em><em>, </em><em>default &quot;com&quot;</em>) – method used to correct the vector components. “com” is via the center
+of mass of the vectors. “av” is via the average vector.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>u_corr, v_corr</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>corrected 1D numpy arrays</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="kn">import</span> <span class="n">correct_off_tilt_vectors</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="kn">import</span> <span class="n">get_polarisation_dummy_dataset</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">atom_lattice</span> <span class="o">=</span> <span class="n">get_polarisation_dummy_dataset</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span> <span class="o">=</span> <span class="n">atom_lattice</span><span class="o">.</span><span class="n">sublattice_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeB</span> <span class="o">=</span> <span class="n">atom_lattice</span><span class="o">.</span><span class="n">sublattice_list</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">construct_zone_axes</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">za0</span><span class="p">,</span> <span class="n">za1</span> <span class="o">=</span> <span class="n">sublatticeA</span><span class="o">.</span><span class="n">zones_axis_average_distances</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s_p</span> <span class="o">=</span> <span class="n">sublatticeA</span><span class="o">.</span><span class="n">get_polarization_from_second_sublattice</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">za0</span><span class="p">,</span> <span class="n">za1</span><span class="p">,</span> <span class="n">sublatticeB</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">vector_list</span> <span class="o">=</span> <span class="n">s_p</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">vector_list</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">vector_list</span><span class="p">],</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">vector_list</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">vector_list</span><span class="p">],</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">vector_list</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Correct for some tilt using the correct_off_tilt_vectors function:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u_com</span><span class="p">,</span> <span class="n">v_com</span> <span class="o">=</span> <span class="n">correct_off_tilt_vectors</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;com&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Use the average vector instead: (be careful that you’re not just applying
+this on previously corrected data!)</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u_av</span><span class="p">,</span> <span class="n">v_av</span> <span class="o">=</span> <span class="n">correct_off_tilt_vectors</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;av&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="temul.polarisation.corrected_vectors_via_average">
+<code class="sig-prename descclassname">temul.polarisation.</code><code class="sig-name descname">corrected_vectors_via_average</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">v</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.polarisation.corrected_vectors_via_average" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="temul.polarisation.corrected_vectors_via_center_of_mass">
+<code class="sig-prename descclassname">temul.polarisation.</code><code class="sig-name descname">corrected_vectors_via_center_of_mass</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">v</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.polarisation.corrected_vectors_via_center_of_mass" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt id="temul.polarisation.delete_atom_planes_from_sublattice">
 <code class="sig-prename descclassname">temul.polarisation.</code><code class="sig-name descname">delete_atom_planes_from_sublattice</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sublattice</span></em>, <em class="sig-param"><span class="n">zone_axis_index</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">atom_plane_tolerance</span><span class="o">=</span><span class="default_value">0.5</span></em>, <em class="sig-param"><span class="n">divisible_by</span><span class="o">=</span><span class="default_value">3</span></em>, <em class="sig-param"><span class="n">offset_from_zero</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">opposite</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.polarisation.delete_atom_planes_from_sublattice" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete atom_planes from a zone axis. Can choose whether to delete

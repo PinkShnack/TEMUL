@@ -19,6 +19,8 @@ News
     Added invert_y_axis param for plot_polarisation_vectors function
     plot_polarisation_vectors function now returns the Axes object
     Added workflows webpage, .py and .ipynb files
+    Added vector correction functions
+    Added marios PTO paper links and notebook
     
 
 **03/11/2020: Version 0.1.2 released**
