@@ -35,7 +35,8 @@
 
     
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Interactive Image Filtering" href="dg_visualiser_tutorial.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -85,11 +86,37 @@
             
             
               <p class="caption"><span class="caption-text">Contents</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="using_temul.html">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Plotting Polarisation and Movement Vectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflows.html">Analysis Workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Finding Polarisation Vectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html#plotting-polarisation-and-movement-vectors">Plotting Polarisation and Movement Vectors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="structure_map_tutorial.html">Plot Lattice Structure Maps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PTO_supercrystal_hadjimichael.html">Calculation of Atom Plane Curvature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="masked_fft_tutorial.html">Masked FFT and iFFT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="line_profile_tutorial.html">Line Intensity Profile Comparisons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dg_visualiser_tutorial.html">Interactive Image Filtering</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#classes">Classes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#model-refiner">Model Refiner</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#modules">Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-temul.polarisation">Polarisation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-temul.element_tools">Element Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-temul.intensity_tools">Intensity Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-temul.model_creation">Model Creation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-temul.simulations">Image Simulation Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-temul.signal_processing">Signal Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-temul.signal_plotting">Signal Plotting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-temul.io">Input/Output (io)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-temul.dummy_data">Dummy Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-temul.example_data">Example Data</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
             
@@ -458,41 +485,100 @@ For example: [ [0,0], [50, 50] ]</p>
 
 <dl class="py function">
 <dt id="temul.polarisation.atom_deviation_from_straight_line_fit">
-<code class="sig-prename descclassname">temul.polarisation.</code><code class="sig-name descname">atom_deviation_from_straight_line_fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sublattice</span></em>, <em class="sig-param"><span class="n">axis_number</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">save</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span> <span class="o">=</span> <span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.polarisation.atom_deviation_from_straight_line_fit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fit the atoms in an atom plane to a straight line and find the deviation
-of each atom position from that straight line fit.
-To plot all zones see <cite>plot_atom_deviation_from_all_zone_axes()</cite>.</p>
+<code class="sig-prename descclassname">temul.polarisation.</code><code class="sig-name descname">atom_deviation_from_straight_line_fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sublattice</span></em>, <em class="sig-param"><span class="n">axis_number</span></em>, <em class="sig-param"><span class="n">n</span></em>, <em class="sig-param"><span class="n">second_fit_rigid</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">plot</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.polarisation.atom_deviation_from_straight_line_fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fits the atomic columns in an atom plane to two straight lines using the
+first <cite>n</cite> and second (last) <cite>n</cite> atomic columns. Computes the distance of
+each atomic column from the line halfway between the two fitted lines, as
+described in [1]. This is done for every sublattice atom plane along the
+chosen <cite>axis_number</cite>.</p>
+<p>The slope of the first fitting will be used for the
+second fitting. Setting <cite>second_fit_rigid</cite> = False will reverse this
+behaviour.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>sublattice</strong> (<em>Atomap Sublattice object</em>) – </p></li>
-<li><p><strong>axis_number</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>default 0</em>) – The index of the zone axis (translation symmetry) found by the Atomap
-function <cite>construct_zone_axes()</cite>.</p></li>
-<li><p><strong>save</strong> (<em>string</em><em>, </em><em>default ''</em>) – If set to <cite>save=None</cite>, the array will not be saved.</p></li>
+<li><p><strong>axis_number</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The index of the zone axis (translation symmetry) found by the Atomap
+function <cite>construct_zone_axes()</cite>. For sublattices with heavily
+deviating atomic columns, you may need to use
+sublattice.construct_zone_axes(atom_plane_tolerance=1).</p></li>
+<li><p><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The number of columns used at the beginning and end of each atom plane
+to fit a straight line.</p></li>
+<li><p><strong>second_fit_rigid</strong> (<em>Bool</em><em>, </em><em>default True</em>) – Used to decide whether the first or second fitting’s slope will be
+rigid during fitting. With <cite>second_fit_rigid=True</cite>, the slope of the
+second fitting will be defined as the slope as the first fitting. The
+y-intercept is free to move.</p></li>
+<li><p><strong>plot</strong> (<em>Bool</em><em>, </em><em>default False</em>) – Whether to plot the atom plane data, first and second fitting, and the
+line constructed halfway between the two.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><strong>Four lists</strong> (<em>x, y, u, and v where x,y are the original atom position</em>)</p></li>
-<li><p><em>coordinates (simply sublattice.x_position, sublattice.y_position) and</em></p></li>
-<li><p><em>u,v are the polarisation vector components pointing to the new coordinate.</em></p></li>
-<li><p>These can be input to <cite>plot_polarisation_vectors()</cite> for visualisation.</p></li>
-</ul>
-</p>
+<dd class="field-even"><p><strong>x, y, u, v</strong> – x, y are the original atom position coordinates <cite>sublattice.x_position</cite>
+and <cite>sublattice.y_position</cite> for the coordinates included in the chosen
+<cite>axis_number</cite>. u, v are the polarisation vector components pointing
+towards the halfway line from the atom position coordinates.
+These can be input to <cite>plot_polarisation_vectors()</cite> for visualisation.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>lists of equal length</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#temul.polarisation.get_xyuv_from_line_fit" title="temul.polarisation.get_xyuv_from_line_fit"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_xyuv_from_line_fit()</span></code></a></dt><dd><p>uses <cite>_fit_line_clusters</cite> to get xyuv from arr</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">References</p>
+<dl class="footnote brackets">
+<dt class="label" id="id1"><span class="brackets">1</span></dt>
+<dd><p>Reference: Julie Gonnissen, Dmitry Batuk, Guillaume F. Nataf,
+Lewys Jones, Artem M. Abakumov, Sandra Van Aert, Dominique
+Schryvers, Ekhard K. H. Salje, Direct Observation of Ferroelectric
+Domain Walls in LiNbO3: Wall‐Meanders, Kinks, and Local Electric
+Charges, 26, 42, 2016, DOI: 10.1002/adfm.201603489</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">atomap.api</span> <span class="k">as</span> <span class="nn">am</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="kn">import</span> <span class="p">(</span><span class="n">atom_deviation_from_straight_line_fit</span><span class="p">,</span>
-<span class="gp">... </span>                                <span class="n">plot_polarisation_vectors</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">atom_lattice</span> <span class="o">=</span> <span class="n">am</span><span class="o">.</span><span class="n">dummy_data</span><span class="o">.</span><span class="n">get_polarization_film_atom_lattice</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span> <span class="o">=</span> <span class="n">atom_lattice</span><span class="o">.</span><span class="n">sublattice_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">find_nearest_neighbors</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">refine_atom_positions_using_center_of_mass</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">construct_zone_axes</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">u</span><span class="p">,</span><span class="n">v</span> <span class="o">=</span> <span class="n">atom_deviation_from_straight_line_fit</span><span class="p">(</span><span class="n">sublatticeA</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
-<span class="gp">... </span>                          <span class="n">unit_vector</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.api</span> <span class="k">as</span> <span class="nn">tml</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.dummy_data</span> <span class="k">as</span> <span class="nn">dd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span> <span class="o">=</span> <span class="n">dd</span><span class="o">.</span><span class="n">get_polarised_single_sublattice</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span><span class="o">.</span><span class="n">construct_zone_axes</span><span class="p">(</span><span class="n">atom_plane_tolerance</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Choose <cite>n</cite>: how many atom columns should be used to fit the line on each
+side of the atom planes. If <cite>n</cite> is too large, the fitting will appear
+incorrect.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">n</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">atom_deviation_from_straight_line_fit</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">sublattice</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublattice</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
+<span class="gp">... </span>                              <span class="n">unit_vector</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="gp">... </span>                              <span class="n">plot_style</span><span class="o">=</span><span class="s1">&#39;vector&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                              <span class="n">overlay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Plot with angle and up/down. Note that the data ranges from -90 to +90
+degrees, so the appropriate diverging cmap should be chosen.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublattice</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
+<span class="gp">... </span>                      <span class="n">vector_rep</span><span class="o">=</span><span class="s1">&#39;angle&#39;</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span>                      <span class="n">plot_style</span><span class="o">=</span><span class="s1">&#39;colormap&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;cet_coolwarm&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                      <span class="n">overlay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Let’s look at some rotated data</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span> <span class="o">=</span> <span class="n">dd</span><span class="o">.</span><span class="n">get_polarised_single_sublattice_rotated</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">image_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span><span class="o">.</span><span class="n">construct_zone_axes</span><span class="p">(</span><span class="n">atom_plane_tolerance</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># sublattice.plot_planes()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># plot the sublattice to see why 3 is suitable here!</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">atom_deviation_from_straight_line_fit</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">sublattice</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublattice</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
+<span class="gp">... </span>                      <span class="n">vector_rep</span><span class="o">=</span><span class="s1">&#39;angle&#39;</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span>                      <span class="n">plot_style</span><span class="o">=</span><span class="s1">&#39;colormap&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;cet_coolwarm&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                      <span class="n">overlay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -582,18 +668,75 @@ perfect structure.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">construct_zone_axes</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">u</span><span class="p">,</span><span class="n">v</span> <span class="o">=</span> <span class="n">combine_atom_deviations_from_zone_axes</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">sublatticeA</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>You can also choose the axes:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">u</span><span class="p">,</span><span class="n">v</span> <span class="o">=</span> <span class="n">combine_atom_deviations_from_zone_axes</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">sublatticeA</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
+
+<dl class="py function">
+<dt id="temul.polarisation.correct_off_tilt_vectors">
+<code class="sig-prename descclassname">temul.polarisation.</code><code class="sig-name descname">correct_off_tilt_vectors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">v</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'com'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.polarisation.correct_off_tilt_vectors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Useful if your image is off-tilt (electron beam is not perfectly
+parallel to the atomic columns).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u</strong> (<em>1D numpy arrays</em>) – horizontal and vertical components of the (polarisation) vectors.</p></li>
+<li><p><strong>v</strong> (<em>1D numpy arrays</em>) – horizontal and vertical components of the (polarisation) vectors.</p></li>
+<li><p><strong>method</strong> (<em>string</em><em>, </em><em>default &quot;com&quot;</em>) – method used to correct the vector components. “com” is via the center
+of mass of the vectors. “av” is via the average vector.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>u_corr, v_corr</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>corrected 1D numpy arrays</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="kn">import</span> <span class="n">correct_off_tilt_vectors</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="kn">import</span> <span class="n">get_polarisation_dummy_dataset</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">atom_lattice</span> <span class="o">=</span> <span class="n">get_polarisation_dummy_dataset</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span> <span class="o">=</span> <span class="n">atom_lattice</span><span class="o">.</span><span class="n">sublattice_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeB</span> <span class="o">=</span> <span class="n">atom_lattice</span><span class="o">.</span><span class="n">sublattice_list</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">construct_zone_axes</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">za0</span><span class="p">,</span> <span class="n">za1</span> <span class="o">=</span> <span class="n">sublatticeA</span><span class="o">.</span><span class="n">zones_axis_average_distances</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s_p</span> <span class="o">=</span> <span class="n">sublatticeA</span><span class="o">.</span><span class="n">get_polarization_from_second_sublattice</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">za0</span><span class="p">,</span> <span class="n">za1</span><span class="p">,</span> <span class="n">sublatticeB</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">vector_list</span> <span class="o">=</span> <span class="n">s_p</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">vector_list</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">vector_list</span><span class="p">],</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">vector_list</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">vector_list</span><span class="p">],</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">vector_list</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Correct for some tilt using the correct_off_tilt_vectors function:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u_com</span><span class="p">,</span> <span class="n">v_com</span> <span class="o">=</span> <span class="n">correct_off_tilt_vectors</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;com&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Use the average vector instead: (be careful that you’re not just applying
+this on previously corrected data!)</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u_av</span><span class="p">,</span> <span class="n">v_av</span> <span class="o">=</span> <span class="n">correct_off_tilt_vectors</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;av&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="temul.polarisation.corrected_vectors_via_average">
+<code class="sig-prename descclassname">temul.polarisation.</code><code class="sig-name descname">corrected_vectors_via_average</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">v</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.polarisation.corrected_vectors_via_average" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="temul.polarisation.corrected_vectors_via_center_of_mass">
+<code class="sig-prename descclassname">temul.polarisation.</code><code class="sig-name descname">corrected_vectors_via_center_of_mass</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">v</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.polarisation.corrected_vectors_via_center_of_mass" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt id="temul.polarisation.delete_atom_planes_from_sublattice">
@@ -625,11 +768,15 @@ will be kept and all others deleted.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span> <span class="o">=</span> <span class="n">atom_lattice</span><span class="o">.</span><span class="n">sublattice_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">construct_zone_axes</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">zone_vec_list</span> <span class="o">=</span> <span class="n">sublatticeA</span><span class="o">.</span><span class="n">zones_axis_average_distances</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">get_all_atom_planes_by_zone_vector</span><span class="p">(</span><span class="n">zone_vec_list</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">zones01_A</span> <span class="o">=</span> <span class="n">sublatticeA</span><span class="o">.</span><span class="n">get_all_atom_planes_by_zone_vector</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">zone_vec_list</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># zones01_A.plot()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">delete_atom_planes_from_sublattice</span><span class="p">(</span>
 <span class="gp">... </span>        <span class="n">sublatticeA</span><span class="p">,</span> <span class="n">zone_axis_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
 <span class="gp">... </span>        <span class="n">divisible_by</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">offset_from_zero</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">get_all_atom_planes_by_zone_vector</span><span class="p">(</span><span class="n">zone_vec_list</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">zones01_B</span> <span class="o">=</span> <span class="n">sublatticeA</span><span class="o">.</span><span class="n">get_all_atom_planes_by_zone_vector</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">zone_vec_list</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># zones01_A.plot()</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -663,6 +810,49 @@ will be kept and all others deleted.</p></li>
 <p>convert to the [[u1,v1], [u2,v2], [u3,v3]…] format</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">vectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="temul.polarisation.full_atom_plane_deviation_from_straight_line_fit">
+<code class="sig-prename descclassname">temul.polarisation.</code><code class="sig-name descname">full_atom_plane_deviation_from_straight_line_fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sublattice</span></em>, <em class="sig-param"><span class="n">axis_number</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">save</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span> <span class="o">=</span> <span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.polarisation.full_atom_plane_deviation_from_straight_line_fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit the atoms in an atom plane to a straight line and find the deviation
+of each atom position from that straight line fit.
+To plot all zones see <cite>plot_atom_deviation_from_all_zone_axes()</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sublattice</strong> (<em>Atomap Sublattice object</em>) – </p></li>
+<li><p><strong>axis_number</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>default 0</em>) – The index of the zone axis (translation symmetry) found by the Atomap
+function <cite>construct_zone_axes()</cite>.</p></li>
+<li><p><strong>save</strong> (<em>string</em><em>, </em><em>default ''</em>) – If set to <cite>save=None</cite>, the array will not be saved.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>Four lists</strong> (<em>x, y, u, and v where x,y are the original atom position</em>)</p></li>
+<li><p><em>coordinates (simply sublattice.x_position, sublattice.y_position) and</em></p></li>
+<li><p><em>u,v are the polarisation vector components pointing to the new coordinate.</em></p></li>
+<li><p>These can be input to <cite>plot_polarisation_vectors()</cite> for visualisation.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">atomap.api</span> <span class="k">as</span> <span class="nn">am</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="gp">... </span>    <span class="n">full_atom_plane_deviation_from_straight_line_fit</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">plot_polarisation_vectors</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">atom_lattice</span> <span class="o">=</span> <span class="n">am</span><span class="o">.</span><span class="n">dummy_data</span><span class="o">.</span><span class="n">get_polarization_film_atom_lattice</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span> <span class="o">=</span> <span class="n">atom_lattice</span><span class="o">.</span><span class="n">sublattice_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">find_nearest_neighbors</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">refine_atom_positions_using_center_of_mass</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">construct_zone_axes</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">u</span><span class="p">,</span><span class="n">v</span> <span class="o">=</span> <span class="n">full_atom_plane_deviation_from_straight_line_fit</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">sublatticeA</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">unit_vector</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -710,12 +900,11 @@ split into an 8x8 grid.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><strong>Four lists</strong> (<em>x_new, y_new, u_new, v_new.</em>)</p></li>
-<li><p><em>x_new and y_new are the central coordinates of the divided regions.</em></p></li>
-<li><p><em>u_new and v_new are the averaged polarisation vectors.</em></p></li>
-</ul>
-</p>
+<dd class="field-even"><p><strong>x_new, y_new, u_new, v_new</strong> – x_new and y_new are the central coordinates of the divided regions.
+u_new and v_new are the averaged polarisation vectors.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>lists of equal length</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -735,7 +924,7 @@ split into an 8x8 grid.</p></li>
 <p>Get and plot the original polarisation vectors:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">combine_atom_deviations_from_zone_axes</span><span class="p">(</span><span class="n">sublatticeA</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
 <span class="gp">... </span>                  <span class="n">unit_vector</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="gp">... </span>                  <span class="n">plot_style</span><span class="o">=</span><span class="s1">&#39;vector&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span>
 <span class="gp">... </span>                  <span class="n">overlay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Actual Vector Arrows&#39;</span><span class="p">,</span>
@@ -745,9 +934,9 @@ split into an 8x8 grid.</p></li>
 <p>Get and plot the new, averaged polarisation vectors</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x_new</span><span class="p">,</span> <span class="n">y_new</span><span class="p">,</span> <span class="n">u_new</span><span class="p">,</span> <span class="n">v_new</span> <span class="o">=</span> <span class="n">get_average_polarisation_in_regions</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span> <span class="n">divide_into</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x_new</span><span class="p">,</span> <span class="n">y_new</span><span class="p">,</span> <span class="n">u_new</span><span class="p">,</span> <span class="n">v_new</span><span class="p">,</span> <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
-<span class="gp">... </span>                  <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span>
-<span class="gp">... </span>                  <span class="n">overlay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Averaged Vector Arrows&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x_new</span><span class="p">,</span> <span class="n">y_new</span><span class="p">,</span> <span class="n">u_new</span><span class="p">,</span> <span class="n">v_new</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="n">overlay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Averaged Vector Arrows&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -770,12 +959,11 @@ split into an 8x8 grid.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><strong>Four lists</strong> (<em>x_new, y_new, u_new, v_new.</em>)</p></li>
-<li><p><em>x_new and y_new are the central coordinates of the divided regions.</em></p></li>
-<li><p><em>u_new and v_new are the averaged polarisation vectors.</em></p></li>
-</ul>
-</p>
+<dd class="field-even"><p><strong>x_new, y_new, u_new, v_new</strong> – x_new and y_new are the central coordinates of the divided regions.
+u_new and v_new are the averaged polarisation vectors.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>lists of equal length</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -794,7 +982,7 @@ split into an 8x8 grid.</p></li>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">image</span> <span class="o">=</span> <span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">200</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">combine_atom_deviations_from_zone_axes</span><span class="p">(</span><span class="n">sublatticeA</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="gp">... </span>                  <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
 <span class="gp">... </span>                  <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Actual Vector Arrows&#39;</span><span class="p">)</span>
 </pre></div>
@@ -803,7 +991,7 @@ split into an 8x8 grid.</p></li>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="n">get_average_polarisation_in_regions_square</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="p">,</span> <span class="n">divide_into</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x_new</span><span class="p">,</span> <span class="n">y_new</span><span class="p">,</span> <span class="n">u_new</span><span class="p">,</span> <span class="n">v_new</span> <span class="o">=</span> <span class="n">coords</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x_new</span><span class="p">,</span> <span class="n">y_new</span><span class="p">,</span> <span class="n">u_new</span><span class="p">,</span> <span class="n">v_new</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x_new</span><span class="p">,</span> <span class="n">y_new</span><span class="p">,</span> <span class="n">u_new</span><span class="p">,</span> <span class="n">v_new</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="p">,</span>
 <span class="gp">... </span>                  <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
 <span class="gp">... </span>                  <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Averaged Vector Arrows&#39;</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </pre></div>
@@ -933,6 +1121,60 @@ by sampling (nm/pix).</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt id="temul.polarisation.get_xyuv_from_line_fit">
+<code class="sig-prename descclassname">temul.polarisation.</code><code class="sig-name descname">get_xyuv_from_line_fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">arr</span></em>, <em class="sig-param"><span class="n">n</span></em>, <em class="sig-param"><span class="n">second_fit_rigid</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">plot</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.polarisation.get_xyuv_from_line_fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fits the data in an array to two straight lines using the
+first <cite>n</cite> and second (last) <cite>n</cite> array value pairs. Computes the distance of
+each array value pair from the line halfway between the two fitted lines.</p>
+<p>The slope of the first fitting will be used for the
+second fitting. Setting <cite>second_fit_rigid</cite> = False will reverse this
+behaviour.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>arr</strong> (<em>2D array-like</em>) – Array-like (e.g., NumPy 2D array) in the form [[x1, y1], [x2, y2]…]</p></li>
+<li><p><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The number of arr value pairs used at the beginning and end of the arr
+to fit a straight line.</p></li>
+<li><p><strong>second_fit_rigid</strong> (<em>Bool</em><em>, </em><em>default True</em>) – Used to decide whether the first or second fitting’s slope will be
+rigid during fitting. With <cite>second_fit_rigid=True</cite>, the slope of the
+second fitting will be defined as the slope as the first fitting. The
+y-intercept is free to move.</p></li>
+<li><p><strong>plot</strong> (<em>Bool</em><em>, </em><em>default False</em>) – Whether to plot the arr data, first and second fitting, and the
+line constructed halfway between the two.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>x, y, u, v</strong> – x, y are the original arr coordinates. u, v are the vector components
+pointing towards the halfway line from the arr coordinates.
+These can be input to <cite>plot_polarisation_vectors()</cite> for visualisation.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>lists of equal length</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#temul.polarisation.atom_deviation_from_straight_line_fit" title="temul.polarisation.atom_deviation_from_straight_line_fit"><code class="xref py py-func docutils literal notranslate"><span class="pre">atom_deviation_from_straight_line_fit()</span></code></a></dt><dd><p>Gets xyuv for Sublattice object</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mf">2.05</span><span class="p">],</span>
+<span class="gp">... </span>                <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">get_xyuv_from_line_fit</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">arr</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">second_fit_rigid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Use the lower (second) cluster to fit the data, making the first cluster
+rigid</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">get_xyuv_from_line_fit</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">arr</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">second_fit_rigid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt id="temul.polarisation.plot_atom_deviation_from_all_zone_axes">
 <code class="sig-prename descclassname">temul.polarisation.</code><code class="sig-name descname">plot_atom_deviation_from_all_zone_axes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sublattice</span></em>, <em class="sig-param"><span class="n">image</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sampling</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">units</span><span class="o">=</span><span class="default_value">'pix'</span></em>, <em class="sig-param"><span class="n">plot_style</span><span class="o">=</span><span class="default_value">'vector'</span></em>, <em class="sig-param"><span class="n">overlay</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">unit_vector</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">degrees</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">save</span><span class="o">=</span><span class="default_value">'atom_deviation'</span></em>, <em class="sig-param"><span class="n">title</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">color</span><span class="o">=</span><span class="default_value">'yellow'</span></em>, <em class="sig-param"><span class="n">cmap</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pivot</span><span class="o">=</span><span class="default_value">'middle'</span></em>, <em class="sig-param"><span class="n">angles</span><span class="o">=</span><span class="default_value">'xy'</span></em>, <em class="sig-param"><span class="n">scale_units</span><span class="o">=</span><span class="default_value">'xy'</span></em>, <em class="sig-param"><span class="n">scale</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">headwidth</span><span class="o">=</span><span class="default_value">3.0</span></em>, <em class="sig-param"><span class="n">headlength</span><span class="o">=</span><span class="default_value">5.0</span></em>, <em class="sig-param"><span class="n">headaxislength</span><span class="o">=</span><span class="default_value">4.5</span></em>, <em class="sig-param"><span class="n">monitor_dpi</span><span class="o">=</span><span class="default_value">96</span></em>, <em class="sig-param"><span class="n">no_axis_info</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">scalebar</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.polarisation.plot_atom_deviation_from_all_zone_axes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the atom deviation from a straight line fit for all zone axes
@@ -960,7 +1202,7 @@ constructed by an Atomap sublattice object.</p>
 
 <dl class="py function">
 <dt id="temul.polarisation.plot_polarisation_vectors">
-<code class="sig-prename descclassname">temul.polarisation.</code><code class="sig-name descname">plot_polarisation_vectors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">v</span></em>, <em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">sampling</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">units</span><span class="o">=</span><span class="default_value">'pix'</span></em>, <em class="sig-param"><span class="n">plot_style</span><span class="o">=</span><span class="default_value">'vector'</span></em>, <em class="sig-param"><span class="n">vector_rep</span><span class="o">=</span><span class="default_value">'magnitude'</span></em>, <em class="sig-param"><span class="n">overlay</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">unit_vector</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">degrees</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">angle_offset</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">save</span><span class="o">=</span><span class="default_value">'polarisation_image'</span></em>, <em class="sig-param"><span class="n">title</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">color</span><span class="o">=</span><span class="default_value">'yellow'</span></em>, <em class="sig-param"><span class="n">cmap</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">monitor_dpi</span><span class="o">=</span><span class="default_value">96</span></em>, <em class="sig-param"><span class="n">pivot</span><span class="o">=</span><span class="default_value">'middle'</span></em>, <em class="sig-param"><span class="n">angles</span><span class="o">=</span><span class="default_value">'xy'</span></em>, <em class="sig-param"><span class="n">scale_units</span><span class="o">=</span><span class="default_value">'xy'</span></em>, <em class="sig-param"><span class="n">scale</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">headwidth</span><span class="o">=</span><span class="default_value">3.0</span></em>, <em class="sig-param"><span class="n">headlength</span><span class="o">=</span><span class="default_value">5.0</span></em>, <em class="sig-param"><span class="n">headaxislength</span><span class="o">=</span><span class="default_value">4.5</span></em>, <em class="sig-param"><span class="n">no_axis_info</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">ticks</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">scalebar</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">antialiased</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">levels</span><span class="o">=</span><span class="default_value">20</span></em>, <em class="sig-param"><span class="n">remove_vectors</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.polarisation.plot_polarisation_vectors" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">temul.polarisation.</code><code class="sig-name descname">plot_polarisation_vectors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">v</span></em>, <em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">sampling</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">units</span><span class="o">=</span><span class="default_value">'pix'</span></em>, <em class="sig-param"><span class="n">plot_style</span><span class="o">=</span><span class="default_value">'vector'</span></em>, <em class="sig-param"><span class="n">overlay</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">unit_vector</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">vector_rep</span><span class="o">=</span><span class="default_value">'magnitude'</span></em>, <em class="sig-param"><span class="n">degrees</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">angle_offset</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">save</span><span class="o">=</span><span class="default_value">'polarisation_image'</span></em>, <em class="sig-param"><span class="n">title</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">color</span><span class="o">=</span><span class="default_value">'yellow'</span></em>, <em class="sig-param"><span class="n">cmap</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">image_cmap</span><span class="o">=</span><span class="default_value">'gray'</span></em>, <em class="sig-param"><span class="n">monitor_dpi</span><span class="o">=</span><span class="default_value">96</span></em>, <em class="sig-param"><span class="n">no_axis_info</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">invert_y_axis</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">ticks</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">scalebar</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">antialiased</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">levels</span><span class="o">=</span><span class="default_value">20</span></em>, <em class="sig-param"><span class="n">remove_vectors</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">quiver_units</span><span class="o">=</span><span class="default_value">'width'</span></em>, <em class="sig-param"><span class="n">pivot</span><span class="o">=</span><span class="default_value">'middle'</span></em>, <em class="sig-param"><span class="n">angles</span><span class="o">=</span><span class="default_value">'xy'</span></em>, <em class="sig-param"><span class="n">scale_units</span><span class="o">=</span><span class="default_value">'xy'</span></em>, <em class="sig-param"><span class="n">scale</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">headwidth</span><span class="o">=</span><span class="default_value">3.0</span></em>, <em class="sig-param"><span class="n">headlength</span><span class="o">=</span><span class="default_value">5.0</span></em>, <em class="sig-param"><span class="n">headaxislength</span><span class="o">=</span><span class="default_value">4.5</span></em>, <em class="sig-param"><span class="n">width</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">minshaft</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">minlength</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.polarisation.plot_polarisation_vectors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the polarisation vectors. These can be found with
 <cite>find_polarisation_vectors()</cite> or Atomap’s
 <cite>get_polarization_from_second_sublattice()</cite> function.</p>
@@ -968,22 +1210,26 @@ constructed by an Atomap sublattice object.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>matplotlib's quiver function for more details.</strong> (<em>See</em>) – </p></li>
-<li><p><strong>x</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a><em> or </em><em>1D NumPy array</em>) – xy coordinates on the image</p></li>
-<li><p><strong>y</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a><em> or </em><em>1D NumPy array</em>) – xy coordinates on the image</p></li>
-<li><p><strong>u</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a><em> or </em><em>1D NumPy array</em>) – uv vector components</p></li>
-<li><p><strong>v</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a><em> or </em><em>1D NumPy array</em>) – uv vector components</p></li>
-<li><p><strong>image</strong> (<em>2D NumPy array</em>) – </p></li>
-<li><p><strong>sampling</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>default None</em>) – Pixel sampling of the image for calibration.</p></li>
+<li><p><strong>x</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a><em> or </em><em>1D NumPy array</em>) – xy coordinates of the vectors on the image.</p></li>
+<li><p><strong>y</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a><em> or </em><em>1D NumPy array</em>) – xy coordinates of the vectors on the image.</p></li>
+<li><p><strong>u</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a><em> or </em><em>1D NumPy array</em>) – uv vector components.</p></li>
+<li><p><strong>v</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a><em> or </em><em>1D NumPy array</em>) – uv vector components.</p></li>
+<li><p><strong>image</strong> (<em>2D NumPy array</em>) – image is used to fit the image. Will flip the y axis, as used for
+electron microscopy data (top left point is (0, 0) coordinate).</p></li>
+<li><p><strong>sampling</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>default None</em>) – Pixel sampling (pixel size) of the image for calibration.</p></li>
 <li><p><strong>units</strong> (<em>string</em><em>, </em><em>default &quot;pix&quot;</em>) – Units used to display the magnitude of the vectors.</p></li>
-<li><p><strong>plot_style</strong> (<em>string</em><em>, </em><em>default &quot;vector&quot;</em>) – Options are “vector”, “colormap”, “contour”, “colorwheel”. Note that
-“colorwheel” will automatically plot the colorbar as an angle.</p></li>
+<li><p><strong>plot_style</strong> (<em>string</em><em>, </em><em>default &quot;vector&quot;</em>) – Options are “vector”, “colormap”, “contour”, “colorwheel”,
+“polar_colorwheel”. Note that “colorwheel” will automatically plot the
+colorbar as an angle. Also note that “polar_colorwheel” will
+automatically generate a 2D RGB (HSV) list of colors that match with
+the vector components (uv).</p></li>
+<li><p><strong>overlay</strong> (<em>Bool</em><em>, </em><em>default True</em>) – If set to True, the <cite>image</cite> will be plotting behind the arrows</p></li>
+<li><p><strong>unit_vector</strong> (<em>Bool</em><em>, </em><em>default False</em>) – Change the vectors magnitude to unit vectors for plotting purposes.
+Magnitude will still be displayed correctly for colormaps etc.</p></li>
 <li><p><strong>vector_rep</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>default &quot;magnitude&quot;</em>) – How the vectors are represented. This can be either their <cite>magnitude</cite>
 or <cite>angle</cite>. One may want to use <cite>angle</cite> when plotting a contour map,
 i.e., view the contours in terms of angles which can be useful for
 visualising regions of different polarisation.</p></li>
-<li><p><strong>overlay</strong> (<em>Bool</em><em>, </em><em>default True</em>) – If set to True, the <cite>image</cite> will be plotting behind the arrows</p></li>
-<li><p><strong>unit_vector</strong> (<em>Bool</em><em>, </em><em>default False</em>) – Change the vectors magnitude to unit vectors for plotting purposes.
-Magnitude will still be displayed correctly for colormaps etc.</p></li>
 <li><p><strong>degrees</strong> (<em>Bool</em><em>, </em><em>default False</em>) – Change between degrees and radian. Default is radian.
 If <cite>plot_style=”colorwheel”</cite>, then setting <cite>degrees=True</cite> will convert
 the angle unit to degree from the default radians.</p></li>
@@ -991,18 +1237,22 @@ the angle unit to degree from the default radians.</p></li>
 will rotate the vector angles displayed by the given amount. Useful
 when you want to offset the angle of the atom planes relative to the
 polarisation.</p></li>
-<li><p><strong>save</strong> (<em>string</em><em>, </em><em>default &quot;polarisation_image&quot;</em>) – If set to <cite>save=None</cite>, the array will not be saved.</p></li>
+<li><p><strong>save</strong> (<em>string</em><em>, </em><em>default &quot;polarisation_image&quot;</em>) – If set to <cite>save=None</cite>, the image will not be saved.</p></li>
 <li><p><strong>title</strong> (<em>string</em><em>, </em><em>default &quot;&quot;</em>) – Title of the plot.</p></li>
-<li><p><strong>color</strong> (<em>string</em><em>, </em><em>default &quot;r&quot;</em>) – Color of the arrows when <a href="#id1"><span class="problematic" id="id2">`</span></a>plot_style=”vector” or “contour”.</p></li>
-<li><p><strong>cmap</strong> (<em>matplotlib colormap</em><em>, </em><em>default &quot;viridis&quot;</em>) – </p></li>
+<li><p><strong>color</strong> (<em>string</em><em>, </em><em>default &quot;r&quot;</em>) – Color of the arrows when <a href="#id2"><span class="problematic" id="id3">`</span></a>plot_style=”vector” or “contour”.</p></li>
+<li><p><strong>cmap</strong> (<em>matplotlib colormap</em><em>, </em><em>default &quot;viridis&quot;</em>) – Matplotlib cmap used for the vector arrows.</p></li>
 <li><p><strong>alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>default 1.0</em>) – Transparency of the matplotlib <cite>cmap</cite>. For <cite>plot_style=”colormap”</cite> and
 <cite>plot_style=”colorwheel”</cite>, this alpha applies to the vector arrows.
 For <cite>plot_style=”contour”</cite> this alpha applies to the tricontourf map.</p></li>
+<li><p><strong>image_cmap</strong> (<em>matplotlib colormap</em><em>, </em><em>default 'gray'</em>) – Matplotlib cmap that will be used for the overlay image.</p></li>
 <li><p><strong>monitor_dpi</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>default 96</em>) – The DPI of the monitor, generally 96 pixels. Used to scale the image
-so that large images render correctly. Use a smaller value or
-<cite>monitor_dpi=None</cite> to enlarge too-small images.</p></li>
+so that large images render correctly. Use a smaller value to enlarge
+too-small images. <cite>monitor_dpi=None</cite> will ignore this param.</p></li>
 <li><p><strong>no_axis_info</strong> (<em>Bool</em><em>, </em><em>default True</em>) – This will remove the x and y axis labels and ticks from the plot if set
 to True.</p></li>
+<li><p><strong>invert_y_axis</strong> (<em>Bool</em><em>, </em><em>default True</em>) – If set to true, this will flip the y axis, effectively setting the top
+left corner of the image as the (0, 0) origin, as in scanning electron
+microscopy images.</p></li>
 <li><p><strong>ticks</strong> (<em>colorbar ticks</em><em>, </em><em>default None</em>) – None or list of ticks or Locator If None, ticks are determined
 automatically from the input.</p></li>
 <li><p><strong>scalebar</strong> (<em>Bool</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a><em>, </em><em>default False</em>) – Add a matplotlib-scalebar to the plot. If set to True the scalebar will
@@ -1014,8 +1264,16 @@ border between regions in the tricontourf map.</p></li>
 <li><p><strong>levels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>default 20</em>) – Number of Matplotlib tricontourf levels to be used.</p></li>
 <li><p><strong>remove_vectors</strong> (<em>Bool</em><em>, </em><em>default False</em>) – Applies only to <cite>plot_style=”contour”</cite>. If set to True, do not plot
 the vector arrows.</p></li>
-<li><p><strong>matplotlib's quiver function for the remaining parameters.</strong> (<em>See</em>) – </p></li>
+<li><p><strong>quiver_units</strong> (<em>string</em><em>, </em><em>default 'width'</em>) – The units parameter from the matplotlib quiver function, not to be
+confused with the <cite>units</cite> parameter above for the image units.</p></li>
+<li><p><strong>parameters</strong> (<em>ax.quiver</em>) – See matplotlib’s quiver function for the remaining parameters.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ax</strong> – Matplotlib Axes object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Axes</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -1034,7 +1292,7 @@ the vector arrows.</p></li>
 </pre></div>
 </div>
 <p>vector plot with red arrows:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">unit_vector</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">plot_style</span><span class="o">=</span><span class="s1">&#39;vector&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">overlay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Vector Arrows&#39;</span><span class="p">,</span>
@@ -1042,21 +1300,21 @@ the vector arrows.</p></li>
 </pre></div>
 </div>
 <p>vector plot with red arrows overlaid on the image:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">unit_vector</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">plot_style</span><span class="o">=</span><span class="s1">&#39;vector&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">overlay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>vector plot with colormap viridis:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">unit_vector</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">plot_style</span><span class="o">=</span><span class="s1">&#39;colormap&#39;</span><span class="p">,</span> <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">overlay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>vector plot with colormap viridis, with <cite>vector_rep=”angle”</cite>:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">unit_vector</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">plot_style</span><span class="o">=</span><span class="s1">&#39;colormap&#39;</span><span class="p">,</span> <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">overlay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;cet_colorwheel&#39;</span><span class="p">,</span>
@@ -1064,7 +1322,7 @@ the vector arrows.</p></li>
 </pre></div>
 </div>
 <p>colormap arrows with sampling applied and with scalebar:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">sampling</span><span class="o">=</span><span class="mf">3.0321</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;pm&#39;</span><span class="p">,</span> <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">unit_vector</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plot_style</span><span class="o">=</span><span class="s1">&#39;colormap&#39;</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">overlay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">,</span>
@@ -1072,22 +1330,22 @@ the vector arrows.</p></li>
 </pre></div>
 </div>
 <p>vector plot with colormap viridis and unit vectors:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">unit_vector</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">plot_style</span><span class="o">=</span><span class="s1">&#39;colormap&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">overlay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Change the vectors to unit vectors on a tricontourf map:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">unit_vector</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plot_style</span><span class="o">=</span><span class="s1">&#39;contour&#39;</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">overlay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pivot</span><span class="o">=</span><span class="s1">&#39;middle&#39;</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<span class="gp">... </span>                          <span class="n">color</span><span class="o">=</span><span class="s1">&#39;darkgray&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">color</span><span class="o">=</span><span class="s1">&#39;darkgray&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;plasma&#39;</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Plot a partly transparent angle tricontourf map with vector arrows:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">unit_vector</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plot_style</span><span class="o">=</span><span class="s1">&#39;contour&#39;</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">overlay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pivot</span><span class="o">=</span><span class="s1">&#39;middle&#39;</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;cet_colorwheel&#39;</span><span class="p">,</span>
@@ -1098,7 +1356,7 @@ the vector arrows.</p></li>
 </pre></div>
 </div>
 <p>Plot a partly transparent angle tricontourf map with no vector arrows:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">unit_vector</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plot_style</span><span class="o">=</span><span class="s1">&#39;contour&#39;</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">overlay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pivot</span><span class="o">=</span><span class="s1">&#39;middle&#39;</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;cet_colorwheel&#39;</span><span class="p">,</span>
@@ -1109,18 +1367,26 @@ the vector arrows.</p></li>
 </div>
 <p>“colorwheel” plot of the vectors, useful for vortexes:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">colorcet</span> <span class="k">as</span> <span class="nn">cc</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">unit_vector</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plot_style</span><span class="o">=</span><span class="s2">&quot;colorwheel&quot;</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">vector_rep</span><span class="o">=</span><span class="s2">&quot;angle&quot;</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">overlay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cc</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">colorwheel</span><span class="p">,</span>
-<span class="gp">... </span>                          <span class="n">degrees</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="gp">... </span>                          <span class="n">degrees</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">ticks</span><span class="o">=</span><span class="p">[</span><span class="mi">180</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>“polar_colorwheel” plot showing a 2D polar color wheel:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">plot_style</span><span class="o">=</span><span class="s2">&quot;polar_colorwheel&quot;</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">unit_vector</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Plot with a custom scalebar, for example here we need it to be dark, see
 matplotlib-scalebar for more custom features.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">scbar_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;dx&quot;</span><span class="p">:</span> <span class="mf">3.0321</span><span class="p">,</span> <span class="s2">&quot;units&quot;</span><span class="p">:</span> <span class="s2">&quot;pm&quot;</span><span class="p">,</span> <span class="s2">&quot;location&quot;</span><span class="p">:</span> <span class="s2">&quot;lower left&quot;</span><span class="p">,</span>
 <span class="gp">... </span>              <span class="s2">&quot;box_alpha&quot;</span><span class="p">:</span><span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="s2">&quot;scale_loc&quot;</span><span class="p">:</span> <span class="s2">&quot;top&quot;</span><span class="p">}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">sampling</span><span class="o">=</span><span class="mf">3.0321</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;pm&#39;</span><span class="p">,</span> <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">unit_vector</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plot_style</span><span class="o">=</span><span class="s1">&#39;colormap&#39;</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">overlay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">,</span>
@@ -1135,7 +1401,7 @@ matplotlib-scalebar for more custom features.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">expanded_zest</span> <span class="o">=</span> <span class="n">tmlplot</span><span class="o">.</span><span class="n">expand_palette</span><span class="p">(</span><span class="n">zest</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">custom_cmap</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">from_levels_and_colors</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">levels</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span> <span class="n">colors</span><span class="o">=</span><span class="n">tmlplot</span><span class="o">.</span><span class="n">rgb_to_dec</span><span class="p">(</span><span class="n">expanded_zest</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">unit_vector</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plot_style</span><span class="o">=</span><span class="s1">&#39;contour&#39;</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">overlay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pivot</span><span class="o">=</span><span class="s1">&#39;middle&#39;</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">cmap</span><span class="o">=</span><span class="n">custom_cmap</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
@@ -2330,7 +2596,7 @@ The second string has not been implemented within this function.</p></li>
 </dl>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
-<dt class="label" id="id3"><span class="brackets">1</span></dt>
+<dt class="label" id="id4"><span class="brackets">1</span></dt>
 <dd><p>Reference: Krivanek et al. Nature 464, 10.1038/nature08879, (2010)</p>
 </dd>
 </dl>
@@ -2564,17 +2830,16 @@ refined.</p></li>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="kn">import</span> <span class="n">get_simple_cubic_signal</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_processing</span> <span class="kn">import</span> <span class="p">(</span><span class="n">choose_points_on_image</span><span class="p">,</span>
-<span class="gp">... </span>            <span class="n">calibrate_intensity_distance_with_sublattice_roi</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.api</span> <span class="k">as</span> <span class="nn">tml</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">image</span> <span class="o">=</span> <span class="n">get_simple_cubic_signal</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">image</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">crop_a</span> <span class="o">=</span> <span class="n">choose_points_on_image</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="c1"># manually</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">crop_a</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">],[</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">]]</span> <span class="c1">#use above line if trying yourself!</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">crop_a</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">choose_points_on_image</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="c1">#  manually</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">crop_a</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">],[</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">]]</span> <span class="c1">#  use above line if trying yourself!</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># tml.calibrate_intensity_distance_with_sublattice_roi(image, crop_a, 10)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># image.plot()</span>
 </pre></div>
 </div>
-<p>calibrate_intensity_distance_with_sublattice_roi(image, crop_a, 10)
-image.plot()</p>
 </dd></dl>
 
 <dl class="py function">
@@ -2678,14 +2943,16 @@ calibrated to a unit other than pixel.</p></li>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="kn">import</span> <span class="n">get_simple_cubic_signal</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_processing</span> <span class="kn">import</span> <span class="p">(</span>
-<span class="gp">... </span>    <span class="n">choose_points_on_image</span><span class="p">,</span> <span class="n">crop_image_hs</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.api</span> <span class="k">as</span> <span class="nn">tml</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">image</span> <span class="o">=</span> <span class="n">get_simple_cubic_signal</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">image</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cropping_area</span> <span class="o">=</span> <span class="n">choose_points_on_image</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="c1"># choose two points</span>
+</pre></div>
+</div>
+<p>Choose two points on the image, top left and bottom right of crop</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cropping_area</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">choose_points_on_image</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cropping_area</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">],[</span><span class="mi">50</span><span class="p">,</span><span class="mi">50</span><span class="p">]]</span> <span class="c1"># use above line if trying yourself!</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># image_cropped = crop_image_hs(image, cropping_area, False)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># image_cropped = tml.crop_image_hs(image, cropping_area, False)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># image_cropped.plot()</span>
 </pre></div>
 </div>
@@ -2717,17 +2984,17 @@ Use the visualise_dg_filter function to find the optimium values.</p></li>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.signal_processing</span> <span class="k">as</span> <span class="nn">tmlsig</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.api</span> <span class="k">as</span> <span class="nn">tml</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.example_data</span> <span class="kn">import</span> <span class="n">load_Se_implanted_MoS2_data</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">image</span> <span class="o">=</span> <span class="n">load_Se_implanted_MoS2_data</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Use the visualise_dg_filter to find suitable FWHMs</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tmlsig</span><span class="o">.</span><span class="n">visualise_dg_filter</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tml</span><span class="o">.</span><span class="n">visualise_dg_filter</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>then use these values to carry out the double_gaussian_fft_filter</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">filtered_image</span> <span class="o">=</span> <span class="n">tmlsig</span><span class="o">.</span><span class="n">double_gaussian_fft_filter</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">150</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">filtered_image</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">double_gaussian_fft_filter</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">150</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">image</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">filtered_image</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
@@ -2771,11 +3038,10 @@ filtered variables table.</p></li>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.example_data</span> <span class="k">as</span> <span class="nn">example_data</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_processing</span> <span class="kn">import</span> <span class="p">(</span>
-<span class="gp">... </span>    <span class="n">double_gaussian_fft_filter</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">experiment</span> <span class="o">=</span> <span class="n">example_data</span><span class="o">.</span><span class="n">load_Se_implanted_MoS2_data</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">experiment</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">filtered_image</span> <span class="o">=</span> <span class="n">double_gaussian_fft_filter</span><span class="p">(</span><span class="n">experiment</span><span class="p">,</span> <span class="mf">7.48</span><span class="p">,</span> <span class="mf">14.96</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.api</span> <span class="k">as</span> <span class="nn">tml</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image</span> <span class="o">=</span> <span class="n">example_data</span><span class="o">.</span><span class="n">load_Se_implanted_MoS2_data</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">filtered_image</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">double_gaussian_fft_filter</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="mf">7.48</span><span class="p">,</span> <span class="mf">14.96</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">filtered_image</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -2899,28 +3165,28 @@ to matplotlib plotting issues.</p></li>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="kn">import</span> <span class="n">get_simple_cubic_signal</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_processing</span> <span class="kn">import</span> <span class="p">(</span>
-<span class="gp">... </span>    <span class="n">choose_mask_coordinates</span><span class="p">,</span> <span class="n">get_masked_ifft</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.api</span> <span class="k">as</span> <span class="nn">tml</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">image</span> <span class="o">=</span> <span class="n">get_simple_cubic_signal</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mask_coords</span> <span class="o">=</span> <span class="n">choose_mask_coordinates</span><span class="p">(</span><span class="n">image</span><span class="p">)</span> <span class="c1"># use this on the image!</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mask_coords</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">choose_mask_coordinates</span><span class="p">(</span><span class="n">image</span><span class="p">)</span> <span class="c1">#  manually</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mask_coords</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">170.2</span><span class="p">,</span> <span class="mf">170.8</span><span class="p">],[</span><span class="mf">129.8</span><span class="p">,</span> <span class="mi">130</span><span class="p">]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">image_ifft</span> <span class="o">=</span> <span class="n">get_masked_ifft</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">mask_coords</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image_ifft</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">get_masked_ifft</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">mask_coords</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">image_ifft</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Plot the masked fft:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">image_ifft</span> <span class="o">=</span> <span class="n">get_masked_ifft</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">mask_coords</span><span class="p">,</span> <span class="n">plot_masked_fft</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">image_ifft</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">get_masked_ifft</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">mask_coords</span><span class="p">,</span>
+<span class="gp">... </span>                                 <span class="n">plot_masked_fft</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Use unmasked fft area and plot the masked fft:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">image_ifft</span> <span class="o">=</span> <span class="n">get_masked_ifft</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">mask_coords</span><span class="p">,</span> <span class="n">plot_masked_fft</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">keep_masked_area</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">image_ifft</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">get_masked_ifft</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">image</span><span class="p">,</span> <span class="n">mask_coords</span><span class="p">,</span> <span class="n">plot_masked_fft</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">keep_masked_area</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">image_ifft</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>If the input image is already a Fourier transform:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fft_image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">shift</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">image_ifft</span> <span class="o">=</span> <span class="n">get_masked_ifft</span><span class="p">(</span><span class="n">fft_image</span><span class="p">,</span> <span class="n">mask_coords</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image_ifft</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">get_masked_ifft</span><span class="p">(</span><span class="n">fft_image</span><span class="p">,</span> <span class="n">mask_coords</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">image_space</span><span class="o">=</span><span class="s1">&#39;fourier&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">image_ifft</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
@@ -3266,14 +3532,13 @@ column, as fraction of the distance to the nearest neighbour.</p></li>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="kn">import</span> <span class="p">(</span>
 <span class="gp">... </span>    <span class="n">get_simple_cubic_sublattice_positions_on_vac</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_processing</span> <span class="kn">import</span> <span class="p">(</span>
-<span class="gp">... </span>    <span class="n">toggle_atom_refine_position_automatically</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.api</span> <span class="k">as</span> <span class="nn">tml</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span> <span class="o">=</span> <span class="n">get_simple_cubic_sublattice_positions_on_vac</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span><span class="o">.</span><span class="n">find_nearest_neighbors</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">min_cut_off_percent</span> <span class="o">=</span> <span class="mf">0.75</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">max_cut_off_percent</span> <span class="o">=</span> <span class="mf">1.25</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">false_list_sublattice</span> <span class="o">=</span>  <span class="n">toggle_atom_refine_position_automatically</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">false_list_sublattice</span> <span class="o">=</span>  <span class="n">tml</span><span class="o">.</span><span class="n">toggle_atom_refine_position_automatically</span><span class="p">(</span>
 <span class="gp">... </span>        <span class="n">sublattice</span><span class="p">,</span> <span class="n">min_cut_off_percent</span><span class="p">,</span> <span class="n">max_cut_off_percent</span><span class="p">,</span>
 <span class="gp">... </span>        <span class="n">range_type</span><span class="o">=</span><span class="s1">&#39;internal&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;mode&#39;</span><span class="p">,</span> <span class="n">percent_to_nn</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">false_list_sublattice</span><span class="p">)</span> <span class="c1"># check how many atoms will not be refined</span>
@@ -3309,10 +3574,10 @@ image.</p></li>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.signal_processing</span> <span class="k">as</span> <span class="nn">tmlsig</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.api</span> <span class="k">as</span> <span class="nn">tml</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.example_data</span> <span class="kn">import</span> <span class="n">load_Se_implanted_MoS2_data</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">image</span> <span class="o">=</span> <span class="n">load_Se_implanted_MoS2_data</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">tmlsig</span><span class="o">.</span><span class="n">visualise_dg_filter</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tml</span><span class="o">.</span><span class="n">visualise_dg_filter</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -3438,13 +3703,12 @@ image crop will be taken.</p></li>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">atomap.api</span> <span class="k">as</span> <span class="nn">am</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.signal_plotting</span> <span class="kn">import</span> <span class="p">(</span>
-<span class="gp">... </span>    <span class="n">compare_images_line_profile_two_images</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.api</span> <span class="k">as</span> <span class="nn">tml</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">imageA</span> <span class="o">=</span> <span class="n">am</span><span class="o">.</span><span class="n">dummy_data</span><span class="o">.</span><span class="n">get_simple_cubic_signal</span><span class="p">(</span><span class="n">image_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">imageB</span> <span class="o">=</span> <span class="n">am</span><span class="o">.</span><span class="n">dummy_data</span><span class="o">.</span><span class="n">get_simple_cubic_signal</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># line_profile_positions = am.add_atoms_with_gui(imageA)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># line_profile_positions = tml.choose_points_on_image(imageA)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">line_profile_positions</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">81.58</span><span class="p">,</span> <span class="mf">69.70</span><span class="p">],</span> <span class="p">[</span><span class="mf">193.10</span><span class="p">,</span> <span class="mf">184.08</span><span class="p">]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">compare_images_line_profile_two_images</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tml</span><span class="o">.</span><span class="n">compare_images_line_profile_two_images</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">imageA</span><span class="p">,</span> <span class="n">imageB</span><span class="p">,</span> <span class="n">line_profile_positions</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="mf">0.012</span><span class="p">,</span> <span class="n">crop_offset</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
 </pre></div>
@@ -3452,13 +3716,13 @@ image crop will be taken.</p></li>
 <p>To use the new skimage functionality try the <cite>reduce_func</cite> parameter:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">reduce_func</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span> <span class="c1"># can be any ufunc!</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">compare_images_line_profile_two_images</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tml</span><span class="o">.</span><span class="n">compare_images_line_profile_two_images</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">imageA</span><span class="p">,</span> <span class="n">imageB</span><span class="p">,</span> <span class="n">line_profile_positions</span><span class="p">,</span> <span class="n">reduce_func</span><span class="o">=</span><span class="n">reduce_func</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="mf">0.012</span><span class="p">,</span> <span class="n">crop_offset</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">reduce_func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">compare_images_line_profile_two_images</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tml</span><span class="o">.</span><span class="n">compare_images_line_profile_two_images</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">imageA</span><span class="p">,</span> <span class="n">imageB</span><span class="p">,</span> <span class="n">line_profile_positions</span><span class="p">,</span> <span class="n">reduce_func</span><span class="o">=</span><span class="n">reduce_func</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="mf">0.012</span><span class="p">,</span> <span class="n">crop_offset</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
 </pre></div>
@@ -3469,12 +3733,17 @@ image crop will be taken.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">imageA</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">imageA</span><span class="o">.</span><span class="n">data</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">imageA</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">imageB</span> <span class="o">=</span> <span class="n">imageA</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">line_profile_positions</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">301.42</span><span class="p">,</span> <span class="mf">318.9</span><span class="p">],</span> <span class="p">[</span><span class="mf">535.92</span><span class="p">,</span> <span class="mf">500.82</span><span class="p">]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">compare_images_line_profile_two_images</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tml</span><span class="o">.</span><span class="n">compare_images_line_profile_two_images</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">imageA</span><span class="p">,</span> <span class="n">imageB</span><span class="p">,</span> <span class="n">line_profile_positions</span><span class="p">,</span> <span class="n">reduce_func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">imageB_intensity_offset</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
+
+<dl class="py function">
+<dt id="temul.signal_plotting.create_rgb_array">
+<code class="sig-prename descclassname">temul.signal_plotting.</code><code class="sig-name descname">create_rgb_array</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#temul.signal_plotting.create_rgb_array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt id="temul.signal_plotting.expand_palette">
@@ -3510,6 +3779,16 @@ each color that you want.</p>
 function will add a border buffer (<cite>crop_offset</cite>) which can be used for
 cropping of regions in a plot.
 See <cite>compare_images_line_profile_two_images</cite> for use-case</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="temul.signal_plotting.get_polar_2d_colorwheel_color_list">
+<code class="sig-prename descclassname">temul.signal_plotting.</code><code class="sig-name descname">get_polar_2d_colorwheel_color_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">v</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.signal_plotting.get_polar_2d_colorwheel_color_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>make the color_list from the HSV/RGB colorwheel.
+This color_list will be the same length as u and as v.
+It works by indexing the angle of the RGB (hue in HSV) array,
+then indexing the magnitude (r) in the RGB (value in HSV) array,
+leaving only a single RGB color for each vector.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -3609,7 +3888,7 @@ See Hyperspy documentation for information on file writing extensions
 available: <a class="reference external" href="http://hyperspy.org/hyperspy-doc/current/user_guide/io.html">http://hyperspy.org/hyperspy-doc/current/user_guide/io.html</a></p></li>
 <li><p><strong>top_level_directory</strong> (<em>string</em>) – The top-level directory in which the emd files exist. The default
 glob_search will search this directory and all subdirectories.</p></li>
-<li><p><strong>glob_search</strong> (string, default “<a href="#id4"><span class="problematic" id="id5">**</span></a>/<a href="#id6"><span class="problematic" id="id7">*</span></a>”) – Glob search string, see glob for more details:
+<li><p><strong>glob_search</strong> (string, default “<a href="#id5"><span class="problematic" id="id6">**</span></a>/<a href="#id7"><span class="problematic" id="id8">*</span></a>”) – Glob search string, see glob for more details:
 <a class="reference external" href="https://docs.python.org/2/library/glob.html">https://docs.python.org/2/library/glob.html</a>
 Default will search this directory and all subdirectories.</p></li>
 <li><p><strong>overwrite</strong> (<em>Bool</em><em>, </em><em>default True</em>) – Overwrite if the extension_to_save file already exists.</p></li>
@@ -3890,13 +4169,28 @@ are shifted in the film.</p>
 </div>
 <p>You can they use the plot_polarisation_vectors function to visualise:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.polarisation</span> <span class="kn">import</span> <span class="n">plot_polarisation_vectors</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plot_polarisation_vectors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">sublatticeA</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">unit_vector</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plot_style</span><span class="o">=</span><span class="s2">&quot;vector&quot;</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">overlay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;yellow&#39;</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">degrees</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">monitor_dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
+
+<dl class="py function">
+<dt id="temul.dummy_data.get_polarisation_dummy_dataset_bora">
+<code class="sig-prename descclassname">temul.dummy_data.</code><code class="sig-name descname">get_polarisation_dummy_dataset_bora</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image_noise</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.dummy_data.get_polarisation_dummy_dataset_bora" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="temul.dummy_data.get_polarised_single_sublattice">
+<code class="sig-prename descclassname">temul.dummy_data.</code><code class="sig-name descname">get_polarised_single_sublattice</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image_noise</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.dummy_data.get_polarised_single_sublattice" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="temul.dummy_data.get_polarised_single_sublattice_rotated">
+<code class="sig-prename descclassname">temul.dummy_data.</code><code class="sig-name descname">get_polarised_single_sublattice_rotated</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image_noise</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">rotation</span><span class="o">=</span><span class="default_value">45</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.dummy_data.get_polarised_single_sublattice_rotated" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt id="temul.dummy_data.get_simple_cubic_signal">
@@ -3977,6 +4271,11 @@ the lower number (2 below) will be set, see numpy.random.randint for info.</p>
 <dd><p>Create a simple cubic structure similar to <cite>get_simple_cubic_sublattice</cite>
 above but the atom positions are also overlaid on the vacancy positions.</p>
 </dd></dl>
+
+<dl class="py function">
+<dt id="temul.dummy_data.make_polarised_sublattice_bora_return">
+<code class="sig-prename descclassname">temul.dummy_data.</code><code class="sig-name descname">make_polarised_sublattice_bora_return</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image_noise</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.dummy_data.make_polarised_sublattice_bora_return" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt id="temul.dummy_data.polarisation_colorwheel_test_dataset">
@@ -4105,6 +4404,13 @@ the colormap should be the same as the edges, such as colorcet’s CET_C4s.</p>
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="dg_visualiser_tutorial.html" class="btn btn-neutral float-left" title="Interactive Image Filtering" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>

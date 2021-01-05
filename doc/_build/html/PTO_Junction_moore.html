@@ -35,7 +35,9 @@
 
     
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Masked FFT and iFFT" href="masked_fft_tutorial.html" />
+    <link rel="prev" title="Calculation of Atom Plane Curvature" href="PTO_supercrystal_hadjimichael.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -85,11 +87,26 @@
             
             
               <p class="caption"><span class="caption-text">Contents</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="using_temul.html">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Plotting Polarisation and Movement Vectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflows.html">Analysis Workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Finding Polarisation Vectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html#plotting-polarisation-and-movement-vectors">Plotting Polarisation and Movement Vectors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="structure_map_tutorial.html">Plot Lattice Structure Maps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PTO_supercrystal_hadjimichael.html">Calculation of Atom Plane Curvature</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Analysis of PTO Domain Wall Junction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#import-the-modules-and-load-the-data">Import the Modules and Load the Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#set-up-the-parameters">Set up the Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#create-the-lattice-strain-map">Create the Lattice Strain Map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#create-the-lattice-rotation-map">Create the Lattice Rotation Map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">Create the Lattice Rotation Map</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="masked_fft_tutorial.html">Masked FFT and iFFT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="line_profile_tutorial.html">Line Intensity Profile Comparisons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dg_visualiser_tutorial.html">Interactive Image Filtering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_doc.html">API documentation</a></li>
 </ul>
 
             
@@ -160,7 +177,8 @@
 <p>This tutorial follows the python scripts and jupyter notebooks found in the
 “TEMUL/publication_examples/PTO_Junction_moore” folder in the
 <a class="reference external" href="https://github.com/PinkShnack/TEMUL">TEMUL repository</a>. The data and scripts
-used below can be downloaded from there.</p>
+used below can be downloaded from there. Check out the publication:
+K. Moore <em>et al</em> <a class="reference external" href="https://www.nature.com/articles/s42005-020-00488-x">Highly charged 180 degree head-to-head domain walls in lead titanate, Nature Communications Physics 2020</a>.</p>
 <div class="section" id="import-the-modules-and-load-the-data">
 <h2>Import the Modules and Load the Data<a class="headerlink" href="#import-the-modules-and-load-the-data" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.polarisation</span> <span class="k">as</span> <span class="nn">tmlp</span>
@@ -288,6 +306,15 @@ For more details on this function, see <a class="reference internal" href="line_
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="masked_fft_tutorial.html" class="btn btn-neutral float-right" title="Masked FFT and iFFT" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="PTO_supercrystal_hadjimichael.html" class="btn btn-neutral float-left" title="Calculation of Atom Plane Curvature" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>

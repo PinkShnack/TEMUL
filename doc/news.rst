@@ -6,10 +6,28 @@
 News
 ----
 
+.. new version additions:
+    Corrected atom_deviation_from_straight_line_fit function.
+    Added documentation for how to find the polarisation vectors
+    Added "code_tutorials" ipynb examples
+    Corrected plot_polarisation_vectors vector quiver key
+    Created "polar_colorwheel" `plot_style` for plot_polarisation_vectors by
+        using a HSV to RGB 2D colorwheel and mapping the angles and magnitudes to
+        these values. Used code from PixStem for colorwheel visualisation. 
+    Fixed norm and cmap scaling for the colorbar for "contour", "colorwheel" and
+        "colormap" plot_styles. Now they scale nicely and ticks can be input to all three.
+    Added invert_y_axis param for plot_polarisation_vectors function
+    plot_polarisation_vectors function now returns the Axes object
+    Added workflows webpage, .py and .ipynb files
+    Added vector correction functions
+    Added marios PTO paper links and notebook
+    Added Kalani PTO paper branch
+    
+
 **03/11/2020: Version 0.1.2 released**
 
 This version contains minor changes from the 0.1.1 release. It removes pyCifRW
-as a dependency, due to PyCifRW requiring Microsoft Visual Studio.
+as a dependency.
 
 
 **02/11/2020: Version 0.1.1 released**

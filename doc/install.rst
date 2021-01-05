@@ -10,10 +10,9 @@ The TEMUL Toolkit can be installed easily with PIP (those using Windows may need
 
 :bash:`$ pip install temul-toolkit`
 
-Then, it can be imported with the name "temul". For example, to import the 
-:python:`polarisation.py` module, use:
+Then, it can be imported with the name "temul". For example, to import most of the temul functionality use:
 
-:python:`import temul.polarisation as tmlp`
+:python:`import temul.api as tml`
 
 Matplotlib 3.3 currently has compatability issues with iPython, see below for the fix.
  

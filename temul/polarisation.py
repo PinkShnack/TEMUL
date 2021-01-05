@@ -2,15 +2,15 @@
 import hyperspy
 import numpy as np
 import scipy
-from scipy.optimize import curve_fit
-from scipy.misc import derivative
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 from matplotlib.cm import ScalarMappable
 from decimal import Decimal
 import colorcet as cc
 from matplotlib_scalebar.scalebar import ScaleBar
-from temul.signal_processing import sine_wave_function_strain_gradient
+from temul.signal_plotting import (
+    get_polar_2d_colorwheel_color_list,
+    _make_color_wheel)
 
 
 # good to have an example of getting atom_positions_A and B from sublattice
@@ -76,16 +76,87 @@ def find_polarisation_vectors(atom_positions_A, atom_positions_B,
     return(u, v)
 
 
+def corrected_vectors_via_average(u, v):
+    u, v = np.asarray(u), np.asarray(v)
+    u_av_corr = u - np.mean(u)
+    v_av_corr = v - np.mean(v)
+    return(u_av_corr, v_av_corr)
+
+
+def _calc_2D_center_of_mass(u, v):
+    u, v = np.asarray(u), np.asarray(v)
+    r = (u**2 + v**2)**0.5
+    u_com = np.sum(u*r)/np.sum(r)
+    v_com = np.sum(v*r)/np.sum(r)
+    return(u_com, v_com)
+
+
+def corrected_vectors_via_center_of_mass(u, v):
+    u_com, v_com = _calc_2D_center_of_mass(u, v)
+    u_com_corr = u - u_com
+    v_com_corr = v - v_com
+    return(u_com_corr, v_com_corr)
+
+
+def correct_off_tilt_vectors(u, v, method="com"):
+    """ Useful if your image is off-tilt (electron beam is not perfectly
+    parallel to the atomic columns).
+
+    Parameters
+    ----------
+    u, v : 1D numpy arrays
+        horizontal and vertical components of the (polarisation) vectors.
+    method : string, default "com"
+        method used to correct the vector components. "com" is via the center
+        of mass of the vectors. "av" is via the average vector.
+
+    Returns
+    -------
+    u_corr, v_corr : corrected 1D numpy arrays
+
+    Examples
+    --------
+    >>> from temul.polarisation import correct_off_tilt_vectors
+    >>> from temul.dummy_data import get_polarisation_dummy_dataset
+    >>> atom_lattice = get_polarisation_dummy_dataset()
+    >>> sublatticeA = atom_lattice.sublattice_list[0]
+    >>> sublatticeB = atom_lattice.sublattice_list[1]
+    >>> sublatticeA.construct_zone_axes()
+    >>> za0, za1 = sublatticeA.zones_axis_average_distances[0:2]
+    >>> s_p = sublatticeA.get_polarization_from_second_sublattice(
+    ...     za0, za1, sublatticeB, color='blue')
+    >>> vector_list = s_p.metadata.vector_list
+    >>> x, y = [i[0] for i in vector_list], [i[1] for i in vector_list]
+    >>> u, v = [i[2] for i in vector_list], [i[3] for i in vector_list]
+
+    Correct for some tilt using the correct_off_tilt_vectors function:
+
+    >>> u_com, v_com = correct_off_tilt_vectors(u, v, method="com")
+
+    Use the average vector instead: (be careful that you're not just applying
+    this on previously corrected data!)
+
+    >>> u_av, v_av = correct_off_tilt_vectors(u, v, method="av")
+
+    """
+    if "com" in method.lower():
+        u_corr, v_corr = corrected_vectors_via_center_of_mass(u, v)
+    if "av" in method.lower():
+        u_corr, v_corr = corrected_vectors_via_average(u, v)
+    return(u_corr, v_corr)
+
+
 def plot_polarisation_vectors(
         x, y, u, v, image, sampling=None, units='pix',
-        plot_style='vector', vector_rep='magnitude',
-        overlay=True, unit_vector=False, degrees=False, angle_offset=None,
-        save='polarisation_image', title="",
-        color='yellow', cmap=None, alpha=1.0,
-        monitor_dpi=96, pivot='middle', angles='xy',
+        plot_style='vector', overlay=True, unit_vector=False,
+        vector_rep='magnitude', degrees=False, angle_offset=None,
+        save='polarisation_image', title="", color='yellow',
+        cmap=None, alpha=1.0, image_cmap='gray', monitor_dpi=96,
+        no_axis_info=True, invert_y_axis=True, ticks=None, scalebar=False,
+        antialiased=False, levels=20, remove_vectors=False,
+        quiver_units='width', pivot='middle', angles='xy',
         scale_units='xy', scale=None, headwidth=3.0, headlength=5.0,
-        headaxislength=4.5, no_axis_info=True, ticks=None, scalebar=False,
-        antialiased=False, levels=20, remove_vectors=False):
+        headaxislength=4.5, width=None, minshaft=1, minlength=1):
     '''
     Plot the polarisation vectors. These can be found with
     `find_polarisation_vectors()` or Atomap's
@@ -96,27 +167,32 @@ def plot_polarisation_vectors(
     See matplotlib's quiver function for more details.
 
     x, y : list or 1D NumPy array
-        xy coordinates on the image
+        xy coordinates of the vectors on the image.
     u, v : list or 1D NumPy array
-        uv vector components
+        uv vector components.
     image : 2D NumPy array
+        image is used to fit the image. Will flip the y axis, as used for
+        electron microscopy data (top left point is (0, 0) coordinate).
     sampling : float, default None
-        Pixel sampling of the image for calibration.
+        Pixel sampling (pixel size) of the image for calibration.
     units : string, default "pix"
         Units used to display the magnitude of the vectors.
     plot_style : string, default "vector"
-        Options are "vector", "colormap", "contour", "colorwheel". Note that
-        "colorwheel" will automatically plot the colorbar as an angle.
-    vector_rep : str, default "magnitude"
-        How the vectors are represented. This can be either their `magnitude`
-        or `angle`. One may want to use `angle` when plotting a contour map,
-        i.e., view the contours in terms of angles which can be useful for
-        visualising regions of different polarisation.
+        Options are "vector", "colormap", "contour", "colorwheel",
+        "polar_colorwheel". Note that "colorwheel" will automatically plot the
+        colorbar as an angle. Also note that "polar_colorwheel" will
+        automatically generate a 2D RGB (HSV) list of colors that match with
+        the vector components (uv).
     overlay : Bool, default True
         If set to True, the `image` will be plotting behind the arrows
     unit_vector : Bool, default False
         Change the vectors magnitude to unit vectors for plotting purposes.
         Magnitude will still be displayed correctly for colormaps etc.
+    vector_rep : str, default "magnitude"
+        How the vectors are represented. This can be either their `magnitude`
+        or `angle`. One may want to use `angle` when plotting a contour map,
+        i.e., view the contours in terms of angles which can be useful for
+        visualising regions of different polarisation.
     degrees : Bool, default False
         Change between degrees and radian. Default is radian.
         If `plot_style="colorwheel"`, then setting `degrees=True` will convert
@@ -127,23 +203,30 @@ def plot_polarisation_vectors(
         when you want to offset the angle of the atom planes relative to the
         polarisation.
     save : string, default "polarisation_image"
-        If set to `save=None`, the array will not be saved.
+        If set to `save=None`, the image will not be saved.
     title : string, default ""
         Title of the plot.
     color : string, default "r"
         Color of the arrows when `plot_style="vector" or "contour".
     cmap : matplotlib colormap, default "viridis"
+        Matplotlib cmap used for the vector arrows.
     alpha : float, default 1.0
         Transparency of the matplotlib `cmap`. For `plot_style="colormap"` and
         `plot_style="colorwheel"`, this alpha applies to the vector arrows.
         For `plot_style="contour"` this alpha applies to the tricontourf map.
+    image_cmap : matplotlib colormap, default 'gray'
+        Matplotlib cmap that will be used for the overlay image.
     monitor_dpi : int, default 96
         The DPI of the monitor, generally 96 pixels. Used to scale the image
-        so that large images render correctly. Use a smaller value or
-        `monitor_dpi=None` to enlarge too-small images.
+        so that large images render correctly. Use a smaller value to enlarge
+        too-small images. `monitor_dpi=None` will ignore this param.
     no_axis_info :  Bool, default True
         This will remove the x and y axis labels and ticks from the plot if set
         to True.
+    invert_y_axis : Bool, default True
+        If set to true, this will flip the y axis, effectively setting the top
+        left corner of the image as the (0, 0) origin, as in scanning electron
+        microscopy images.
     ticks : colorbar ticks, default None
         None or list of ticks or Locator If None, ticks are determined
         automatically from the input.
@@ -160,7 +243,16 @@ def plot_polarisation_vectors(
     remove_vectors : Bool, default False
         Applies only to `plot_style="contour"`. If set to True, do not plot
         the vector arrows.
-    See matplotlib's quiver function for the remaining parameters.
+    quiver_units : string, default 'width'
+        The units parameter from the matplotlib quiver function, not to be
+        confused with the `units` parameter above for the image units.
+    ax.quiver parameters
+        See matplotlib's quiver function for the remaining parameters.
+
+    Returns
+    -------
+    ax : Axes
+        Matplotlib Axes object
 
     Examples
     --------
@@ -179,7 +271,7 @@ def plot_polarisation_vectors(
 
     vector plot with red arrows:
 
-    >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    >>> ax = plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           unit_vector=False, save=None,
     ...                           plot_style='vector', color='r',
     ...                           overlay=False, title='Vector Arrows',
@@ -187,21 +279,21 @@ def plot_polarisation_vectors(
 
     vector plot with red arrows overlaid on the image:
 
-    >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    >>> ax = plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           unit_vector=False, save=None,
     ...                           plot_style='vector', color='r',
     ...                           overlay=True, monitor_dpi=50)
 
     vector plot with colormap viridis:
 
-    >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    >>> ax = plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           unit_vector=False, save=None,
     ...                           plot_style='colormap', monitor_dpi=50,
     ...                           overlay=False, cmap='viridis')
 
     vector plot with colormap viridis, with `vector_rep="angle"`:
 
-    >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    >>> ax = plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           unit_vector=False, save=None,
     ...                           plot_style='colormap', monitor_dpi=50,
     ...                           overlay=False, cmap='cet_colorwheel',
@@ -209,7 +301,7 @@ def plot_polarisation_vectors(
 
     colormap arrows with sampling applied and with scalebar:
 
-    >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    >>> ax = plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           sampling=3.0321, units='pm', monitor_dpi=50,
     ...                           unit_vector=False, plot_style='colormap',
     ...                           overlay=True, save=None, cmap='viridis',
@@ -217,22 +309,22 @@ def plot_polarisation_vectors(
 
     vector plot with colormap viridis and unit vectors:
 
-    >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    >>> ax = plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           unit_vector=True, save=None, monitor_dpi=50,
     ...                           plot_style='colormap', color='r',
     ...                           overlay=False, cmap='viridis')
 
     Change the vectors to unit vectors on a tricontourf map:
 
-    >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    >>> ax = plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           unit_vector=True, plot_style='contour',
     ...                           overlay=False, pivot='middle', save=None,
-    ...                           color='darkgray', cmap='viridis',
+    ...                           color='darkgray', cmap='plasma',
     ...                           monitor_dpi=50)
 
     Plot a partly transparent angle tricontourf map with vector arrows:
 
-    >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    >>> ax = plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           unit_vector=False, plot_style='contour',
     ...                           overlay=True, pivot='middle', save=None,
     ...                           color='red', cmap='cet_colorwheel',
@@ -243,7 +335,7 @@ def plot_polarisation_vectors(
 
     Plot a partly transparent angle tricontourf map with no vector arrows:
 
-    >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    >>> ax = plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           unit_vector=True, plot_style='contour',
     ...                           overlay=True, pivot='middle', save=None,
     ...                           cmap='cet_colorwheel',
@@ -254,18 +346,26 @@ def plot_polarisation_vectors(
     "colorwheel" plot of the vectors, useful for vortexes:
 
     >>> import colorcet as cc
-    >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    >>> ax = plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           unit_vector=True, plot_style="colorwheel",
     ...                           vector_rep="angle",
     ...                           overlay=False, cmap=cc.cm.colorwheel,
-    ...                           degrees=True, save=None, monitor_dpi=50)
+    ...                           degrees=True, save=None, monitor_dpi=50,
+    ...                           ticks=[180, 90, 0, -90, -180])
+
+    "polar_colorwheel" plot showing a 2D polar color wheel:
+
+    >>> ax = plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    ...                           plot_style="polar_colorwheel",
+    ...                           unit_vector=False, overlay=False,
+    ...                           save=None, monitor_dpi=50)
 
     Plot with a custom scalebar, for example here we need it to be dark, see
     matplotlib-scalebar for more custom features.
 
     >>> scbar_dict = {"dx": 3.0321, "units": "pm", "location": "lower left",
     ...               "box_alpha":0.0, "color": "black", "scale_loc": "top"}
-    >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    >>> ax = plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           sampling=3.0321, units='pm', monitor_dpi=50,
     ...                           unit_vector=False, plot_style='colormap',
     ...                           overlay=False, save=None, cmap='viridis',
@@ -280,7 +380,7 @@ def plot_polarisation_vectors(
     >>> expanded_zest = tmlplot.expand_palette(zest, [1,2,2,2,1])
     >>> custom_cmap, _ = from_levels_and_colors(
     ...     levels=range(9), colors=tmlplot.rgb_to_dec(expanded_zest))
-    >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    >>> ax = plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           unit_vector=False, plot_style='contour',
     ...                           overlay=False, pivot='middle', save=None,
     ...                           cmap=custom_cmap, levels=9, monitor_dpi=50,
@@ -305,6 +405,7 @@ def plot_polarisation_vectors(
     if sampling is not None:
         u, v = u * sampling, v * sampling
 
+    # get the magnitude or angle representation
     if vector_rep == "magnitude":
         vector_rep_val = get_vector_magnitudes(u, v)
     elif vector_rep == "angle":
@@ -313,31 +414,46 @@ def plot_polarisation_vectors(
                                             angle_offset=angle_offset)
 
     vector_label = angle_label(
-            vector_rep=vector_rep, units=units, degrees=degrees)
+        vector_rep=vector_rep, units=units, degrees=degrees)
 
+    if plot_style == "polar_colorwheel":
+        color_list = get_polar_2d_colorwheel_color_list(u, -v)
+
+    # change all vector magnitudes to the same size
     if unit_vector:
-        # Normalise the data for uniform arrow size
         u_norm = u / np.sqrt(u ** 2.0 + v ** 2.0)
         v_norm = v / np.sqrt(u ** 2.0 + v ** 2.0)
         u = u_norm
         v = v_norm
 
-    if monitor_dpi is not None:
-        _, ax = plt.subplots(figsize=[image.shape[1] / monitor_dpi,
-                                      image.shape[0] / monitor_dpi])
-    else:
-        _, ax = plt.subplots()
+    # setting up norm and cmap for colorbar scalar mappable
+    if vector_rep == "angle":
+        if degrees:
+            min_val, max_val = -180, 180 + 0.0001  # fix display issues
+        elif not degrees:
+            min_val, max_val = -np.pi, np.pi
+    elif vector_rep == "magnitude":
+        min_val = np.min(vector_rep_val)
+        max_val = np.max(vector_rep_val) + 0.00000001
+    norm = colors.Normalize(vmin=min_val, vmax=max_val)
 
+    if monitor_dpi is not None:
+        fig, ax = plt.subplots(figsize=[image.shape[1] / monitor_dpi,
+                                        image.shape[0] / monitor_dpi])
+    else:
+        fig, ax = plt.subplots()
     ax.set_title(title, loc='left', fontsize=20)
+
     # plot_style options
     if plot_style == "vector":
         Q = ax.quiver(
-            x, y, u, v, color=color, pivot=pivot, angles=angles,
-            scale_units=scale_units, scale=scale, headwidth=headwidth,
-            headlength=headlength, headaxislength=headaxislength)
-        length = np.max(np.hypot(u, v)) / 2
-        ax.quiverkey(Q, 0.9, 1.025, length,
-                     label='{:.0E} {}'.format(Decimal(length), units),
+            x, y, u, v, units=quiver_units, color=color, pivot=pivot,
+            angles=angles, scale_units=scale_units, scale=scale,
+            headwidth=headwidth, headlength=headlength, minshaft=minshaft,
+            headaxislength=headaxislength, width=width, minlength=minlength)
+        length = np.max(np.hypot(u, v))
+        ax.quiverkey(Q, 0.8, 1.025, length,
+                     label='{:.2E} {}'.format(Decimal(length), units),
                      labelpos='E', coordinates='axes')
 
     elif plot_style == "colormap":
@@ -345,17 +461,19 @@ def plot_polarisation_vectors(
         if cmap is None:
             cmap = 'viridis'
         ax.quiver(
-            x, y, u, v, vector_rep_val, color=color, cmap=cmap,
-            pivot=pivot, angles=angles, scale_units=scale_units,
-            scale=scale, headwidth=headwidth, alpha=alpha,
-            headlength=headlength, headaxislength=headaxislength)
+            x, y, u, v, vector_rep_val, color=color, cmap=cmap, norm=norm,
+            units=quiver_units, pivot=pivot, angles=angles,
+            scale_units=scale_units, scale=scale, headwidth=headwidth,
+            alpha=alpha, headlength=headlength, headaxislength=headaxislength,
+            width=width, minshaft=minshaft, minlength=minlength)
 
-        norm = colors.Normalize(vmin=np.min(vector_rep_val),
-                                vmax=np.max(vector_rep_val))
-        sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
-        sm.set_array([])
-        cbar = plt.colorbar(mappable=sm)
-        cbar.ax.set_ylabel(vector_label)
+        # norm = colors.Normalize(vmin=min_val, vmax=max_val)
+        # sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
+        # sm.set_array([])
+        # cbar = plt.colorbar(mappable=sm, fraction=0.046, pad=0.04,
+        #                     drawedges=False)
+        # cbar.set_ticks(ticks)
+        # cbar.ax.set_ylabel(vector_label)
 
     elif plot_style == "colorwheel":
 
@@ -366,57 +484,62 @@ def plot_polarisation_vectors(
             cmap = cc.cm.colorwheel
 
         Q = ax.quiver(
-            x, y, u, v, vector_rep_val, cmap=cmap, alpha=alpha,
+            x, y, u, v, vector_rep_val, cmap=cmap, norm=norm, alpha=alpha,
             pivot=pivot, angles=angles, scale_units=scale_units,
-            scale=scale, headwidth=headwidth,
-            headlength=headlength, headaxislength=headaxislength)
-        plt.colorbar(Q, label=vector_label)
+            scale=scale, headwidth=headwidth, headlength=headlength,
+            headaxislength=headaxislength, units=quiver_units, width=width,
+            minshaft=minshaft, minlength=minlength)
 
     elif plot_style == "contour":
 
         if cmap is None:
             cmap = 'viridis'
 
-        if vector_rep == "angle":
-            if degrees:
-                min_angle, max_angle = -180, 180 + 0.0001  # fixes display issues
-            elif not degrees:
-                min_angle, max_angle = -np.pi, np.pi
-
         if isinstance(levels, list):
             levels_list = levels
         elif isinstance(levels, int):
             if vector_rep == "angle":
-                levels_list = np.linspace(min_angle, max_angle, levels)
+                levels_list = np.linspace(min_val, max_val, levels)
             elif vector_rep == "magnitude":
-                levels_list = np.linspace(np.min(vector_rep_val),
-                                          np.max(vector_rep_val)+0.00001,
-                                          levels)
+                levels_list = np.linspace(min_val, max_val, levels)
 
-        contour_map = plt.tricontourf(x, y, vector_rep_val, cmap=cmap,
-                                      alpha=alpha, antialiased=antialiased,
-                                      levels=levels_list)
+        plt.tricontourf(
+            x, y, vector_rep_val, cmap=cmap, norm=norm, alpha=alpha,
+            antialiased=antialiased, levels=levels_list)
 
         if not remove_vectors:
             ax.quiver(
-                x, y, u, v, color=color, pivot=pivot,
+                x, y, u, v, color=color, pivot=pivot, units=quiver_units,
                 angles=angles, scale_units=scale_units,
-                scale=scale, headwidth=headwidth,
-                headlength=headlength, headaxislength=headaxislength)
+                scale=scale, headwidth=headwidth, width=width,
+                headlength=headlength, headaxislength=headaxislength,
+                minshaft=minshaft, minlength=minlength)
 
-    ax.set(aspect='equal')
-    ax.set_xlim(0, image.shape[1])
-    ax.set_ylim(image.shape[0], 0)
+        # cbar = plt.colorbar(mappable=contour_map, fraction=0.046, pad=0.04,
+        #                     drawedges=False)
+        # cbar.ax.tick_params(labelsize=14)
+        # cbar.set_ticks(ticks)
+        # cbar.ax.set_ylabel(vector_label, fontsize=14)
 
-    if plot_style == 'contour':
-        cbar = plt.colorbar(mappable=contour_map, fraction=0.046, pad=0.04,
-                            drawedges=False)
-        cbar.ax.tick_params(labelsize=14)
-        cbar.set_ticks(ticks)
-        cbar.ax.set_ylabel(vector_label, fontsize=14)
+    elif plot_style == "polar_colorwheel":
+
+        ax.quiver(
+            x, y, u, v, color=color_list, pivot=pivot, units=quiver_units,
+            angles=angles, scale_units=scale_units, scale=scale,
+            headwidth=headwidth, width=width, headlength=headlength,
+            headaxislength=headaxislength, minshaft=minshaft,
+            minlength=minlength)
+
+    else:
+        raise NameError("The plot_style you have chosen is not available.")
+
+    if invert_y_axis:
+        ax.set(aspect='equal')
+        ax.set_xlim(0, image.shape[1])
+        ax.set_ylim(image.shape[0], 0)
 
     if overlay:
-        plt.imshow(image)
+        plt.imshow(image, cmap=image_cmap)
 
     if no_axis_info:
         plt.gca().axes.get_xaxis().set_visible(False)
@@ -430,11 +553,28 @@ def plot_polarisation_vectors(
         scbar = ScaleBar(**scalebar)
         plt.gca().add_artist(scbar)
 
+    # colorbars
+    if (plot_style == "colormap" or plot_style == "colorwheel" or
+            plot_style == "contour"):
+
+        sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
+        sm.set_array([])
+        cbar = plt.colorbar(mappable=sm, fraction=0.046, pad=0.04,
+                            drawedges=False)
+        cbar.set_ticks(ticks)
+        cbar.ax.set_ylabel(vector_label)
+
+    elif plot_style == "polar_colorwheel":
+        ax2 = fig.add_subplot(444)
+        _make_color_wheel(ax2, rotation=None)
+        ax2.set_axis_off()
+
     # plt.tight_layout()
-    if save is not None:
+    if isinstance(save, str):
         plt.savefig(fname=save + '_' + plot_style + '.png',
                     transparent=True, frameon=False, bbox_inches='tight',
                     pad_inches=None, dpi=300, labels=False)
+    return ax
 
 
 def get_angles_from_uv(u, v, degrees=False, angle_offset=None):
@@ -562,11 +702,15 @@ def delete_atom_planes_from_sublattice(sublattice,
     >>> sublatticeA = atom_lattice.sublattice_list[0]
     >>> sublatticeA.construct_zone_axes()
     >>> zone_vec_list = sublatticeA.zones_axis_average_distances[0:2]
-    >>> sublatticeA.get_all_atom_planes_by_zone_vector(zone_vec_list).plot()
+    >>> zones01_A = sublatticeA.get_all_atom_planes_by_zone_vector(
+    ...     zone_vec_list)
+    >>> # zones01_A.plot()
     >>> delete_atom_planes_from_sublattice(
     ...         sublatticeA, zone_axis_index=0,
     ...         divisible_by=3, offset_from_zero=1)
-    >>> sublatticeA.get_all_atom_planes_by_zone_vector(zone_vec_list).plot()
+    >>> zones01_B = sublatticeA.get_all_atom_planes_by_zone_vector(
+    ...     zone_vec_list)
+    >>> # zones01_A.plot()
 
     '''
     sublattice.construct_zone_axes(atom_plane_tolerance=atom_plane_tolerance)
@@ -606,14 +750,302 @@ def delete_atom_planes_from_sublattice(sublattice,
         del sublattice.atom_planes_by_zone_vector[zone_vec_needed][i]
 
 
-# atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
-# sublatticeA = atom_lattice.sublattice_list[0]
-# delete_atom_planes_from_sublattice(sublattice=sublatticeA,
-#                                    zone_axis_index=0,
-#                                    divisible_by=3,
-#                                    offset_from_zero=0,
-#                                    opposite=True)
-# sublatticeA.plot_planes()
+def _fit_line_clusters(arr, n, second_fit_rigid=True, plot=False):
+    '''
+    Fits the data in an array to two straight lines using the
+    first `n` and second (last) `n` array value pairs.
+
+    The slope of the first fitting will be used for the
+    second fitting. Setting `second_fit_rigid` = False will reverse this
+    behaviour.
+
+    Parameters
+    ----------
+    arr : 2D array-like
+        Array-like (e.g., NumPy 2D array) in the form [[x1, y1], [x2, y2]...]
+    n : int
+        The number of arr value pairs used at the beginning and end of the arr
+        to fit a straight line.
+    second_fit_rigid : Bool, default True
+        Used to decide whether the first or second fitting's slope will be
+        rigid during fitting. With `second_fit_rigid` = True, the slope of the
+        second fitting will be defined as the slope as the first fitting. The
+        y-intercept is free to move.
+    plot : Bool, default False
+        Whether to plot the arr data, first and second fitting, and the
+        line constructed halfway between the two.
+
+    Returns
+    -------
+    x, line_C, m_fit
+        x arr values, halfway fitting line, slope of fit
+    x, line_C, m_fit, line_A, line_B, c_fit, c_fit_rigid
+        If plot is True, the above will be returned along with the first line
+        fitting, second line fitting, first y-intercept, second y-intercept.
+
+    See Also
+    --------
+    get_xyuv_from_line_fit : uses _fit_line_clusters to get xyuv from arr
+    atom_deviation_from_straight_line_fit : Gets xyuv for Sublattice object
+
+    Examples
+    --------
+    >>> arr = np.array([[1, 2], [2, 2], [3, 2], [4, 2], [5, 2.05],
+    ...                 [6, 1], [7, 1], [8, 1], [9, 1], [10, 0.75]])
+    >>> fittings = _fit_line_clusters(
+    ...     arr, n=5, second_fit_rigid=True, plot=True)
+
+    Use the lower (second) cluster to fit the data, making the first cluster
+    rigid
+
+    >>> fittings = _fit_line_clusters(
+    ...     arr, n=5, second_fit_rigid=False, plot=True)
+
+    '''
+    x = arr[:, 0]
+    y = arr[:, 1]
+
+    x_i = x[0:n]
+    y_i = y[0:n]
+
+    x_f = x[-n:len(x)]
+    y_f = y[-n:len(y)]
+
+    if second_fit_rigid:
+        m_fit, c_fit = np.polyfit(x_i, y_i, 1)
+        c_fit_rigid = np.mean(y_f - m_fit * x_f)
+    elif not second_fit_rigid:
+        m_fit, c_fit = np.polyfit(x_f, y_f, 1)
+        c_fit_rigid = np.mean(y_i - m_fit * x_i)
+
+    # use the first slope to get the intercept of the second
+    line_A = m_fit * x + c_fit
+    line_B = m_fit * x + c_fit_rigid
+    c_halfway = (c_fit + c_fit_rigid)/2
+    line_C = m_fit * x + c_halfway
+
+    if plot:
+        plt.figure()
+        plt.scatter(x, y)
+        plt.plot(x, line_A, c='orange', label='first fit')
+        plt.plot(x, line_B, c='green', label='second fit')
+        plt.plot(x, line_C, c='k', label='halfway fit')
+        plt.legend(loc='upper right')
+        plt.show()
+
+    if plot:
+        return(x, line_C, m_fit, line_A, line_B, c_fit, c_fit_rigid)
+    else:
+        return(x, line_C, m_fit)
+
+
+def get_xyuv_from_line_fit(arr, n, second_fit_rigid=True, plot=False):
+    '''
+    Fits the data in an array to two straight lines using the
+    first `n` and second (last) `n` array value pairs. Computes the distance of
+    each array value pair from the line halfway between the two fitted lines.
+
+    The slope of the first fitting will be used for the
+    second fitting. Setting `second_fit_rigid` = False will reverse this
+    behaviour.
+
+    Parameters
+    ----------
+    arr : 2D array-like
+        Array-like (e.g., NumPy 2D array) in the form [[x1, y1], [x2, y2]...]
+    n : int
+        The number of arr value pairs used at the beginning and end of the arr
+        to fit a straight line.
+    second_fit_rigid : Bool, default True
+        Used to decide whether the first or second fitting's slope will be
+        rigid during fitting. With `second_fit_rigid=True`, the slope of the
+        second fitting will be defined as the slope as the first fitting. The
+        y-intercept is free to move.
+    plot : Bool, default False
+        Whether to plot the arr data, first and second fitting, and the
+        line constructed halfway between the two.
+
+    Returns
+    -------
+    x, y, u, v : lists of equal length
+        x, y are the original arr coordinates. u, v are the vector components
+        pointing towards the halfway line from the arr coordinates.
+        These can be input to `plot_polarisation_vectors()` for visualisation.
+
+    See Also
+    --------
+    atom_deviation_from_straight_line_fit : Gets xyuv for Sublattice object
+
+    Examples
+    --------
+    >>> arr = np.array([[1, 2], [2, 2], [3, 2], [4, 2], [5, 2.05],
+    ...                 [6, 1], [7, 1], [8, 1], [9, 1], [10, 0.75]])
+    >>> x, y, u, v = get_xyuv_from_line_fit(
+    ...     arr, n=5, second_fit_rigid=True, plot=True)
+
+    Use the lower (second) cluster to fit the data, making the first cluster
+    rigid
+
+    >>> x, y, u, v = get_xyuv_from_line_fit(
+    ...     arr, n=5, second_fit_rigid=False, plot=True)
+
+    '''
+    arr = np.asarray(arr)
+    fittings = _fit_line_clusters(arr=arr, n=n,
+                                  second_fit_rigid=second_fit_rigid, plot=plot)
+
+    x, line_C, m_fit = fittings[0], fittings[1], fittings[2]
+
+    slope_neg_inv = -(1 / m_fit)
+    angle = np.arctan(slope_neg_inv)  # * (180/np.pi)
+
+    # start xy coord for straight line fit
+    p1 = np.array((x[0], line_C[0]), ndmin=2)
+    # end xy coord for straight line fit
+    p2 = np.array((x[-1], line_C[-1]), ndmin=2)
+
+    x_list = []
+    y_list = []
+    u_list = []
+    v_list = []
+    for original_pos in arr:
+        distance = np.cross(p2 - p1, original_pos -
+                            p1) / np.linalg.norm(p2 - p1)
+        distance = float(distance)
+        u = distance * np.cos(angle)
+        v = distance * np.sin(angle)
+        x_list.append(original_pos[0])
+        y_list.append(original_pos[1])
+        u_list.append(u)
+        v_list.append(v)
+
+    return(x_list, y_list, u_list, v_list)
+
+
+def atom_deviation_from_straight_line_fit(
+        sublattice, axis_number, n, second_fit_rigid=True, plot=False):
+    '''
+    Fits the atomic columns in an atom plane to two straight lines using the
+    first `n` and second (last) `n` atomic columns. Computes the distance of
+    each atomic column from the line halfway between the two fitted lines, as
+    described in [1]. This is done for every sublattice atom plane along the
+    chosen `axis_number`.
+
+    The slope of the first fitting will be used for the
+    second fitting. Setting `second_fit_rigid` = False will reverse this
+    behaviour.
+
+    Parameters
+    ----------
+    sublattice : Atomap Sublattice object
+    axis_number : int
+        The index of the zone axis (translation symmetry) found by the Atomap
+        function `construct_zone_axes()`. For sublattices with heavily
+        deviating atomic columns, you may need to use
+        sublattice.construct_zone_axes(atom_plane_tolerance=1).
+    n : int
+        The number of columns used at the beginning and end of each atom plane
+        to fit a straight line.
+    second_fit_rigid : Bool, default True
+        Used to decide whether the first or second fitting's slope will be
+        rigid during fitting. With `second_fit_rigid=True`, the slope of the
+        second fitting will be defined as the slope as the first fitting. The
+        y-intercept is free to move.
+    plot : Bool, default False
+        Whether to plot the atom plane data, first and second fitting, and the
+        line constructed halfway between the two.
+
+    Returns
+    -------
+    x, y, u, v : lists of equal length
+        x, y are the original atom position coordinates `sublattice.x_position`
+        and `sublattice.y_position` for the coordinates included in the chosen
+        `axis_number`. u, v are the polarisation vector components pointing
+        towards the halfway line from the atom position coordinates.
+        These can be input to `plot_polarisation_vectors()` for visualisation.
+
+    See Also
+    --------
+    get_xyuv_from_line_fit : uses `_fit_line_clusters` to get xyuv from arr
+
+    References
+    ----------
+    .. [1] Reference: Julie Gonnissen, Dmitry Batuk, Guillaume F. Nataf,
+           Lewys Jones, Artem M. Abakumov, Sandra Van Aert, Dominique
+           Schryvers, Ekhard K. H. Salje, Direct Observation of Ferroelectric
+           Domain Walls in LiNbO3: Wall‐Meanders, Kinks, and Local Electric
+           Charges, 26, 42, 2016, DOI: 10.1002/adfm.201603489
+
+    Examples
+    --------
+    >>> import temul.api as tml
+    >>> import temul.dummy_data as dd
+    >>> sublattice = dd.get_polarised_single_sublattice()
+    >>> sublattice.construct_zone_axes(atom_plane_tolerance=1)
+
+    Choose `n`: how many atom columns should be used to fit the line on each
+    side of the atom planes. If `n` is too large, the fitting will appear
+    incorrect.
+
+    >>> n = 5
+    >>> x, y, u, v = tml.atom_deviation_from_straight_line_fit(
+    ...     sublattice, 0, n)
+    >>> ax = tml.plot_polarisation_vectors(x, y, u, v, image=sublattice.image,
+    ...                               unit_vector=False, save=None,
+    ...                               plot_style='vector', color='r',
+    ...                               overlay=True, monitor_dpi=50)
+
+    Plot with angle and up/down. Note that the data ranges from -90 to +90
+    degrees, so the appropriate diverging cmap should be chosen.
+
+    >>> ax = tml.plot_polarisation_vectors(x, y, u, v, image=sublattice.image,
+    ...                       vector_rep='angle', save=None, degrees=True,
+    ...                       plot_style='colormap', cmap='cet_coolwarm',
+    ...                       overlay=True, monitor_dpi=50)
+
+    Let's look at some rotated data
+
+    >>> sublattice = dd.get_polarised_single_sublattice_rotated(
+    ...     image_noise=True, rotation=45)
+    >>> sublattice.construct_zone_axes(atom_plane_tolerance=0.9)
+    >>> # sublattice.plot_planes()
+    >>> n = 3  # plot the sublattice to see why 3 is suitable here!
+    >>> x, y, u, v = tml.atom_deviation_from_straight_line_fit(
+    ...     sublattice, 0, n)
+    >>> ax = tml.plot_polarisation_vectors(x, y, u, v, image=sublattice.image,
+    ...                       vector_rep='angle', save=None, degrees=True,
+    ...                       plot_style='colormap', cmap='cet_coolwarm',
+    ...                       overlay=True, monitor_dpi=50)
+
+    '''
+
+    if sublattice.zones_axis_average_distances is None:
+        raise Exception(
+            "zones_axis_average_distances is empty. "
+            "Has sublattice.construct_zone_axes() been run? You may need to "
+            "use sublattice.construct_zone_axes(atom_plane_tolerance=1).")
+    else:
+        zon_vec_needed = sublattice.zones_axis_average_distances[axis_number]
+
+    x_list = []
+    y_list = []
+    u_list = []
+    v_list = []
+    for i, atom_plane in enumerate(sublattice.atom_plane_list):
+
+        if sublattice.atom_plane_list[i].zone_vector == zon_vec_needed:
+
+            arr = np.array([atom_plane.get_x_position_list(),
+                            atom_plane.get_y_position_list()]).T
+
+            x, y, u, v = get_xyuv_from_line_fit(
+                arr=arr, n=n, second_fit_rigid=second_fit_rigid, plot=plot)
+            x_list.extend(x)
+            y_list.extend(y)
+            u_list.extend(u)
+            v_list.extend(v)
+
+    return(x_list, y_list, u_list, v_list)
 
 
 def _truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
@@ -623,9 +1055,9 @@ def _truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
     return new_cmap
 
 
-def atom_deviation_from_straight_line_fit(sublattice,
-                                          axis_number: int = 0,
-                                          save: str = ''):
+def full_atom_plane_deviation_from_straight_line_fit(sublattice,
+                                                     axis_number: int = 0,
+                                                     save: str = ''):
     '''
     Fit the atoms in an atom plane to a straight line and find the deviation
     of each atom position from that straight line fit.
@@ -650,15 +1082,17 @@ def atom_deviation_from_straight_line_fit(sublattice,
     Examples
     --------
     >>> import atomap.api as am
-    >>> from temul.polarisation import (atom_deviation_from_straight_line_fit,
-    ...                                 plot_polarisation_vectors)
+    >>> from temul.polarisation import (
+    ...     full_atom_plane_deviation_from_straight_line_fit,
+    ...     plot_polarisation_vectors)
     >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
     >>> sublatticeA = atom_lattice.sublattice_list[0]
     >>> sublatticeA.find_nearest_neighbors()
     >>> sublatticeA.refine_atom_positions_using_center_of_mass()
     >>> sublatticeA.construct_zone_axes()
-    >>> x,y,u,v = atom_deviation_from_straight_line_fit(sublatticeA, save=None)
-    >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    >>> x,y,u,v = full_atom_plane_deviation_from_straight_line_fit(
+    ...     sublatticeA, save=None)
+    >>> ax = plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           unit_vector=False, save=None, monitor_dpi=50)
 
     '''
@@ -791,7 +1225,7 @@ def plot_atom_deviation_from_all_zone_axes(
 
     for axis_number in range(len(sublattice.zones_axis_average_distances)):
 
-        x, y, u, v = atom_deviation_from_straight_line_fit(
+        x, y, u, v = full_atom_plane_deviation_from_straight_line_fit(
             sublattice=sublattice, axis_number=axis_number,
             save=None)
 
@@ -843,14 +1277,14 @@ def combine_atom_deviations_from_zone_axes(
     >>> sublatticeA.construct_zone_axes()
     >>> x,y,u,v = combine_atom_deviations_from_zone_axes(
     ...     sublatticeA, save=None)
-    >>> plot_polarisation_vectors(x, y, u, v, save=None,
+    >>> ax = plot_polarisation_vectors(x, y, u, v, save=None,
     ...     image=sublatticeA.image)
 
     You can also choose the axes:
 
     >>> x,y,u,v = combine_atom_deviations_from_zone_axes(
     ...     sublatticeA, axes=[0,1], save=None)
-    >>> plot_polarisation_vectors(x, y, u, v, save=None,
+    >>> ax = plot_polarisation_vectors(x, y, u, v, save=None,
     ...     image=sublatticeA.image)
 
     '''
@@ -872,7 +1306,7 @@ def combine_atom_deviations_from_zone_axes(
 
     for axis_number in axes_list:
 
-        x, y, u, v = atom_deviation_from_straight_line_fit(
+        x, y, u, v = full_atom_plane_deviation_from_straight_line_fit(
             sublattice=sublattice, axis_number=axis_number,
             save=None)
 
@@ -1030,9 +1464,9 @@ def get_average_polarisation_in_regions(x, y, u, v, image, divide_into=8):
 
     Returns
     -------
-    Four lists: x_new, y_new, u_new, v_new.
-    x_new and y_new are the central coordinates of the divided regions.
-    u_new and v_new are the averaged polarisation vectors.
+    x_new, y_new, u_new, v_new : lists of equal length
+        x_new and y_new are the central coordinates of the divided regions.
+        u_new and v_new are the averaged polarisation vectors.
 
     Examples
     --------
@@ -1052,7 +1486,7 @@ def get_average_polarisation_in_regions(x, y, u, v, image, divide_into=8):
 
     >>> x, y, u, v = combine_atom_deviations_from_zone_axes(sublatticeA,
     ...     save=None)
-    >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    >>> ax = plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                   unit_vector=False, save=None,
     ...                   plot_style='vector', color='r',
     ...                   overlay=False, title='Actual Vector Arrows',
@@ -1062,9 +1496,10 @@ def get_average_polarisation_in_regions(x, y, u, v, image, divide_into=8):
 
     >>> x_new, y_new, u_new, v_new = get_average_polarisation_in_regions(
     ...     x, y, u, v, image=sublatticeA.image, divide_into=8)
-    >>> plot_polarisation_vectors(x_new, y_new, u_new, v_new, monitor_dpi=50,
-    ...                   image=sublatticeA.image, save=None, color='r',
-    ...                   overlay=False, title='Averaged Vector Arrows')
+    >>> ax = plot_polarisation_vectors(x_new, y_new, u_new, v_new,
+    ...         monitor_dpi=50, image=sublatticeA.image, save=None, color='r',
+    ...         overlay=False, title='Averaged Vector Arrows')
+
     '''
 
     if divide_into >= np.sqrt(len(x)):
@@ -1132,9 +1567,9 @@ def get_average_polarisation_in_regions_square(x, y, u, v, image,
 
     Returns
     -------
-    Four lists: x_new, y_new, u_new, v_new.
-    x_new and y_new are the central coordinates of the divided regions.
-    u_new and v_new are the averaged polarisation vectors.
+    x_new, y_new, u_new, v_new : lists of equal length
+        x_new and y_new are the central coordinates of the divided regions.
+        u_new and v_new are the averaged polarisation vectors.
 
     Examples
     --------
@@ -1153,7 +1588,7 @@ def get_average_polarisation_in_regions_square(x, y, u, v, image,
     >>> image = sublatticeA.image[0:200]
     >>> x, y, u, v = combine_atom_deviations_from_zone_axes(sublatticeA,
     ...     save=None)
-    >>> plot_polarisation_vectors(x, y, u, v, image=image, save=None,
+    >>> ax = plot_polarisation_vectors(x, y, u, v, image=image, save=None,
     ...                   color='r', overlay=False, monitor_dpi=50,
     ...                   title='Actual Vector Arrows')
 
@@ -1162,7 +1597,7 @@ def get_average_polarisation_in_regions_square(x, y, u, v, image,
     >>> coords = get_average_polarisation_in_regions_square(
     ...     x, y, u, v, image=image, divide_into=8)
     >>> x_new, y_new, u_new, v_new = coords
-    >>> plot_polarisation_vectors(x_new, y_new, u_new, v_new, image=image,
+    >>> ax = plot_polarisation_vectors(x_new, y_new, u_new, v_new, image=image,
     ...                   color='r', overlay=False, monitor_dpi=50,
     ...                   title='Averaged Vector Arrows', save=None)
     '''
@@ -1595,7 +2030,7 @@ def angle_label(vector_rep="magnitude", units='pix', degrees=False):
             vector_label = "Angle (rad)"
     else:
         raise ValueError(
-                "`vector_rep` must be either 'magnitude' or 'angle'.")
+            "`vector_rep` must be either 'magnitude' or 'angle'.")
     return(vector_label)
 
 
@@ -1686,177 +2121,3 @@ def atom_to_atom_distance_grouped_mean(sublattice, zone_axis_index,
         grouped_means.append(np.mean(grouped_region))
 
     return(groupings, grouped_means)
-
-
-"""
-def atom_deviation_from_straight_line_fit(sublattice, save_name='example'):
-
-    for axis_number in range(len(sublattice.zones_axis_average_distances)):
-
-        zon_vec_needed = sublattice.zones_axis_average_distances[axis_number]
-        original_atom_pos_list = []
-        new_atom_pos_list = []
-        new_atom_diff_list = []
-
-        # this loop creates two arrays.
-        # the original array contains all the original atom positions
-        # the new array contains all the xy positions on the fitted straight
-        # lines the new array positions are the point at which the original
-        # position is perpendicular to the fitted line.
-        for i, atom_plane in enumerate(sublattice.atom_plane_list):
-
-            if sublattice.atom_plane_list[i].zone_vector == zon_vec_needed:
-                original_atoms_list = []
-                for atom_pos in sublattice.atom_plane_list[i].atom_list:
-                    original_atoms_list.append(
-                        [atom_pos.pixel_x, atom_pos.pixel_y])
-
-                original_atoms_array = np.array(original_atoms_list)
-
-                slope, intercept = scipy.polyfit(
-                    original_atoms_array[:, 0], original_atoms_array[:, 1], 1)
-
-                slope_neg_inv = -(1/slope)
-                angle = np.arctan(slope_neg_inv)  # * (180/np.pi)
-
-                x1 = atom_plane.start_atom.pixel_x
-                y1 = slope*x1 + intercept
-                x2 = atom_plane.end_atom.pixel_x
-                y2 = slope*x2 + intercept
-
-                p1 = np.array((x1, y1), ndmin=2)
-                # end xy coord for straight line fit
-                p2 = np.array((x2, y2), ndmin=2)
-
-                atoms_on_plane_list = []
-                atom_dist_diff_list = []
-                # original_atom position, point an arrow towards it by using
-                # original_atom_pos_array and new_atom_diff_array,
-                # or away using new_atom_pos_array and -new_atom_diff_array
-                for original_atom in original_atoms_array:
-
-                    distance = np.cross(p2-p1, original_atom -
-                                        p1) / np.linalg.norm(p2-p1)
-                    distance = float(distance)
-                    x_diff = distance*np.cos(angle)
-                    y_diff = distance*np.sin(angle)
-
-                    x_on_plane = original_atom[0] + x_diff
-                    y_on_plane = original_atom[1] + y_diff
-
-                    atoms_on_plane_list.append([x_on_plane, y_on_plane])
-                    atom_dist_diff_list.append([x_diff, y_diff])
-        #            atoms_not_on_plane_list.append([original_atom])
-
-                original_atom_pos_list.extend(original_atoms_list)
-                new_atom_pos_list.extend(atoms_on_plane_list)
-                new_atom_diff_list.extend(atom_dist_diff_list)
-
-        original_atom_pos_array = np.array(original_atom_pos_list)
-        # new_atom_pos_array = np.array(new_atom_pos_list)
-
-        # this is the difference between the original position and the point on
-        # the fitted atom plane line. To get the actual shift direction, just
-        # use -new_atom_diff_array. (negative of it!)
-        new_atom_diff_array = np.array(new_atom_diff_list)
-
-        '''
-Divergent scale beautifying:
-    Below we divide the vectors(arrows) into the ones going upward and
-    downward. We then want to plot them on a divergent colorbar scale.
-
-    We create two separate color maps with the data from the vector arrows,
-    truncated so that the top(darkest) colors aren't included.
-
-    Then plot the downward arrows, with that colorbar,
-    plot the upward arrows, with that colorbar.
-    Put the colorbar in the right place.
-    '''
-        arrows_downward = []
-        arrows_upward = []
-        original_downward = []
-        original_upward = []
-        for i, component in enumerate(new_atom_diff_array):
-            # >0 because the y-axis is flipped in hyperspy data!
-            if component[1] > 0:
-                arrows_downward.append(component)
-                original_downward.append(original_atom_pos_array[i, :])
-            else:
-                arrows_upward.append(component)
-                original_upward.append(original_atom_pos_array[i, :])
-
-        arrows_downward = np.array(arrows_downward)
-        arrows_upward = np.array(arrows_upward)
-        original_downward = np.array(original_downward)
-        original_upward = np.array(original_upward)  # plot the results
-
-        # downward
-        color_chart_downward = np.hypot(
-            arrows_downward[:, 0], arrows_downward[:, 1])
-        color_cmap_downward = plt.get_cmap('Blues')
-        color_cmap_downward = _truncate_colormap(
-            color_cmap_downward, 0.0, 0.75)
-
-        # upward
-        color_chart_upward = np.hypot(arrows_upward[:, 0], arrows_upward[:, 1])
-        color_cmap_upward = plt.get_cmap('Reds')
-        color_cmap_upward = _truncate_colormap(color_cmap_upward, 0.0, 0.75)
-
-        fig, ax = plt.subplots(figsize=(7, 5))
-        plt.title(save_name + '_%i' % axis_number)
-        downward = ax.quiver(
-            original_downward[:, 0],
-            original_downward[:, 1],
-            arrows_downward[:, 0],
-            arrows_downward[:, 1],
-            color_chart_downward,
-            cmap=color_cmap_downward,
-            angles='xy',
-            scale_units='xy',
-            scale=None,
-            headwidth=7.0,
-            headlength=5.0,
-            headaxislength=4.5,
-            pivot='middle')
-        ax.set(aspect='equal')
-
-        # plt.imshow(sublattice.image)
-        plt.gca().axes.get_xaxis().set_visible(False)
-        plt.gca().axes.get_yaxis().set_visible(False)
-
-        cbaxes = fig.add_axes([0.8, 0.1, 0.03, 0.4])
-        cbar_downward = plt.colorbar(downward, cax=cbaxes, extend='max',
-                                     use_gridspec=False, anchor=(0.0, 0.0),
-                                     ticks=[0.4, 0.8, 1.2, 1.6])
-        cbar_downward.ax.invert_yaxis()
-        cbar_downward.outline.set_visible(False)
-
-        upward = ax.quiver(
-            original_upward[:, 0],
-            original_upward[:, 1],
-            arrows_upward[:, 0],
-            arrows_upward[:, 1],
-            color_chart_upward,
-            cmap=color_cmap_upward,
-            angles='xy',
-            scale_units='xy',
-            scale=None,
-            headwidth=7.0,
-            headlength=5.0,
-            headaxislength=4.5,
-            pivot='middle')
-        ax.set(aspect='equal')
-
-        cbaxes_upward = fig.add_axes([0.8, 0.5, 0.03, 0.4])
-        cbar_upward = plt.colorbar(upward, cax=cbaxes_upward, extend='max',
-                                   use_gridspec=False, anchor=(0.0, 1.0),
-                                   ticks=[0.0, 0.4, 0.8, 1.2, 1.6])
-        cbar_upward.outline.set_visible(False)
-
-        ax.set_xlim(0, sublattice.image.shape[1])
-        ax.set_ylim(sublattice.image.shape[0], 0)
-
-        plt.savefig(fname=save_name + '_%i.png' % axis_number,
-                    transparent=True, frameon=False, bbox_inches='tight',
-                    pad_inches=None, dpi=300, labels=False)
-"""

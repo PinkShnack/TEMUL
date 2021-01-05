@@ -10,7 +10,9 @@ Analysis of PTO Domain Wall Junction
 This tutorial follows the python scripts and jupyter notebooks found in the
 "TEMUL/publication_examples/PTO_Junction_moore" folder in the
 `TEMUL repository <https://github.com/PinkShnack/TEMUL>`_. The data and scripts
-used below can be downloaded from there.
+used below can be downloaded from there. Check out the publication:
+K. Moore *et al* `Highly charged 180 degree head-to-head domain walls in lead titanate, Nature Communications Physics 2020
+<https://www.nature.com/articles/s42005-020-00488-x>`_.
 
 
 Import the Modules and Load the Data

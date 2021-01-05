@@ -89,8 +89,12 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="using_temul.html">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Plotting Polarisation and Movement Vectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflows.html">Analysis Workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Finding Polarisation Vectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html#plotting-polarisation-and-movement-vectors">Plotting Polarisation and Movement Vectors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="structure_map_tutorial.html">Plot Lattice Structure Maps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PTO_supercrystal_hadjimichael.html">Calculation of Atom Plane Curvature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PTO_Junction_moore.html">Analysis of PTO Domain Wall Junction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="masked_fft_tutorial.html">Masked FFT and iFFT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="line_profile_tutorial.html">Line Intensity Profile Comparisons</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dg_visualiser_tutorial.html">Interactive Image Filtering</a></li>
@@ -165,11 +169,20 @@
 <p>The TEMUL Toolkit is a suit of functions and classes for analysis and visualisation of
 atomic resolution images. It is mostly built upon the data structure of
 <a class="reference external" href="https://hyperspy.org/">HyperSpy</a> and <a class="reference external" href="https://atomap.org/">Atomap</a>.</p>
+<div class="section" id="interactive-examples">
+<h2>Interactive Examples<a class="headerlink" href="#interactive-examples" title="Permalink to this headline">¶</a></h2>
+<a class="reference external image-reference" href="https://mybinder.org/v2/gh/PinkShnack/TEMUL/master"><img alt="https://mybinder.org/badge_logo.svg" src="https://mybinder.org/badge_logo.svg" /></a>
+<p>Click the button above to start some data analysis (it may take a few minutes to load).
+The “code_tutorials” folder contains walkthroughs of some of the documentation
+examples from this website.
+The “publication_examples” folder will allow you to analyse data from published scientific papers!
+Just navigate to whichever of these folders you want click on the “.ipynb” files.</p>
+</div>
 <div class="section" id="news">
 <span id="install"></span><h2>News<a class="headerlink" href="#news" title="Permalink to this headline">¶</a></h2>
 <p><strong>03/11/2020: Version 0.1.2 released</strong></p>
 <p>This version contains minor changes from the 0.1.1 release. It removes pyCifRW
-as a dependency, due to PyCifRW requiring Microsoft Visual Studio.</p>
+as a dependency.</p>
 <p><strong>02/11/2020: Version 0.1.1 released</strong></p>
 <p>This version contains many changes to the TEMUL Toolkit.</p>
 <blockquote>
@@ -190,7 +203,14 @@ as a dependency, due to PyCifRW requiring Microsoft Visual Studio.</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="using_temul.html">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Plotting Polarisation and Movement Vectors</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="workflows.html">Analysis Workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Finding Polarisation Vectors</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="polarisation_vectors_tutorial.html#for-standard-polarised-structures-e-g-pto">For standard Polarised Structures (e.g., PTO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="polarisation_vectors_tutorial.html#for-nonstandard-polarised-structures-e-g-boracites">For nonstandard Polarised Structures (e.g., Boracites)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="polarisation_vectors_tutorial.html#for-single-polarised-sublattices-e-g-lno">For single Polarised Sublattices (e.g., LNO)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html#plotting-polarisation-and-movement-vectors">Plotting Polarisation and Movement Vectors</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="polarisation_vectors_tutorial.html#prepare-and-plot-the-dummy-dataset">Prepare and Plot the dummy dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="polarisation_vectors_tutorial.html#find-the-vector-coordinates-using-atomap">Find the Vector Coordinates using Atomap</a></li>
 </ul>
@@ -200,6 +220,20 @@ as a dependency, due to PyCifRW requiring Microsoft Visual Studio.</p>
 <li class="toctree-l2"><a class="reference internal" href="structure_map_tutorial.html#plot-the-lattice-strain-map">Plot the Lattice Strain Map</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structure_map_tutorial.html#plot-the-lattice-atom-rotation-map">Plot the Lattice Atom Rotation Map</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structure_map_tutorial.html#plot-the-c-a-ratio">Plot the <em>c</em>/<em>a</em> Ratio</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="PTO_supercrystal_hadjimichael.html">Calculation of Atom Plane Curvature</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="PTO_supercrystal_hadjimichael.html#import-the-modules-and-load-the-data">Import the Modules and Load the Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PTO_supercrystal_hadjimichael.html#set-up-the-parameters">Set up the Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PTO_supercrystal_hadjimichael.html#calculate-the-curvature-of-atom-planes">Calculate the Curvature of Atom Planes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="PTO_Junction_moore.html">Analysis of PTO Domain Wall Junction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="PTO_Junction_moore.html#import-the-modules-and-load-the-data">Import the Modules and Load the Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PTO_Junction_moore.html#set-up-the-parameters">Set up the Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PTO_Junction_moore.html#create-the-lattice-strain-map">Create the Lattice Strain Map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PTO_Junction_moore.html#create-the-lattice-rotation-map">Create the Lattice Rotation Map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PTO_Junction_moore.html#id1">Create the Lattice Rotation Map</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="masked_fft_tutorial.html">Masked FFT and iFFT</a><ul>
@@ -233,9 +267,8 @@ as a dependency, due to PyCifRW requiring Microsoft Visual Studio.</p>
 <span id="id1"></span><h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <p>The TEMUL Toolkit can be installed easily with PIP (those using Windows may need to download VS C++ Build Tools, see below).</p>
 <p><code class="code bash docutils literal notranslate"><span class="pre">$</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">temul-toolkit</span></code></p>
-<p>Then, it can be imported with the name “temul”. For example, to import the
-<code class="code python docutils literal notranslate"><span class="name"><span class="pre">polarisation</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">py</span></span></code> module, use:</p>
-<p><code class="code python docutils literal notranslate"><span class="keyword namespace"><span class="pre">import</span></span> <span class="name namespace"><span class="pre">temul.polarisation</span></span> <span class="keyword"><span class="pre">as</span></span> <span class="name namespace"><span class="pre">tmlp</span></span></code></p>
+<p>Then, it can be imported with the name “temul”. For example, to import most of the temul functionality use:</p>
+<p><code class="code python docutils literal notranslate"><span class="keyword namespace"><span class="pre">import</span></span> <span class="name namespace"><span class="pre">temul.api</span></span> <span class="keyword"><span class="pre">as</span></span> <span class="name namespace"><span class="pre">tml</span></span></code></p>
 <p>Matplotlib 3.3 currently has compatability issues with iPython, see below for the fix.</p>
 <div class="section" id="installation-problems-notes">
 <h3>Installation Problems &amp; Notes<a class="headerlink" href="#installation-problems-notes" title="Permalink to this headline">¶</a></h3>

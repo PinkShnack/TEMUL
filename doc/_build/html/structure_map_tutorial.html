@@ -36,7 +36,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Plotting Polarisation and Movement Vectors" href="polarisation_vectors_tutorial.html" /> 
+    <link rel="next" title="Calculation of Atom Plane Curvature" href="PTO_supercrystal_hadjimichael.html" />
+    <link rel="prev" title="Finding Polarisation Vectors" href="polarisation_vectors_tutorial.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -89,7 +90,9 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="using_temul.html">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Plotting Polarisation and Movement Vectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflows.html">Analysis Workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Finding Polarisation Vectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html#plotting-polarisation-and-movement-vectors">Plotting Polarisation and Movement Vectors</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Plot Lattice Structure Maps</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#prepare-and-plot-the-dummy-dataset">Prepare and Plot the dummy dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#plot-the-lattice-strain-map">Plot the Lattice Strain Map</a></li>
@@ -97,6 +100,11 @@
 <li class="toctree-l2"><a class="reference internal" href="#plot-the-c-a-ratio">Plot the <em>c</em>/<em>a</em> Ratio</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="PTO_supercrystal_hadjimichael.html">Calculation of Atom Plane Curvature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="masked_fft_tutorial.html">Masked FFT and iFFT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="line_profile_tutorial.html">Line Intensity Profile Comparisons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dg_visualiser_tutorial.html">Interactive Image Filtering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_doc.html">API documentation</a></li>
 </ul>
 
             
@@ -171,7 +179,7 @@ we will use a dummy dataset to show the different ways each map can be created.
 In future, tutorials on published experimental data will also be available.</p>
 <div class="section" id="prepare-and-plot-the-dummy-dataset">
 <h2>Prepare and Plot the dummy dataset<a class="headerlink" href="#prepare-and-plot-the-dummy-dataset" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.polarisation</span> <span class="k">as</span> <span class="nn">tmlp</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.api</span> <span class="k">as</span> <span class="nn">tml</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="kn">import</span> <span class="n">get_polarisation_dummy_dataset</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">atom_lattice</span> <span class="o">=</span> <span class="n">get_polarisation_dummy_dataset</span><span class="p">(</span><span class="n">image_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublatticeA</span> <span class="o">=</span> <span class="n">atom_lattice</span><span class="o">.</span><span class="n">sublattice_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -188,13 +196,13 @@ In future, tutorials on published experimental data will also be available.</p>
 <div class="section" id="plot-the-lattice-strain-map">
 <h2>Plot the Lattice Strain Map<a class="headerlink" href="#plot-the-lattice-strain-map" title="Permalink to this headline">¶</a></h2>
 <p>By inputting the calculated or theoretical atom plane separation distance as the
-<code class="code python docutils literal notranslate"><span class="name"><span class="pre">theoretical_value</span></span></code> parameter in <code class="code python docutils literal notranslate"><span class="name"><span class="pre">tmlp</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">get_strain_map</span></span></code> below,
+<code class="code python docutils literal notranslate"><span class="name"><span class="pre">theoretical_value</span></span></code> parameter in <code class="code python docutils literal notranslate"><span class="name"><span class="pre">tml</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">get_strain_map</span></span></code> below,
 we can plot a strain map. The distance <em>l</em> is calculated as the distance between
 each atom plane in the given zone axis. More details on this can be found on the
 <a class="reference external" href="https://atomap.org/analysing_atom_lattices.html#distance-between-monolayers">Atomap</a>
 website.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">theor_val</span> <span class="o">=</span> <span class="mf">1.9</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">strain_map</span> <span class="o">=</span> <span class="n">tmlp</span><span class="o">.</span><span class="n">get_strain_map</span><span class="p">(</span><span class="n">sublatticeB</span><span class="p">,</span> <span class="n">zone_axis_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">strain_map</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">get_strain_map</span><span class="p">(</span><span class="n">sublatticeB</span><span class="p">,</span> <span class="n">zone_axis_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
 <span class="gp">... </span>           <span class="n">units</span><span class="o">=</span><span class="n">units</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="n">sampling</span><span class="p">,</span> <span class="n">theoretical_value</span><span class="o">=</span><span class="n">theor_val</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -216,7 +224,7 @@ successive atoms and the horizontal for all atoms in the given zone axis. See
 <a class="reference external" href="https://atomap.org/analysing_atom_lattices.html#angle-between-atoms">Atomap</a>
 for other options.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">degrees</span><span class="o">=</span><span class="kc">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rotation_map</span> <span class="o">=</span> <span class="n">tmlp</span><span class="o">.</span><span class="n">rotation_of_atom_planes</span><span class="p">(</span><span class="n">sublatticeB</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rotation_map</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">rotation_of_atom_planes</span><span class="p">(</span><span class="n">sublatticeB</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
 <span class="gp">... </span>                    <span class="n">units</span><span class="o">=</span><span class="n">units</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="n">sampling</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="n">degrees</span><span class="p">)</span>
 
 <span class="go">&#39;&#39;&#39;</span>
@@ -225,7 +233,7 @@ for other options.</p>
 <span class="go">&#39;&#39;&#39;</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">angle_offset</span> <span class="o">=</span> <span class="mi">45</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rotation_map</span> <span class="o">=</span> <span class="n">tmlp</span><span class="o">.</span><span class="n">rotation_of_atom_planes</span><span class="p">(</span><span class="n">sublatticeB</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rotation_map</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">rotation_of_atom_planes</span><span class="p">(</span><span class="n">sublatticeB</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
 <span class="gp">... </span>                    <span class="n">units</span><span class="o">=</span><span class="n">units</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="n">sampling</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="n">degrees</span><span class="p">,</span>
 <span class="gp">... </span>                    <span class="n">angle_offset</span><span class="o">=</span><span class="n">angle_offset</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Offset of 45, Index&#39;</span><span class="p">)</span>
 </pre></div>
@@ -237,7 +245,7 @@ for other options.</p>
 <h2>Plot the <em>c</em>/<em>a</em> Ratio<a class="headerlink" href="#plot-the-c-a-ratio" title="Permalink to this headline">¶</a></h2>
 <p>Using the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">ratio_of_lattice_spacings</span></span></code> function, we can visualise the ratio of
 two sublattice zone axes. Useful for plotting the <em>c</em>/<em>a</em> Ratio.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ratio_map</span> <span class="o">=</span> <span class="n">tmlp</span><span class="o">.</span><span class="n">ratio_of_lattice_spacings</span><span class="p">(</span><span class="n">sublatticeB</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ratio_map</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">ratio_of_lattice_spacings</span><span class="p">(</span><span class="n">sublatticeB</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
 <span class="gp">... </span>                <span class="n">units</span><span class="o">=</span><span class="n">units</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="n">sampling</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -256,8 +264,10 @@ two sublattice zone axes. Useful for plotting the <em>c</em>/<em>a</em> Ratio.</
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
+        <a href="PTO_supercrystal_hadjimichael.html" class="btn btn-neutral float-right" title="Calculation of Atom Plane Curvature" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-        <a href="polarisation_vectors_tutorial.html" class="btn btn-neutral float-left" title="Plotting Polarisation and Movement Vectors" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+        <a href="polarisation_vectors_tutorial.html" class="btn btn-neutral float-left" title="Finding Polarisation Vectors" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

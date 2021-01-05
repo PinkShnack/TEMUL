@@ -4,12 +4,13 @@ import hyperspy.api as hs
 # newest version of skimage not working with hspy
 from temul.external.skimage_devel_0162.profile import profile_line
 import matplotlib.pyplot as plt
-from matplotlib.pyplot import subplots_adjust
+from matplotlib.colors import hsv_to_rgb
 import matplotlib.dates as mdates
 import scipy.spatial as spatial
 from temul.intensity_tools import get_sublattice_intensity
 from temul.external.atomap_devel_012.initial_position_finding import (
     add_atoms_with_gui)
+import math
 
 
 # line_profile_positions = am.add_atoms_with_gui(s)
@@ -78,7 +79,7 @@ def compare_images_line_profile_one_image(image,
 
     # -- Plot the line profile comparisons
     _, (ax1, ax2) = plt.subplots(nrows=2)  # figsize=(12, 4)
-    subplots_adjust(wspace=0.3)
+    plt.subplots_adjust(wspace=0.3)
 
     ax1.imshow(image.data, **kwargs)
     # ax1.plot([x0, x1], [y0, y1], color='r', marker='v', markersize=10,
@@ -187,13 +188,12 @@ def compare_images_line_profile_two_images(imageA, imageB,
     Examples
     --------
     >>> import atomap.api as am
-    >>> from temul.signal_plotting import (
-    ...     compare_images_line_profile_two_images)
+    >>> import temul.api as tml
     >>> imageA = am.dummy_data.get_simple_cubic_signal(image_noise=True)
     >>> imageB = am.dummy_data.get_simple_cubic_signal()
-    >>> # line_profile_positions = am.add_atoms_with_gui(imageA)
+    >>> # line_profile_positions = tml.choose_points_on_image(imageA)
     >>> line_profile_positions = [[81.58, 69.70], [193.10, 184.08]]
-    >>> compare_images_line_profile_two_images(
+    >>> tml.compare_images_line_profile_two_images(
     ...     imageA, imageB, line_profile_positions,
     ...     linewidth=3, sampling=0.012, crop_offset=30)
 
@@ -201,12 +201,12 @@ def compare_images_line_profile_two_images(imageA, imageB,
 
     >>> import numpy as np
     >>> reduce_func = np.sum # can be any ufunc!
-    >>> compare_images_line_profile_two_images(
+    >>> tml.compare_images_line_profile_two_images(
     ...     imageA, imageB, line_profile_positions, reduce_func=reduce_func,
     ...     linewidth=3, sampling=0.012, crop_offset=30)
 
     >>> reduce_func = lambda x: np.sum(x**0.5)
-    >>> compare_images_line_profile_two_images(
+    >>> tml.compare_images_line_profile_two_images(
     ...     imageA, imageB, line_profile_positions, reduce_func=reduce_func,
     ...     linewidth=3, sampling=0.012, crop_offset=30)
 
@@ -217,7 +217,7 @@ def compare_images_line_profile_two_images(imageA, imageB,
     >>> imageA.data = imageA.data/np.max(imageA.data)
     >>> imageB = imageA.deepcopy()
     >>> line_profile_positions = [[301.42, 318.9], [535.92, 500.82]]
-    >>> compare_images_line_profile_two_images(
+    >>> tml.compare_images_line_profile_two_images(
     ...     imageA, imageB, line_profile_positions, reduce_func=None,
     ...     imageB_intensity_offset=0.1)
 
@@ -277,7 +277,7 @@ def compare_images_line_profile_two_images(imageA, imageB,
     _, (ax1, ax2, ax3) = plt.subplots(
         figsize=figsize, ncols=3, gridspec_kw={'width_ratios': [1, 1, 3],
                                                'height_ratios': [1]})
-    subplots_adjust(wspace=0.1)
+    plt.subplots_adjust(wspace=0.1)
     ax1.imshow(imageA_crop)
     ax1.plot(crop_x0, crop_y0, color='r', marker=marker_A,
              markersize=arrow_markersize, alpha=1)
@@ -702,3 +702,103 @@ def choose_points_on_image(image, norm='linear', distance_threshold=4):
     coords = add_atoms_with_gui(image=image, norm=norm,
                                 distance_threshold=distance_threshold)
     return coords
+
+
+def create_rgb_array():
+    # make the 2(3)D RGB color array that is 360*100*3
+    V, H = np.mgrid[0:1:100j, 0:1:360j]
+    S = np.ones_like(V)
+    HSV = np.dstack((H, S, V))
+    RGB = hsv_to_rgb(HSV)
+    RGB_swapped = np.swapaxes(RGB, 0, 1)
+    return RGB_swapped
+
+
+def get_polar_2d_colorwheel_color_list(u, v):
+
+    ''' make the color_list from the HSV/RGB colorwheel.
+    This color_list will be the same length as u and as v.
+    It works by indexing the angle of the RGB (hue in HSV) array,
+    then indexing the magnitude (r) in the RGB (value in HSV) array,
+    leaving only a single RGB color for each vector.
+    '''
+
+    rgb_array = create_rgb_array()
+
+    r = (u ** 2 + v ** 2) ** 0.5
+    theta = np.arctan2(v, u)
+
+    # change theta to degrees
+    theta_deg = theta * 180/np.pi
+
+    # normalise r between 0 and 1
+    r_norm = r/np.max(r)
+    # scale from 0 to 100 for indexing in loop
+    r_norm_100 = r_norm * 100
+
+    color_list = []
+    for i, (ri, thetai) in enumerate(zip(r_norm_100, theta_deg)):
+
+        # index the angle, leaving the relevant r array
+        # should probably sort out values > 359.5 better than the -1 below
+        r_color_list = rgb_array[int(round(thetai, 0))-1]
+
+        # index for the r value in the r_color_list
+        indexed_r = r_color_list[int(round(ri, 0))-1]
+        color_list.append(indexed_r)
+
+    if len(u) != len(color_list):
+        raise ValueError("u and color_list should be the same length.")
+
+    return color_list
+
+
+# code taken from PixStem
+def _make_color_wheel(ax, rotation=None):
+    x, y = np.mgrid[-2.0:2.0:500j, -2.0:2.0:500j]
+    r = (x ** 2 + y ** 2) ** 0.5
+    t = np.arctan2(x, y)
+    del x, y
+    if rotation is not None:
+        t += math.radians(rotation)
+        t = (t + np.pi) % (2 * np.pi) - np.pi
+
+    r_masked = np.ma.masked_where(
+        (2.0 < r) | (r < 1.0), r)
+    r_masked -= 1.0
+
+    mask = r_masked.mask
+    r_masked.data[r_masked.mask] = r_masked.mean()
+    rgb_array = _get_rgb_phase_magnitude_array(t, r_masked.data)
+    rgb_array = np.dstack((rgb_array, np.invert(mask)))
+
+    ax.imshow(rgb_array, interpolation='quadric', origin='lower')
+    # ax.set_axis_off()
+
+
+# code taken from PixStem
+def _get_rgb_phase_magnitude_array(
+        phase, magnitude, rotation=None,
+        magnitude_limits=None, max_phase=2 * np.pi):
+    phase = _find_phase(phase, rotation=rotation, max_phase=max_phase)
+    phase = phase / (2 * np.pi)
+
+    if magnitude_limits is not None:
+        np.clip(magnitude, magnitude_limits[0], magnitude_limits[1],
+                out=magnitude)
+    magnitude_max = magnitude.max()
+    if magnitude_max == 0:
+        magnitude_max = 1
+    magnitude = magnitude / magnitude_max
+    S = np.ones_like(phase)
+    HSV = np.dstack((phase, S, magnitude))
+    RGB = hsv_to_rgb(HSV)
+    return (RGB)
+
+
+# code taken from PixStem
+def _find_phase(phase, rotation=None, max_phase=2 * np.pi):
+    if rotation is not None:
+        phase = (phase + math.radians(rotation))
+    phase = phase % max_phase
+    return phase

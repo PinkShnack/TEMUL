@@ -35,7 +35,9 @@
 
     
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Interactive Image Filtering" href="dg_visualiser_tutorial.html" />
+    <link rel="prev" title="Masked FFT and iFFT" href="masked_fft_tutorial.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -85,11 +87,23 @@
             
             
               <p class="caption"><span class="caption-text">Contents</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="using_temul.html">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Plotting Polarisation and Movement Vectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflows.html">Analysis Workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Finding Polarisation Vectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html#plotting-polarisation-and-movement-vectors">Plotting Polarisation and Movement Vectors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="structure_map_tutorial.html">Plot Lattice Structure Maps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PTO_supercrystal_hadjimichael.html">Calculation of Atom Plane Curvature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="masked_fft_tutorial.html">Masked FFT and iFFT</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Line Intensity Profile Comparisons</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#load-the-example-images">Load the Example Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#compare-two-line-profiles-in-one-image">Compare two Line Profiles in one Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#compare-two-images-with-line-profile">Compare two Images with Line Profile</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dg_visualiser_tutorial.html">Interactive Image Filtering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_doc.html">API documentation</a></li>
 </ul>
 
             
@@ -187,8 +201,8 @@ and simulated images.</p>
 choose points on the image. This time we use <code class="code python docutils literal notranslate"><span class="name"><span class="pre">choose_points_on_image</span></span></code>.
 We need to choose four points for the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">compare_images_line_profile_one_image</span></span></code>
 function, as it draws two line profiles over one image.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.signal_plotting</span> <span class="k">as</span> <span class="nn">tmlplt</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">line_profile_positions</span> <span class="o">=</span> <span class="n">tmlplt</span><span class="o">.</span><span class="n">choose_points_on_image</span><span class="p">(</span><span class="n">imageA</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.api</span> <span class="k">as</span> <span class="nn">tml</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">line_profile_positions</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">choose_points_on_image</span><span class="p">(</span><span class="n">imageA</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">line_profile_positions</span>
 <span class="go">[[61.75132848177407, 99.25182885155715],</span>
 <span class="go"> [178.97030854763057, 96.60281235289372],</span>
@@ -198,7 +212,7 @@ function, as it draws two line profiles over one image.</p>
 </div>
 <a class="reference internal image-reference" href="_images/choose_points_of_image_4points.gif"><img alt="_images/choose_points_of_image_4points.gif" class="align-center" src="_images/choose_points_of_image_4points.gif" style="width: 480.0px; height: 360.0px;" /></a>
 <p>Now run the comparison function to display the two line intensity profiles.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tmlplt</span><span class="o">.</span><span class="n">compare_images_line_profile_one_image</span><span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tml</span><span class="o">.</span><span class="n">compare_images_line_profile_one_image</span><span class="p">(</span>
 <span class="gp">... </span>            <span class="n">imageA</span><span class="p">,</span> <span class="n">line_profile_positions</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
 <span class="gp">... </span>            <span class="n">sampling</span><span class="o">=</span><span class="n">sampling</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">units</span><span class="p">,</span> <span class="n">arrow</span><span class="o">=</span><span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="n">linetrace</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
@@ -209,7 +223,7 @@ function, as it draws two line profiles over one image.</p>
 <h2>Compare two Images with Line Profile<a class="headerlink" href="#compare-two-images-with-line-profile" title="Permalink to this headline">¶</a></h2>
 <p>Using <code class="code python docutils literal notranslate"><span class="name"><span class="pre">choose_points_on_image</span></span></code>, we now choose two points on one image.
 Then, we plot this line intensity profile over the same position in two images.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">line_profile_positions</span> <span class="o">=</span> <span class="n">tmlplt</span><span class="o">.</span><span class="n">choose_points_on_image</span><span class="p">(</span><span class="n">imageA</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">line_profile_positions</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">choose_points_on_image</span><span class="p">(</span><span class="n">imageA</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">line_profile_positions</span>
 <span class="go">[[127.31448682369383, 46.93375300295452],</span>
 <span class="go"> [127.97674094835968, 176.7355614374623]]</span>
@@ -217,7 +231,7 @@ Then, we plot this line intensity profile over the same position in two images.<
 </div>
 <a class="reference internal image-reference" href="_images/choose_points_of_image_2points.gif"><img alt="_images/choose_points_of_image_2points.gif" class="align-center" src="_images/choose_points_of_image_2points.gif" style="width: 480.0px; height: 360.0px;" /></a>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">tmlplt</span><span class="o">.</span><span class="n">compare_images_line_profile_two_images</span><span class="p">(</span><span class="n">imageA</span><span class="p">,</span> <span class="n">imageB</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tml</span><span class="o">.</span><span class="n">compare_images_line_profile_two_images</span><span class="p">(</span><span class="n">imageA</span><span class="p">,</span> <span class="n">imageB</span><span class="p">,</span>
 <span class="gp">... </span>            <span class="n">line_profile_positions</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">reduce_func</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span>
 <span class="gp">... </span>            <span class="n">sampling</span><span class="o">=</span><span class="n">sampling</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">units</span><span class="p">,</span> <span class="n">crop_offset</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
 <span class="gp">... </span>            <span class="n">imageA_title</span><span class="o">=</span><span class="s2">&quot;Image A&quot;</span><span class="p">,</span> <span class="n">imageB_title</span><span class="o">=</span><span class="s2">&quot;Image B&quot;</span><span class="p">)</span>
@@ -232,6 +246,15 @@ Then, we plot this line intensity profile over the same position in two images.<
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="dg_visualiser_tutorial.html" class="btn btn-neutral float-right" title="Interactive Image Filtering" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="masked_fft_tutorial.html" class="btn btn-neutral float-left" title="Masked FFT and iFFT" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>

@@ -1,47 +1,15 @@
-'''
-
-NOT YET IMPLEMENTED
-
-# import all files in TEMUL/temul
-# Call this file if you have everything installed
-
-# from temul.dpc_4d_stem import
-from temul.model_creation import (
-    get_and_return_element,
-    atomic_radii_in_pixels,
-    scaling_z_contrast,
-    auto_generate_sublattice_element_list,
-    find_middle_and_edge_intensities,
-    find_middle_and_edge_intensities_for_background,
-    sort_sublattice_intensities,
-    assign_z_height,
-    print_sublattice_elements,
-    return_xyz_coordintes,
-    assign_z_height_to_sublattice,
-    create_dataframe_for_cif,
-    image_difference_intensity,
-    image_difference_position,
-)
 
 from temul.signal_processing import (
-    rigid_registration,
-    load_and_compare_images,
+    measure_image_errors, load_and_compare_images,
     compare_two_image_and_create_filtered_image,
-    double_gaussian_fft_filter,
+    double_gaussian_fft_filter, double_gaussian_fft_filter_optimised,
+    visualise_dg_filter,
     crop_image_hs,
     calibrate_intensity_distance_with_sublattice_roi,
     toggle_atom_refine_position_automatically,
-    get_sublattice_intensity,
-    remove_average_background,
-    remove_local_background
-)
-
-from temul.simulations import (
-    image_refine_via_intensity_loop,
-    image_refine_via_position_loop,
-    load_prismatic_mrc_with_hyperspy,
-    simulate_with_prismatic,
-    simulate_and_calibrate_with_prismatic
+    get_cell_image,
+    mean_and_std_nearest_neighbour_distances,
+    choose_mask_coordinates, get_masked_ifft,
 )
 
 from temul.io import (
@@ -54,12 +22,34 @@ from temul.io import (
     write_cif_from_dataframe
 )
 
-# from temul.spectroscopy import ()
+from temul.element_tools import (
+    get_and_return_element, atomic_radii_in_pixels, split_and_sort_element,
+    get_individual_elements_from_element_list, combine_element_lists,
+)
 
-import temul.example_data as example_data
+from temul.intensity_tools import (
+    get_sublattice_intensity, remove_average_background,
+    remove_local_background, get_pixel_count_from_image_slice,
+)
 
-import temul.dummy_data as dummy_data
+from temul.lattice_structure_tools import (
+    calculate_atom_plane_curvature,
+)
 
-from atomap.dummy_data import (
-    get_distorted_cubic_signal, get_distorted_cubic_sublattice)
-'''
+from temul.polarisation import (
+    find_polarisation_vectors, plot_polarisation_vectors, get_angles_from_uv,
+    get_vector_magnitudes, atom_deviation_from_straight_line_fit,
+    plot_atom_deviation_from_all_zone_axes,
+    combine_atom_deviations_from_zone_axes,
+    get_divide_into, get_average_polarisation_in_regions,
+    get_average_polarisation_in_regions_square, get_strain_map,
+    rotation_of_atom_planes, ratio_of_lattice_spacings,
+    get_polar_2d_colorwheel_color_list, correct_off_tilt_vectors,
+)
+
+from temul.signal_plotting import (
+    compare_images_line_profile_one_image,
+    compare_images_line_profile_two_images,
+    get_cropping_area, Sublattice_Hover_Intensity,
+    choose_points_on_image,
+)

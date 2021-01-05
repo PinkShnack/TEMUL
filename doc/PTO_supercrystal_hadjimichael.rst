@@ -11,16 +11,17 @@ This tutorial follows the python scripts and jupyter notebooks found in the
 "publication_examples/PTO_supercrystal_hadjimichael" folder in the
 `TEMUL repository <https://github.com/PinkShnack/TEMUL>`_. The data and scripts
 used below can be downloaded from there. You can also interact with the data
-without needing any downloads. Just click this button and navigate to that same folder:
+without needing any downloads. Just click this button and navigate to that same folder,
+where you will find the python scripts and interactive python notebooks:
 
 .. image:: https://mybinder.org/badge_logo.svg
     :target: https://mybinder.org/v2/gh/PinkShnack/TEMUL/master
 
 The :python:`calculate_atom_plane_curvature` function has been adapted from the
 MATLAB script written by Dr. Marios Hadjimichael for the publication
-"M. Hadjimichael *et al*, Metal-ferroelectric supercrystals with periodically
-curved metallic layers, 2020". This MATLAB script can also be
-found in the same folder.
+M. Hadjimichael *et al*, `Metal-ferroelectric supercrystals with periodically
+curved metallic layers, Nature Materials 2020 <https://www.nature.com/articles/s41563-020-00864-6>`_.
+This MATLAB script can also be found in the same folder.
 
 The :python:`calculate_atom_plane_curvature` function in the
 :python:`temul.lattice_structure_tools` module can be used to find the curvature of the
@@ -37,7 +38,7 @@ Import the Modules and Load the Data
 
 .. code-block:: python
 
-    >>> from temul.lattice_structure_tools import calculate_atom_plane_curvature
+    >>> import temul.api as tml
     >>> import atomap.api as am
     >>> import hyperspy.api as hs
     >>> import os
@@ -106,7 +107,7 @@ We want to see the curvature in the SRO Sublattice
 
 .. code-block:: python
 
-    >>> curvature_map = calculate_atom_plane_curvature(sublattice2, zone_vector_index,
+    >>> curvature_map = tml.calculate_atom_plane_curvature(sublattice2, zone_vector_index,
     ...                     sampling=sampling, units=units, cmap=cmap, title=title,
     ...                     atom_planes=atom_planes, **kwargs)
 
@@ -118,7 +119,7 @@ fittings, and plot each plane (plots not displayed).
 
 .. code-block:: python
 
-    >>> curvature_map, fittings = calculate_atom_plane_curvature(sublattice2,
+    >>> curvature_map, fittings = tml.calculate_atom_plane_curvature(sublattice2,
     ...                     zone_vector_index, sampling=sampling, units=units,
     ...                     cmap=cmap, title=title, atom_planes=atom_planes, **kwargs,
     ...                     plot_and_return_fits=True)

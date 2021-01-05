@@ -35,7 +35,9 @@
 
     
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Masked FFT and iFFT" href="masked_fft_tutorial.html" />
+    <link rel="prev" title="Plot Lattice Structure Maps" href="structure_map_tutorial.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -85,11 +87,23 @@
             
             
               <p class="caption"><span class="caption-text">Contents</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="using_temul.html">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Plotting Polarisation and Movement Vectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflows.html">Analysis Workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Finding Polarisation Vectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html#plotting-polarisation-and-movement-vectors">Plotting Polarisation and Movement Vectors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="structure_map_tutorial.html">Plot Lattice Structure Maps</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Calculation of Atom Plane Curvature</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#import-the-modules-and-load-the-data">Import the Modules and Load the Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#set-up-the-parameters">Set up the Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#calculate-the-curvature-of-atom-planes">Calculate the Curvature of Atom Planes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="masked_fft_tutorial.html">Masked FFT and iFFT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="line_profile_tutorial.html">Line Intensity Profile Comparisons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dg_visualiser_tutorial.html">Interactive Image Filtering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_doc.html">API documentation</a></li>
 </ul>
 
             
@@ -161,13 +175,14 @@
 “publication_examples/PTO_supercrystal_hadjimichael” folder in the
 <a class="reference external" href="https://github.com/PinkShnack/TEMUL">TEMUL repository</a>. The data and scripts
 used below can be downloaded from there. You can also interact with the data
-without needing any downloads. Just click this button and navigate to that same folder:</p>
+without needing any downloads. Just click this button and navigate to that same folder,
+where you will find the python scripts and interactive python notebooks:</p>
 <a class="reference external image-reference" href="https://mybinder.org/v2/gh/PinkShnack/TEMUL/master"><img alt="https://mybinder.org/badge_logo.svg" src="https://mybinder.org/badge_logo.svg" /></a>
 <p>The <code class="code python docutils literal notranslate"><span class="name"><span class="pre">calculate_atom_plane_curvature</span></span></code> function has been adapted from the
 MATLAB script written by Dr. Marios Hadjimichael for the publication
-“M. Hadjimichael <em>et al</em>, Metal-ferroelectric supercrystals with periodically
-curved metallic layers, 2020”. This MATLAB script can also be
-found in the same folder.</p>
+M. Hadjimichael <em>et al</em>, <a class="reference external" href="https://www.nature.com/articles/s41563-020-00864-6">Metal-ferroelectric supercrystals with periodically
+curved metallic layers, Nature Materials 2020</a>.
+This MATLAB script can also be found in the same folder.</p>
 <p>The <code class="code python docutils literal notranslate"><span class="name"><span class="pre">calculate_atom_plane_curvature</span></span></code> function in the
 <code class="code python docutils literal notranslate"><span class="name"><span class="pre">temul</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">lattice_structure_tools</span></span></code> module can be used to find the curvature of the
 displacement of atoms along an atom plane in a sublattice. Using the default
@@ -178,7 +193,7 @@ for more details. One can use any <code class="code python docutils literal notr
 <code class="code python docutils literal notranslate"><span class="name"><span class="pre">scipy</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">optimize</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">curve_fit</span></span></code>.</p>
 <div class="section" id="import-the-modules-and-load-the-data">
 <h2>Import the Modules and Load the Data<a class="headerlink" href="#import-the-modules-and-load-the-data" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.lattice_structure_tools</span> <span class="kn">import</span> <span class="n">calculate_atom_plane_curvature</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.api</span> <span class="k">as</span> <span class="nn">tml</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">atomap.api</span> <span class="k">as</span> <span class="nn">am</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">hyperspy.api</span> <span class="k">as</span> <span class="nn">hs</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
@@ -229,7 +244,7 @@ for more details. One can use any <code class="code python docutils literal notr
 <div class="section" id="calculate-the-curvature-of-atom-planes">
 <h2>Calculate the Curvature of Atom Planes<a class="headerlink" href="#calculate-the-curvature-of-atom-planes" title="Permalink to this headline">¶</a></h2>
 <p>We want to see the curvature in the SRO Sublattice</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">curvature_map</span> <span class="o">=</span> <span class="n">calculate_atom_plane_curvature</span><span class="p">(</span><span class="n">sublattice2</span><span class="p">,</span> <span class="n">zone_vector_index</span><span class="p">,</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">curvature_map</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">calculate_atom_plane_curvature</span><span class="p">(</span><span class="n">sublattice2</span><span class="p">,</span> <span class="n">zone_vector_index</span><span class="p">,</span>
 <span class="gp">... </span>                    <span class="n">sampling</span><span class="o">=</span><span class="n">sampling</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">units</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
 <span class="gp">... </span>                    <span class="n">atom_planes</span><span class="o">=</span><span class="n">atom_planes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
@@ -237,7 +252,7 @@ for more details. One can use any <code class="code python docutils literal notr
 <a class="reference internal image-reference" href="_images/Curvature_Map_Example.png"><img alt="_images/Curvature_Map_Example.png" src="_images/Curvature_Map_Example.png" style="width: 619.2px; height: 153.0px;" /></a>
 <p>When using <code class="code python docutils literal notranslate"><span class="name"><span class="pre">plot_and_return_fits</span></span><span class="operator"><span class="pre">=</span></span><span class="keyword constant"><span class="pre">True</span></span></code>, the function will return the curve
 fittings, and plot each plane (plots not displayed).</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">curvature_map</span><span class="p">,</span> <span class="n">fittings</span> <span class="o">=</span> <span class="n">calculate_atom_plane_curvature</span><span class="p">(</span><span class="n">sublattice2</span><span class="p">,</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">curvature_map</span><span class="p">,</span> <span class="n">fittings</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">calculate_atom_plane_curvature</span><span class="p">(</span><span class="n">sublattice2</span><span class="p">,</span>
 <span class="gp">... </span>                    <span class="n">zone_vector_index</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="n">sampling</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">units</span><span class="p">,</span>
 <span class="gp">... </span>                    <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">atom_planes</span><span class="o">=</span><span class="n">atom_planes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="gp">... </span>                    <span class="n">plot_and_return_fits</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -251,6 +266,15 @@ fittings, and plot each plane (plots not displayed).</p>
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="masked_fft_tutorial.html" class="btn btn-neutral float-right" title="Masked FFT and iFFT" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="structure_map_tutorial.html" class="btn btn-neutral float-left" title="Plot Lattice Structure Maps" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>

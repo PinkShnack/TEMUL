@@ -21,7 +21,7 @@ TEMUL package.
 
 .. code-block:: python
 
-    >>> import temul.signal_processing as tmlsig
+    >>> import temul.api as tml
     >>> from temul.example_data import load_Se_implanted_MoS2_data
     >>> image = load_Se_implanted_MoS2_data()
 
@@ -35,7 +35,7 @@ too for customisation.
 
 .. code-block:: python
 
-    >>> tmlsig.visualise_dg_filter(image)
+    >>> tml.visualise_dg_filter(image)
 
 .. image:: tutorial_images/dg_filter_tutorial/dg_visualiser.gif
     :scale: 50 %
@@ -60,7 +60,7 @@ the :python:`double_gaussian_fft_filter` function the return a filtered image.
 
 .. code-block:: python
 
-    >>> filtered_image = tmlsig.double_gaussian_fft_filter(image, 50, 150)
+    >>> filtered_image = tml.double_gaussian_fft_filter(image, 50, 150)
     >>> image.plot()
     >>> filtered_image.plot()
 
