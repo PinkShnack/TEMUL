@@ -34,6 +34,7 @@ Just navigate to whichever of these folders you want click on the ".ipynb" files
 
    install
    using_temul
+   workflows
    polarisation_vectors_tutorial
    structure_map_tutorial
    PTO_supercrystal_hadjimichael

@@ -76,6 +76,76 @@ def find_polarisation_vectors(atom_positions_A, atom_positions_B,
     return(u, v)
 
 
+def corrected_vectors_via_average(u, v):
+    u, v = np.asarray(u), np.asarray(v)
+    u_av_corr = u - np.mean(u)
+    v_av_corr = v - np.mean(v)
+    return(u_av_corr, v_av_corr)
+
+
+def _calc_2D_center_of_mass(u, v):
+    u, v = np.asarray(u), np.asarray(v)
+    r = (u**2 + v**2)**0.5
+    u_com = np.sum(u*r)/np.sum(r)
+    v_com = np.sum(v*r)/np.sum(r)
+    return(u_com, v_com)
+
+
+def corrected_vectors_via_center_of_mass(u, v):
+    u_com, v_com = _calc_2D_center_of_mass(u, v)
+    u_com_corr = u - u_com
+    v_com_corr = v - v_com
+    return(u_com_corr, v_com_corr)
+
+
+def correct_off_tilt_vectors(u, v, method="com"):
+    """ Useful if your image is off-tilt (electron beam is not perfectly
+    parallel to the atomic columns).
+
+    Parameters
+    ----------
+    u, v : 1D numpy arrays
+        horizontal and vertical components of the (polarisation) vectors.
+    method : string, default "com"
+        method used to correct the vector components. "com" is via the center
+        of mass of the vectors. "av" is via the average vector.
+
+    Returns
+    -------
+    u_corr, v_corr : corrected 1D numpy arrays
+
+    Examples
+    --------
+    >>> from temul.polarisation import correct_off_tilt_vectors
+    >>> from temul.dummy_data import get_polarisation_dummy_dataset
+    >>> atom_lattice = get_polarisation_dummy_dataset()
+    >>> sublatticeA = atom_lattice.sublattice_list[0]
+    >>> sublatticeB = atom_lattice.sublattice_list[1]
+    >>> sublatticeA.construct_zone_axes()
+    >>> za0, za1 = sublatticeA.zones_axis_average_distances[0:2]
+    >>> s_p = sublatticeA.get_polarization_from_second_sublattice(
+    ...     za0, za1, sublatticeB, color='blue')
+    >>> vector_list = s_p.metadata.vector_list
+    >>> x, y = [i[0] for i in vector_list], [i[1] for i in vector_list]
+    >>> u, v = [i[2] for i in vector_list], [i[3] for i in vector_list]
+
+    Correct for some tilt using the correct_off_tilt_vectors function:
+
+    >>> u_com, v_com = correct_off_tilt_vectors(u, v, method="com")
+
+    Use the average vector instead: (be careful that you're not just applying
+    this on previously corrected data!)
+
+    >>> u_av, v_av = correct_off_tilt_vectors(u, v, method="av")
+
+    """
+    if "com" in method.lower():
+        u_corr, v_corr = corrected_vectors_via_center_of_mass(u, v)
+    if "av" in method.lower():
+        u_corr, v_corr = corrected_vectors_via_average(u, v)
+    return(u_corr, v_corr)
+
+
 def plot_polarisation_vectors(
         x, y, u, v, image, sampling=None, units='pix',
         plot_style='vector', overlay=True, unit_vector=False,
