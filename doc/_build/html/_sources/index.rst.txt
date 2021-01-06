@@ -42,7 +42,6 @@ Just navigate to whichever of these folders you want click on the ".ipynb" files
    masked_fft_tutorial
    line_profile_tutorial
    dg_visualiser_tutorial
-   PTO_Junction_moore
    api_doc
 
 

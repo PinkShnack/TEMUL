@@ -24,6 +24,15 @@ Current functions:
    based off: J. Gonnissen *et al*, Direct Observation of Ferroelectric Domain Walls in
    LiNbO3: Wall‐Meanders, Kinks, and Local Electric Charges, 26, 42, 2016, DOI: 10.1002/adfm.201603489.
 
+These methods are also available as python scripts and jupyter notebooks in the 
+`TEMUL repository <https://github.com/PinkShnack/TEMUL>`_ in the 
+"code_tutorials/workflows" folder. You can interact with the workflows without needing any downloads.
+Just click the button below and navigate to that same folder,
+where you will find the python scripts and interactive python notebooks:
+
+.. image:: https://mybinder.org/badge_logo.svg
+    :target: https://mybinder.org/v2/gh/PinkShnack/TEMUL/master
+
 
 For standard Polarised Structures (e.g., PTO)
 ---------------------------------------------
