@@ -12,7 +12,7 @@ News
 16/02/2021: Version 0.1.3 released
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-First articles uses and citations for the TEMUL Toolkit.
+First articles uses and citations for the TEMUL Toolkit!
 This version updated the Publication Examples folder with two newly published
 articles. The folder contains interactive and raw code on how to reproduce the
 data in the publications. Congrats to those involved!
@@ -20,6 +20,7 @@ data in the publications. Congrats to those involved!
     * K. Moore *et al* `Highly charged 180 degree head-to-head domain walls in lead titanate, Nature Communications Physics 2020 <https://www.nature.com/articles/s42005-020-00488-x>`_
 If you have a question or issue with using the publication examples, please make
 an issue on `GitHub <https://github.com/PinkShnack/TEMUL/issues>`_.
+
 Code changes in this version:
     * The :python:`atom_deviation_from_straight_line_fit` function has been **corrected** and expanded. For a use case, see :ref:`Finding Polarisation Vectors <polarisation_vectors_tutorial>`
     * Corrected the :python:`plot_polarisation_vectors` function's vector quiver key.
@@ -28,6 +29,7 @@ Code changes in this version:
     * Added invert_y_axis param for plot_polarisation_vectors function, useful for testing if angles are displaying correctly.
     * :python:`plot_polarisation_vectors` function now returns a Matplotlib :python:`Axes` object, which can be used to further edit the layout/presentation of the plotted map.
     * Added functions to correct for possible off-zone tilt in the atomic columns. Use with caution.
+
 Documentation changes in this version:
     * Added documentation for :ref:`how to find the polarisation vectors <polarisation_vectors_tutorial>`.
     * Added "code_tutorials" ipynb (interactive Jupyter Notebook) examples. See the `GitHub repository <https://github.com/PinkShnack/TEMUL>`_ for downloads.
