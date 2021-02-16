@@ -702,15 +702,17 @@ def delete_atom_planes_from_sublattice(sublattice,
     >>> sublatticeA = atom_lattice.sublattice_list[0]
     >>> sublatticeA.construct_zone_axes()
     >>> zone_vec_list = sublatticeA.zones_axis_average_distances[0:2]
-    >>> # zones01_A = sublatticeA.get_all_atom_planes_by_zone_vector(
-    ... #     zone_vec_list)
-    >>> # zones01_A.plot()
+
+    Plot the planes visually using, it may take some time in large images:
+    zones01_A = sublatticeA.get_all_atom_planes_by_zone_vector(zone_vec_list)
+    zones01_A.plot()
+
     >>> delete_atom_planes_from_sublattice(
     ...         sublatticeA, zone_axis_index=0,
     ...         divisible_by=3, offset_from_zero=1)
-    >>> # zones01_B = sublatticeA.get_all_atom_planes_by_zone_vector(
-    ... #     zone_vec_list)
-    >>> # zones01_A.plot()
+
+    zones01_B = sublatticeA.get_all_atom_planes_by_zone_vector(zone_vec_list)
+    zones01_A.plot()
 
     '''
     sublattice.construct_zone_axes(atom_plane_tolerance=atom_plane_tolerance)
