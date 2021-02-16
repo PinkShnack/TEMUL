@@ -15,7 +15,7 @@ setup(
         'temul.external.atomap_devel_012.external',
         'temul.external.skimage_devel_0162',
     ],
-    version='0.1.2',
+    version='0.1.3',
     description='Functions for analysis of high resolution electron microscopy and spectroscopy data.',
     long_description=long_description,
     long_description_content_type='text/markdown',
