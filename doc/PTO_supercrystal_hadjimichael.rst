@@ -19,7 +19,7 @@ where you will find the python scripts and interactive python notebooks:
 
 The :python:`calculate_atom_plane_curvature` function has been adapted from the
 MATLAB script written by Dr. Marios Hadjimichael for the publication
-M. Hadjimichael *et al*, `Metal-ferroelectric supercrystals with periodically
+M. Hadjimichael, Y. Li *et al*, `Metal-ferroelectric supercrystals with periodically
 curved metallic layers, Nature Materials 2020 <https://www.nature.com/articles/s41563-020-00864-6>`_.
 This MATLAB script can also be found in the same folder.
 
