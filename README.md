@@ -31,5 +31,5 @@ If the button does not work, try [this link instead](https://mybinder.org/v2/gh/
 
 | Publication Details   | Folder Location in TEMUL  |
 | :------------------   | :-----------------------  |
-| M. Hadjimichael *et al*, [Metal-ferroelectric supercrystals with periodically curved metallic layers](https://www.nature.com/articles/s41563-020-00864-6), Nature Materials 2021        | publication_examples/PTO_supercrystal_hadjimichael              |
+| M. Hadjimichael, Y. Li *et al*, [Metal-ferroelectric supercrystals with periodically curved metallic layers](https://www.nature.com/articles/s41563-020-00864-6), Nature Materials 2021        | publication_examples/PTO_supercrystal_hadjimichael              |
 | K. Moore *et al* [Highly charged 180 degree head-to-head domain walls in lead titanate](https://www.nature.com/articles/s42005-020-00488-x), Nature Communications Physics 2020          | publication_examples/PTO_Junction_moore                         |
