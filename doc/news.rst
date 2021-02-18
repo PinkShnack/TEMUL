@@ -16,7 +16,7 @@ First articles uses and citations for the TEMUL Toolkit!
 This version updated the Publication Examples folder with two newly published
 articles. The folder contains interactive and raw code on how to reproduce the
 data in the publications. Congrats to those involved!
-    * M. Hadjimichael *et al*, `Metal-ferroelectric supercrystals with periodically curved metallic layers, Nature Materials 2020 <https://www.nature.com/articles/s41563-020-00864-6>`_
+    * M. Hadjimichael, Y. Li *et al*, `Metal-ferroelectric supercrystals with periodically curved metallic layers, Nature Materials 2020 <https://www.nature.com/articles/s41563-020-00864-6>`_
     * K. Moore *et al* `Highly charged 180 degree head-to-head domain walls in lead titanate, Nature Communications Physics 2020 <https://www.nature.com/articles/s42005-020-00488-x>`_
 If you have a question or issue with using the publication examples, please make
 an issue on `GitHub <https://github.com/PinkShnack/TEMUL/issues>`_.
