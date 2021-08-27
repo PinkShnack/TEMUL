@@ -24,7 +24,7 @@ from temul.signal_processing import (
     measure_image_errors
 )
 from temul.simulations import (
-    simulate_with_prismatic
+    simulate_with_prismatic, simulate_with_abtem
 )
 from temul.dummy_data import (
     get_simple_cubic_sublattice,
@@ -672,8 +672,59 @@ class Model_Refiner():
 
         self.update_element_count_and_refinement_history(refinement_method)
 
+    def create_file_for_simulation(self, sim_software="abtem"):
+        if sim_software == "pyprismatic":
+            create_dataframe_for_xyz(
+                sublattice_list=sublattice_list,
+                element_list=element_list,
+                x_size=x_size,
+                y_size=y_size,
+                z_size=z_size,
+                filename=filename + '_xyz_file',
+                header_comment=header_comment)
+        elif sim_software == "abtem":
+            # output .cif file of your data
+            # add the cif creation file here
+            pass
+
+    def _simulate_with_software(self, sim_software="abtem"):
+        if sim_software == "pyprismatic":
+            simulate_with_prismatic(
+                xyz_filename=filename + '_xyz_file.xyz',
+                filename=filename + '_mrc_file',
+                reference_image=reference_image,
+                probeStep=probeStep,
+                E0=E0,
+                integrationAngleMin=integrationAngleMin,
+                integrationAngleMax=integrationAngleMax,
+                detectorAngleStep=detectorAngleStep,
+                interpolationFactor=interpolationFactor,
+                realspacePixelSize=realspacePixelSize,
+                numFP=numFP,
+                cellDimXYZ=cellDimXYZ,
+                tileXYZ=tileXYZ,
+                probeSemiangle=probeSemiangle,
+                alphaBeamMax=alphaBeamMax,
+                scanWindowMin=scanWindowMin,
+                scanWindowMax=scanWindowMax,
+                algorithm=algorithm,
+                numThreads=numThreads)
+
+            simulation = load_prismatic_mrc_with_hyperspy(
+                'prism_2Doutput_' + filename + '_mrc_file.mrc', save_name=None)
+            return simulation
+
+        elif sim_software == "abtem":
+            # include abdtem script here that will simulate and return
+            # hyperspy 2d signal.
+            # measurement = simulate_with_abtem
+            # simulation = "convert numpy to hspy"
+            # return simulation
+            pass
+
     def create_simulation(
             self,
+            sim_software="abtem",
             sublattices='all',
             filter_image=False,
             calibrate_image=True,
@@ -773,41 +824,13 @@ class Model_Refiner():
             y_size = self.image_xyz_sizes[1]
             z_size = self.image_xyz_sizes[2]
 
-        create_dataframe_for_xyz(
-            sublattice_list=sublattice_list,
-            element_list=element_list,
-            x_size=x_size,
-            y_size=y_size,
-            z_size=z_size,
-            filename=filename + '_xyz_file',
-            header_comment=header_comment)
+        self.create_file_for_simulation(sim_software=sim_software)
 
         if reference_image == 'auto':
             reference_image = self.reference_image
 
-        simulate_with_prismatic(
-            xyz_filename=filename + '_xyz_file.xyz',
-            filename=filename + '_mrc_file',
-            reference_image=reference_image,
-            probeStep=probeStep,
-            E0=E0,
-            integrationAngleMin=integrationAngleMin,
-            integrationAngleMax=integrationAngleMax,
-            detectorAngleStep=detectorAngleStep,
-            interpolationFactor=interpolationFactor,
-            realspacePixelSize=realspacePixelSize,
-            numFP=numFP,
-            cellDimXYZ=cellDimXYZ,
-            tileXYZ=tileXYZ,
-            probeSemiangle=probeSemiangle,
-            alphaBeamMax=alphaBeamMax,
-            scanWindowMin=scanWindowMin,
-            scanWindowMax=scanWindowMax,
-            algorithm=algorithm,
-            numThreads=numThreads)
-
-        simulation = load_prismatic_mrc_with_hyperspy(
-            'prism_2Doutput_' + filename + '_mrc_file.mrc', save_name=None)
+        simulation = self._simulate_with_software(
+            self, sim_software=sim_software)
 
         if mask_radius == 'auto':
             mask_radius = np.mean(self.auto_mask_radius)

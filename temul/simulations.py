@@ -374,6 +374,18 @@ def simulate_with_prismatic(xyz_filename,
     pr_sim.go()
 
 
+def simulate_with_abtem():
+    # do the deed
+    # return measurement
+
+    # convert_abtem_simulation_to_hspy_signal
+    pass
+
+
+def convert_abtem_simulation_to_hspy_signal():
+    pass
+
+
 # Purpose built for an in-house use-case
 def image_refine_via_intensity_loop(atom_lattice,
                                     change_sublattice,
