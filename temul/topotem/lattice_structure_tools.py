@@ -56,18 +56,22 @@ def calculate_atom_plane_curvature(sublattice, zone_vector_index,
     --------
     >>> from temul.dummy_data import sine_wave_sublattice
     >>> import temul.api as tml
+    >>> import matplotlib.pyplot as plt
     >>> sublattice = sine_wave_sublattice()
     >>> sublattice.construct_zone_axes(atom_plane_tolerance=1)
     >>> sublattice.plot()
+    >>> plt.close('all')
     >>> sampling = 0.05 #  nm/pix
     >>> cmap='bwr'
     >>> curvature_map = tml.calculate_atom_plane_curvature(sublattice,
     ...         zone_vector_index=0, sampling=sampling, units='nm', cmap=cmap)
+    >>> plt.close('all')
 
     Just compute several atom planes:
 
     >>> curvature_map = tml.calculate_atom_plane_curvature(sublattice, 0,
     ...         atom_planes=(0,3), sampling=sampling, units='nm', cmap=cmap)
+    >>> plt.close('all')
 
     You can also provide initial fitting estimations via scipy's curve_fit:
 
@@ -77,6 +81,7 @@ def calculate_atom_plane_curvature(sublattice, zone_vector_index,
     ...     sublattice, zone_vector_index=0, atom_planes=(0,3),
     ...     sampling=sampling, units='nm', cmap=cmap, **kwargs,
     ...     plot_and_return_fits=True)
+    >>> plt.close('all')
 
     Returns
     -------

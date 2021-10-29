@@ -27,7 +27,7 @@ Import the Modules and Load the Data
 
 .. code-block:: python
 
-    >>> import temul.polarisation as tmlp
+    >>> import temul.api as tml
     >>> import temul.signal_plotting as tmlplt
     >>> import atomap.api as am
     >>> import hyperspy.api as hs
@@ -209,7 +209,7 @@ off zone).
 
 .. code-block:: python
 
-    >>> tmlp.plot_polarisation_vectors(
+    >>> tml.plot_polarisation_vectors(
     ...     x=x, y=y, u=u, v=v, image=image.data,
     ...     sampling=sampling, units=units, unit_vector=False, overlay=True,
     ...     color='yellow', plot_style='vector', title='Polarisation',
@@ -224,7 +224,7 @@ Plot the angle information as a colorwheel
 .. code-block:: python
 
     >>> plt.style.use("grayscale")
-    >>> tmlp.plot_polarisation_vectors(
+    >>> tml.plot_polarisation_vectors(
     ...     x=x, y=y, u=u, v=v, image=image.data, save=None,
     ...     sampling=sampling, units=units, unit_vector=True, overlay=True,
     ...     color='yellow', plot_style='colorwheel', title='Polarisation',

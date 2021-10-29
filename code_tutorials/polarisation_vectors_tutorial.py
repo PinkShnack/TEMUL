@@ -2,7 +2,7 @@
 # Plotting Polarisation and Movement Vectors
 
 '''
-The :python:`temul.polarisation` module allows one to visualise the
+The :python:`temul.topotem.polarisation` module allows one to visualise the
 polarisation/movement of atoms in an atomic resolution image. In this tutorial,
 we will use a dummy dataset to show the different ways the :python:`plot_polarisation_vectors`
 function can display data. In future, tutorials on published experimental data
@@ -11,10 +11,10 @@ will also be available.
 
 ## Prepare and Plot the dummy dataset
 
-%matplotlib nbagg
-
-from temul.polarisation import plot_polarisation_vectors
+import temul.api as tml
 from temul.dummy_data import get_polarisation_dummy_dataset
+
+
 atom_lattice = get_polarisation_dummy_dataset(image_noise=True)
 sublatticeA = atom_lattice.sublattice_list[0]
 sublatticeB = atom_lattice.sublattice_list[1]

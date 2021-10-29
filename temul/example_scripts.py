@@ -1149,7 +1149,7 @@ refiner.plot_error_between_comparison_and_reference_image(style='scatter')
 
 ####################
 
-import temul.polarisation as tmlpol
+import temul.api as tml
 '''
 
 

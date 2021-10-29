@@ -12,7 +12,7 @@ Communications Physics, 2020.
 '''
 
 import matplotlib.pyplot as plt
-import temul.polarisation as tmlp
+import temul.api as tml
 import temul.signal_plotting as tmlplt
 import atomap.api as am
 import hyperspy.api as hs
@@ -130,7 +130,7 @@ x, y = atom_positions_actual.T.tolist()
 
 # Plot the polarisation vectors (zoom in to get a better look, the top left is
 # off zone).
-tmlp.plot_polarisation_vectors(
+tml.plot_polarisation_vectors(
     x=x, y=y, u=u, v=v, image=image.data,
     sampling=sampling, units=units, unit_vector=False, overlay=True,
     color='yellow', plot_style='vector', title='Polarisation',
@@ -138,7 +138,7 @@ tmlp.plot_polarisation_vectors(
 
 # Plot the angle information as a colorwheel
 plt.style.use("grayscale")
-tmlp.plot_polarisation_vectors(
+tml.plot_polarisation_vectors(
     x=x, y=y, u=u, v=v, image=image.data, save=None,
     sampling=sampling, units=units, unit_vector=True, overlay=True,
     color='yellow', plot_style='colorwheel', title='Polarisation',

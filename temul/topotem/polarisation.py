@@ -32,7 +32,7 @@ def find_polarisation_vectors(atom_positions_A, atom_positions_B,
 
     Examples
     --------
-    >>> from temul.polarisation import find_polarisation_vectors
+    >>> from temul.topotem.polarisation import find_polarisation_vectors
     >>> pos_A = [[1,2], [3,4], [5,8], [5,2]]
     >>> pos_B = [[1,1], [5,2], [3,1], [6,2]]
     >>> u, v = find_polarisation_vectors(pos_A, pos_B, save=None)
@@ -116,7 +116,7 @@ def correct_off_tilt_vectors(u, v, method="com"):
 
     Examples
     --------
-    >>> from temul.polarisation import correct_off_tilt_vectors
+    >>> from temul.topotem.polarisation import correct_off_tilt_vectors
     >>> from temul.dummy_data import get_polarisation_dummy_dataset
     >>> atom_lattice = get_polarisation_dummy_dataset()
     >>> sublatticeA = atom_lattice.sublattice_list[0]
@@ -256,7 +256,7 @@ def plot_polarisation_vectors(
 
     Examples
     --------
-    >>> from temul.polarisation import plot_polarisation_vectors
+    >>> import temul.api as tml
     >>> from temul.dummy_data import get_polarisation_dummy_dataset
     >>> atom_lattice = get_polarisation_dummy_dataset()
     >>> sublatticeA = atom_lattice.sublattice_list[0]
@@ -271,7 +271,7 @@ def plot_polarisation_vectors(
 
     vector plot with red arrows:
 
-    >>> ax = plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    >>> ax = tml.plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           unit_vector=False, save=None,
     ...                           plot_style='vector', color='r',
     ...                           overlay=False, title='Vector Arrows',
@@ -279,21 +279,21 @@ def plot_polarisation_vectors(
 
     vector plot with red arrows overlaid on the image:
 
-    >>> ax = plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    >>> ax = tml.plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           unit_vector=False, save=None,
     ...                           plot_style='vector', color='r',
     ...                           overlay=True, monitor_dpi=50)
 
     vector plot with colormap viridis:
 
-    >>> ax = plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    >>> ax = tml.plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           unit_vector=False, save=None,
     ...                           plot_style='colormap', monitor_dpi=50,
     ...                           overlay=False, cmap='viridis')
 
     vector plot with colormap viridis, with `vector_rep="angle"`:
 
-    >>> ax = plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    >>> ax = tml.plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           unit_vector=False, save=None,
     ...                           plot_style='colormap', monitor_dpi=50,
     ...                           overlay=False, cmap='cet_colorwheel',
@@ -301,7 +301,7 @@ def plot_polarisation_vectors(
 
     colormap arrows with sampling applied and with scalebar:
 
-    >>> ax = plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    >>> ax = tml.plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           sampling=3.0321, units='pm', monitor_dpi=50,
     ...                           unit_vector=False, plot_style='colormap',
     ...                           overlay=True, save=None, cmap='viridis',
@@ -309,14 +309,14 @@ def plot_polarisation_vectors(
 
     vector plot with colormap viridis and unit vectors:
 
-    >>> ax = plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    >>> ax = tml.plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           unit_vector=True, save=None, monitor_dpi=50,
     ...                           plot_style='colormap', color='r',
     ...                           overlay=False, cmap='viridis')
 
     Change the vectors to unit vectors on a tricontourf map:
 
-    >>> ax = plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    >>> ax = tml.plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           unit_vector=True, plot_style='contour',
     ...                           overlay=False, pivot='middle', save=None,
     ...                           color='darkgray', cmap='plasma',
@@ -324,7 +324,7 @@ def plot_polarisation_vectors(
 
     Plot a partly transparent angle tricontourf map with vector arrows:
 
-    >>> ax = plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    >>> ax = tml.plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           unit_vector=False, plot_style='contour',
     ...                           overlay=True, pivot='middle', save=None,
     ...                           color='red', cmap='cet_colorwheel',
@@ -335,7 +335,7 @@ def plot_polarisation_vectors(
 
     Plot a partly transparent angle tricontourf map with no vector arrows:
 
-    >>> ax = plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    >>> ax = tml.plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           unit_vector=True, plot_style='contour',
     ...                           overlay=True, pivot='middle', save=None,
     ...                           cmap='cet_colorwheel',
@@ -346,7 +346,7 @@ def plot_polarisation_vectors(
     "colorwheel" plot of the vectors, useful for vortexes:
 
     >>> import colorcet as cc
-    >>> ax = plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    >>> ax = tml.plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           unit_vector=True, plot_style="colorwheel",
     ...                           vector_rep="angle",
     ...                           overlay=False, cmap=cc.cm.colorwheel,
@@ -355,7 +355,7 @@ def plot_polarisation_vectors(
 
     "polar_colorwheel" plot showing a 2D polar color wheel:
 
-    >>> ax = plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    >>> ax = tml.plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           plot_style="polar_colorwheel",
     ...                           unit_vector=False, overlay=False,
     ...                           save=None, monitor_dpi=50)
@@ -365,7 +365,7 @@ def plot_polarisation_vectors(
 
     >>> scbar_dict = {"dx": 3.0321, "units": "pm", "location": "lower left",
     ...               "box_alpha":0.0, "color": "black", "scale_loc": "top"}
-    >>> ax = plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    >>> ax = tml.plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           sampling=3.0321, units='pm', monitor_dpi=50,
     ...                           unit_vector=False, plot_style='colormap',
     ...                           overlay=False, save=None, cmap='viridis',
@@ -380,7 +380,7 @@ def plot_polarisation_vectors(
     >>> expanded_zest = tmlplot.expand_palette(zest, [1,2,2,2,1])
     >>> custom_cmap, _ = from_levels_and_colors(
     ...     levels=range(9), colors=tmlplot.rgb_to_dec(expanded_zest))
-    >>> ax = plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    >>> ax = tml.plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           unit_vector=False, plot_style='contour',
     ...                           overlay=False, pivot='middle', save=None,
     ...                           cmap=custom_cmap, levels=9, monitor_dpi=50,
@@ -638,7 +638,7 @@ def get_vector_magnitudes(u, v, sampling=None):
 
     Examples
     --------
-    >>> from temul.polarisation import get_vector_magnitudes
+    >>> from temul.topotem.polarisation import get_vector_magnitudes
     >>> import numpy as np
     >>> u, v = [4,3,2,5,6], [8,5,2,1,1] # list input
     >>> vector_mags = get_vector_magnitudes(u,v)
@@ -696,7 +696,7 @@ def delete_atom_planes_from_sublattice(sublattice,
 
     Examples
     --------
-    >>> from temul.polarisation import delete_atom_planes_from_sublattice
+    >>> from temul.topotem.polarisation import delete_atom_planes_from_sublattice
     >>> import atomap.dummy_data as dd
     >>> atom_lattice = dd.get_polarization_film_atom_lattice()
     >>> sublatticeA = atom_lattice.sublattice_list[0]
@@ -1084,7 +1084,7 @@ def full_atom_plane_deviation_from_straight_line_fit(sublattice,
     Examples
     --------
     >>> import atomap.api as am
-    >>> from temul.polarisation import (
+    >>> from temul.topotem.polarisation import (
     ...     full_atom_plane_deviation_from_straight_line_fit,
     ...     plot_polarisation_vectors)
     >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
@@ -1205,7 +1205,7 @@ def plot_atom_deviation_from_all_zone_axes(
     Examples
     --------
     >>> import atomap.api as am
-    >>> from temul.polarisation import plot_atom_deviation_from_all_zone_axes
+    >>> from temul.topotem.polarisation import plot_atom_deviation_from_all_zone_axes
     >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
     >>> sublatticeA = atom_lattice.sublattice_list[0]
     >>> sublatticeA.find_nearest_neighbors()
@@ -1270,7 +1270,7 @@ def combine_atom_deviations_from_zone_axes(
     --------
 
     >>> import atomap.api as am
-    >>> from temul.polarisation import (plot_polarisation_vectors,
+    >>> from temul.topotem.polarisation import (plot_polarisation_vectors,
     ...     combine_atom_deviations_from_zone_axes)
     >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
     >>> sublatticeA = atom_lattice.sublattice_list[0]
@@ -1379,7 +1379,7 @@ def get_divide_into(sublattice, averaging_by, sampling,
     '''
     Calculate the `divide_into` required to get an averaging of `averaging_by`.
     `divide_into` can then be used in
-    temul.polarisation.get_average_polarisation_in_regions.
+    temul.topotem.polarisation.get_average_polarisation_in_regions.
     Also finds unit cell size and the number of unit cells in the (square)
     image along the x axis.
 
@@ -1389,7 +1389,7 @@ def get_divide_into(sublattice, averaging_by, sampling,
     averaging_by : int or float
         How many unit cells should be averaged. If `averaging_by=2`, 2x2 unit
         cells will be averaged when passing `divide_into` to
-        temul.polarisation.get_average_polarisation_in_regions.
+        temul.topotem.polarisation.get_average_polarisation_in_regions.
     sampling : float
         Pixel sampling of the image for calibration.
     zone_axis_index_A, zone_axis_index_B : int
@@ -1403,7 +1403,7 @@ def get_divide_into(sublattice, averaging_by, sampling,
     Examples
     --------
 
-    >>> from temul.polarisation import get_divide_into
+    >>> from temul.topotem.polarisation import get_divide_into
     >>> from atomap.dummy_data import get_simple_cubic_sublattice
     >>> sublattice = get_simple_cubic_sublattice()
     >>> sublattice.construct_zone_axes()
@@ -1475,7 +1475,7 @@ def get_average_polarisation_in_regions(x, y, u, v, image, divide_into=8):
     >>> import matplotlib.pyplot as plt
     >>> import numpy as np
     >>> import atomap.api as am
-    >>> from temul.polarisation import (
+    >>> from temul.topotem.polarisation import (
     ...    combine_atom_deviations_from_zone_axes,
     ...    plot_polarisation_vectors, get_average_polarisation_in_regions)
     >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
@@ -1576,7 +1576,7 @@ def get_average_polarisation_in_regions_square(x, y, u, v, image,
     Examples
     --------
     >>> import atomap.api as am
-    >>> from temul.polarisation import (
+    >>> from temul.topotem.polarisation import (
     ...     combine_atom_deviations_from_zone_axes, plot_polarisation_vectors,
     ...     get_average_polarisation_in_regions_square)
     >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
@@ -1691,7 +1691,7 @@ def get_strain_map(sublattice, zone_axis_index, theoretical_value,
     Examples
     --------
     >>> import atomap.api as am
-    >>> from temul.polarisation import get_strain_map
+    >>> from temul.topotem.polarisation import get_strain_map
     >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
     >>> sublatticeA = atom_lattice.sublattice_list[0]
     >>> sublatticeA.find_nearest_neighbors()
@@ -1796,7 +1796,7 @@ def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
     Examples
     --------
     >>> import atomap.api as am
-    >>> from temul.polarisation import rotation_of_atom_planes
+    >>> from temul.topotem.polarisation import rotation_of_atom_planes
     >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
     >>> sublatticeA = atom_lattice.sublattice_list[1]
     >>> sublatticeA.find_nearest_neighbors()
@@ -1928,7 +1928,7 @@ def ratio_of_lattice_spacings(sublattice, zone_axis_index_A, zone_axis_index_B,
     Examples
     --------
     >>> import atomap.api as am
-    >>> from temul.polarisation import ratio_of_lattice_spacings
+    >>> from temul.topotem.polarisation import ratio_of_lattice_spacings
     >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
     >>> sublatticeA = atom_lattice.sublattice_list[0]
     >>> sublatticeA.find_nearest_neighbors()
@@ -2069,7 +2069,7 @@ def atom_to_atom_distance_grouped_mean(sublattice, zone_axis_index,
     >>> import numpy as np
     >>> from atomap.dummy_data import get_distorted_cubic_sublattice
     >>> import matplotlib.pyplot as plt
-    >>> from temul.polarisation import atom_to_atom_distance_grouped_mean
+    >>> from temul.topotem.polarisation import atom_to_atom_distance_grouped_mean
     >>> sublatticeA = get_distorted_cubic_sublattice()
     >>> sublatticeA.construct_zone_axes(atom_plane_tolerance=1)
     >>> sublatticeA.plot()
