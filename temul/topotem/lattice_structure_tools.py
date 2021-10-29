@@ -11,7 +11,8 @@ def calculate_atom_plane_curvature(sublattice, zone_vector_index,
                                    sampling=None, units='pix', vmin=None,
                                    vmax=None, cmap='inferno',
                                    title='Curvature Map', filename=None,
-                                   plot_and_return_fits=False, **kwargs):
+                                   plot=False, return_fits=False,
+                                   **kwargs):
     """
     Calculates the curvature of the sublattice atom planes along the direction
     given by `zone_vector_index`. In the case of [1] below, the curvature is
@@ -31,8 +32,8 @@ def calculate_atom_plane_curvature(sublattice, zone_vector_index,
     func : 'strain_grad' or function
         Function that can be used by `scipy.optimize.curve_fit`. If
         func='strain_grad', then the
-        `temul.lattice_structure_tools.sine_wave_function_strain_gradient` function
-        will be used.
+        `temul.topotem.lattice_structure_tools.sine_wave_function_strain_gradient`
+        function will be used.
     atom_planes : tuple, optional
         The starting and ending atom plane to be computed. Useful if only a
         section of the image should be fitted with sine waves. Given in the
@@ -45,7 +46,7 @@ def calculate_atom_plane_curvature(sublattice, zone_vector_index,
     title : string, default 'Curvature Map'
     filename : string, default None
         Name of the file to be saved.
-    plot_and_return_fits : Bool, default False
+    plot, return_fits : Bool, default False
         If set to True, each atom plane fitting will be plotted along with its
         respective atom positions. The fitting parameters (popt) will be
         returned as a list.
@@ -56,22 +57,18 @@ def calculate_atom_plane_curvature(sublattice, zone_vector_index,
     --------
     >>> from temul.dummy_data import sine_wave_sublattice
     >>> import temul.api as tml
-    >>> import matplotlib.pyplot as plt
     >>> sublattice = sine_wave_sublattice()
     >>> sublattice.construct_zone_axes(atom_plane_tolerance=1)
     >>> sublattice.plot()
-    >>> plt.close('all')
     >>> sampling = 0.05 #  nm/pix
     >>> cmap='bwr'
     >>> curvature_map = tml.calculate_atom_plane_curvature(sublattice,
     ...         zone_vector_index=0, sampling=sampling, units='nm', cmap=cmap)
-    >>> plt.close('all')
 
     Just compute several atom planes:
 
     >>> curvature_map = tml.calculate_atom_plane_curvature(sublattice, 0,
     ...         atom_planes=(0,3), sampling=sampling, units='nm', cmap=cmap)
-    >>> plt.close('all')
 
     You can also provide initial fitting estimations via scipy's curve_fit:
 
@@ -79,9 +76,7 @@ def calculate_atom_plane_curvature(sublattice, zone_vector_index,
     >>> kwargs = {'p0': p0}
     >>> curvature_map, fittings = tml.calculate_atom_plane_curvature(
     ...     sublattice, zone_vector_index=0, atom_planes=(0,3),
-    ...     sampling=sampling, units='nm', cmap=cmap, **kwargs,
-    ...     plot_and_return_fits=True)
-    >>> plt.close('all')
+    ...     sampling=sampling, units='nm', cmap=cmap, return_fits=True, **kwargs)
 
     Returns
     -------
@@ -127,8 +122,9 @@ def calculate_atom_plane_curvature(sublattice, zone_vector_index,
                                 np.asarray(atom_plane.x_position),
                                 dx=1e-6, n=2, args=(params))
 
-        if plot_and_return_fits:
+        if return_fits:
             fittings_list.append(params)
+        if plot:
             plt.figure()
             plt.scatter(atom_plane.x_position, atom_plane.y_position)
             plt.plot(atom_plane.x_position,
@@ -151,28 +147,29 @@ def calculate_atom_plane_curvature(sublattice, zone_vector_index,
     curvature_map.axes_manager[0].units = units
     curvature_map.axes_manager[1].units = units
 
-    curvature_map.plot(vmin=vmin, vmax=vmax, cmap=cmap,
-                       colorbar=False)
-    # need to put in colorbar axis units like in get_strain_map
-    plt.gca().axes.get_xaxis().set_visible(False)
-    plt.gca().axes.get_yaxis().set_visible(False)
-    plt.title("{} of Index {}".format(title, zone_vector_index))
-    cbar = ScalarMappable(cmap=cmap)
-    cbar.set_array(curvature)
-    cbar.set_clim(vmin, vmax)
-    plt.colorbar(cbar, fraction=0.046, pad=0.04,
-                 label=f"Curvature (1/{units})")
-    plt.tight_layout()
+    if plot:
+        curvature_map.plot(vmin=vmin, vmax=vmax, cmap=cmap,
+                           colorbar=False)
+        # need to put in colorbar axis units like in get_strain_map
+        plt.gca().axes.get_xaxis().set_visible(False)
+        plt.gca().axes.get_yaxis().set_visible(False)
+        plt.title("{} of Index {}".format(title, zone_vector_index))
+        cbar = ScalarMappable(cmap=cmap)
+        cbar.set_array(curvature)
+        cbar.set_clim(vmin, vmax)
+        plt.colorbar(cbar, fraction=0.046, pad=0.04,
+                     label=f"Curvature (1/{units})")
+        plt.tight_layout()
 
-    if filename is not None:
-        plt.savefig(fname="{}_{}_{}.png".format(
-            filename, title, zone_vector_index),
-            transparent=True, frameon=False, bbox_inches='tight',
-            pad_inches=None, dpi=300, labels=False)
-        curvature_map.save("{}_{}_{}.hspy".format(
-            filename, title, zone_vector_index))
+        if filename is not None:
+            plt.savefig(fname="{}_{}_{}.png".format(
+                filename, title, zone_vector_index),
+                transparent=True, frameon=False, bbox_inches='tight',
+                pad_inches=None, dpi=300, labels=False)
+            curvature_map.save("{}_{}_{}.hspy".format(
+                filename, title, zone_vector_index))
 
-    if plot_and_return_fits:
+    if return_fits:
         return(curvature_map, fittings_list)
     else:
         return(curvature_map)
