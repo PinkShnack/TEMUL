@@ -36,7 +36,7 @@ from temul.lattice_structure_tools import (
     calculate_atom_plane_curvature,
 )
 
-from temul.polarisation import (
+from temul.topotem import (
     find_polarisation_vectors, plot_polarisation_vectors, get_angles_from_uv,
     get_vector_magnitudes, atom_deviation_from_straight_line_fit,
     plot_atom_deviation_from_all_zone_axes,
