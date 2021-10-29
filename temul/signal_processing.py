@@ -1,10 +1,8 @@
 
 from temul.element_tools import split_and_sort_element
-from temul.topotem import choose_points_on_image
-
 from temul.external.atomap_devel_012.sublattice import Sublattice
 from temul.external.atomap_devel_012.atom_finding_refining import (
-    get_atom_positions, _make_circular_mask)
+    get_atom_positions)
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -19,7 +17,6 @@ import numpy as np
 from numpy import mean
 import hyperspy.api as hs
 from hyperspy.roi import RectangularROI
-from hyperspy._signals.complex_signal2d import ComplexSignal2D
 from hyperspy._signals.signal2d import Signal2D
 import pandas as pd
 import copy
