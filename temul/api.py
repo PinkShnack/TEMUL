@@ -9,7 +9,6 @@ from temul.signal_processing import (
     toggle_atom_refine_position_automatically,
     get_cell_image,
     mean_and_std_nearest_neighbour_distances,
-    choose_mask_coordinates, get_masked_ifft,
 )
 
 from temul.io import (
@@ -32,7 +31,11 @@ from temul.intensity_tools import (
     remove_local_background, get_pixel_count_from_image_slice,
 )
 
-from temul.lattice_structure_tools import (
+from temul.topotem.fft_mapping import (
+    choose_mask_coordinates, get_masked_ifft,
+)
+
+from temul.topotem.lattice_structure_tools import (
     calculate_atom_plane_curvature,
 )
 
@@ -51,5 +54,4 @@ from temul.signal_plotting import (
     compare_images_line_profile_one_image,
     compare_images_line_profile_two_images,
     get_cropping_area, Sublattice_Hover_Intensity,
-    choose_points_on_image,
 )

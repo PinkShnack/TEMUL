@@ -8,7 +8,7 @@ from temul.external.atomap_devel_012.atom_finding_refining import (
     _make_circular_mask)
 
 
-def _choose_points_on_image(image, norm='linear', distance_threshold=4):
+def choose_points_on_image(image, norm='linear', distance_threshold=4):
 
     coords = add_atoms_with_gui(image=image, norm=norm,
                                 distance_threshold=distance_threshold)
@@ -36,7 +36,7 @@ def choose_mask_coordinates(image, norm="log"):
     fft = image.fft(shift=True)
     fft_amp = fft.amplitude
 
-    mask_coords = _choose_points_on_image(
+    mask_coords = choose_points_on_image(
         fft_amp.data, norm=norm)
 
     return mask_coords

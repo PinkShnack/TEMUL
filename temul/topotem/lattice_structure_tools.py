@@ -4,7 +4,6 @@ from scipy.optimize import curve_fit
 from scipy.misc import derivative
 import matplotlib.pyplot as plt
 from matplotlib.cm import ScalarMappable
-from temul.signal_processing import sine_wave_function_strain_gradient
 
 
 def calculate_atom_plane_curvature(sublattice, zone_vector_index,
@@ -32,7 +31,7 @@ def calculate_atom_plane_curvature(sublattice, zone_vector_index,
     func : 'strain_grad' or function
         Function that can be used by `scipy.optimize.curve_fit`. If
         func='strain_grad', then the
-        `temul.signal_processing.sine_wave_function_strain_gradient` function
+        `temul.lattice_structure_tools.sine_wave_function_strain_gradient` function
         will be used.
     atom_planes : tuple, optional
         The starting and ending atom plane to be computed. Useful if only a
@@ -172,3 +171,7 @@ def calculate_atom_plane_curvature(sublattice, zone_vector_index,
         return(curvature_map, fittings_list)
     else:
         return(curvature_map)
+
+
+def sine_wave_function_strain_gradient(x, a, b, c, d):
+    return a * np.sin((2 * np.pi * (x + b)) / c) + d

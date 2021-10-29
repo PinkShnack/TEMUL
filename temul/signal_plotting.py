@@ -697,13 +697,6 @@ def expand_palette(palette, expand_list):
     return expanded_palette
 
 
-def choose_points_on_image(image, norm='linear', distance_threshold=4):
-
-    coords = add_atoms_with_gui(image=image, norm=norm,
-                                distance_threshold=distance_threshold)
-    return coords
-
-
 def create_rgb_array():
     # make the 2(3)D RGB color array that is 360*100*3
     V, H = np.mgrid[0:1:100j, 0:1:360j]
