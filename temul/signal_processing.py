@@ -1441,9 +1441,9 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
     >>> image.plot()
     >>> crop_a = tml.choose_points_on_image(image.data) #  manually
     >>> crop_a = [[10,10],[100,100]] #  use above line if trying yourself!
-    >>> # tml.calibrate_intensity_distance_with_sublattice_roi(
-    ... #     image, crop_a, 10)
-    >>> # image.plot()
+
+    # tml.calibrate_intensity_distance_with_sublattice_roi(
+    #    image, crop_a, 10)
 
     '''
     llim, tlim = cropping_area[0]
