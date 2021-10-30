@@ -1,4 +1,3 @@
-
 import hyperspy
 import numpy as np
 import scipy
@@ -66,36 +65,36 @@ def find_polarisation_vectors(atom_positions_A, atom_positions_B,
         i = i + delta
 
     # Separate the created list into u (u=dx) and v (v=dy)
-        #   u and v are notation used by the ax.quiver plotting tool
+    #   u and v are notation used by the ax.quiver plotting tool
     u = [row[0] for row in u_v_component_list]
     v = [row[1] for row in u_v_component_list]
 
     if save is not None:
         np.save(save + '.npy', u_v_component_list)
 
-    return(u, v)
+    return (u, v)
 
 
 def corrected_vectors_via_average(u, v):
     u, v = np.asarray(u), np.asarray(v)
     u_av_corr = u - np.mean(u)
     v_av_corr = v - np.mean(v)
-    return(u_av_corr, v_av_corr)
+    return (u_av_corr, v_av_corr)
 
 
 def _calc_2D_center_of_mass(u, v):
     u, v = np.asarray(u), np.asarray(v)
-    r = (u**2 + v**2)**0.5
-    u_com = np.sum(u*r)/np.sum(r)
-    v_com = np.sum(v*r)/np.sum(r)
-    return(u_com, v_com)
+    r = (u ** 2 + v ** 2) ** 0.5
+    u_com = np.sum(u * r) / np.sum(r)
+    v_com = np.sum(v * r) / np.sum(r)
+    return (u_com, v_com)
 
 
 def corrected_vectors_via_center_of_mass(u, v):
     u_com, v_com = _calc_2D_center_of_mass(u, v)
     u_com_corr = u - u_com
     v_com_corr = v - v_com
-    return(u_com_corr, v_com_corr)
+    return (u_com_corr, v_com_corr)
 
 
 def correct_off_tilt_vectors(u, v, method="com"):
@@ -143,7 +142,7 @@ def correct_off_tilt_vectors(u, v, method="com"):
         u_corr, v_corr = corrected_vectors_via_center_of_mass(u, v)
     if "av" in method.lower():
         u_corr, v_corr = corrected_vectors_via_average(u, v)
-    return(u_corr, v_corr)
+    return (u_corr, v_corr)
 
 
 def plot_polarisation_vectors(
@@ -618,7 +617,7 @@ def get_angles_from_uv(u, v, degrees=False, angle_offset=None):
     if degrees:
         vector_angles = vector_angles * 180 / np.pi
 
-    return(vector_angles)
+    return (vector_angles)
 
 
 def get_vector_magnitudes(u, v, sampling=None):
@@ -661,7 +660,7 @@ def get_vector_magnitudes(u, v, sampling=None):
     if sampling is not None:
         vector_mags = vector_mags * sampling
 
-    return(vector_mags)
+    return (vector_mags)
 
 
 def delete_atom_planes_from_sublattice(sublattice,
@@ -696,7 +695,8 @@ def delete_atom_planes_from_sublattice(sublattice,
 
     Examples
     --------
-    >>> from temul.topotem.polarisation import delete_atom_planes_from_sublattice
+    >>> from temul.topotem.polarisation import (
+    ...     delete_atom_planes_from_sublattice)
     >>> import atomap.dummy_data as dd
     >>> atom_lattice = dd.get_polarization_film_atom_lattice()
     >>> sublatticeA = atom_lattice.sublattice_list[0]
@@ -735,8 +735,8 @@ def delete_atom_planes_from_sublattice(sublattice,
                                index for index in atom_plane_index_delete]
     atom_plane_index_delete = [index for index in atom_plane_index_delete
                                if index < len(
-                                   sublattice.atom_planes_by_zone_vector[
-                                       zone_vec_needed])]
+                                  sublattice.atom_planes_by_zone_vector[
+                                      zone_vec_needed])]
 
     if opposite:
         opposite_list = [
@@ -823,7 +823,7 @@ def _fit_line_clusters(arr, n, second_fit_rigid=True, plot=False):
     # use the first slope to get the intercept of the second
     line_A = m_fit * x + c_fit
     line_B = m_fit * x + c_fit_rigid
-    c_halfway = (c_fit + c_fit_rigid)/2
+    c_halfway = (c_fit + c_fit_rigid) / 2
     line_C = m_fit * x + c_halfway
 
     if plot:
@@ -836,9 +836,9 @@ def _fit_line_clusters(arr, n, second_fit_rigid=True, plot=False):
         plt.show()
 
     if plot:
-        return(x, line_C, m_fit, line_A, line_B, c_fit, c_fit_rigid)
+        return (x, line_C, m_fit, line_A, line_B, c_fit, c_fit_rigid)
     else:
-        return(x, line_C, m_fit)
+        return (x, line_C, m_fit)
 
 
 def get_xyuv_from_line_fit(arr, n, second_fit_rigid=True, plot=False):
@@ -921,7 +921,7 @@ def get_xyuv_from_line_fit(arr, n, second_fit_rigid=True, plot=False):
         u_list.append(u)
         v_list.append(v)
 
-    return(x_list, y_list, u_list, v_list)
+    return (x_list, y_list, u_list, v_list)
 
 
 def atom_deviation_from_straight_line_fit(
@@ -1036,7 +1036,6 @@ def atom_deviation_from_straight_line_fit(
     for i, atom_plane in enumerate(sublattice.atom_plane_list):
 
         if sublattice.atom_plane_list[i].zone_vector == zon_vec_needed:
-
             arr = np.array([atom_plane.get_x_position_list(),
                             atom_plane.get_y_position_list()]).T
 
@@ -1047,7 +1046,7 @@ def atom_deviation_from_straight_line_fit(
             u_list.extend(u)
             v_list.extend(v)
 
-    return(x_list, y_list, u_list, v_list)
+    return (x_list, y_list, u_list, v_list)
 
 
 def _truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
@@ -1145,7 +1144,6 @@ def full_atom_plane_deviation_from_straight_line_fit(sublattice,
             # original_atom_pos_array and new_atom_diff_array,
             # or away using new_atom_pos_array and -new_atom_diff_array
             for original_atom in original_atoms_array:
-
                 distance = np.cross(p2 - p1, original_atom -
                                     p1) / np.linalg.norm(p2 - p1)
                 distance = float(distance)
@@ -1181,7 +1179,7 @@ def full_atom_plane_deviation_from_straight_line_fit(sublattice,
     u = [row[0] for row in new_atom_diff_list]
     v = [row[1] for row in new_atom_diff_list]
 
-    return(x, y, u, v)
+    return (x, y, u, v)
 
 
 # need to add the truncated colormap version: divergent plot.
@@ -1204,14 +1202,15 @@ def plot_atom_deviation_from_all_zone_axes(
 
     Examples
     --------
-    >>> import atomap.api as am
-    >>> from temul.topotem.polarisation import plot_atom_deviation_from_all_zone_axes
-    >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
+    >>> import atomap.dummy_data as dd
+    >>> import temul.api as tml
+    >>> atom_lattice = dd.get_polarization_film_atom_lattice()
     >>> sublatticeA = atom_lattice.sublattice_list[0]
     >>> sublatticeA.find_nearest_neighbors()
     >>> sublatticeA.refine_atom_positions_using_center_of_mass()
     >>> sublatticeA.construct_zone_axes()
-    >>> plot_atom_deviation_from_all_zone_axes(sublatticeA, save=None)
+    >>> tml.plot_atom_deviation_from_all_zone_axes(
+    ...     sublatticeA, save=None)
 
     '''
 
@@ -1226,7 +1225,6 @@ def plot_atom_deviation_from_all_zone_axes(
         pass
 
     for axis_number in range(len(sublattice.zones_axis_average_distances)):
-
         x, y, u, v = full_atom_plane_deviation_from_straight_line_fit(
             sublattice=sublattice, axis_number=axis_number,
             save=None)
@@ -1307,7 +1305,6 @@ def combine_atom_deviations_from_zone_axes(
         axes_list = axes
 
     for axis_number in axes_list:
-
         x, y, u, v = full_atom_plane_deviation_from_straight_line_fit(
             sublattice=sublattice, axis_number=axis_number,
             save=None)
@@ -1342,8 +1339,7 @@ def combine_atom_deviations_from_zone_axes(
 
     if len(atoms_not_found) != 0:
         print("This sublattice_xy atom isn't included in the "
-              "axes given, removing atoms: {}".format(
-                  atoms_not_found))
+              f"axes given, removing atoms: {atoms_not_found}.")
     for atom in atoms_not_found:
         sublattice_xy.remove(atom)
 
@@ -1371,7 +1367,7 @@ def combine_atom_deviations_from_zone_axes(
             headaxislength=headaxislength, monitor_dpi=monitor_dpi,
             no_axis_info=no_axis_info, scalebar=scalebar)
 
-    return(x, y, u, v)
+    return (x, y, u, v)
 
 
 def get_divide_into(sublattice, averaging_by, sampling,
@@ -1438,14 +1434,14 @@ def get_divide_into(sublattice, averaging_by, sampling,
     p_A = np.mean(xy_dist_A) * sampling
     p_B = np.mean(xy_dist_B) * sampling
 
-    unit_cell_size = (p_A + p_B)/2
+    unit_cell_size = (p_A + p_B) / 2
     image_size_x = sublattice.signal.axes_manager[0].size * sampling
 
     num_unit_cells = image_size_x / unit_cell_size
 
     divide_into = num_unit_cells / averaging_by
 
-    return(divide_into, unit_cell_size, num_unit_cells)
+    return (divide_into, unit_cell_size, num_unit_cells)
 
 
 def get_average_polarisation_in_regions(x, y, u, v, image, divide_into=8):
@@ -1537,8 +1533,7 @@ def get_average_polarisation_in_regions(x, y, u, v, image, divide_into=8):
             u_area, v_area = [], []
             for (x_i, y_i, u_i, v_i) in zip(x, y, u, v):
                 if x_length[0] < x_i < x_length[1] and \
-                   y_length[0] < y_i < y_length[1]:
-
+                        y_length[0] < y_i < y_length[1]:
                     u_area.append(u_i)
                     v_area.append(v_i)
 
@@ -1547,7 +1542,7 @@ def get_average_polarisation_in_regions(x, y, u, v, image, divide_into=8):
             v_mean = np.mean(np.array(v_area))
             v_new.append(v_mean)
 
-    return(x_new, y_new, u_new, v_new)
+    return (x_new, y_new, u_new, v_new)
 
 
 def get_average_polarisation_in_regions_square(x, y, u, v, image,
@@ -1642,8 +1637,7 @@ def get_average_polarisation_in_regions_square(x, y, u, v, image,
             u_area, v_area = [], []
             for (x_i, y_i, u_i, v_i) in zip(x, y, u, v):
                 if x_length[0] < x_i < x_length[1] and \
-                   y_length[0] < y_i < y_length[1]:
-
+                        y_length[0] < y_i < y_length[1]:
                     u_area.append(u_i)
                     v_area.append(v_i)
 
@@ -1652,7 +1646,7 @@ def get_average_polarisation_in_regions_square(x, y, u, v, image,
             v_mean = np.mean(np.array(v_area))
             v_new.append(v_mean)
 
-    return(x_new, y_new, u_new, v_new)
+    return (x_new, y_new, u_new, v_new)
 
 
 def get_strain_map(sublattice, zone_axis_index, theoretical_value,
@@ -1731,7 +1725,7 @@ def get_strain_map(sublattice, zone_axis_index, theoretical_value,
             vmin = np.min(xy_distance)
 
         strain_signal.plot(vmin=vmin, vmax=vmax, cmap=cmap,
-                       colorbar=False, **kwargs)
+                           colorbar=False, **kwargs)
         plt.gca().axes.get_xaxis().set_visible(False)
         plt.gca().axes.get_yaxis().set_visible(False)
         plt.title("{}_{}".format(title, zone_axis_index))
@@ -1752,9 +1746,9 @@ def get_strain_map(sublattice, zone_axis_index, theoretical_value,
                 filename, title, zone_axis_index))
 
     if return_x_y_z:
-        return(strain_signal, x_position, y_position, xy_distance)
+        return (strain_signal, x_position, y_position, xy_distance)
     else:
-        return(strain_signal)
+        return (strain_signal)
 
 
 # Improvement would be to distinguish between horizontal angle e.g., 5 and 175
@@ -1894,9 +1888,9 @@ def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
                 filename, title, zone_axis_index))
 
     if return_x_y_z:
-        return(rotation_signal, x_list, y_list, angles_list)
+        return (rotation_signal, x_list, y_list, angles_list)
     else:
-        return(rotation_signal)
+        return (rotation_signal)
 
 
 def ratio_of_lattice_spacings(sublattice, zone_axis_index_A, zone_axis_index_B,
@@ -2026,11 +2020,10 @@ def ratio_of_lattice_spacings(sublattice, zone_axis_index_A, zone_axis_index_B,
         ratio_signal.save("{}_{}_{}{}.hspy".format(
             filename, title, zone_axis_index_A, zone_axis_index_B))
 
-    return(ratio_signal)
+    return (ratio_signal)
 
 
 def angle_label(vector_rep="magnitude", units='pix', degrees=False):
-
     if vector_rep == "magnitude":
         vector_label = "Magnitude ({})".format(units)
     elif vector_rep == "angle":
@@ -2041,7 +2034,7 @@ def angle_label(vector_rep="magnitude", units='pix', degrees=False):
     else:
         raise ValueError(
             "`vector_rep` must be either 'magnitude' or 'angle'.")
-    return(vector_label)
+    return (vector_label)
 
 
 def atom_to_atom_distance_grouped_mean(sublattice, zone_axis_index,
@@ -2077,7 +2070,8 @@ def atom_to_atom_distance_grouped_mean(sublattice, zone_axis_index,
     >>> import numpy as np
     >>> from atomap.dummy_data import get_distorted_cubic_sublattice
     >>> import matplotlib.pyplot as plt
-    >>> from temul.topotem.polarisation import atom_to_atom_distance_grouped_mean
+    >>> from temul.topotem.polarisation import (
+    ...     atom_to_atom_distance_grouped_mean)
     >>> sublatticeA = get_distorted_cubic_sublattice()
     >>> sublatticeA.construct_zone_axes(atom_plane_tolerance=1)
     >>> sublatticeA.plot()
@@ -2130,4 +2124,4 @@ def atom_to_atom_distance_grouped_mean(sublattice, zone_axis_index,
         grouped_region = np.asarray(grouped_region)
         grouped_means.append(np.mean(grouped_region))
 
-    return(groupings, grouped_means)
+    return (groupings, grouped_means)

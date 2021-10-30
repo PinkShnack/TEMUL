@@ -1,4 +1,3 @@
-
 import numpy as np
 from scipy.optimize import curve_fit
 from scipy.misc import derivative
@@ -76,7 +75,8 @@ def calculate_atom_plane_curvature(sublattice, zone_vector_index,
     >>> kwargs = {'p0': p0}
     >>> curvature_map, fittings = tml.calculate_atom_plane_curvature(
     ...     sublattice, zone_vector_index=0, atom_planes=(0,3),
-    ...     sampling=sampling, units='nm', cmap=cmap, return_fits=True, **kwargs)
+    ...     sampling=sampling, units='nm', cmap=cmap, return_fits=True,
+    ...     **kwargs)
 
     Returns
     -------
@@ -170,9 +170,9 @@ def calculate_atom_plane_curvature(sublattice, zone_vector_index,
                 filename, title, zone_vector_index))
 
     if return_fits:
-        return(curvature_map, fittings_list)
+        return (curvature_map, fittings_list)
     else:
-        return(curvature_map)
+        return (curvature_map)
 
 
 def sine_wave_function_strain_gradient(x, a, b, c, d):

@@ -8,8 +8,6 @@ from matplotlib.colors import hsv_to_rgb
 import matplotlib.dates as mdates
 import scipy.spatial as spatial
 from temul.intensity_tools import get_sublattice_intensity
-from temul.external.atomap_devel_012.initial_position_finding import (
-    add_atoms_with_gui)
 import math
 
 

@@ -9,7 +9,6 @@ import matplotlib.pyplot as plt
 import scipy
 import numpy as np
 from numpy import log
-import hyperspy.api as hs
 from hyperspy._signals.signal2d import Signal2D
 import pandas as pd
 from collections import Counter
