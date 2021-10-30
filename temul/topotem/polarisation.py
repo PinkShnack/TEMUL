@@ -373,13 +373,13 @@ def plot_polarisation_vectors(
 
     Plot a contourf for quadrant visualisation using a custom matplotlib cmap:
 
-    >>> import temul.signal_plotting as tmlplot
+    >>> import temul.api as tml
     >>> from matplotlib.colors import from_levels_and_colors
-    >>> zest = tmlplot.hex_to_rgb(tmlplot.color_palettes('zesty'))
+    >>> zest = tml.hex_to_rgb(tml.color_palettes('zesty'))
     >>> zest.append(zest[0])  # make the -180 and 180 degree colour the same
-    >>> expanded_zest = tmlplot.expand_palette(zest, [1,2,2,2,1])
+    >>> expanded_zest = tml.expand_palette(zest, [1,2,2,2,1])
     >>> custom_cmap, _ = from_levels_and_colors(
-    ...     levels=range(9), colors=tmlplot.rgb_to_dec(expanded_zest))
+    ...     levels=range(9), colors=tml.rgb_to_dec(expanded_zest))
     >>> ax = tml.plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           unit_vector=False, plot_style='contour',
     ...                           overlay=False, pivot='middle', save=None,
@@ -795,13 +795,13 @@ def _fit_line_clusters(arr, n, second_fit_rigid=True, plot=False):
     >>> arr = np.array([[1, 2], [2, 2], [3, 2], [4, 2], [5, 2.05],
     ...                 [6, 1], [7, 1], [8, 1], [9, 1], [10, 0.75]])
     >>> fittings = _fit_line_clusters(
-    ...     arr, n=5, second_fit_rigid=True, plot=True)
+    ...     arr, n=5, second_fit_rigid=True, plot=False)
 
     Use the lower (second) cluster to fit the data, making the first cluster
     rigid
 
     >>> fittings = _fit_line_clusters(
-    ...     arr, n=5, second_fit_rigid=False, plot=True)
+    ...     arr, n=5, second_fit_rigid=False, plot=False)
 
     '''
     x = arr[:, 0]
@@ -883,13 +883,13 @@ def get_xyuv_from_line_fit(arr, n, second_fit_rigid=True, plot=False):
     >>> arr = np.array([[1, 2], [2, 2], [3, 2], [4, 2], [5, 2.05],
     ...                 [6, 1], [7, 1], [8, 1], [9, 1], [10, 0.75]])
     >>> x, y, u, v = get_xyuv_from_line_fit(
-    ...     arr, n=5, second_fit_rigid=True, plot=True)
+    ...     arr, n=5, second_fit_rigid=True, plot=False)
 
     Use the lower (second) cluster to fit the data, making the first cluster
     rigid
 
     >>> x, y, u, v = get_xyuv_from_line_fit(
-    ...     arr, n=5, second_fit_rigid=False, plot=True)
+    ...     arr, n=5, second_fit_rigid=False, plot=False)
 
     '''
     arr = np.asarray(arr)
@@ -1657,8 +1657,8 @@ def get_average_polarisation_in_regions_square(x, y, u, v, image,
 
 def get_strain_map(sublattice, zone_axis_index, theoretical_value,
                    sampling=None, units='pix', vmin=None, vmax=None,
-                   cmap='inferno', title='Strain Map', filename=None,
-                   return_x_y_z=False, **kwargs):
+                   cmap='inferno', title='Strain Map', plot=False,
+                   filename=None, return_x_y_z=False, **kwargs):
     '''
     Calculate the strain across a zone axis of a sublattice.
 
@@ -1677,8 +1677,11 @@ def get_strain_map(sublattice, zone_axis_index, theoretical_value,
         Units of the sampling.
     vmin, vmax, cmap : see Matplotlib for details
     title : string, default "Strain Map"
+    plot : bool
+        Set to true if the figure should be plotted.
     filename : string, optional
         If filename is set, the strain signal and plot will be saved.
+        `plot` must be set to True.
     return_x_y_z : Bool, default False
         If this is set to True, the `strain_signal` (map), as well as separate
         lists of the x, y, and strain values.
@@ -1721,31 +1724,32 @@ def get_strain_map(sublattice, zone_axis_index, theoretical_value,
     strain_signal.axes_manager[0].units = units
     strain_signal.axes_manager[1].units = units
 
-    if vmax == 'max':
-        vmax = np.max(xy_distance)
-    if vmin == 'min':
-        vmin = np.min(xy_distance)
+    if plot:
+        if vmax == 'max':
+            vmax = np.max(xy_distance)
+        if vmin == 'min':
+            vmin = np.min(xy_distance)
 
-    strain_signal.plot(vmin=vmin, vmax=vmax, cmap=cmap,
+        strain_signal.plot(vmin=vmin, vmax=vmax, cmap=cmap,
                        colorbar=False, **kwargs)
-    plt.gca().axes.get_xaxis().set_visible(False)
-    plt.gca().axes.get_yaxis().set_visible(False)
-    plt.title("{}_{}".format(title, zone_axis_index))
-    cbar = ScalarMappable(cmap=cmap)
-    cbar.set_array(xy_distance)
-    cbar.set_clim(vmin, vmax)
-    plt.colorbar(cbar, fraction=0.046, pad=0.04,
-                 label="Strain (% above {} {})".format(
-                     theoretical_value, units))
-    plt.tight_layout()
+        plt.gca().axes.get_xaxis().set_visible(False)
+        plt.gca().axes.get_yaxis().set_visible(False)
+        plt.title("{}_{}".format(title, zone_axis_index))
+        cbar = ScalarMappable(cmap=cmap)
+        cbar.set_array(xy_distance)
+        cbar.set_clim(vmin, vmax)
+        plt.colorbar(cbar, fraction=0.046, pad=0.04,
+                     label="Strain (% above {} {})".format(
+                         theoretical_value, units))
+        plt.tight_layout()
 
-    if filename is not None:
-        plt.savefig(
-            fname="{}_{}_{}.png".format(filename, title, zone_axis_index),
-            transparent=True, frameon=False, bbox_inches='tight',
-            pad_inches=None, dpi=300, labels=False)
-        strain_signal.save("{}_{}_{}.hspy".format(
-            filename, title, zone_axis_index))
+        if filename is not None:
+            plt.savefig(
+                fname="{}_{}_{}.png".format(filename, title, zone_axis_index),
+                transparent=True, frameon=False, bbox_inches='tight',
+                pad_inches=None, dpi=300, labels=False)
+            strain_signal.save("{}_{}_{}.hspy".format(
+                filename, title, zone_axis_index))
 
     if return_x_y_z:
         return(strain_signal, x_position, y_position, xy_distance)
@@ -1758,7 +1762,7 @@ def get_strain_map(sublattice, zone_axis_index, theoretical_value,
 def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
                             degrees=False, sampling=None, units='pix',
                             vmin=None, vmax=None, cmap='inferno',
-                            title='Rotation Map', filename=None,
+                            title='Rotation Map', plot=False, filename=None,
                             return_x_y_z=False, **kwargs):
     '''
     Calculate a map of the angles between each atom along the atom planes of a
@@ -1782,8 +1786,11 @@ def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
         Units of the sampling.
     vmin, vmax, cmap : see Matplotlib for details
     title : string, default "Rotation Map"
+    plot : bool
+        Set to true if the figure should be plotted.
     filename : string, optional
-        If filename is set, the strain signal and plot will be saved.
+        If filename is set, the signal and plot will be saved.
+        `plot` must be set to True.
     return_x_y_z : Bool, default False
         If this is set to True, the rotation_signal (map), as well as separate
         lists of the x, y, and angle values.
@@ -1860,30 +1867,31 @@ def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
     rotation_signal.axes_manager[0].units = units
     rotation_signal.axes_manager[1].units = units
 
-    if vmax == 'max':
-        vmax = np.max(angles_list)
-    if vmin == 'min':
-        vmin = np.min(angles_list)
+    if plot:
+        if vmax == 'max':
+            vmax = np.max(angles_list)
+        if vmin == 'min':
+            vmin = np.min(angles_list)
 
-    rotation_signal.plot(vmin=vmin, vmax=vmax, cmap=cmap,
-                         colorbar=False, **kwargs)
-    plt.gca().axes.get_xaxis().set_visible(False)
-    plt.gca().axes.get_yaxis().set_visible(False)
-    plt.title("{}_{}".format(title, zone_axis_index))
-    cbar = ScalarMappable(cmap=cmap)
-    cbar.set_array(angles_list)
-    cbar.set_clim(vmin, vmax)
-    plt.colorbar(cbar, fraction=0.046, pad=0.04,
-                 label=bar_label)
-    plt.tight_layout()
+        rotation_signal.plot(vmin=vmin, vmax=vmax, cmap=cmap,
+                             colorbar=False, **kwargs)
+        plt.gca().axes.get_xaxis().set_visible(False)
+        plt.gca().axes.get_yaxis().set_visible(False)
+        plt.title("{}_{}".format(title, zone_axis_index))
+        cbar = ScalarMappable(cmap=cmap)
+        cbar.set_array(angles_list)
+        cbar.set_clim(vmin, vmax)
+        plt.colorbar(cbar, fraction=0.046, pad=0.04,
+                     label=bar_label)
+        plt.tight_layout()
 
-    if filename is not None:
-        plt.savefig(
-            fname="{}_{}_{}.png".format(filename, title, zone_axis_index),
-            transparent=True, frameon=False, bbox_inches='tight',
-            pad_inches=None, dpi=300, labels=False)
-        rotation_signal.save("{}_{}_{}.hspy".format(
-            filename, title, zone_axis_index))
+        if filename is not None:
+            plt.savefig(
+                fname="{}_{}_{}.png".format(filename, title, zone_axis_index),
+                transparent=True, frameon=False, bbox_inches='tight',
+                pad_inches=None, dpi=300, labels=False)
+            rotation_signal.save("{}_{}_{}.hspy".format(
+                filename, title, zone_axis_index))
 
     if return_x_y_z:
         return(rotation_signal, x_list, y_list, angles_list)

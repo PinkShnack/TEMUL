@@ -54,4 +54,6 @@ from temul.signal_plotting import (
     compare_images_line_profile_one_image,
     compare_images_line_profile_two_images,
     get_cropping_area, Sublattice_Hover_Intensity,
+    color_palettes, rgb_to_dec, hex_to_rgb, expand_palette,
+
 )

@@ -162,13 +162,13 @@ plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
 
 # Plot a tricontourf for quadrant visualisation using a custom matplotlib cmap:
 
-import temul.signal_plotting as tmlplot
+import temul.api as tml
 from matplotlib.colors import from_levels_and_colors
-zest = tmlplot.hex_to_rgb(tmlplot.color_palettes('zesty'))
+zest = tml.hex_to_rgb(tml.color_palettes('zesty'))
 zest.append(zest[0])  # make the -180 and 180 degree colour the same
-expanded_zest = tmlplot.expand_palette(zest, [1,2,2,2,1])
+expanded_zest = tml.expand_palette(zest, [1,2,2,2,1])
 custom_cmap, _ = from_levels_and_colors(
-    levels=range(9), colors=tmlplot.rgb_to_dec(expanded_zest))
+    levels=range(9), colors=tml.rgb_to_dec(expanded_zest))
 plot_polarisation_vectors(x, y, u, v, image=image,
                           unit_vector=False, plot_style='contour',
                           overlay=False, pivot='middle', save=None,

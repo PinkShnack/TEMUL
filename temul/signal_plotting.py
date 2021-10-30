@@ -644,7 +644,7 @@ def hex_to_rgb(hex_values):
     Examples
     --------
 
-    >>> import temul.signal_plotting as tmlplot
+    >>> import temul.api as tml
     >>> tmlplot.hex_to_rgb(color_palettes('zesty'))
     [(245, 121, 58), (169, 90, 161), (133, 192, 249), (15, 32, 128)]
 
@@ -685,7 +685,7 @@ def expand_palette(palette, expand_list):
     Examples
     --------
 
-    >>> import temul.signal_plotting as tmlplot
+    >>> import temul.api as tml
     >>> zest = tmlplot.color_palettes('zesty')
     >>> expanded_palette = tmlplot.expand_palette(zest, [1,2,2,2])
 

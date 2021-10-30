@@ -111,7 +111,7 @@ For more details on this function, see :ref:`this tutorial <line_profile_tutoria
 .. code-block:: python
 
     >>> kwargs = {'vmin': vmin, 'vmax': vmax, 'cmap': cmap}
-    >>> tmlplot.compare_images_line_profile_one_image(strain_map, line_profile_positions,
+    >>> tml.compare_images_line_profile_one_image(strain_map, line_profile_positions,
     ...                               linewidth=100, arrow='h', linetrace=0.05,
     ...                               **kwargs)
 
@@ -147,7 +147,7 @@ For more details on this function, see :ref:`this tutorial <line_profile_tutoria
 .. code-block:: python
 
     >>> kwargs = {'vmin': vmin, 'vmax': vmax, 'cmap': cmap}
-    >>> tmlplot.compare_images_line_profile_one_image(
+    >>> tml.compare_images_line_profile_one_image(
     ...     rotation_map, line_profile_positions, linewidth=100, arrow='h',
     ...     linetrace=0.05, **kwargs)
 
@@ -178,7 +178,7 @@ Now plot the c/a ratio map of the Pb Sublattice
 .. code-block:: python
 
     >>> kwargs = {'vmin': vmin, 'vmax': vmax, 'cmap': cmap}
-    >>> tmlplot.compare_images_line_profile_one_image(
+    >>> tml.compare_images_line_profile_one_image(
     ...     ca_ratio_map, line_profile_positions, linewidth=100, arrow='h',
     ...     linetrace=0.05, **kwargs)
 
