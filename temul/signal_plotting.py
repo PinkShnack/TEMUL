@@ -645,17 +645,17 @@ def hex_to_rgb(hex_values):
     --------
 
     >>> import temul.api as tml
-    >>> tmlplot.hex_to_rgb(color_palettes('zesty'))
+    >>> tml.hex_to_rgb(color_palettes('zesty'))
     [(245, 121, 58), (169, 90, 161), (133, 192, 249), (15, 32, 128)]
 
     Create a matplotlib cmap from a palette with the help of
     matplotlib.colors.from_levels_and_colors()
 
     >>> from matplotlib.colors import from_levels_and_colors
-    >>> zest = tmlplot.hex_to_rgb(tmlplot.color_palettes('zesty'))
+    >>> zest = tml.hex_to_rgb(tml.color_palettes('zesty'))
     >>> zest.append(zest[0])  # make the top and bottom colour the same
     >>> cmap, norm = from_levels_and_colors(
-    ...     levels=[0,1,2,3,4,5], colors=tmlplot.rgb_to_dec(zest))
+    ...     levels=[0,1,2,3,4,5], colors=tml.rgb_to_dec(zest))
 
     '''
     hex_values = [i.lstrip('#') for i in hex_values]
@@ -686,8 +686,8 @@ def expand_palette(palette, expand_list):
     --------
 
     >>> import temul.api as tml
-    >>> zest = tmlplot.color_palettes('zesty')
-    >>> expanded_palette = tmlplot.expand_palette(zest, [1,2,2,2])
+    >>> zest = tml.color_palettes('zesty')
+    >>> expanded_palette = tml.expand_palette(zest, [1,2,2,2])
 
     '''
     expanded_palette = []

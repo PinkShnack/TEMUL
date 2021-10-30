@@ -33,6 +33,7 @@ from temul.intensity_tools import (
 
 from temul.topotem.fft_mapping import (
     choose_mask_coordinates, get_masked_ifft,
+    choose_points_on_image
 )
 
 from temul.topotem.lattice_structure_tools import (
