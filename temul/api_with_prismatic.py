@@ -6,6 +6,9 @@ Model_Refiner class.
 Currently, model_refiner.py and simulations.py use pyprismatic.
 '''
 
+# flake8: noqa
+
+
 import temul.api
 
 from temul.model_refiner import Model_Refiner

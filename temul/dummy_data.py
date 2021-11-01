@@ -374,7 +374,7 @@ def get_polarisation_dummy_dataset(image_noise=False):
 
     You can they use the plot_polarisation_vectors function to visualise:
 
-    >>> from temul.polarisation import plot_polarisation_vectors
+    >>> import temul.api as tml
     >>> ax = plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           unit_vector=False, plot_style="vector",
     ...                           overlay=True, color='yellow',

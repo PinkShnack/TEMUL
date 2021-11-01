@@ -1,4 +1,7 @@
 
+# flake8: noqa
+
+
 from temul.signal_processing import (
     measure_image_errors, load_and_compare_images,
     compare_two_image_and_create_filtered_image,
@@ -9,7 +12,6 @@ from temul.signal_processing import (
     toggle_atom_refine_position_automatically,
     get_cell_image,
     mean_and_std_nearest_neighbour_distances,
-    choose_mask_coordinates, get_masked_ifft,
 )
 
 from temul.io import (
@@ -32,24 +34,27 @@ from temul.intensity_tools import (
     remove_local_background, get_pixel_count_from_image_slice,
 )
 
-from temul.lattice_structure_tools import (
-    calculate_atom_plane_curvature,
-)
-
-from temul.polarisation import (
-    find_polarisation_vectors, plot_polarisation_vectors, get_angles_from_uv,
-    get_vector_magnitudes, atom_deviation_from_straight_line_fit,
-    plot_atom_deviation_from_all_zone_axes,
-    combine_atom_deviations_from_zone_axes,
+from temul.topotem import (
+    find_polarisation_vectors, correct_off_tilt_vectors,
+    plot_polarisation_vectors, atom_deviation_from_straight_line_fit,
     get_divide_into, get_average_polarisation_in_regions,
-    get_average_polarisation_in_regions_square, get_strain_map,
-    rotation_of_atom_planes, ratio_of_lattice_spacings,
-    get_polar_2d_colorwheel_color_list, correct_off_tilt_vectors,
+    get_average_polarisation_in_regions_square,
+    get_strain_map, rotation_of_atom_planes, ratio_of_lattice_spacings,
+    get_angles_from_uv, get_vector_magnitudes,
+    plot_atom_deviation_from_all_zone_axes,
+    get_polar_2d_colorwheel_color_list,
+    combine_atom_deviations_from_zone_axes,
+
+    choose_mask_coordinates, get_masked_ifft,
+    choose_points_on_image,
+
+    calculate_atom_plane_curvature,
 )
 
 from temul.signal_plotting import (
     compare_images_line_profile_one_image,
     compare_images_line_profile_two_images,
     get_cropping_area, Sublattice_Hover_Intensity,
-    choose_points_on_image,
+    color_palettes, rgb_to_dec, hex_to_rgb, expand_palette,
+
 )

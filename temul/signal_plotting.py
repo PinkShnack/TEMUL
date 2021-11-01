@@ -8,8 +8,6 @@ from matplotlib.colors import hsv_to_rgb
 import matplotlib.dates as mdates
 import scipy.spatial as spatial
 from temul.intensity_tools import get_sublattice_intensity
-from temul.external.atomap_devel_012.initial_position_finding import (
-    add_atoms_with_gui)
 import math
 
 
@@ -644,18 +642,18 @@ def hex_to_rgb(hex_values):
     Examples
     --------
 
-    >>> import temul.signal_plotting as tmlplot
-    >>> tmlplot.hex_to_rgb(color_palettes('zesty'))
+    >>> import temul.api as tml
+    >>> tml.hex_to_rgb(color_palettes('zesty'))
     [(245, 121, 58), (169, 90, 161), (133, 192, 249), (15, 32, 128)]
 
     Create a matplotlib cmap from a palette with the help of
     matplotlib.colors.from_levels_and_colors()
 
     >>> from matplotlib.colors import from_levels_and_colors
-    >>> zest = tmlplot.hex_to_rgb(tmlplot.color_palettes('zesty'))
+    >>> zest = tml.hex_to_rgb(tml.color_palettes('zesty'))
     >>> zest.append(zest[0])  # make the top and bottom colour the same
     >>> cmap, norm = from_levels_and_colors(
-    ...     levels=[0,1,2,3,4,5], colors=tmlplot.rgb_to_dec(zest))
+    ...     levels=[0,1,2,3,4,5], colors=tml.rgb_to_dec(zest))
 
     '''
     hex_values = [i.lstrip('#') for i in hex_values]
@@ -685,9 +683,9 @@ def expand_palette(palette, expand_list):
     Examples
     --------
 
-    >>> import temul.signal_plotting as tmlplot
-    >>> zest = tmlplot.color_palettes('zesty')
-    >>> expanded_palette = tmlplot.expand_palette(zest, [1,2,2,2])
+    >>> import temul.api as tml
+    >>> zest = tml.color_palettes('zesty')
+    >>> expanded_palette = tml.expand_palette(zest, [1,2,2,2])
 
     '''
     expanded_palette = []
@@ -695,13 +693,6 @@ def expand_palette(palette, expand_list):
         for count in range(ex):
             expanded_palette.append(pal)
     return expanded_palette
-
-
-def choose_points_on_image(image, norm='linear', distance_threshold=4):
-
-    coords = add_atoms_with_gui(image=image, norm=norm,
-                                distance_threshold=distance_threshold)
-    return coords
 
 
 def create_rgb_array():

@@ -2,7 +2,7 @@
 # Plotting Polarisation and Movement Vectors
 
 '''
-The :python:`temul.polarisation` module allows one to visualise the
+The :python:`temul.topotem.polarisation` module allows one to visualise the
 polarisation/movement of atoms in an atomic resolution image. In this tutorial,
 we will use a dummy dataset to show the different ways the :python:`plot_polarisation_vectors`
 function can display data. In future, tutorials on published experimental data
@@ -11,10 +11,10 @@ will also be available.
 
 ## Prepare and Plot the dummy dataset
 
-%matplotlib nbagg
-
-from temul.polarisation import plot_polarisation_vectors
+import temul.api as tml
 from temul.dummy_data import get_polarisation_dummy_dataset
+
+
 atom_lattice = get_polarisation_dummy_dataset(image_noise=True)
 sublatticeA = atom_lattice.sublattice_list[0]
 sublatticeB = atom_lattice.sublattice_list[1]
@@ -62,7 +62,7 @@ tml.plot_polarisation_vectors(x, y, u, v, image=image,
 
 # Vector magnitude plot with red arrows overlaid on the image, no title:
 
-plot_polarisation_vectors(x, y, u, v, image=image,
+tml.plot_polarisation_vectors(x, y, u, v, image=image,
                           unit_vector=False, save=None,
                           plot_style='vector', color='r',
                           overlay=True, monitor_dpi=50)
@@ -70,7 +70,7 @@ plot_polarisation_vectors(x, y, u, v, image=image,
 
 #Vector magnitude plot with colormap viridis:
 
-plot_polarisation_vectors(x, y, u, v, image=image,
+tml.plot_polarisation_vectors(x, y, u, v, image=image,
                           unit_vector=False, save=None,
                           plot_style='colormap', monitor_dpi=50,
                           overlay=False, cmap='viridis')
@@ -78,7 +78,7 @@ plot_polarisation_vectors(x, y, u, v, image=image,
 
 #Vector angle plot with colormap viridis (:python:`vector_rep='angle'`):
 
-plot_polarisation_vectors(x, y, u, v, image=image,
+tml.plot_polarisation_vectors(x, y, u, v, image=image,
                           unit_vector=False, save=None,
                           plot_style='colormap', monitor_dpi=50,
                           overlay=False, cmap='cet_colorwheel',
@@ -87,7 +87,7 @@ plot_polarisation_vectors(x, y, u, v, image=image,
 
 # Colormap arrows with sampling specified in the parameters and with scalebar:
 
-plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+tml.plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
                           sampling=3.0321, units='pm', monitor_dpi=50,
                           unit_vector=False, plot_style='colormap',
                           overlay=True, save=None, cmap='viridis',
@@ -95,7 +95,7 @@ plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
 
 #Vector plot with colormap viridis and unit vectors:
 
-plot_polarisation_vectors(x, y, u, v, image=image,
+tml.plot_polarisation_vectors(x, y, u, v, image=image,
                           unit_vector=True, save=None, monitor_dpi=50,
                           plot_style='colormap', color='r',
                           overlay=False, cmap='viridis')
@@ -103,7 +103,7 @@ plot_polarisation_vectors(x, y, u, v, image=image,
 #Change the vectors to unit vectors on a Matplotlib tricontourf map:
 
 
-plot_polarisation_vectors(x, y, u, v, image=image, unit_vector=True,
+tml.plot_polarisation_vectors(x, y, u, v, image=image, unit_vector=True,
                           plot_style='contour', overlay=False,
                           pivot='middle', save=None, monitor_dpi=50,
                           color='darkgray', cmap='viridis')
@@ -111,7 +111,7 @@ plot_polarisation_vectors(x, y, u, v, image=image, unit_vector=True,
 
 # Plot a partly transparent angle tricontourf map with specified colorbar ticks and vector arrows:
 
-plot_polarisation_vectors(x, y, u, v, image=image,
+tml.plot_polarisation_vectors(x, y, u, v, image=image,
                           unit_vector=False, plot_style='contour',
                           overlay=True, pivot='middle', save=None,
                           color='red', cmap='cet_colorwheel',
@@ -123,7 +123,7 @@ plot_polarisation_vectors(x, y, u, v, image=image,
 
 # Plot a partly transparent angle tricontourf map with no vector arrows:
 
-plot_polarisation_vectors(x, y, u, v, image=image, remove_vectors=True,
+tml.plot_polarisation_vectors(x, y, u, v, image=image, remove_vectors=True,
                           unit_vector=True, plot_style='contour',
                           overlay=True, pivot='middle', save=None,
                           cmap='cet_colorwheel', alpha=0.5,
@@ -134,7 +134,7 @@ plot_polarisation_vectors(x, y, u, v, image=image, remove_vectors=True,
 # "colorwheel" plot of the vectors, useful for visualising vortexes:
 
 import colorcet as cc
-plot_polarisation_vectors(x, y, u, v, image=image,
+tml.plot_polarisation_vectors(x, y, u, v, image=image,
                           unit_vector=True, plot_style="colorwheel",
                           vector_rep="angle",
                           overlay=False, cmap=cc.cm.colorwheel,
@@ -144,7 +144,7 @@ plot_polarisation_vectors(x, y, u, v, image=image,
 # "polar_colorwheel" plot showing a 2D polar color wheel, also useful for
 # visualising vortexes:
 
-plot_polarisation_vectors(x, y, u, v, image=image,
+tml.plot_polarisation_vectors(x, y, u, v, image=image,
                           plot_style="polar_colorwheel",
                           unit_vector=False, overlay=False,
                           save=None, monitor_dpi=50)
@@ -153,7 +153,7 @@ plot_polarisation_vectors(x, y, u, v, image=image,
 
 scbar_dict = {"dx": 3.0321, "units": "pm", "location": "lower left",
               "box_alpha":0.0, "color": "black", "scale_loc": "top"}
-plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+tml.plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
                           sampling=3.0321, units='pm', monitor_dpi=50,
                           unit_vector=False, plot_style='colormap',
                           overlay=False, save=None, cmap='viridis',
@@ -162,14 +162,14 @@ plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
 
 # Plot a tricontourf for quadrant visualisation using a custom matplotlib cmap:
 
-import temul.signal_plotting as tmlplot
+import temul.api as tml
 from matplotlib.colors import from_levels_and_colors
-zest = tmlplot.hex_to_rgb(tmlplot.color_palettes('zesty'))
+zest = tml.hex_to_rgb(tml.color_palettes('zesty'))
 zest.append(zest[0])  # make the -180 and 180 degree colour the same
-expanded_zest = tmlplot.expand_palette(zest, [1,2,2,2,1])
+expanded_zest = tml.expand_palette(zest, [1,2,2,2,1])
 custom_cmap, _ = from_levels_and_colors(
-    levels=range(9), colors=tmlplot.rgb_to_dec(expanded_zest))
-plot_polarisation_vectors(x, y, u, v, image=image,
+    levels=range(9), colors=tml.rgb_to_dec(expanded_zest))
+tml.plot_polarisation_vectors(x, y, u, v, image=image,
                           unit_vector=False, plot_style='contour',
                           overlay=False, pivot='middle', save=None,
                           cmap=custom_cmap, levels=9, monitor_dpi=50,

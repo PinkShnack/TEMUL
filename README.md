@@ -9,6 +9,11 @@ pip install temul-toolkit
 
 For full installation instructions and documentation, go to [temul-toolkit.readthedocs.io](https://temul-toolkit.readthedocs.io/en/latest/).
 
+To use the vast majority of the temul functionality,
+import it from the api module::
+
+    import temul.api as tml
+
 ## Cite
 
 To cite the TEMUL toolkit, use the following DOI:

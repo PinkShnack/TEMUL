@@ -7,7 +7,6 @@ setup(
     name='temul-toolkit',
     packages=[
         'temul',
-        'temul.tests',
         'temul.example_data.experimental',
         'temul.example_data.prismatic',
         'temul.example_data.structures',
@@ -41,7 +40,7 @@ setup(
         'matplotlib-scalebar',
         'pandas',
         'periodictable',
-        'scikit-image>=0.16.2',
+        'scikit-image',
         'scipy',
         'tifffile',
     ],
