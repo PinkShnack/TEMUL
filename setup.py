@@ -40,7 +40,7 @@ setup(
         'matplotlib-scalebar',
         'pandas',
         'periodictable',
-        'scikit-image>=0.16.2',
+        'scikit-image',
         'scipy',
         'tifffile',
     ],
