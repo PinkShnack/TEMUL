@@ -13,7 +13,6 @@ Communications Physics, 2020.
 
 import matplotlib.pyplot as plt
 import temul.api as tml
-import temul.signal_plotting as tmlplt
 import atomap.api as am
 import hyperspy.api as hs
 import numpy as np
@@ -70,7 +69,7 @@ strain_map = tml.get_strain_map(sublattice1, zone_vector_index_A,
                                  units=units, vmin=vmin, vmax=vmax, cmap=cmap)
 
 kwargs = {'vmin': vmin, 'vmax': vmax, 'cmap': cmap}
-tmlplot.compare_images_line_profile_one_image(
+tml.compare_images_line_profile_one_image(
     strain_map, line_profile_positions, linewidth=100, arrow='h',
     linetrace=0.05, **kwargs)
 
@@ -89,7 +88,7 @@ rotation_map = tml.rotation_of_atom_planes(
     vmin=vmin, vmax=vmax, cmap=cmap)
 
 kwargs = {'vmin': vmin, 'vmax': vmax, 'cmap': cmap}
-tmlplot.compare_images_line_profile_one_image(
+tml.compare_images_line_profile_one_image(
     rotation_map, line_profile_positions, linewidth=100, arrow='h',
     linetrace=0.05, **kwargs)
 
@@ -109,7 +108,7 @@ ca_ratio_map = tml.ratio_of_lattice_spacings(
 ca_ratio_map.plot(vmin=vmin, vmax=vmax, cmap=cmap)
 
 kwargs = {'vmin': vmin, 'vmax': vmax, 'cmap': cmap}
-tmlplot.compare_images_line_profile_one_image(
+tml.compare_images_line_profile_one_image(
     ca_ratio_map, line_profile_positions, linewidth=100, arrow='h',
     linetrace=0.05, **kwargs)
 
