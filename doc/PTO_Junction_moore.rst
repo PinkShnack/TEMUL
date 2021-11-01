@@ -28,7 +28,6 @@ Import the Modules and Load the Data
 .. code-block:: python
 
     >>> import temul.api as tml
-    >>> import temul.signal_plotting as tmlplt
     >>> import atomap.api as am
     >>> import hyperspy.api as hs
     >>> import numpy as np
