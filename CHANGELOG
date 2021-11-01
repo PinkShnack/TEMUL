@@ -1,5 +1,6 @@
 0.1.4
  - add initial (useable) tests in test directory
  - add CHANGELOG
- - ref: change the directory structure to include topotem (# )
- - use temul.api as the typical import mechanism (# )
+ - ref: change the directory structure to include topotem (#52)
+ - use temul.api as the typical import mechanism (#52)
+ - update ci github wf with os and python version matrix
