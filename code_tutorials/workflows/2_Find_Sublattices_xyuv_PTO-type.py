@@ -103,6 +103,7 @@ atom_lattice = am.Atom_Lattice(image=image.data,
 
 atom_lattice.save(filename="Atom_Lattice.hdf5", overwrite=True)
 
+atom_lattice.plot()
 
 
 ''' Now we need to get the (x, y) and (u, v) data for the polarisation vectors.

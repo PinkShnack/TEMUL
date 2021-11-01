@@ -122,3 +122,6 @@ settings.json
 *.pkl
 *.csv
 *.png
+
+# code_tutorials atom positions
+atom_positions*.npy

@@ -79,6 +79,9 @@ atom_positions2_part1 = sub1.find_missing_atoms_from_zone_vector(
 
 # for this boracite-type structure, you'll need to do it again in the
 # perperdicular direction!
+
+#### NOTE: The example structure doesn't actually have these positions!
+
 zone_axis_B = sub1.zones_axis_average_distances[1]
 atom_positions2_part2 = sub1.find_missing_atoms_from_zone_vector(
     zone_axis_B, vector_fraction=0.5)
@@ -111,6 +114,9 @@ atom_lattice = am.Atom_Lattice(image=image.data,
 
 atom_lattice.save(filename="Atom_Lattice.hdf5", overwrite=True)
 
+# notice that we have found extra positions that the example structure
+# doesn't actually have!
+atom_lattice.plot()
 
 
 ''' Now we need to get the (x, y) and (u, v) data for the polarisation vectors.
