@@ -14,12 +14,12 @@ def calculate_atom_plane_curvature(sublattice, zone_vector_index,
                                    **kwargs):
     """
     Calculates the curvature of the sublattice atom planes along the direction
-    given by `zone_vector_index`. In the case of [1] below, the curvature is
+    given by ``zone_vector_index``. In the case of [2]_. below, the curvature is
     the inverse of the radius of curvature, and is effectively equal to the
     second derivative of the displacement direction of the atoms. Because the
     first derivative is negligible, the curvature can be calculated as the
-    strain gradient [2].
-    With the parameter func="strain_grad", this function calculates the strain
+    strain gradient [3]_.
+    With the parameter ``func="strain_grad"``, this function calculates the strain
     gradient of the atom planes of a Atomap Sublattice object.
 
     Parameters
@@ -27,11 +27,11 @@ def calculate_atom_plane_curvature(sublattice, zone_vector_index,
     sublattice : Atomap Sublattice object
     zone_vector_index : int
         The index of the zone axis (translation symmetry) found by the Atomap
-        function `construct_zone_axes()`.
+        function ``construct_zone_axes()``.
     func : 'strain_grad' or function
-        Function that can be used by `scipy.optimize.curve_fit`. If
+        Function that can be used by ``scipy.optimize.curve_fit``. If
         func='strain_grad', then the
-        `temul.topotem.lattice_structure_tools.sine_wave_function_strain_gradient`
+        ``temul.topotem.lattice_structure_tools.sine_wave_function_strain_gradient``
         function will be used.
     atom_planes : tuple, optional
         The starting and ending atom plane to be computed. Useful if only a
@@ -45,12 +45,12 @@ def calculate_atom_plane_curvature(sublattice, zone_vector_index,
     title : string, default 'Curvature Map'
     filename : string, default None
         Name of the file to be saved.
-    plot, return_fits : Bool, default False
+    plot, return_fits : bool, default False
         If set to True, each atom plane fitting will be plotted along with its
         respective atom positions. The fitting parameters (popt) will be
         returned as a list.
     **kwargs
-        keyword arguments to be passed to `scipy.optimize.curve_fit`.
+        keyword arguments to be passed to ``scipy.optimize.curve_fit``.
 
     Examples
     --------
@@ -84,14 +84,14 @@ def calculate_atom_plane_curvature(sublattice, zone_vector_index,
 
     References
     ----------
-    .. [1] Reference: Function adapted from a script written by
-    Dr. Marios Hadjimichael, and used in paper_name. The original MATLAB script
-    can be found in TEMUL/publication_examples/PTO_marios_hadj
-    .. [2] Reference: Landau and Lifshitz, Theory of Elasticity, Vol 7,
-    pp 47-49, 1981
+    .. [2] Function adapted from a script written by
+       Dr. Marios Hadjimichael, and used in paper_name. The original
+       MATLAB script can be found in
+       TEMUL/publication_examples/PTO_marios_hadj
+    .. [3] Landau and Lifshitz, Theory of Elasticity, Vol 7,
+       pp 47-49, 1981
 
     """
-
     if sublattice.zones_axis_average_distances is None:
         raise Exception(
             "zones_axis_average_distances is empty. "

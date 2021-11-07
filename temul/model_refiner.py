@@ -45,35 +45,35 @@ class Model_Refiner():
     def __init__(self, sublattice_and_elements_dict,
                  comparison_image=None, sampling=None,
                  thickness=10, name=''):
-        '''
+        """
         Object which is used to refine the elements in a list of
         Atomap Sublattice objects. There are currently two refinement methods:
-        1. Refine with position `image_difference_position_model_refiner`
-        2. Refine with intensity `image_difference_intensity_model_refiner`.
+        1. Refine with position ``image_difference_position_model_refiner`
+        2. Refine with intensity ``image_difference_intensity_model_refiner``.
 
         Parameters
         ----------
         sublattice_and_elements_dict : dictionary
-            A dictionary of the structure `{sublattice: element_list,}` where
+            A dictionary of the structure ``{sublattice: element_list,}`` where
             each sublattice is an Atomap sublattice object and each
             element_list is a list of elements of the form given in the
-            examples of `get_individual_elements_from_element_list` in the
+            examples of ``get_individual_elements_from_element_list`` in the
             element_tools.py module.
         comparison_image : Hyperspy Signal2D, default None
-            This is the image with which the first `sublattice` image will be
+            This is the image with which the first ``sublattice`` image will be
             compared to refine the list of sublattices' elements.
             If None is given when the Model Refiner is created, or if the
-            `comparison_image` is not the same shape as the first sublattice
+            ``comparison_image`` is not the same shape as the first sublattice
             image, a warning will be returned.
-            To set a `comparison_image`, you can either use
-            `model_refiner.create_simulation` or by setting the
-            `model_refiner.comparison_image` to an image.
+            To set a ``comparison_image``, you can either use
+            ``model_refiner.create_simulation`` or by setting the
+            ``model_refiner.comparison_image`` to an image.
         sampling : float, default None
-            The real space sampling of the `sublattice` images in Angstrom.
+            The real space sampling of the ``sublattice`` images in Angstrom.
             The sampling is defined as: sampling = angstrom/pixel. This
-            sampling will be identical for the `comparison_image`. If it is set
+            sampling will be identical for the ``comparison_image``. If it is set
             to None, the sampling will automatically be set by the
-            `sublattice.signal` object.
+            ``sublattice.signal`` object.
         thickness : float, default 10
             Physical thickness of the sample in Angstrom. This will be used for
             the simulation.
@@ -103,9 +103,9 @@ class Model_Refiner():
 
         Examples
         --------
-        For now, see `image_difference_intensity_model_refiner` and
-        `image_difference_position_model_refiner` below.
-        '''
+        For now, see ``image_difference_intensity_model_refiner`` and
+        ``image_difference_position_model_refiner`` below.
+        """
 
         self.sublattice_and_elements_dict = sublattice_and_elements_dict
         self.sublattice_list = list(sublattice_and_elements_dict.keys())
@@ -227,12 +227,12 @@ class Model_Refiner():
         )
 
     def _auto_mask_radii_init(self):
-        '''
+        """
         Automatically set the mask_radius for each sublattice.
         Use mask_radius='auto' when calling a Model Refiner method.
         Ideally you could have the mask_radius/percent_to_nn change depending
         on the atom, but for now depending on the sublattice is okay.
-        '''
+        """
 
         mask_radii = []
         for sublattice in self.sublattice_list:
@@ -272,14 +272,14 @@ class Model_Refiner():
                 self.element_count_history_list[-2:]))
 
     def get_element_count_as_dataframe(self):
-        '''
+        """
         Allows you to view the element count as a Pandas Dataframe.
-        See `image_difference_intensity_model_refiner` for an example.
+        See ``image_difference_intensity_model_refiner`` for an example.
 
         Returns
         -------
         Pandas Dataframe
-        '''
+        """
 
         elements_ = [i for sublist in self.element_list for i in sublist]
         elements_ = list(set(elements_))
@@ -317,26 +317,26 @@ class Model_Refiner():
                                         flip_colrows=True,
                                         title="Refinement of Elements",
                                         fontsize=16, split_symbol=['_', '.']):
-        '''
+        """
         Allows you to plot the element count as a bar chart.
-        See `image_difference_intensity_model_refiner` for an example.
+        See ``image_difference_intensity_model_refiner`` for an example.
 
         Parameters
         ----------
         element_configs : int, default 0
             Change the plotted data.
-            `element_configs=0` will plot the element configuration counts,
-            `element_configs=1` will plot the individual element counts, and
-            `element_configs=2` will plot the both 0 and 1.
-        flip_colrows : Bool, default True
+            ``element_configs=0`` will plot the element configuration counts,
+            ``element_configs=1`` will plot the individual element counts, and
+            ``element_configs=2`` will plot the both 0 and 1.
+        flip_colrows : bool, default True
             Change how the data is plotted.
-            `flip_colrows=True` will take the transpose of the dataframe.
+            ``flip_colrows=True`` will take the transpose of the dataframe.
         title : string, default "Refinement of Elements"
             Title of the bar chart.
         fontsize : int, default 16
         split_symbol : list, default ['_', '.']
             See temul.element_tools.split_and_sort_element for details.
-        '''
+        """
 
         if element_configs == 0:  # only element configs
             df = self.get_element_count_as_dataframe()
@@ -368,7 +368,7 @@ class Model_Refiner():
         plt.tight_layout()
 
     def set_calibration_area(self, manual_list=None):
-        '''
+        """
         Area that will be used to calibrate a simulation. The pixel separation
         can be set with set_calibration_separation. The average intensity of
         the atoms chosen by this separation within the area will be set to 1.
@@ -381,7 +381,7 @@ class Model_Refiner():
 
         manual_list must be a list of two lists, each of length two.
         For example: [ [0,0], [50, 50] ]
-        '''
+        """
 
         if isinstance(manual_list, list):
             self.calibration_area = manual_list
@@ -460,7 +460,7 @@ class Model_Refiner():
             filename=None,
             verbose=False,
             refinement_method="Intensity"):
-        '''
+        """
         Change the elements for sublattice atom positions that don't match with
         comparison_image.
 
@@ -500,7 +500,7 @@ class Model_Refiner():
         >>> refiner.sublattice_list[0].plot()
         >>> refiner.comparison_image.plot()
 
-        '''
+        """
 
         self._comparison_image_warning()
         self._save_refiner_instance()
@@ -574,7 +574,7 @@ class Model_Refiner():
             inplace=True,
             filename=None,
             refinement_method="Position"):
-        '''
+        """
         Find new atom positions that were perhaps missed by the initial
         position finding steps. Each sublattice will be updated with new atom
         positions if new atom positions are found.
@@ -613,7 +613,7 @@ class Model_Refiner():
         >>> refiner.plot_element_count_as_bar_chart(
         ...     element_configs=2, flip_colrows=True, fontsize=24)
 
-        '''
+        """
 
         self._comparison_image_warning()
         self._save_refiner_instance()
@@ -625,8 +625,8 @@ class Model_Refiner():
         elif isinstance(sublattices, list):
             sublattice_list = [self.sublattice_list[i] for i in sublattices]
             print(
-                "Warning: Setting `sublattices` to a list can cause overwrite"
-                "errors. Best use `sublattice='all'` until this is fixed")
+                "Warning: Setting ``sublattices`` to a list can cause overwrite"
+                "errors. Best use ``sublattice='all'`` until this is fixed")
             mask_radius_list = [self.auto_mask_radius[i] for i in sublattices]
 
         # elif isinstance(positions_from_sublattices, list):
@@ -714,39 +714,39 @@ class Model_Refiner():
         Parameters
         ----------
         sublattices : Atomap Sublattices, default 'all'
-            If set to 'all', sublattices that exist in the `Model_Refiner` will
-            all be used. The `sublattice` indexes can be specified in a list.
+            If set to 'all', sublattices that exist in the ``Model_Refiner`` will
+            all be used. The ``sublattice`` indexes can be specified in a list.
             For example [0, 2] will select the first and third sublattices.
-            A list of `sublattice` objects can instead be used.
-        filter_image : Bool, default False
+            A list of ``sublattice`` objects can instead be used.
+        filter_image : bool, default False
             Choose whether to filter the simulation with a Gaussian to match
-            the `reference_image`.
-        calibrate_image : Bool, default True
+            the ``reference_image``.
+        calibrate_image : bool, default True
             Choose whether to calibrate the simulation with a set
-            `calibration_area` and `calibration_separation`.
+            ``calibration_area`` and ``calibration_separation``.
         xyz_sizes : list, default None
             List of the x, y, z physical size of the reference_image in
             angstrom. If None is set, the sizes will be automatically taken
-            from the `image_xyz_sizes` attribute.
+            from the ``image_xyz_sizes`` attribute.
         header_comment : string, default 'example'
             The first line comment for the .xyz file.
         filename : string, default 'refiner_simulation'
             filename with which the .xyz file and simulated .mrc file will be
             saved.
         delta_image_filter : float, default 0.5
-            The change in sigma for the `filter` Gaussian filter. Small values
-            will slow the `filter` down.
+            The change in sigma for the ``filter`` Gaussian filter. Small values
+            will slow the ``filter`` down.
         max_sigma : float, default 6
-            The maximum sigma used for the `filter` Gaussian filter. Large
-            values will slow the `filter` down.
+            The maximum sigma used for the ``filter`` Gaussian filter. Large
+            values will slow the ``filter`` down.
         percent_to_nn : float, default None
             The percentage distance to the nearest neighbour atom used for
             atomap atom position refinement.
         mask_radius : float, default 'auto'
             The pixel distance to the nearest neighbour atom used for atomap
             atom position refinement
-        refine : Bool, default True
-            Whether to refine the atom positions for the `calibrate` parameter.
+        refine : bool, default True
+            Whether to refine the atom positions for the ``calibrate`` parameter.
 
         Note: The error resulting from filter=True with percent_to_nn set can
         be fixed by setting mask_radius instead of percent_to_nn.
@@ -898,7 +898,7 @@ class Model_Refiner():
 # df
 
 
-''' Model Refiner Dummy Data examples '''
+""" Model Refiner Dummy Data examples """
 
 
 def get_model_refiner_two_sublattices():
@@ -1035,7 +1035,7 @@ def get_model_refiner_with_12_vacancies_refined(
 
 def get_model_refiner_with_3_vacancies_refined(
         image_noise=True, test_element='Ti_2', filename=None):
-    '''
+    """
     >>> from temul.model_refiner import (
     ...     get_model_refiner_with_3_vacancies_refined)
     >>> refiner = get_model_refiner_with_3_vacancies_refined()
@@ -1043,7 +1043,7 @@ def get_model_refiner_with_3_vacancies_refined(
     Changing some atoms
     Changing some atoms
     >>> history = refiner.get_element_count_as_dataframe()
-    '''
+    """
     refiner = get_model_refiner_one_sublattice_3_vacancies(
         image_noise=image_noise, test_element=test_element)
     refiner.auto_mask_radius = [4]

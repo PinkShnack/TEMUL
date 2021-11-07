@@ -9,6 +9,9 @@ Classes
 
 Model Refiner
 =============
+.. This won't work because PyPrismatic isn't dependency
+   This of course needs to be fixed, but the fix is to
+   overhaul the Model Refiner class
 .. autoclass:: temul.model_refiner.Model_Refiner
     :members:
     :undoc-members:
@@ -17,9 +20,17 @@ Model Refiner
 Modules
 -------
 
-Polarisation
-============
-.. automodule:: temul.polarisation
+TopoTEM (Polarisation)
+======================
+.. automodule:: temul.topotem.polarisation
+    :members:
+    :undoc-members:
+
+.. automodule:: temul.topotem.fft_mapping
+    :members:
+    :undoc-members:
+
+.. automodule:: temul.topotem.lattice_structure_tools
     :members:
     :undoc-members:
 

@@ -1,5 +1,5 @@
 
-'''
+"""
 from temul.model_creation import get_max_number_atoms_z
 from temul.signal_processing import (get_xydata_from_list_of_intensities,
                                      return_fitting_of_1D_gaussian,
@@ -384,8 +384,8 @@ tml.write_cif_from_dataframe(dataframe=Au_NP_df,
 ######## Simulate MoS2 with Prismatic Example ########
 
 
-'''
-'''
+"""
+"""
 Steps
 
 1. get the path to the example data
@@ -398,10 +398,10 @@ image, see the function simulate_and_calibrate_with_prismatic() for allowing
 the experimental(reference) image to calculate the probeStep(sampling).
 Only works if the reference image is loaded into python as a hyperspy 2D signal
 and if the image is calibrated.
-'''
+"""
 
 
-'''
+"""
 
 # Step 1
 
@@ -1150,13 +1150,13 @@ refiner.plot_error_between_comparison_and_reference_image(style='scatter')
 ####################
 
 import temul.api as tml
-'''
+"""
 
 
 # Image Registration
 
 # def rigid_registration(file, masktype='hann', n=4, findMaxima='gf'):
-'''
+"""
     Perform image registraion with the rigid registration package
 
     Parameters
@@ -1191,8 +1191,8 @@ import temul.api as tml
 
     >>>
 
-'''
-'''
+"""
+"""
 
     # Read tiff file. Rearrange axes so final axis iterates over images
     stack = np.rollaxis(imread(file), 0, 3)
@@ -1246,4 +1246,4 @@ import temul.api as tml
 
     # creates a folder and put all the individual images in there
     save_individual_images_from_image_stack(image_stack=s.stack_registered)
-'''
+"""

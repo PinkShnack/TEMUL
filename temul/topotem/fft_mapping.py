@@ -46,7 +46,7 @@ def get_masked_ifft(image, mask_coords, mask_radius=10, image_space="real",
                     keep_masked_area=True, plot_masked_fft=False):
     """
     Creates an inverse fast Fourier transform (iFFT) from an image and mask
-    coordinates. Use `choose_mask_coordinates` to manually choose mask
+    coordinates. Use ``choose_mask_coordinates`` to manually choose mask
     coordinates in the FFT.
 
     Parameters
@@ -54,17 +54,17 @@ def get_masked_ifft(image, mask_coords, mask_radius=10, image_space="real",
     image : Hyperspy 2D Signal
     mask_coords : list of pixel coordinates
         Pixel coordinates of the masking locations. See the example below for
-        two simple coordinates found using `choose_mask_coordinates`.
+        two simple coordinates found using ``choose_mask_coordinates``.
     mask_radius : int, default 10
         Radius in pixels of the mask.
     image_space : str, default "real"
         If the input image is in Fourier/diffraction/reciprocal space already,
         set space="fourier".
-    keep_masked_area : Bool, default True
+    keep_masked_area : bool, default True
         If True, this will set the mask at the mask_coords.
         If False, this will set the mask as everything other than the
         mask_coords. Can be thought of as inversing the mask.
-    plot_masked_fft : Bool, default False
+    plot_masked_fft : bool, default False
         If True, the mask used to filter the FFT will be plotted. Good for
         checking that the mask is doing what you want. Can fail sometimes due
         to matplotlib plotting issues.
@@ -107,10 +107,10 @@ def get_masked_ifft(image, mask_coords, mask_radius=10, image_space="real",
     elif image_space.lower() == 'fourier':
         fft = image
     else:
-        raise ValueError("image_space must be either `real` or `fourier`.")
+        raise ValueError("image_space must be either ``real`` or ``fourier``.")
 
     if len(mask_coords) == 0:
-        raise ValueError("`mask_coords` has not been set.")
+        raise ValueError("`mask_coords`` has not been set.")
     for mask_coord in mask_coords:
 
         x_pix = mask_coord[0]

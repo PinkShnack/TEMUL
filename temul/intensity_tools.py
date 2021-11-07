@@ -10,7 +10,7 @@ def get_sublattice_intensity(sublattice,
                              num_points=3,
                              percent_to_nn=0.4,
                              mask_radius=None):
-    '''
+    """
     Finds the intensity for each atomic column using either max, mean,
     min, total or all of them at once.
 
@@ -44,12 +44,12 @@ def get_sublattice_intensity(sublattice,
         Determines the boundary of the area surrounding each atomic
         column, as fraction of the distance to the nearest neighbour.
     mask_radius : float
-        Radius of the atomic column in pixels. If chosen, `percent_to_nn` must
+        Radius of the atomic column in pixels. If chosen, ``percent_to_nn`` must
         be None.
 
     Returns
     -------
-    Numpy array, shape depending on `intensity_type`
+    Numpy array, shape depending on ``intensity_type``
 
     Examples
     --------
@@ -90,7 +90,7 @@ def get_sublattice_intensity(sublattice,
     ...     remove_background_method="average",
     ...     background_sub=sublattice)
 
-    '''
+    """
     if percent_to_nn is not None:
         sublattice.find_nearest_neighbors()
     else:
@@ -224,7 +224,7 @@ def get_sublattice_intensity(sublattice,
 def remove_average_background(sublattice, intensity_type,
                               background_sub, percent_to_nn=0.40,
                               mask_radius=None):
-    '''
+    """
     Remove the average background from a sublattice intensity using
     a background sublattice.
 
@@ -242,12 +242,12 @@ def remove_average_background(sublattice, intensity_type,
         Determines the boundary of the area surrounding each atomic
         column, as fraction of the distance to the nearest neighbour.
     mask_radius : float
-        Radius of the atomic column in pixels. If chosen, `percent_to_nn` must
+        Radius of the atomic column in pixels. If chosen, ``percent_to_nn`` must
         be None.
 
     Returns
     -------
-    Numpy array, shape depending on `intensity_type`
+    Numpy array, shape depending on ``intensity_type``
 
     Examples
     --------
@@ -264,7 +264,7 @@ def remove_average_background(sublattice, intensity_type,
     ...     sublattice, intensity_type="max",
     ...     background_sub=sublattice)
 
-    '''
+    """
     background_sub.find_nearest_neighbors()
     background_sub.get_atom_column_amplitude_min_intensity(
         percent_to_nn=percent_to_nn, mask_radius=mask_radius)
@@ -368,7 +368,7 @@ def remove_average_background(sublattice, intensity_type,
         pass
 
 
-'''
+"""
 sublattice0 = dummy_data.get_simple_cubic_sublattice()
 
 inten = get_sublattice_intensity(sublattice=sublattice0,
@@ -379,13 +379,13 @@ inten = get_sublattice_intensity(sublattice=sublattice0,
 can make the mean/mode option better:
   code blocks aren't needed, just put the if statement lower
   down where the change is...
-'''
+"""
 
 
 def remove_local_background(sublattice, background_sub, intensity_type,
                             num_points=3, percent_to_nn=0.40,
                             mask_radius=None):
-    '''
+    """
     Remove the local background from a sublattice intensity using
     a background sublattice.
 
@@ -406,12 +406,12 @@ def remove_local_background(sublattice, background_sub, intensity_type,
         Determines the boundary of the area surrounding each atomic
         column, as fraction of the distance to the nearest neighbour.
     mask_radius : float
-        Radius of the atomic column in pixels. If chosen, `percent_to_nn` must
+        Radius of the atomic column in pixels. If chosen, ``percent_to_nn`` must
         be None.
 
     Returns
     -------
-    Numpy array, shape depending on `intensity_type`
+    Numpy array, shape depending on ``intensity_type``
 
     Examples
     --------
@@ -427,7 +427,7 @@ def remove_local_background(sublattice, background_sub, intensity_type,
     ...     sublattice, intensity_type="max",
     ...     background_sub=sublattice)
 
-    '''
+    """
     # get background_sub intensity list
 
     if percent_to_nn is not None:

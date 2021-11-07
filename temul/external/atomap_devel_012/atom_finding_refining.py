@@ -430,7 +430,7 @@ def _make_circular_mask(centerX, centerY, imageSizeX, imageSizeY, radius):
 
     Returns
     -------
-    Boolean Numpy 2D Array
+    boolean Numpy 2D Array
         Array with the shape (imageSizeX, imageSizeY) with the mask.
 
     See also
@@ -622,7 +622,7 @@ def _make_model_from_atom_list(
     mask_radius : float, optional
         Radius of the mask around each atom. If this is not set,
         the radius will be the distance to the nearest atom in the
-        same sublattice times the `percent_to_nn` value.
+        same sublattice times the ``percent_to_nn`` value.
 
     Returns
     -------
@@ -712,7 +712,7 @@ def _fit_atom_positions_with_gaussian_model(
     mask_radius : float, optional
         Radius of the mask around each atom. If this is not set,
         the radius will be the distance to the nearest atom in the
-        same sublattice times the `percent_to_nn` value.
+        same sublattice times the ``percent_to_nn`` value.
     centre_free : bool, optional
         If True (default), the gaussian will be free to move. Setting this
         to False can be used to find better values for the other parameters
@@ -826,8 +826,8 @@ def fit_atom_positions_gaussian(
     mask_radius : float, optional
         Radius of the mask around each atom. If this is not set,
         the radius will be the distance to the nearest atom in the
-        same sublattice times the `percent_to_nn` value.
-        Note: if `mask_radius` is not specified, the Atom_Position objects
+        same sublattice times the ``percent_to_nn`` value.
+        Note: if ``mask_radius`` is not specified, the Atom_Position objects
         must have a populated nearest_neighbor_list. This is normally done
         through the sublattice class, but can also be done manually.
         See below for an example how to do this.
@@ -866,7 +866,7 @@ def fit_atom_positions_gaussian(
     >>> g_list = fit_atom_positions_gaussian(
     ...     atom_list=atom_list, image_data=image, mask_radius=2)
 
-    Not using `mask_radius`, populating the nearest_neighbor_list manually
+    Not using ``mask_radius``, populating the nearest_neighbor_list manually
 
     >>> image = np.zeros((9, 9))
     >>> image[2, 2] = 1.

@@ -28,11 +28,11 @@ def batch_convert_emd_to_image(extension_to_save,
     top_level_directory : string
         The top-level directory in which the emd files exist. The default
         glob_search will search this directory and all subdirectories.
-    glob_search : string, default "**/*"
+    glob_search : string
         Glob search string, see glob for more details:
         https://docs.python.org/2/library/glob.html
         Default will search this directory and all subdirectories.
-    overwrite : Bool, default True
+    overwrite : bool, default True
         Overwrite if the extension_to_save file already exists.
 
     """
@@ -137,7 +137,7 @@ def convert_vesta_xyz_to_prismatic_xyz(vesta_xyz_filename,
                                        edge_padding=None,
                                        header_comment="Let's make a file!",
                                        save=True):
-    '''
+    """
     Convert from Vesta outputted xyz file format to the prismatic-style xyz
     format.
     Lose some information from the .cif or .vesta file but okay for now.
@@ -161,7 +161,7 @@ def convert_vesta_xyz_to_prismatic_xyz(vesta_xyz_filename,
         use a format other than vesta xyz. Maybe .cif or .vesta keeps these?
     header_comment : string
         header comment for the file.
-    save : Bool, default True
+    save : bool, default True
         whether to output the file as a prismatic formatted xyz file with the
         name of the file given by "prismatic_xyz_filename".
 
@@ -182,7 +182,7 @@ def convert_vesta_xyz_to_prismatic_xyz(vesta_xyz_filename,
     ...     engine='python', occupancy=1.0, rms_thermal_vib=0.05,
     ...     header_comment="Let's do this!", save=True)
 
-    '''
+    """
 
     file = pd.read_csv(vesta_xyz_filename,
                        delimiter=delimiter,
@@ -511,7 +511,7 @@ def dm3_stack_to_tiff_stack(loading_file,
                             crop=False,
                             crop_start=20.0,
                             crop_end=80.0):
-    '''
+    """
     Save an image stack filetype to a different filetype, e.g., dm3 to tiff.
 
     Parameters
@@ -528,7 +528,7 @@ def dm3_stack_to_tiff_stack(loading_file,
     crop_start, crop_end : float, default 20.0, 80.0
         the start and end frame of the crop
 
-    '''
+    """
     if '.' in loading_file:
         file = loading_file
         filename = loading_file[:-4]
@@ -555,7 +555,7 @@ def dm3_stack_to_tiff_stack(loading_file,
 
 def save_individual_images_from_image_stack(
         image_stack, output_folder='individual_images'):
-    '''
+    """
     Save each image in an image stack. The images are saved in a new folder.
     Useful for after running an image series through Rigid Registration.
 
@@ -566,7 +566,7 @@ def save_individual_images_from_image_stack(
         Name of the folder in which all individual images from
         the stack will be saved.
 
-    '''
+    """
     # Save each image as a 32 bit tiff )cqn be displayed in DM
     image_stack_32bit = np.float32(image_stack)
     folder = os.mkdir(output_folder)
@@ -579,7 +579,7 @@ def save_individual_images_from_image_stack(
 def load_prismatic_mrc_with_hyperspy(
         prismatic_mrc_filename,
         save_name='calibrated_data_'):
-    '''
+    """
     We are aware this is currently producing errors with new versions of
     Prismatic.
 
@@ -603,7 +603,7 @@ def load_prismatic_mrc_with_hyperspy(
     ...         "prism_2Doutput_prismatic_simulation.mrc")
     <Signal2D, title: , dimensions: (|1182, 773)>
 
-    '''
+    """
 
     # if '.mrc' not in prismatic_mrc_filename:
     #     prismatic_mrc_filename = prismatic_mrc_filename + 'mrc'

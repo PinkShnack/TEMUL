@@ -43,7 +43,7 @@ def _detector_threshold(det_image):
     Returns
     -------
     threshold_image : NumPy array
-        Boolean image demonstrating the active region of the detector.
+        boolean image demonstrating the active region of the detector.
 
     Example
     -------

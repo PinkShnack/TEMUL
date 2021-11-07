@@ -5,7 +5,7 @@ import periodictable as pt
 
 
 def get_and_return_element(element_symbol):
-    '''
+    """
     From the elemental symbol, e.g., 'H' for Hydrogen, provides Hydrogen as
     a periodictable.core.Element object for further use.
 
@@ -32,7 +32,7 @@ def get_and_return_element(element_symbol):
     >>> print(Moly.number)
     42
 
-    '''
+    """
 
     for pt_element in pt.elements:
         if pt_element.symbol == element_symbol:
@@ -42,7 +42,7 @@ def get_and_return_element(element_symbol):
 
 
 def atomic_radii_in_pixels(sampling, element_symbol):
-    '''
+    """
     Get the atomic radius of an element in pixels, scaled by an image sampling
 
     Parameters
@@ -73,7 +73,7 @@ def atomic_radii_in_pixels(sampling, element_symbol):
     >>> radius_pix_S
     2.28
 
-    '''
+    """
 
     element = get_and_return_element(element_symbol=element_symbol)
 
@@ -87,7 +87,7 @@ def atomic_radii_in_pixels(sampling, element_symbol):
 
 
 def split_and_sort_element(element, split_symbol=['_', '.']):
-    '''
+    """
     Extracts info from input atomic column element configuration
     Split an element and its count, then sort the element for
     use with other functions.
@@ -127,7 +127,7 @@ def split_and_sort_element(element, split_symbol=['_', '.']):
 
     >>> info = split_and_sort_element(element='O_6.Mo_3.Ti_5')
 
-    '''
+    """
     splitting_info = []
 
     if '.' in element:
@@ -229,9 +229,9 @@ def get_individual_elements_from_element_list(
 
 
 def combine_element_lists(lists):
-    ''' Reduce multiple element_lists into one list of strings from a list of
-    lists, useful for the `Model Refiner` `flattened_element_list`.
-    '''
+    """ Reduce multiple element_lists into one list of strings from a list of
+    lists, useful for the ``Model Refiner`` ``flattened_element_list``.
+    """
 
     element_list = [i for sublist in lists for i in sublist]
     element_list = list(set(element_list))

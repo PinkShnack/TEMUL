@@ -392,8 +392,8 @@ class Atom_Position:
         mask_radius : float, optional
             Radius of the mask around each atom. If this is not set,
             the radius will be the distance to the nearest atom in the
-            same sublattice times the `percent_to_nn` value.
-            Note: if `mask_radius` is not specified, the Atom_Position objects
+            same sublattice times the ``percent_to_nn`` value.
+            Note: if ``mask_radius`` is not specified, the Atom_Position objects
             must have a populated nearest_neighbor_list.
         centre_free : bool, default True
             If True, the centre parameter will be free, meaning that
