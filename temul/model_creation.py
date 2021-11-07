@@ -870,8 +870,8 @@ def scaling_z_contrast(numerator_sublattice, numerator_element,
         Determines the boundary of the area surrounding each atomic
         column, as fraction of the distance to the nearest neighbour.
     mask_radius : float
-        Radius of the atomic column in pixels. If chosen, ``percent_to_nn`` must
-        be None.
+        Radius of the atomic column in pixels. If chosen, ``percent_to_nn``
+        must be None.
     split_symbol : string, default '_'
         The symbols used to split the element into its name
         and count.
@@ -1954,14 +1954,14 @@ def image_difference_position(sublattice,
         the outputted sublattice object name and sublattice.name the new
         sublattice will be given
     inplace : bool, default True
-        If set to True, the input ``sublattice`` will be changed inplace and the
-        sublattice returned. If set to False, these changes will be output only
-        to a new sublattice.
+        If set to True, the input ``sublattice`` will be changed inplace and
+        the sublattice returned. If set to False, these changes will be output
+        only to a new sublattice.
 
     Returns
     -------
-    Atomap Sublattice object if ``inplace=False``. See the ``inplace`` parameter
-    for details.
+    Atomap Sublattice object if ``inplace=False``. See the ``inplace``
+    parameter for details.
 
     Examples
     --------

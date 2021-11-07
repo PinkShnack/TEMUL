@@ -44,8 +44,8 @@ def get_sublattice_intensity(sublattice,
         Determines the boundary of the area surrounding each atomic
         column, as fraction of the distance to the nearest neighbour.
     mask_radius : float
-        Radius of the atomic column in pixels. If chosen, ``percent_to_nn`` must
-        be None.
+        Radius of the atomic column in pixels. If chosen, ``percent_to_nn``
+        must be None.
 
     Returns
     -------
@@ -242,8 +242,8 @@ def remove_average_background(sublattice, intensity_type,
         Determines the boundary of the area surrounding each atomic
         column, as fraction of the distance to the nearest neighbour.
     mask_radius : float
-        Radius of the atomic column in pixels. If chosen, ``percent_to_nn`` must
-        be None.
+        Radius of the atomic column in pixels. If chosen, ``percent_to_nn``
+        must be None.
 
     Returns
     -------
@@ -406,8 +406,8 @@ def remove_local_background(sublattice, background_sub, intensity_type,
         Determines the boundary of the area surrounding each atomic
         column, as fraction of the distance to the nearest neighbour.
     mask_radius : float
-        Radius of the atomic column in pixels. If chosen, ``percent_to_nn`` must
-        be None.
+        Radius of the atomic column in pixels. If chosen, ``percent_to_nn``
+        must be None.
 
     Returns
     -------

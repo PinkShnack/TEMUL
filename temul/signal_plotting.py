@@ -173,8 +173,8 @@ def compare_images_line_profile_two_images(imageA, imageB,
         image from image.axes_manager[0].scale.
     units : string, default 'nm'
     crop_offset : int, default 20
-        number of pixels away from the ``line_profile_positions`` coordinates the
-        image crop will be taken.
+        number of pixels away from the ``line_profile_positions``
+        coordinates the image crop will be taken.
     title : string, default "Intensity Profile"
         Title of the plot
     marker_A, marker_B : Matplotlib marker

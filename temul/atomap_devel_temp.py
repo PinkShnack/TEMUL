@@ -1,4 +1,4 @@
-"""
+'''
 Should make a PR on atomap for these changes.
 They are in EOC's personal atomap version.
 
@@ -113,4 +113,4 @@ def add_atoms_with_gui(image, atom_list=None, distance_threshold=4,
         vmin=vmin, vmax=vmax)
     new_atom_list = atom_adder_remover.atom_list
     return new_atom_list
-"""
+'''

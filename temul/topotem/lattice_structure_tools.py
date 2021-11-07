@@ -14,13 +14,13 @@ def calculate_atom_plane_curvature(sublattice, zone_vector_index,
                                    **kwargs):
     """
     Calculates the curvature of the sublattice atom planes along the direction
-    given by ``zone_vector_index``. In the case of [1]_. below, the curvature is
-    the inverse of the radius of curvature, and is effectively equal to the
+    given by ``zone_vector_index``. In the case of [1]_. below, the curvature
+    is the inverse of the radius of curvature, and is effectively equal to the
     second derivative of the displacement direction of the atoms. Because the
     first derivative is negligible, the curvature can be calculated as the
     strain gradient [2]_.
-    With the parameter ``func="strain_grad"``, this function calculates the strain
-    gradient of the atom planes of a Atomap Sublattice object.
+    With the parameter ``func="strain_grad"``, this function calculates the
+    strain gradient of the atom planes of a Atomap Sublattice object.
 
     Parameters
     ----------

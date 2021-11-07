@@ -26,7 +26,7 @@ jobs:
           pip install -e .
       - name: Lint with flake8
         run: |
-          flake8 temul tests --exclude temul/external,temul/example_scripts.py,code_tutorials,publication_examples
+          flake8 temul tests --exclude temul/external,temul/example_scripts.py,temul/atomap_devel_temp.py,code_tutorials,publication_examples
       - name: Test with pytest
         run: |
           pytest tests

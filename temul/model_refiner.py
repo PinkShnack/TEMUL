@@ -71,8 +71,8 @@ class Model_Refiner():
         sampling : float, default None
             The real space sampling of the ``sublattice`` images in Angstrom.
             The sampling is defined as: sampling = angstrom/pixel. This
-            sampling will be identical for the ``comparison_image``. If it is set
-            to None, the sampling will automatically be set by the
+            sampling will be identical for the ``comparison_image``. If it
+            is set to None, the sampling will automatically be set by the
             ``sublattice.signal`` object.
         thickness : float, default 10
             Physical thickness of the sample in Angstrom. This will be used for
@@ -624,9 +624,9 @@ class Model_Refiner():
             mask_radius_list = self.auto_mask_radius
         elif isinstance(sublattices, list):
             sublattice_list = [self.sublattice_list[i] for i in sublattices]
-            print(
-                "Warning: Setting ``sublattices`` to a list can cause overwrite"
-                "errors. Best use ``sublattice='all'`` until this is fixed")
+            print("Warning: Setting ``sublattices`` to a list can cause "
+                  "overwrite errors. Best use ``sublattice='all'`` until "
+                  "this is fixed.")
             mask_radius_list = [self.auto_mask_radius[i] for i in sublattices]
 
         # elif isinstance(positions_from_sublattices, list):
@@ -714,8 +714,9 @@ class Model_Refiner():
         Parameters
         ----------
         sublattices : Atomap Sublattices, default 'all'
-            If set to 'all', sublattices that exist in the ``Model_Refiner`` will
-            all be used. The ``sublattice`` indexes can be specified in a list.
+            If set to 'all', sublattices that exist in the ``Model_Refiner``
+            will all be used. The ``sublattice`` indexes can be specified in
+            a list.
             For example [0, 2] will select the first and third sublattices.
             A list of ``sublattice`` objects can instead be used.
         filter_image : bool, default False
@@ -734,8 +735,8 @@ class Model_Refiner():
             filename with which the .xyz file and simulated .mrc file will be
             saved.
         delta_image_filter : float, default 0.5
-            The change in sigma for the ``filter`` Gaussian filter. Small values
-            will slow the ``filter`` down.
+            The change in sigma for the ``filter`` Gaussian filter. Small
+            values will slow the ``filter`` down.
         max_sigma : float, default 6
             The maximum sigma used for the ``filter`` Gaussian filter. Large
             values will slow the ``filter`` down.
@@ -746,7 +747,8 @@ class Model_Refiner():
             The pixel distance to the nearest neighbour atom used for atomap
             atom position refinement
         refine : bool, default True
-            Whether to refine the atom positions for the ``calibrate`` parameter.
+            Whether to refine the atom positions for the ``calibrate``
+            parameter.
 
         Note: The error resulting from filter=True with percent_to_nn set can
         be fixed by setting mask_radius instead of percent_to_nn.

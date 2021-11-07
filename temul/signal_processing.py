@@ -1281,8 +1281,8 @@ Cropping and Calibrating
 
 def crop_image_hs(image, cropping_area, scalebar_true=True, filename=None):
     """
-    Crop a Hyperspy Signal2D by providing the ``cropping_area``. See the example
-    below.
+    Crop a Hyperspy Signal2D by providing the ``cropping_area``. See the
+    example below.
 
     Parameters
     ----------

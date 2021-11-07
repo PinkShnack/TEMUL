@@ -1,4 +1,4 @@
-"""
+'''
 
 NOTHING IMPLEMENTED YET
 
@@ -103,16 +103,15 @@ def sum_spectra(s, xrange=[0, s.axes_manager[1].size-1], yrange=[
         i.e. x = sum_spectra(s,xrange[2,5],yrange=[0,8])
 
         default range is the full spectrum image
-    """
 
-    """convert SI into a easier to use form"""
+    # convert SI into a easier to use form"""
     spectrum = s.data
-    """sum the spectra over the appropriate navigation dimensions"""
+    # sum the spectra over the appropriate navigation dimensions
     summed_spectrum = np.zeros([np.shape(spectrum)[2], 1])
     for x in range(np.shape(spectrum)[2]):
         summed_spectrum[x] = np.sum(
             spectrum[yrange[0]:yrange[1]+1, xrange[0]:xrange[1]+1, x])
-    """write the summed spectrum back as a hyperspy signal"""
+    # write the summed spectrum back as a hyperspy signal
     sample_s = s.inav[0, 0]
     spectrum_sum = hs.signals.EELSSpectrum(
         summed_spectrum, axes=[
@@ -122,4 +121,4 @@ def sum_spectra(s, xrange=[0, s.axes_manager[1].size-1], yrange=[
     spectrum_sum.original_metadata = s.original_metadata
     return spectrum_sum
 
-"""
+'''

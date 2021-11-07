@@ -189,18 +189,18 @@ def plot_polarisation_vectors(
         Magnitude will still be displayed correctly for colormaps etc.
     vector_rep : str, default "magnitude"
         How the vectors are represented. This can be either their ``magnitude``
-        or ``angle``. One may want to use ``angle`` when plotting a contour map,
-        i.e., view the contours in terms of angles which can be useful for
-        visualising regions of different polarisation.
+        or ``angle``. One may want to use ``angle`` when plotting a
+        contour map, i.e. view the contours in terms of angles which can be
+        useful for visualising regions of different polarisation.
     degrees : bool, default False
         Change between degrees and radian. Default is radian.
-        If ``plot_style="colorwheel"``, then setting ``degrees=True``   will convert
-        the angle unit to degree from the default radians.
+        If ``plot_style="colorwheel"``, then setting ``degrees=True``
+        will convert the angle unit to degree from the default radians.
     angle_offset : float, default None
-        If using ``vector_rep="angle"``   or ``plot_style="contour"``, this angle
-        will rotate the vector angles displayed by the given amount. Useful
-        when you want to offset the angle of the atom planes relative to the
-        polarisation.
+        If using ``vector_rep="angle"``   or ``plot_style="contour"``, this
+        angle will rotate the vector angles displayed by the given amount.
+        Useful when you want to offset the angle of the atom planes relative
+        to the polarisation.
     save : string
         If set to ``save=None``, the image will not be saved.
     title : string, default ""
@@ -210,9 +210,10 @@ def plot_polarisation_vectors(
     cmap : matplotlib colormap, default ``"viridis"``
         Matplotlib cmap used for the vector arrows.
     alpha : float, default 1.0
-        Transparency of the matplotlib ``cmap``. For ``plot_style="colormap"`` and
-        ``plot_style="colorwheel"``, this alpha applies to the vector arrows.
-        For ``plot_style="contour"`` this alpha applies to the tricontourf map.
+        Transparency of the matplotlib ``cmap``. For ``plot_style="colormap"``
+        and ``plot_style="colorwheel"``, this alpha applies to the vector
+        arrows. For ``plot_style="contour"`` this alpha applies to the
+        tricontourf map.
     image_cmap : matplotlib colormap, default 'gray'
         Matplotlib cmap that will be used for the overlay image.
     monitor_dpi : int, default 96
@@ -231,9 +232,10 @@ def plot_polarisation_vectors(
         automatically from the input.
     scalebar : bool or dict, default False
         Add a matplotlib-scalebar to the plot. If set to True the scalebar will
-        appear similar to that given by Hyperspy's ``plot()`` function. A custom
-        scalebar can be included as a dictionary and more custom options can be
-        found in the matplotlib-scalebar package. See below for an example.
+        appear similar to that given by Hyperspy's ``plot()`` function. A
+        custom scalebar can be included as a dictionary and more custom
+        options can be found in the matplotlib-scalebar package. See below
+        for an example.
     antialiased : bool, default False
         Applies only to ``plot_style="contour"``. Essentially removes the
         border between regions in the tricontourf map.
@@ -587,9 +589,9 @@ def get_angles_from_uv(u, v, degrees=False, angle_offset=None):
         Change between degrees and radian. Default is radian.
     angle_offset : float, default None
         Rotate the angles by the given amount. The function assumes that if you
-        set ``degrees=False`` then the provided ``angle_offset`` is in radians, and
-        if you set ``degrees=True`` then the provided ``angle_offset`` is in
-        degrees.
+        set ``degrees=False`` then the provided ``angle_offset`` is in radians,
+        and if you set ``degrees=True`` then the provided ``angle_offset`` is
+        in degrees.
 
     Returns
     -------
@@ -733,10 +735,9 @@ def delete_atom_planes_from_sublattice(sublattice,
     # offset_from_zero = 2
     atom_plane_index_delete = [offset_from_zero +
                                index for index in atom_plane_index_delete]
-    atom_plane_index_delete = [index for index in atom_plane_index_delete
-                               if index < len(
-                                  sublattice.atom_planes_by_zone_vector[
-                                      zone_vec_needed])]
+    atom_plane_index_delete = [
+        index for index in atom_plane_index_delete
+        if index < len(sublattice.atom_planes_by_zone_vector[zone_vec_needed])]
 
     if opposite:
         opposite_list = [
@@ -770,9 +771,9 @@ def _fit_line_clusters(arr, n, second_fit_rigid=True, plot=False):
         to fit a straight line.
     second_fit_rigid : bool, default True
         Used to decide whether the first or second fitting's slope will be
-        rigid during fitting. With ``second_fit_rigid`` = True, the slope of the
-        second fitting will be defined as the slope as the first fitting. The
-        y-intercept is free to move.
+        rigid during fitting. With ``second_fit_rigid`` = True, the slope of
+        the second fitting will be defined as the slope as the first fitting.
+        The y-intercept is free to move.
     plot : bool, default False
         Whether to plot the arr data, first and second fitting, and the
         line constructed halfway between the two.
@@ -844,7 +845,8 @@ def _fit_line_clusters(arr, n, second_fit_rigid=True, plot=False):
 def get_xyuv_from_line_fit(arr, n, second_fit_rigid=True, plot=False):
     """
     Fits the data in an array to two straight lines using the
-    first ``n`` and second (last) ``n`` array value pairs. Computes the distance of
+    first ``n`` and second (last) ``n`` array value pairs.
+    Computes the distance of
     each array value pair from the line halfway between the two fitted lines.
 
     The slope of the first fitting will be used for the
@@ -872,7 +874,8 @@ def get_xyuv_from_line_fit(arr, n, second_fit_rigid=True, plot=False):
     x, y, u, v : lists of equal length
         x, y are the original arr coordinates. u, v are the vector components
         pointing towards the halfway line from the arr coordinates.
-        These can be input to ``plot_polarisation_vectors()`` for visualisation.
+        These can be input to ``plot_polarisation_vectors()`` for
+        visualisation.
 
     See Also
     --------
@@ -928,10 +931,10 @@ def atom_deviation_from_straight_line_fit(
         sublattice, axis_number, n, second_fit_rigid=True, plot=False):
     """
     Fits the atomic columns in an atom plane to two straight lines using the
-    first ``n`` and second (last) ``n`` atomic columns. Computes the distance of
-    each atomic column from the line halfway between the two fitted lines, as
-    described in [1]_. This is done for every sublattice atom plane along the
-    chosen ``axis_number``.
+    first ``n`` and second (last) ``n`` atomic columns. Computes the distance
+    of each atomic column from the line halfway between the two fitted lines,
+    as described in [1]_. This is done for every sublattice atom plane along
+    the chosen ``axis_number``.
 
     The slope of the first fitting will be used for the
     second fitting. Setting ``second_fit_rigid`` = False will reverse this
@@ -960,11 +963,13 @@ def atom_deviation_from_straight_line_fit(
     Returns
     -------
     x, y, u, v : lists of equal length
-        x, y are the original atom position coordinates ``sublattice.x_position`
-        and ``sublattice.y_position`` for the coordinates included in the chosen
+        x, y are the original atom position coordinates
+        ``sublattice.x_position`` and ``sublattice.y_position`` for
+        the coordinates included in the chosen
         ``axis_number``. u, v are the polarisation vector components pointing
         towards the halfway line from the atom position coordinates.
-        These can be input to ``plot_polarisation_vectors()`` for visualisation.
+        These can be input to ``plot_polarisation_vectors()``
+        for visualisation.
 
     See Also
     --------
@@ -1373,8 +1378,8 @@ def combine_atom_deviations_from_zone_axes(
 def get_divide_into(sublattice, averaging_by, sampling,
                     zone_axis_index_A, zone_axis_index_B):
     """
-    Calculate the ``divide_into`` required to get an averaging of ``averaging_by``.
-    ``divide_into`` can then be used in
+    Calculate the ``divide_into`` required to get an averaging of
+    ``averaging_by``. ``divide_into`` can then be used in
     temul.topotem.polarisation.get_average_polarisation_in_regions.
     Also finds unit cell size and the number of unit cells in the (square)
     image along the x axis.
@@ -1677,8 +1682,8 @@ def get_strain_map(sublattice, zone_axis_index, theoretical_value,
         If filename is set, the strain signal and plot will be saved.
         ``plot`` must be set to True.
     return_x_y_z : bool, default False
-        If this is set to True, the ``strain_signal`` (map), as well as separate
-        lists of the x, y, and strain values.
+        If this is set to True, the ``strain_signal`` (map), as well as
+        separate lists of the x, y, and strain values.
     **kwargs : Matplotlib keyword arguments passed to ``imshow()``.
 
     Returns

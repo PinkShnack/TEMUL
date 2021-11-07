@@ -76,8 +76,8 @@ def simulate_and_filter_and_calibrate_with_prismatic(
             Radius of the mask around each atom. If this is not set,
             the radius will be the distance to the nearest atom in the
             same sublattice times the ``percent_to_nn`` value.
-            Note: if ``mask_radius`` is not specified, the Atom_Position objects
-            must have a populated nearest_neighbor_list.
+            Note: if ``mask_radius`` is not specified, the Atom_Position
+            objects must have a populated nearest_neighbor_list.
     refine, scalebar_true
         See function calibrate_intensity_distance_with_sublattice_roi()
     probeStep, E0 ... etc.
@@ -178,8 +178,8 @@ def simulate_and_calibrate_with_prismatic(
             Radius of the mask around each atom. If this is not set,
             the radius will be the distance to the nearest atom in the
             same sublattice times the ``percent_to_nn`` value.
-            Note: if ``mask_radius`` is not specified, the Atom_Position objects
-            must have a populated nearest_neighbor_list.
+            Note: if ``mask_radius`` is not specified, the Atom_Position
+            objects must have a populated nearest_neighbor_list.
     refine, scalebar_true
         See function calibrate_intensity_distance_with_sublattice_roi()
     probeStep, E0 ... etc.
