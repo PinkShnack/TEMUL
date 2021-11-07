@@ -48,7 +48,7 @@ def simulate_and_filter_and_calibrate_with_prismatic(
         scanWindowMax=1.0,
         algorithm="prism",
         numThreads=2):
-    '''
+    """
     Simulate an xyz coordinate model with the PyPrismatic fast simulation
     software.
 
@@ -75,9 +75,9 @@ def simulate_and_filter_and_calibrate_with_prismatic(
     mask_radius : float, default None
             Radius of the mask around each atom. If this is not set,
             the radius will be the distance to the nearest atom in the
-            same sublattice times the `percent_to_nn` value.
-            Note: if `mask_radius` is not specified, the Atom_Position objects
-            must have a populated nearest_neighbor_list.
+            same sublattice times the ``percent_to_nn`` value.
+            Note: if ``mask_radius`` is not specified, the Atom_Position
+            objects must have a populated nearest_neighbor_list.
     refine, scalebar_true
         See function calibrate_intensity_distance_with_sublattice_roi()
     probeStep, E0 ... etc.
@@ -87,7 +87,7 @@ def simulate_and_filter_and_calibrate_with_prismatic(
     -------
     Hyperspy Signal2D
 
-    '''
+    """
 
     if len(calibration_area) != 2:
         raise ValueError('calibration_area must be two points')
@@ -150,7 +150,7 @@ def simulate_and_calibrate_with_prismatic(
         scanWindowMax=1.0,
         algorithm="prism",
         numThreads=2):
-    '''
+    """
     Simulate an xyz coordinate model with the PyPrismatic fast simulation
     software.
 
@@ -177,9 +177,9 @@ def simulate_and_calibrate_with_prismatic(
     mask_radius : float, default None
             Radius of the mask around each atom. If this is not set,
             the radius will be the distance to the nearest atom in the
-            same sublattice times the `percent_to_nn` value.
-            Note: if `mask_radius` is not specified, the Atom_Position objects
-            must have a populated nearest_neighbor_list.
+            same sublattice times the ``percent_to_nn`` value.
+            Note: if ``mask_radius`` is not specified, the Atom_Position
+            objects must have a populated nearest_neighbor_list.
     refine, scalebar_true
         See function calibrate_intensity_distance_with_sublattice_roi()
     probeStep, E0 ... etc.
@@ -189,7 +189,7 @@ def simulate_and_calibrate_with_prismatic(
     -------
     Hyperspy Signal2D
 
-    '''
+    """
 
     if len(calibration_area) != 2:
         raise ValueError('calibration_area must be two points')
@@ -247,7 +247,7 @@ def simulate_with_prismatic(xyz_filename,
                             scanWindowMax=1.0,
                             algorithm="prism",
                             numThreads=2):
-    '''
+    """
     Simulate an xyz coordinate model with pyprismatic
     fast simulation software.
 
@@ -300,7 +300,7 @@ def simulate_with_prismatic(xyz_filename,
     ...     scanWindowMin=0.0, scanWindowMax=1.0,
     ...     algorithm="prism", numThreads=2)
 
-    '''
+    """
 
     if '.xyz' not in xyz_filename:
         simulation_filename = xyz_filename + '.XYZ'
@@ -415,9 +415,9 @@ def image_refine_via_intensity_loop(atom_lattice,
         # atom_lattice_data = atom_lattice.image
         atom_lattice_signal = atom_lattice.signal
 
-    '''
+    """
     Image Intensity Loop
-    '''
+    """
 
     if len(calibration_area) != 2:
         raise ValueError('calibration_area_simulation must be two points')
@@ -520,10 +520,10 @@ def image_refine_via_intensity_loop(atom_lattice,
             pad_inches=None, dpi=300, labels=False)
         plt.close()
 
-        '''
+        """
         Need to add the intensity type to the image_difference_intensity
         algorithm!
-        '''
+        """
 
         counter_before_refinement = count_atoms_in_sublattice_list(
             sublattice_list=atom_lattice.sublattice_list,
@@ -535,7 +535,7 @@ def image_refine_via_intensity_loop(atom_lattice,
         else:
             pass
 
-        ''' Sub1 '''
+        """ Sub1 """
         image_difference_intensity(sublattice=sub1,
                                    simulation_image=simulation,
                                    element_list=element_list,
@@ -546,7 +546,7 @@ def image_refine_via_intensity_loop(atom_lattice,
 
         # sub1_info_refined = print_sublattice_elements(sub1)
 
-        ''' Sub2 '''
+        """ Sub2 """
         image_difference_intensity(sublattice=sub2,
                                    simulation_image=simulation,
                                    element_list=element_list,
@@ -557,7 +557,7 @@ def image_refine_via_intensity_loop(atom_lattice,
 
         # sub2_info_refined = print_sublattice_elements(sub2)
 
-        ''' Sub3 '''
+        """ Sub3 """
         image_difference_intensity(sublattice=sub3,
                                    simulation_image=simulation,
                                    element_list=element_list,
@@ -594,7 +594,7 @@ def image_refine_via_intensity_loop(atom_lattice,
                 print('Finished Refinement! Repeating every second iteration.')
                 break
 
-        ''' Remake XYZ file for further refinement'''
+        """ Remake XYZ file for further refinement"""
         # loading_suffix is now saving_suffix
 
         create_dataframe_for_xyz(
@@ -698,7 +698,7 @@ def image_refine_via_intensity_loop(atom_lattice,
                 pad_inches=None, dpi=300, labels=False)
     plt.close()
 
-    ''' ATOM LATTICE with simulation refinement '''
+    """ ATOM LATTICE with simulation refinement """
 
     atom_lattice_int_ref_name = 'Atom_Lattice_' + \
         intensity_type + '_refined' + saving_suffix
@@ -773,7 +773,7 @@ def image_refine_via_position_loop(image,
                                    algorithm="prism",
                                    numThreads=2
                                    ):
-    ''' Image Position Loop '''
+    """ Image Position Loop """
 
     df_position_refine = pd.DataFrame(columns=element_list)
     new_subs = []
@@ -890,9 +890,9 @@ def image_refine_via_position_loop(image,
                 num_points=num_points,
                 percent_to_nn=percent_to_nn,
                 mask_radius=mask_radius)
-            '''
+            """
             need to make mask_radius for this too, for the new sublattice
-            '''
+            """
 
             assign_z_height(sublattice=sub_new,
                             lattice_type='chalcogen',
@@ -911,7 +911,7 @@ def image_refine_via_position_loop(image,
         df_position_refine = df_position_refine.append(
             counter_after_refinement, ignore_index=True).fillna(0)
 
-        ''' Remake XYZ file for further refinement'''
+        """ Remake XYZ file for further refinement"""
         # loading_suffix is now saving_suffix
 
         create_dataframe_for_xyz(
@@ -925,7 +925,7 @@ def image_refine_via_position_loop(image,
 
     df_position_refine.to_csv(filename + '.csv', sep=',', index=False)
 
-    '''Save Atom Lattice Object'''
+    """Save Atom Lattice Object"""
     atom_lattice = am_dev.Atom_Lattice(image=image.data,
                                        name='All Sublattices ' + filename,
                                        sublattice_list=sublattice_list)

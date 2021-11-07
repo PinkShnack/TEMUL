@@ -20,7 +20,7 @@ def compare_images_line_profile_one_image(image,
                                           arrow=None,
                                           linetrace=None,
                                           **kwargs):
-    '''
+    """
     Plots two line profiles on one image with the line profile intensities
     in a subfigure.
     See skimage PR PinkShnack for details on implementing profile_line
@@ -48,7 +48,7 @@ def compare_images_line_profile_one_image(image,
         Name could be improved maybe.
     kwargs : Matplotlib keyword arguments passed to imshow()
 
-    '''
+    """
 
     if sampling == 'Auto':
         if image.axes_manager[0].scale != 1.0:
@@ -148,7 +148,7 @@ def compare_images_line_profile_two_images(imageA, imageB,
                                            arrow_markersize=10,
                                            figsize=(10, 3),
                                            imageB_intensity_offset=0):
-    '''
+    """
     Plots two line profiles on two images separately with the line
     profile intensities in a subfigure.
     See skimage PR PinkShnack for details on implementing profile_line
@@ -165,7 +165,7 @@ def compare_images_line_profile_two_images(imageA, imageB,
         If this is set to a name (string), the image will be saved with that
         name.
     reduce_func : ufunc, default np.mean
-        See skimage's `profile_line` reduce_func parameter for details.
+        See skimage's ``profile_line`` reduce_func parameter for details.
     linewidth : int, default 1
         see profile_line for parameter details.
     sampling :  float, default 'auto'
@@ -173,8 +173,8 @@ def compare_images_line_profile_two_images(imageA, imageB,
         image from image.axes_manager[0].scale.
     units : string, default 'nm'
     crop_offset : int, default 20
-        number of pixels away from the `line_profile_positions` coordinates the
-        image crop will be taken.
+        number of pixels away from the ``line_profile_positions``
+        coordinates the image crop will be taken.
     title : string, default "Intensity Profile"
         Title of the plot
     marker_A, marker_B : Matplotlib marker
@@ -195,7 +195,7 @@ def compare_images_line_profile_two_images(imageA, imageB,
     ...     imageA, imageB, line_profile_positions,
     ...     linewidth=3, sampling=0.012, crop_offset=30)
 
-    To use the new skimage functionality try the `reduce_func` parameter:
+    To use the new skimage functionality try the ``reduce_func`` parameter:
 
     >>> import numpy as np
     >>> reduce_func = np.sum # can be any ufunc!
@@ -219,7 +219,7 @@ def compare_images_line_profile_two_images(imageA, imageB,
     ...     imageA, imageB, line_profile_positions, reduce_func=None,
     ...     imageB_intensity_offset=0.1)
 
-    '''
+    """
 
     if isinstance(sampling, str):
         if sampling.lower() == 'auto':
@@ -260,7 +260,7 @@ def compare_images_line_profile_two_images(imageA, imageB,
     crop_x1 = crop_offset + (x1 - x0)
     crop_y1 = crop_offset + (y1 - y0)
 
-    ''' Simulation '''
+    """ Simulation """
 
     profile_y_sim = profile_line(
         image=imageB.data, src=[y0, x0], dst=[y1, x1], linewidth=linewidth,
@@ -316,12 +316,12 @@ def compare_images_line_profile_two_images(imageA, imageB,
 
 
 def get_cropping_area(line_profile_positions, crop_offset=20):
-    '''
+    """
     By inputting the top-left and bottom-right coordinates of a rectangle, this
     function will add a border buffer (`crop_offset`) which can be used for
     cropping of regions in a plot.
-    See `compare_images_line_profile_two_images` for use-case
-    '''
+    See ``compare_images_line_profile_two_images`` for use-case
+    """
     x0, y0 = line_profile_positions[0]
     x1, y1 = line_profile_positions[1]
 
@@ -334,7 +334,7 @@ def get_cropping_area(line_profile_positions, crop_offset=20):
 def plot_atom_energies(sublattice_list, image=None, vac_or_implants=None,
                        elements_dict_other=None, filename='energy_map',
                        cmap='plasma', levels=20, colorbar_fontsize=16):
-    '''
+    """
     Used to plot the energies of atomic column configurations above 0 as
     calculated by DFT.
 
@@ -343,9 +343,9 @@ def plot_atom_energies(sublattice_list, image=None, vac_or_implants=None,
     ----------
     sublattice_list : list of Atomap Sublattices
     image : array-like, default None
-        The first sublattice image is used if `image=None`.
+        The first sublattice image is used if ``image=None``.
     vac_or_implants :string, default None
-        `vac_or_implants` options are "implants" and "vac".
+        ``vac_or_implants`` options are "implants" and "vac".
     elements_dict_other : dict, default None
         A dictionary of {element_config1: energy1, element_config2: energy2, }
         The default is Se antisites in monolayer MoS2.
@@ -361,7 +361,7 @@ def plot_atom_energies(sublattice_list, image=None, vac_or_implants=None,
     The x and y coordinates of the atom positions and the
     atom energy.
 
-    '''
+    """
 
     if elements_dict_other is None:
         energies_dict = {'S_0': 2 * 5.9,
@@ -575,7 +575,7 @@ class Sublattice_Hover_Intensity(object):
 
 
 def color_palettes(pallette):
-    '''
+    """
     Color sequences that are useful for creating matplotlib colormaps.
     Info on "zesty" and other options:
     venngage.com/blog/color-blind-friendly-palette/
@@ -591,7 +591,7 @@ def color_palettes(pallette):
     -------
     list of hex colours
 
-    '''
+    """
     zesty = ['#F5793A', '#A95AA1', '#85C0F9', '#0F2080']
     r_safe = ["#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499",
               "#44AA99", "#999933", "#882255", "#661100", "#6699CC", "#888888"]
@@ -605,9 +605,9 @@ def color_palettes(pallette):
 
 
 def rgb_to_dec(rgb_values):
-    '''
+    """
     Change RGB color values to decimal color values (between 0 and 1).
-    Required for use with matplotlib. See Example in `hex_to_rgb` below.
+    Required for use with matplotlib. See Example in ``hex_to_rgb`` below.
 
     Parameters
     ----------
@@ -617,7 +617,7 @@ def rgb_to_dec(rgb_values):
     -------
     Decimal color values (RGB but scaled from 0 to 1 rather than 0 to 255)
 
-    '''
+    """
     dec_values = []
     for rgb_value in rgb_values:
         dec_values.append(tuple([i/256 for i in rgb_value]))
@@ -625,7 +625,7 @@ def rgb_to_dec(rgb_values):
 
 
 def hex_to_rgb(hex_values):
-    '''
+    """
     Change from hexidecimal color values to rgb color values.
     Grabs starting two, middle two, last two values in hex, multiplies by
     16^1 and 16^0 for the first and second, respectively.
@@ -655,7 +655,7 @@ def hex_to_rgb(hex_values):
     >>> cmap, norm = from_levels_and_colors(
     ...     levels=[0,1,2,3,4,5], colors=tml.rgb_to_dec(zest))
 
-    '''
+    """
     hex_values = [i.lstrip('#') for i in hex_values]
     rgb_values = []
     for hex_value in hex_values:
@@ -665,7 +665,7 @@ def hex_to_rgb(hex_values):
 
 
 def expand_palette(palette, expand_list):
-    '''
+    """
     Essentially multiply the palette so that it has the number of instances of
     each color that you want.
 
@@ -687,7 +687,7 @@ def expand_palette(palette, expand_list):
     >>> zest = tml.color_palettes('zesty')
     >>> expanded_palette = tml.expand_palette(zest, [1,2,2,2])
 
-    '''
+    """
     expanded_palette = []
     for pal, ex in zip(palette, expand_list):
         for count in range(ex):
@@ -707,12 +707,12 @@ def create_rgb_array():
 
 def get_polar_2d_colorwheel_color_list(u, v):
 
-    ''' make the color_list from the HSV/RGB colorwheel.
+    """ make the color_list from the HSV/RGB colorwheel.
     This color_list will be the same length as u and as v.
     It works by indexing the angle of the RGB (hue in HSV) array,
     then indexing the magnitude (r) in the RGB (value in HSV) array,
     leaving only a single RGB color for each vector.
-    '''
+    """
 
     rgb_array = create_rgb_array()
 

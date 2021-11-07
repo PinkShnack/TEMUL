@@ -1,4 +1,4 @@
-"""
+'''
 
 NOTHING IMPLEMENTED YET
 
@@ -33,7 +33,7 @@ import matplotlib
 
 
 def Eff_Beta(E_0, E_p, alpha, beta):
-    '''This function is adapted from the MATLAB code at the back of
+    """This function is adapted from the MATLAB code at the back of
     Egerton's book.
     it calculates:
     - effective collection angle as a function of the collection semi-angle,
@@ -50,7 +50,7 @@ def Eff_Beta(E_0, E_p, alpha, beta):
     excitation. (eV)
     alpha = probe convergence semi-angle. 0 for TEM mode, parallel beam (mrad)
     beta = detector collection semi-angle. (mrad)
-    '''
+    """
 
     F = (1+(E_0/1022))/(1+E_0/511)**2
     Fg = (1+E_0/1022)/(1+E_0/511)
@@ -88,7 +88,7 @@ def Eff_Beta(E_0, E_p, alpha, beta):
 
 def sum_spectra(s, xrange=[0, s.axes_manager[1].size-1], yrange=[
     0, s.axes_manager[1].size-1]):
-    '''
+    """
     Sums spectra in spectrum image together using the inputs xrange and y
     range. If these inputs are left
     blank then the all the spectra in the SI will be summed.
@@ -103,16 +103,15 @@ def sum_spectra(s, xrange=[0, s.axes_manager[1].size-1], yrange=[
         i.e. x = sum_spectra(s,xrange[2,5],yrange=[0,8])
 
         default range is the full spectrum image
-    '''
 
-    '''convert SI into a easier to use form'''
+    # convert SI into a easier to use form"""
     spectrum = s.data
-    '''sum the spectra over the appropriate navigation dimensions'''
+    # sum the spectra over the appropriate navigation dimensions
     summed_spectrum = np.zeros([np.shape(spectrum)[2], 1])
     for x in range(np.shape(spectrum)[2]):
         summed_spectrum[x] = np.sum(
             spectrum[yrange[0]:yrange[1]+1, xrange[0]:xrange[1]+1, x])
-    '''write the summed spectrum back as a hyperspy signal'''
+    # write the summed spectrum back as a hyperspy signal
     sample_s = s.inav[0, 0]
     spectrum_sum = hs.signals.EELSSpectrum(
         summed_spectrum, axes=[
@@ -122,4 +121,4 @@ def sum_spectra(s, xrange=[0, s.axes_manager[1].size-1], yrange=[
     spectrum_sum.original_metadata = s.original_metadata
     return spectrum_sum
 
-"""
+'''

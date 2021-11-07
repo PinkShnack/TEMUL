@@ -97,7 +97,7 @@ Note that sometimes the 0 and 1 axes directions are constructed vice versa.
     >>> vmax = 30
     >>> cmap = 'inferno'
     >>> theoretical_value = round(3.929/10, 3)  # units of nm
-    >>> strain_map = tmlp.get_strain_map(sublattice1, zone_vector_index_B,
+    >>> strain_map = tml.get_strain_map(sublattice1, zone_vector_index_B,
     ...                          theoretical_value, sampling=sampling,
     ...                          units=units, vmin=vmin, vmax=vmax, cmap=cmap)
 

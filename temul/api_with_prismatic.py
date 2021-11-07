@@ -1,10 +1,10 @@
 
-'''
+"""
 Call this file if you want to use the pyprismatic functions or
 Model_Refiner class.
 
 Currently, model_refiner.py and simulations.py use pyprismatic.
-'''
+"""
 
 # flake8: noqa
 

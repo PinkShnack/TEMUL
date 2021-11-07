@@ -932,8 +932,8 @@ class Sublattice():
         mask_radius : float, optional
             Radius of the mask around each atom. If this is not set,
             the radius will be the distance to the nearest atom in the
-            same sublattice times the `percent_to_nn` value.
-            Note: if `mask_radius` is not specified, the Atom_Position objects
+            same sublattice times the ``percent_to_nn`` value.
+            Note: if ``mask_radius`` is not specified, the Atom_Position objects
             must have a populated nearest_neighbor_list.
         rotation_enabled : bool, default True
             If True, rotation will be enabled for the 2D Gaussians.
@@ -1567,14 +1567,14 @@ class Sublattice():
             color=color,
             markersize=markersize,
             add_numbers=add_numbers)
-        '''
+        """
         element_list = _make_atom_position_element_list(
                 atom_list,
                 scale=self.pixel_size,
                 color=color,
                 markersize=markersize,
                 add_element=add_element)
-                '''
+                """
 
         signal = at.array2signal2d(image, self.pixel_size)
         add_marker(signal, marker_list, permanent=True, plot_marker=False)

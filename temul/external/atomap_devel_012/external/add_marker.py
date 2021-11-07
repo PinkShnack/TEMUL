@@ -13,7 +13,7 @@ def add_marker(
     ----------
     marker : marker object or iterable of marker objects
         The marker or iterable (list, tuple, ...) of markers to add.
-        See `plot.markers`. If you want to add a large number of markers,
+        See ``plot.markers``. If you want to add a large number of markers,
         add them as an iterable, since this will be much faster.
     plot_on_signal : bool, default True
         If True, add the marker to the signal

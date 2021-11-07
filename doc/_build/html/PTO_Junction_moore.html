@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Analysis of PTO Domain Wall Junction &mdash; TEMUL Toolkit v0.1.2 documentation</title>
   
@@ -13,10 +13,15 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
 
   
   
+
   
+  
+
   
 
   
@@ -26,10 +31,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -51,7 +56,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> TEMUL Toolkit
+            <a href="index.html" class="icon icon-home"> TEMUL Toolkit
           
 
           
@@ -148,6 +153,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -159,7 +166,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/PTO_Junction_moore.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -186,8 +193,7 @@ if you run a Jupyter Notebook locally).</p>
 <a class="reference external image-reference" href="https://mybinder.org/v2/gh/PinkShnack/TEMUL/master"><img alt="https://mybinder.org/badge_logo.svg" src="https://mybinder.org/badge_logo.svg" /></a>
 <div class="section" id="import-the-modules-and-load-the-data">
 <h2>Import the Modules and Load the Data<a class="headerlink" href="#import-the-modules-and-load-the-data" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.polarisation</span> <span class="k">as</span> <span class="nn">tmlp</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.signal_plotting</span> <span class="k">as</span> <span class="nn">tmlplt</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.api</span> <span class="k">as</span> <span class="nn">tml</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">atomap.api</span> <span class="k">as</span> <span class="nn">am</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">hyperspy.api</span> <span class="k">as</span> <span class="nn">hs</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -241,7 +247,7 @@ Note that sometimes the 0 and 1 axes directions are constructed vice versa.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">vmax</span> <span class="o">=</span> <span class="mi">30</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;inferno&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">theoretical_value</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="mf">3.929</span><span class="o">/</span><span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1"># units of nm</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">strain_map</span> <span class="o">=</span> <span class="n">tmlp</span><span class="o">.</span><span class="n">get_strain_map</span><span class="p">(</span><span class="n">sublattice1</span><span class="p">,</span> <span class="n">zone_vector_index_B</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">strain_map</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">get_strain_map</span><span class="p">(</span><span class="n">sublattice1</span><span class="p">,</span> <span class="n">zone_vector_index_B</span><span class="p">,</span>
 <span class="gp">... </span>                         <span class="n">theoretical_value</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="n">sampling</span><span class="p">,</span>
 <span class="gp">... </span>                         <span class="n">units</span><span class="o">=</span><span class="n">units</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">)</span>
 </pre></div>
@@ -250,7 +256,7 @@ Note that sometimes the 0 and 1 axes directions are constructed vice versa.</p>
 <p>Plot the line profiles with <code class="code python docutils literal notranslate"><span class="name"><span class="pre">temul</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">signal_plotting</span></span></code> functions and a kwarg dictionary.
 For more details on this function, see <a class="reference internal" href="line_profile_tutorial.html#line-profile-tutorial"><span class="std std-ref">this tutorial</span></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vmin&#39;</span><span class="p">:</span> <span class="n">vmin</span><span class="p">,</span> <span class="s1">&#39;vmax&#39;</span><span class="p">:</span> <span class="n">vmax</span><span class="p">,</span> <span class="s1">&#39;cmap&#39;</span><span class="p">:</span> <span class="n">cmap</span><span class="p">}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">tmlplt</span><span class="o">.</span><span class="n">compare_images_line_profile_one_image</span><span class="p">(</span><span class="n">strain_map</span><span class="p">,</span> <span class="n">line_profile_positions</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tml</span><span class="o">.</span><span class="n">compare_images_line_profile_one_image</span><span class="p">(</span><span class="n">strain_map</span><span class="p">,</span> <span class="n">line_profile_positions</span><span class="p">,</span>
 <span class="gp">... </span>                              <span class="n">linewidth</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">arrow</span><span class="o">=</span><span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="n">linetrace</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
 <span class="gp">... </span>                              <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
@@ -265,7 +271,7 @@ the turning of the lattice across the junction.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">vmax</span> <span class="o">=</span> <span class="mi">15</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;inferno&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">angle_offset</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span>  <span class="c1"># degrees</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rotation_map</span> <span class="o">=</span> <span class="n">tmlp</span><span class="o">.</span><span class="n">rotation_of_atom_planes</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rotation_map</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">rotation_of_atom_planes</span><span class="p">(</span>
 <span class="gp">... </span>                    <span class="n">sublattice1</span><span class="p">,</span> <span class="n">zone_vector_index_A</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">units</span><span class="p">,</span>
 <span class="gp">... </span>                    <span class="n">angle_offset</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="n">sampling</span><span class="p">,</span>
 <span class="gp">... </span>                    <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">)</span>
@@ -275,7 +281,7 @@ the turning of the lattice across the junction.</p>
 <p>Plot the line profiles with <code class="code python docutils literal notranslate"><span class="name"><span class="pre">temul</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">signal_plotting</span></span></code> functions and a kwarg dictionary.
 For more details on this function, see <a class="reference internal" href="line_profile_tutorial.html#line-profile-tutorial"><span class="std std-ref">this tutorial</span></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vmin&#39;</span><span class="p">:</span> <span class="n">vmin</span><span class="p">,</span> <span class="s1">&#39;vmax&#39;</span><span class="p">:</span> <span class="n">vmax</span><span class="p">,</span> <span class="s1">&#39;cmap&#39;</span><span class="p">:</span> <span class="n">cmap</span><span class="p">}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">tmlplt</span><span class="o">.</span><span class="n">compare_images_line_profile_one_image</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tml</span><span class="o">.</span><span class="n">compare_images_line_profile_one_image</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">rotation_map</span><span class="p">,</span> <span class="n">line_profile_positions</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">arrow</span><span class="o">=</span><span class="s1">&#39;h&#39;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">linetrace</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
@@ -289,7 +295,7 @@ For more details on this function, see <a class="reference internal" href="line_
 <span class="gp">&gt;&gt;&gt; </span><span class="n">vmax</span> <span class="o">=</span> <span class="mf">1.15</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;inferno&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ideal_ratio_one</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># values under 1 will be divided by themselves</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ca_ratio_map</span> <span class="o">=</span> <span class="n">tmlp</span><span class="o">.</span><span class="n">ratio_of_lattice_spacings</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ca_ratio_map</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">ratio_of_lattice_spacings</span><span class="p">(</span>
 <span class="gp">... </span>                   <span class="n">sublattice1</span><span class="p">,</span> <span class="n">zone_vector_index_B</span><span class="p">,</span>
 <span class="gp">... </span>                   <span class="n">zone_vector_index_A</span><span class="p">,</span> <span class="n">ideal_ratio_one</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="n">sampling</span><span class="p">,</span>
 <span class="gp">... </span>                   <span class="n">units</span><span class="o">=</span><span class="n">units</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">)</span>
@@ -297,7 +303,7 @@ For more details on this function, see <a class="reference internal" href="line_
 </div>
 <a class="reference internal image-reference" href="_images/ratio_map.png"><img alt="_images/ratio_map.png" src="_images/ratio_map.png" style="width: 341.0px; height: 277.5px;" /></a>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vmin&#39;</span><span class="p">:</span> <span class="n">vmin</span><span class="p">,</span> <span class="s1">&#39;vmax&#39;</span><span class="p">:</span> <span class="n">vmax</span><span class="p">,</span> <span class="s1">&#39;cmap&#39;</span><span class="p">:</span> <span class="n">cmap</span><span class="p">}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">tmlplt</span><span class="o">.</span><span class="n">compare_images_line_profile_one_image</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tml</span><span class="o">.</span><span class="n">compare_images_line_profile_one_image</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">ca_ratio_map</span><span class="p">,</span> <span class="n">line_profile_positions</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">arrow</span><span class="o">=</span><span class="s1">&#39;h&#39;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">linetrace</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
@@ -312,14 +318,14 @@ get_polarization_from_second_sublattice function.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">atom_positions_actual</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="p">[</span><span class="n">sublattice2</span><span class="o">.</span><span class="n">x_position</span><span class="p">,</span> <span class="n">sublattice2</span><span class="o">.</span><span class="n">y_position</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">atom_positions_ideal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;atom_positions_orig_2.npy&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">tmlp</span><span class="o">.</span><span class="n">find_polarisation_vectors</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">find_polarisation_vectors</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">atom_positions_actual</span><span class="p">,</span> <span class="n">atom_positions_ideal</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">atom_positions_actual</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Plot the polarisation vectors (zoom in to get a better look, the top left is
 off zone).</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tmlp</span><span class="o">.</span><span class="n">plot_polarisation_vectors</span><span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tml</span><span class="o">.</span><span class="n">plot_polarisation_vectors</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">sampling</span><span class="o">=</span><span class="n">sampling</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">units</span><span class="p">,</span> <span class="n">unit_vector</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">color</span><span class="o">=</span><span class="s1">&#39;yellow&#39;</span><span class="p">,</span> <span class="n">plot_style</span><span class="o">=</span><span class="s1">&#39;vector&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Polarisation&#39;</span><span class="p">,</span>
@@ -329,7 +335,7 @@ off zone).</p>
 <a class="reference internal image-reference" href="_images/Polarisation_magnitude_vector.png"><img alt="_images/Polarisation_magnitude_vector.png" src="_images/Polarisation_magnitude_vector.png" style="width: 489.75px; height: 511.0px;" /></a>
 <p>Plot the angle information as a colorwheel</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s2">&quot;grayscale&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">tmlp</span><span class="o">.</span><span class="n">plot_polarisation_vectors</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tml</span><span class="o">.</span><span class="n">plot_polarisation_vectors</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">sampling</span><span class="o">=</span><span class="n">sampling</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">units</span><span class="p">,</span> <span class="n">unit_vector</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">color</span><span class="o">=</span><span class="s1">&#39;yellow&#39;</span><span class="p">,</span> <span class="n">plot_style</span><span class="o">=</span><span class="s1">&#39;colorwheel&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Polarisation&#39;</span><span class="p">,</span>
@@ -345,37 +351,29 @@ off zone).</p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="masked_fft_tutorial.html" class="btn btn-neutral float-right" title="Masked FFT and iFFT" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="PTO_supercrystal_hadjimichael.html" class="btn btn-neutral float-left" title="Calculation of Atom Plane Curvature" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="masked_fft_tutorial.html" class="btn btn-neutral float-right" title="Masked FFT and iFFT" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="PTO_supercrystal_hadjimichael.html" class="btn btn-neutral float-left" title="Calculation of Atom Plane Curvature" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, Eoghan O&#39;Connell
+        &#169; Copyright 2020, Eoghan O&#39;Connell.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

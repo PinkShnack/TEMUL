@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>News &mdash; TEMUL Toolkit v0.1.2 documentation</title>
   
@@ -13,10 +13,15 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
 
   
   
+
   
+  
+
   
 
   
@@ -26,10 +31,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -49,7 +54,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> TEMUL Toolkit
+            <a href="index.html" class="icon icon-home"> TEMUL Toolkit
           
 
           
@@ -138,6 +143,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -149,7 +156,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/news.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -165,10 +172,59 @@
             
   <div class="section" id="news">
 <span id="install"></span><h1>News<a class="headerlink" href="#news" title="Permalink to this headline">¶</a></h1>
-<p><strong>03/11/2020: Version 0.1.2 released</strong></p>
+<div class="section" id="version-0-1-4-released">
+<h2>16/02/2021: Version 0.1.4 released<a class="headerlink" href="#version-0-1-4-released" title="Permalink to this headline">¶</a></h2>
+<p>The polarisation, structure tools and fft mapping has now
+been refactored into the topotem module. The temul
+functionality remains the same i.e. <a href="#id1"><span class="problematic" id="id2">``</span></a>import temul.api as tml`.</p>
+</div>
+<div class="section" id="version-0-1-3-released">
+<h2>16/02/2021: Version 0.1.3 released<a class="headerlink" href="#version-0-1-3-released" title="Permalink to this headline">¶</a></h2>
+<p>First articles uses and citations for the TEMUL Toolkit!
+This version updated the Publication Examples folder with two newly published
+articles. The folder contains interactive and raw code on how to reproduce the
+data in the publications. Congrats to those involved!</p>
+<blockquote>
+<div><ul class="simple">
+<li><ol class="upperalpha simple" start="13">
+<li><p>Hadjimichael, Y. Li <em>et al</em>, <a class="reference external" href="https://www.nature.com/articles/s41563-020-00864-6">Metal-ferroelectric supercrystals with periodically curved metallic layers, Nature Materials 2020</a></p></li>
+</ol>
+</li>
+<li><ol class="upperalpha simple" start="11">
+<li><p>Moore <em>et al</em> <a class="reference external" href="https://www.nature.com/articles/s42005-020-00488-x">Highly charged 180 degree head-to-head domain walls in lead titanate, Nature Communications Physics 2020</a></p></li>
+</ol>
+</li>
+</ul>
+</div></blockquote>
+<p>If you have a question or issue with using the publication examples, please make
+an issue on <a class="reference external" href="https://github.com/PinkShnack/TEMUL/issues">GitHub</a>.</p>
+<dl class="simple">
+<dt>Code changes in this version:</dt><dd><ul class="simple">
+<li><p>The <code class="code python docutils literal notranslate"><span class="name"><span class="pre">atom_deviation_from_straight_line_fit</span></span></code> function has been <strong>corrected</strong> and expanded. For a use case, see <a class="reference internal" href="polarisation_vectors_tutorial.html#polarisation-vectors-tutorial"><span class="std std-ref">Finding Polarisation Vectors</span></a></p></li>
+<li><p>Corrected the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">plot_polarisation_vectors</span></span></code> function’s vector quiver key.</p></li>
+<li><p>Created the “polar_colorwheel” <code class="code python docutils literal notranslate"><span class="name"><span class="pre">plot_style</span></span></code> for <code class="code python docutils literal notranslate"><span class="name"><span class="pre">plot_polarisation_vectors</span></span></code> by using a HSV to RGB 2D colorwheel and mapping the angles and magnitudes to these values. Used code from <a class="reference external" href="https://pixstem.org/">PixStem</a> for colorwheel visualisation.</p></li>
+<li><p>Fixed <code class="code python docutils literal notranslate"><span class="name"><span class="pre">norm</span></span></code> and <code class="code python docutils literal notranslate"><span class="name"><span class="pre">cmap</span></span></code> scaling for the colorbar for the “contour”, “colorwheel” and “colormap” <code class="code python docutils literal notranslate"><span class="name"><span class="pre">plot_styles</span></span></code>. Now each of these <code class="code python docutils literal notranslate"><span class="name"><span class="pre">plot_styles</span></span></code> scale nicely, and colorbar <code class="code python docutils literal notranslate"><span class="name"><span class="pre">ticks</span></span></code> may be specified.</p></li>
+<li><p>Added invert_y_axis param for plot_polarisation_vectors function, useful for testing if angles are displaying correctly.</p></li>
+<li><p><code class="code python docutils literal notranslate"><span class="name"><span class="pre">plot_polarisation_vectors</span></span></code> function now returns a Matplotlib <code class="code python docutils literal notranslate"><span class="name"><span class="pre">Axes</span></span></code> object, which can be used to further edit the layout/presentation of the plotted map.</p></li>
+<li><p>Added functions to correct for possible off-zone tilt in the atomic columns. Use with caution.</p></li>
+</ul>
+</dd>
+<dt>Documentation changes in this version:</dt><dd><ul class="simple">
+<li><p>Added documentation for <a class="reference internal" href="polarisation_vectors_tutorial.html#polarisation-vectors-tutorial"><span class="std std-ref">how to find the polarisation vectors</span></a>.</p></li>
+<li><p>Added “code_tutorials” ipynb (interactive Jupyter Notebook) examples. See the <a class="reference external" href="https://github.com/PinkShnack/TEMUL">GitHub repository</a> for downloads.</p></li>
+<li><p>The <a class="reference internal" href="workflows.html#workflows"><span class="std std-ref">workflows</span></a> folder in “code_tutorials/workflows” also contains starting workflows for analysis of different materials. See the <a class="reference external" href="https://github.com/PinkShnack/TEMUL">GitHub repository</a> for downloads.</p></li>
+<li><p>Added “publication_examples” tutorial ipynb (interactive Jupyter Notebook) examples. See the <a class="reference external" href="https://github.com/PinkShnack/TEMUL">GitHub repository</a> for downloads.</p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="version-0-1-2-released">
+<h2>03/11/2020: Version 0.1.2 released<a class="headerlink" href="#version-0-1-2-released" title="Permalink to this headline">¶</a></h2>
 <p>This version contains minor changes from the 0.1.1 release. It removes pyCifRW
 as a dependency.</p>
-<p><strong>02/11/2020: Version 0.1.1 released</strong></p>
+</div>
+<div class="section" id="version-0-1-1-released">
+<h2>02/11/2020: Version 0.1.1 released<a class="headerlink" href="#version-0-1-1-released" title="Permalink to this headline">¶</a></h2>
 <p>This version contains many changes to the TEMUL Toolkit.</p>
 <blockquote>
 <div><ul class="simple">
@@ -181,34 +237,32 @@ as a dependency.</p>
 </ul>
 </div></blockquote>
 </div>
+</div>
 
 
            </div>
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, Eoghan O&#39;Connell
+        &#169; Copyright 2020, Eoghan O&#39;Connell.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
