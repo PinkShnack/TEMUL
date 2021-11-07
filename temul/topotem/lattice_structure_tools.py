@@ -14,11 +14,11 @@ def calculate_atom_plane_curvature(sublattice, zone_vector_index,
                                    **kwargs):
     """
     Calculates the curvature of the sublattice atom planes along the direction
-    given by ``zone_vector_index``. In the case of [2]_. below, the curvature is
+    given by ``zone_vector_index``. In the case of [1]_. below, the curvature is
     the inverse of the radius of curvature, and is effectively equal to the
     second derivative of the displacement direction of the atoms. Because the
     first derivative is negligible, the curvature can be calculated as the
-    strain gradient [3]_.
+    strain gradient [2]_.
     With the parameter ``func="strain_grad"``, this function calculates the strain
     gradient of the atom planes of a Atomap Sublattice object.
 
@@ -84,11 +84,11 @@ def calculate_atom_plane_curvature(sublattice, zone_vector_index,
 
     References
     ----------
-    .. [2] Function adapted from a script written by
+    .. [1] Function adapted from a script written by
        Dr. Marios Hadjimichael, and used in paper_name. The original
        MATLAB script can be found in
        TEMUL/publication_examples/PTO_marios_hadj
-    .. [3] Landau and Lifshitz, Theory of Elasticity, Vol 7,
+    .. [2] Landau and Lifshitz, Theory of Elasticity, Vol 7,
        pp 47-49, 1981
 
     """

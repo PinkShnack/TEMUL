@@ -839,7 +839,7 @@ def scaling_z_contrast(numerator_sublattice, numerator_element,
     Create a new sublattice to store the new atomic coordinates.
 
     The aim is to change the sublattice elements so that the experimental image
-    agrees with the simulated image in a realistic manner. See [2]_
+    agrees with the simulated image in a realistic manner. See [1]_.
 
     Parameters
     ----------
@@ -887,7 +887,7 @@ def scaling_z_contrast(numerator_sublattice, numerator_element,
 
     References
     ----------
-    .. [2] Krivanek et al. Nature 464, 10.1038/nature08879, (2010)
+    .. [1] Krivanek et al. Nature 464, 10.1038/nature08879, (2010)
 
     Examples
     --------

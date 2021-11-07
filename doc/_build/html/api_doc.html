@@ -213,7 +213,7 @@
 <dd><p>Fits the atomic columns in an atom plane to two straight lines using the
 first <code class="docutils literal notranslate"><span class="pre">n</span></code> and second (last) <code class="docutils literal notranslate"><span class="pre">n</span></code> atomic columns. Computes the distance of
 each atomic column from the line halfway between the two fitted lines, as
-described in <a class="footnote-reference brackets" href="#id2" id="id1">1</a>. This is done for every sublattice atom plane along the
+described in <a href="#id9"><span class="problematic" id="id1">[1]_</span></a>. This is done for every sublattice atom plane along the
 chosen <code class="docutils literal notranslate"><span class="pre">axis_number</span></code>.</p>
 <p>The slope of the first fitting will be used for the
 second fitting. Setting <code class="docutils literal notranslate"><span class="pre">second_fit_rigid</span></code> = False will reverse this
@@ -256,7 +256,7 @@ These can be input to <code class="docutils literal notranslate"><span class="pr
 </div>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
-<dt class="label" id="id2"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dt class="label" id="id2"><span class="brackets">1</span></dt>
 <dd><p>Reference: Julie Gonnissen, Dmitry Batuk, Guillaume F. Nataf,
 Lewys Jones, Artem M. Abakumov, Sandra Van Aert, Dominique
 Schryvers, Ekhard K. H. Salje, Direct Observation of Ferroelectric
@@ -1350,11 +1350,11 @@ to matplotlib plotting issues.</p></li>
 <dt class="sig sig-object py" id="temul.topotem.lattice_structure_tools.calculate_atom_plane_curvature">
 <span class="sig-prename descclassname"><span class="pre">temul.topotem.lattice_structure_tools.</span></span><span class="sig-name descname"><span class="pre">calculate_atom_plane_curvature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sublattice</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zone_vector_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'strain_grad'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atom_planes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pix'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'inferno'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Curvature</span> <span class="pre">Map'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_fits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.topotem.lattice_structure_tools.calculate_atom_plane_curvature" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the curvature of the sublattice atom planes along the direction
-given by <code class="docutils literal notranslate"><span class="pre">zone_vector_index</span></code>. In the case of <a href="#id9"><span class="problematic" id="id3">[2]_</span></a>. below, the curvature is
+given by <code class="docutils literal notranslate"><span class="pre">zone_vector_index</span></code>. In the case of <a href="#id10"><span class="problematic" id="id3">[1]_</span></a>. below, the curvature is
 the inverse of the radius of curvature, and is effectively equal to the
 second derivative of the displacement direction of the atoms. Because the
 first derivative is negligible, the curvature can be calculated as the
-strain gradient <a class="footnote-reference brackets" href="#id6" id="id4">3</a>.
+strain gradient <a class="footnote-reference brackets" href="#id6" id="id4">2</a>.
 With the parameter <code class="docutils literal notranslate"><span class="pre">func=&quot;strain_grad&quot;</span></code>, this function calculates the strain
 gradient of the atom planes of a Atomap Sublattice object.</p>
 <dl class="field-list simple">
@@ -1423,13 +1423,13 @@ returned as a list.</p></li>
 </dl>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
-<dt class="label" id="id5"><span class="brackets">2</span></dt>
+<dt class="label" id="id5"><span class="brackets">1</span></dt>
 <dd><p>Function adapted from a script written by
 Dr. Marios Hadjimichael, and used in paper_name. The original
 MATLAB script can be found in
 TEMUL/publication_examples/PTO_marios_hadj</p>
 </dd>
-<dt class="label" id="id6"><span class="brackets"><a class="fn-backref" href="#id4">3</a></span></dt>
+<dt class="label" id="id6"><span class="brackets"><a class="fn-backref" href="#id4">2</a></span></dt>
 <dd><p>Landau and Lifshitz, Theory of Elasticity, Vol 7,
 pp 47-49, 1981</p>
 </dd>
@@ -2466,7 +2466,7 @@ If set to False, the z_coordinate will start at 0.0.</p></li>
 <dd><p>Find new atomic coordinates by comparing experimental to simulated image.
 Create a new sublattice to store the new atomic coordinates.</p>
 <p>The aim is to change the sublattice elements so that the experimental image
-agrees with the simulated image in a realistic manner. See <a href="#id10"><span class="problematic" id="id7">[2]_</span></a></p>
+agrees with the simulated image in a realistic manner. See <a href="#id11"><span class="problematic" id="id7">[1]_</span></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -2506,7 +2506,7 @@ The second string has not been implemented within this function.</p></li>
 </dl>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
-<dt class="label" id="id8"><span class="brackets">2</span></dt>
+<dt class="label" id="id8"><span class="brackets">1</span></dt>
 <dd><p>Krivanek et al. Nature 464, 10.1038/nature08879, (2010)</p>
 </dd>
 </dl>
