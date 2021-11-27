@@ -7,6 +7,7 @@ setup(
     name='temul-toolkit',
     packages=[
         'temul',
+        'temul.topotem',
         'temul.example_data.experimental',
         'temul.example_data.prismatic',
         'temul.example_data.structures',
