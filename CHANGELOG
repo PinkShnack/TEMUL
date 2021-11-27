@@ -1,4 +1,5 @@
 0.1.4
+ - ref, doc: fix api doc link references
  - add initial (useable) tests in test directory
  - add CHANGELOG
  - ref: change the directory structure to include topotem (#52)

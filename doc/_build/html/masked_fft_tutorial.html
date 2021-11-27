@@ -180,9 +180,12 @@
             
   <div class="section" id="masked-fft-and-ifft">
 <span id="masked-fft-tutorial"></span><h1>Masked FFT and iFFT<a class="headerlink" href="#masked-fft-and-ifft" title="Permalink to this headline">¶</a></h1>
-<p>The <code class="code python docutils literal notranslate"><span class="name"><span class="pre">temul</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">signal_processing</span></span></code> module allows one to choose the masking coordinates with
-<code class="code python docutils literal notranslate"><span class="name"><span class="pre">choose_mask_coordinates</span></span></code> and easily returnt the masked fast Fourier Transform (FFT) with
-<code class="code python docutils literal notranslate"><span class="name"><span class="pre">get_masked_ifft</span></span></code>. This can useful in various scenarios, from understanding
+<p>The <a class="reference internal" href="api_doc.html#module-temul.signal_processing" title="temul.signal_processing"><code class="xref py py-mod docutils literal notranslate"><span class="pre">temul.signal_processing</span></code></a> module allows one to choose the
+masking coordinates with
+<a class="reference internal" href="api_doc.html#temul.topotem.fft_mapping.choose_mask_coordinates" title="temul.topotem.fft_mapping.choose_mask_coordinates"><code class="xref py py-func docutils literal notranslate"><span class="pre">temul.topotem.fft_mapping.choose_mask_coordinates()</span></code></a> and easily
+return the masked fast Fourier Transform (FFT) with
+<a class="reference internal" href="api_doc.html#temul.topotem.fft_mapping.get_masked_ifft" title="temul.topotem.fft_mapping.get_masked_ifft"><code class="xref py py-func docutils literal notranslate"><span class="pre">temul.topotem.fft_mapping.get_masked_ifft()</span></code></a>. This can useful in
+various scenarios, from understanding
 the diffraction space spots and how they relate to the real space structure,
 to <a class="reference external" href="https://onlinelibrary.wiley.com/doi/abs/10.1111/jmi.12876">revealing domain walls</a>
 and finding initial atom positions for difficult images.</p>

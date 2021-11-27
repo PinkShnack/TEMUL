@@ -44,7 +44,7 @@ There are lots of other parameters too for customisation.
 As we can see, an interactive window appears, showing the FFT ("FFT Widget")
 of the image with the positions of the inner and outer Gaussian full width
 at half maximums (FWHMs). The inital FWHMs can be changed with the
-:python:`visualise_dg_filter.d_inner` and :python:`d_outer`
+:python:`d_inner` and :python:`d_outer`
 parameters (limits can also be changed).
 
 To change the two FWHMs interactively

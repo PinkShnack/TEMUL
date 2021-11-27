@@ -18,10 +18,12 @@ Interactive Examples
 .. image:: https://mybinder.org/badge_logo.svg
    :target: https://mybinder.org/v2/gh/PinkShnack/TEMUL/master
 
-Click the button above to start some data analysis (it may take a few minutes to load). 
+Click the button above to start some data analysis
+(it may take a few minutes to load).
 The "code_tutorials" folder contains walkthroughs of some of the documentation
 examples from this website.
-The "publication_examples" folder will allow you to analyse data from published scientific papers!
+The "publication_examples" folder will allow you to analyse data from
+published scientific papers!
 Just navigate to whichever of these folders you want click on the ".ipynb" files.
 
 
@@ -74,7 +76,9 @@ To cite the latest TEMUL Toolkit version, use the following DOI:
 .. image:: https://www.zenodo.org/badge/203785298.svg
    :target: https://www.zenodo.org/badge/latestdoi/203785298
 
-For example: Eoghan O'Connell, Michael Hennessy, & Eoin Moynihan. (2020, November 2). PinkShnack/TEMUL: Initial Temul-Toolkit Release (Version 0.1.1). Zenodo. http://doi.org/10.5281/zenodo.4185974
+For example: Eoghan O'Connell, Michael Hennessy, & Eoin Moynihan.
+(2021). PinkShnack/TEMUL: (Version 0.1.3).
+Zenodo. http://doi.org/10.5281/zenodo.4543963
 
 If you wish to cite an older release of the TEMUL Toolkit, click on the above
 badge to find the relevant version.
