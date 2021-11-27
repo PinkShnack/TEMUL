@@ -15,6 +15,13 @@ atomic resolution images. It is mostly built upon the data structure of
 
 Interactive Examples
 --------------------
+The easiest way to try the TEMUL Toolkit is via Binder:
+`introductory Jupyter Notebook <https://hub.gke2.mybinder.org/user/pinkshnack-temul-19r27k52/lab/tree/code_tutorials/polarisation_vectors_tutorial.ipynb>`_.
+To install the TEMUL Toolkit on your own computer,
+see the :ref:`install` instructions.
+
+And there are more examples with Binder, just click the below button!
+
 .. image:: https://mybinder.org/badge_logo.svg
    :target: https://mybinder.org/v2/gh/PinkShnack/TEMUL/master
 
@@ -25,6 +32,9 @@ examples from this website.
 The "publication_examples" folder will allow you to analyse data from
 published scientific papers!
 Just navigate to whichever of these folders you want click on the ".ipynb" files.
+
+
+.. include:: about_temul_toolkit.rst
 
 
 .. include:: news.rst

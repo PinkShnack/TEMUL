@@ -1,4 +1,4 @@
-.. _install:
+.. _news:
 
 .. include:: define_roles.rst
 
