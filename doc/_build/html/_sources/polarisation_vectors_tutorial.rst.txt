@@ -193,7 +193,7 @@ Let's look at some rotated data
 Plotting Polarisation and Movement Vectors
 ==========================================
 
-The :py:func:`temul.topotem.polarisation.temul.polarisation` module allows one to visualise the
+The :py:mod:`temul.topotem.polarisation` module allows one to visualise the
 polarisation/movement of atoms in an atomic resolution image. In this tutorial,
 we will use a dummy dataset to show the different ways the
 :py:func:`temul.topotem.polarisation.plot_polarisation_vectors`

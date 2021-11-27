@@ -180,7 +180,7 @@
             
   <div class="section" id="plot-lattice-structure-maps">
 <span id="structure-map-tutorial"></span><h1>Plot Lattice Structure Maps<a class="headerlink" href="#plot-lattice-structure-maps" title="Permalink to this headline">¶</a></h1>
-<p>The <code class="code python docutils literal notranslate"><span class="name"><span class="pre">temul</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">polarisation</span></span></code> module allows one to easily visualise various
+<p>The <a class="reference internal" href="api_doc.html#module-temul.topotem.polarisation" title="temul.topotem.polarisation"><code class="xref py py-mod docutils literal notranslate"><span class="pre">temul.topotem.polarisation</span></code></a> module allows one to easily visualise various
 lattice structure characteristics, such as strain, rotation of atoms along atom
 planes, and the <em>c</em>/<em>a</em> ratio in an atomic resolution image. In this tutorial,
 we will use a dummy dataset to show the different ways each map can be created.
@@ -204,7 +204,8 @@ In future, tutorials on published experimental data will also be available.</p>
 <div class="section" id="plot-the-lattice-strain-map">
 <h2>Plot the Lattice Strain Map<a class="headerlink" href="#plot-the-lattice-strain-map" title="Permalink to this headline">¶</a></h2>
 <p>By inputting the calculated or theoretical atom plane separation distance as the
-<code class="code python docutils literal notranslate"><span class="name"><span class="pre">theoretical_value</span></span></code> parameter in <code class="code python docutils literal notranslate"><span class="name"><span class="pre">tml</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">get_strain_map</span></span></code> below,
+<code class="code python docutils literal notranslate"><span class="name"><span class="pre">theoretical_value</span></span></code> parameter in
+<a class="reference internal" href="api_doc.html#temul.topotem.polarisation.get_strain_map" title="temul.topotem.polarisation.get_strain_map"><code class="xref py py-func docutils literal notranslate"><span class="pre">temul.topotem.polarisation.get_strain_map()</span></code></a> below,
 we can plot a strain map. The distance <em>l</em> is calculated as the distance between
 each atom plane in the given zone axis. More details on this can be found on the
 <a class="reference external" href="https://atomap.org/analysing_atom_lattices.html#distance-between-monolayers">Atomap</a>
@@ -227,7 +228,8 @@ applies to all structure maps discussed in this tutorial.</p>
 </div>
 <div class="section" id="plot-the-lattice-atom-rotation-map">
 <h2>Plot the Lattice Atom Rotation Map<a class="headerlink" href="#plot-the-lattice-atom-rotation-map" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="code python docutils literal notranslate"><span class="name"><span class="pre">rotation_of_atom_planes</span></span></code> function calculates the angle between
+<p>The <a class="reference internal" href="api_doc.html#temul.topotem.polarisation.rotation_of_atom_planes" title="temul.topotem.polarisation.rotation_of_atom_planes"><code class="xref py py-func docutils literal notranslate"><span class="pre">temul.topotem.polarisation.rotation_of_atom_planes()</span></code></a> function
+calculates the angle between
 successive atoms and the horizontal for all atoms in the given zone axis. See
 <a class="reference external" href="https://atomap.org/analysing_atom_lattices.html#angle-between-atoms">Atomap</a>
 for other options.</p>
@@ -251,7 +253,8 @@ for other options.</p>
 </div>
 <div class="section" id="plot-the-c-a-ratio">
 <h2>Plot the <em>c</em>/<em>a</em> Ratio<a class="headerlink" href="#plot-the-c-a-ratio" title="Permalink to this headline">¶</a></h2>
-<p>Using the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">ratio_of_lattice_spacings</span></span></code> function, we can visualise the ratio of
+<p>Using the <a class="reference internal" href="api_doc.html#temul.topotem.polarisation.ratio_of_lattice_spacings" title="temul.topotem.polarisation.ratio_of_lattice_spacings"><code class="xref py py-func docutils literal notranslate"><span class="pre">temul.topotem.polarisation.ratio_of_lattice_spacings()</span></code></a>
+function, we can visualise the ratio of
 two sublattice zone axes. Useful for plotting the <em>c</em>/<em>a</em> Ratio.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ratio_map</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">ratio_of_lattice_spacings</span><span class="p">(</span><span class="n">sublatticeB</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
 <span class="gp">... </span>                <span class="n">units</span><span class="o">=</span><span class="n">units</span><span class="p">,</span> <span class="n">sampling</span><span class="o">=</span><span class="n">sampling</span><span class="p">)</span>
