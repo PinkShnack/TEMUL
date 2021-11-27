@@ -37,7 +37,7 @@ setup(
         'glob2',
         'hyperspy',
         'numpy',
-        'matplotlib==3.4.3',
+        'matplotlib',
         'matplotlib-scalebar',
         'pandas',
         'periodictable',
