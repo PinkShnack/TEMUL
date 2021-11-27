@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Interactive Image Filtering &mdash; TEMUL Toolkit v0.1.2 documentation</title>
+  <title>Interactive Image Filtering &mdash; TEMUL Toolkit v0.1.3 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                Version 0.1.2
+                Version 0.1.3
               </div>
             
           
@@ -179,9 +179,10 @@
             
   <div class="section" id="interactive-image-filtering">
 <span id="dg-visualiser-tutorial"></span><h1>Interactive Image Filtering<a class="headerlink" href="#interactive-image-filtering" title="Permalink to this headline">¶</a></h1>
-<p>The <code class="code python docutils literal notranslate"><span class="name"><span class="pre">temul</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">signal_processing</span></span></code> module allows one to filter images with a
+<p>The <a class="reference internal" href="api_doc.html#module-temul.signal_processing" title="temul.signal_processing"><code class="xref py py-mod docutils literal notranslate"><span class="pre">temul.signal_processing</span></code></a> module allows one to filter images with a
 double Gaussian (band-pass) filter. Apart from the base functions, it can be
-done interactively with the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">visualise_dg_filter</span></span></code> function. In this
+done interactively with the
+<a class="reference internal" href="api_doc.html#temul.signal_processing.visualise_dg_filter" title="temul.signal_processing.visualise_dg_filter"><code class="xref py py-func docutils literal notranslate"><span class="pre">temul.signal_processing.visualise_dg_filter()</span></code></a> function. In this
 tutorial, we will see how to use the function on experimental data.</p>
 <div class="section" id="load-the-experimental-image">
 <h2>Load the Experimental Image<a class="headerlink" href="#load-the-experimental-image" title="Permalink to this headline">¶</a></h2>
@@ -195,15 +196,16 @@ TEMUL package.</p>
 </div>
 <div class="section" id="interactively-filter-the-experimental-image">
 <h2>Interactively Filter the Experimental Image<a class="headerlink" href="#interactively-filter-the-experimental-image" title="Permalink to this headline">¶</a></h2>
-<p>Run the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">visualise_dg_filter</span></span></code> function. There are lots of other parameters
-too for customisation.</p>
+<p>Run the <a class="reference internal" href="api_doc.html#temul.signal_processing.visualise_dg_filter" title="temul.signal_processing.visualise_dg_filter"><code class="xref py py-func docutils literal notranslate"><span class="pre">temul.signal_processing.visualise_dg_filter()</span></code></a> function.
+There are lots of other parameters too for customisation.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tml</span><span class="o">.</span><span class="n">visualise_dg_filter</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/dg_visualiser.gif"><img alt="_images/dg_visualiser.gif" src="_images/dg_visualiser.gif" style="width: 638.0px; height: 358.0px;" /></a>
-<p>As we can see, an interactive window appears, showing the FFT (“FFT Widget”) of the image with
-the positions of the inner and outer Gaussian full width at half maximums (FWHMs).
-The inital FWHMs can be changed with the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">d_inner</span></span></code> and <code class="code python docutils literal notranslate"><span class="name"><span class="pre">d_outer</span></span></code>
+<p>As we can see, an interactive window appears, showing the FFT (“FFT Widget”)
+of the image with the positions of the inner and outer Gaussian full width
+at half maximums (FWHMs). The inital FWHMs can be changed with the
+<code class="code python docutils literal notranslate"><span class="name"><span class="pre">visualise_dg_filter</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">d_inner</span></span></code> and <code class="code python docutils literal notranslate"><span class="name"><span class="pre">d_outer</span></span></code>
 parameters (limits can also be changed).</p>
 <p>To change the two FWHMs interactively
 just use the sliders at the bottom of the window. Reset can be used to reset the
@@ -214,7 +216,8 @@ convolution.</p>
 <div class="section" id="return-the-filtered-image">
 <h2>Return the Filtered Image<a class="headerlink" href="#return-the-filtered-image" title="Permalink to this headline">¶</a></h2>
 <p>When we have suitable FWHMs for the inner and outer Gaussians, we can use
-the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">double_gaussian_fft_filter</span></span></code> function the return a filtered image.</p>
+the <a class="reference internal" href="api_doc.html#temul.signal_processing.double_gaussian_fft_filter" title="temul.signal_processing.double_gaussian_fft_filter"><code class="xref py py-func docutils literal notranslate"><span class="pre">temul.signal_processing.double_gaussian_fft_filter()</span></code></a> function
+the return a filtered image.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">filtered_image</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">double_gaussian_fft_filter</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">150</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">image</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">filtered_image</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
@@ -222,9 +225,9 @@ the <code class="code python docutils literal notranslate"><span class="name"><s
 </div>
 <a class="reference internal image-reference" href="_images/image_plot.png"><img alt="_images/image_plot.png" src="_images/image_plot.png" style="width: 320.0px; height: 289.5px;" /></a>
 <a class="reference internal image-reference" href="_images/filtered_image_plot.png"><img alt="_images/filtered_image_plot.png" src="_images/filtered_image_plot.png" style="width: 320.0px; height: 289.5px;" /></a>
-<p>Details on the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">double_gaussian_fft_filter_optimised</span></span></code> function can be
-found in the <a class="reference internal" href="api_doc.html#api-doc"><span class="std std-ref">API documentation</span></a>.
-We hope to added some examples of this functions to this page in future.</p>
+<p>Details on the
+<a class="reference internal" href="api_doc.html#temul.signal_processing.double_gaussian_fft_filter_optimised" title="temul.signal_processing.double_gaussian_fft_filter_optimised"><code class="xref py py-func docutils literal notranslate"><span class="pre">temul.signal_processing.double_gaussian_fft_filter_optimised()</span></code></a>
+function can be found in the <a class="reference internal" href="api_doc.html#api-doc"><span class="std std-ref">API documentation</span></a>.</p>
 </div>
 </div>
 
@@ -242,7 +245,7 @@ We hope to added some examples of this functions to this page in future.</p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2020, Eoghan O&#39;Connell.
+        &#169; Copyright 2021, Eoghan O&#39;Connell.
 
     </p>
   </div>

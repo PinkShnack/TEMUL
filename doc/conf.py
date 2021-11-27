@@ -21,13 +21,13 @@ sys.path.insert(0, os.path.abspath('..'))
 # -- Project information -----------------------------------------------------
 
 project = 'TEMUL Toolkit'
-copyright = '2020, Eoghan O\'Connell'
+copyright = '2021, Eoghan O\'Connell'
 author = 'Eoghan O\'Connell'
 
 # The short X.Y version
-version = 'Version 0.1.2'
+version = 'Version 0.1.3'
 # The full version, including alpha/beta/rc tags
-release = 'v0.1.2'
+release = 'v0.1.3'
 
 
 # -- General configuration ---------------------------------------------------

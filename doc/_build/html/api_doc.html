@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>API documentation &mdash; TEMUL Toolkit v0.1.2 documentation</title>
+  <title>API documentation &mdash; TEMUL Toolkit v0.1.3 documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                Version 0.1.2
+                Version 0.1.3
               </div>
             
           
@@ -211,10 +211,10 @@
 <dt class="sig sig-object py" id="temul.topotem.polarisation.atom_deviation_from_straight_line_fit">
 <span class="sig-prename descclassname"><span class="pre">temul.topotem.polarisation.</span></span><span class="sig-name descname"><span class="pre">atom_deviation_from_straight_line_fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sublattice</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second_fit_rigid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.topotem.polarisation.atom_deviation_from_straight_line_fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fits the atomic columns in an atom plane to two straight lines using the
-first <code class="docutils literal notranslate"><span class="pre">n</span></code> and second (last) <code class="docutils literal notranslate"><span class="pre">n</span></code> atomic columns. Computes the distance of
-each atomic column from the line halfway between the two fitted lines, as
-described in <a href="#id9"><span class="problematic" id="id1">[1]_</span></a>. This is done for every sublattice atom plane along the
-chosen <code class="docutils literal notranslate"><span class="pre">axis_number</span></code>.</p>
+first <code class="docutils literal notranslate"><span class="pre">n</span></code> and second (last) <code class="docutils literal notranslate"><span class="pre">n</span></code> atomic columns. Computes the distance
+of each atomic column from the line halfway between the two fitted lines,
+as described in <a href="#id9"><span class="problematic" id="id1">[1]_</span></a>. This is done for every sublattice atom plane along
+the chosen <code class="docutils literal notranslate"><span class="pre">axis_number</span></code>.</p>
 <p>The slope of the first fitting will be used for the
 second fitting. Setting <code class="docutils literal notranslate"><span class="pre">second_fit_rigid</span></code> = False will reverse this
 behaviour.</p>
@@ -237,11 +237,13 @@ line constructed halfway between the two.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>x, y, u, v</strong> – x, y are the original atom position coordinates <code class="docutils literal notranslate"><span class="pre">sublattice.x_position`</span>
-<span class="pre">and</span> <span class="pre">``sublattice.y_position</span></code> for the coordinates included in the chosen
+<dd class="field-even"><p><strong>x, y, u, v</strong> – x, y are the original atom position coordinates
+<code class="docutils literal notranslate"><span class="pre">sublattice.x_position</span></code> and <code class="docutils literal notranslate"><span class="pre">sublattice.y_position</span></code> for
+the coordinates included in the chosen
 <code class="docutils literal notranslate"><span class="pre">axis_number</span></code>. u, v are the polarisation vector components pointing
 towards the halfway line from the atom position coordinates.
-These can be input to <code class="docutils literal notranslate"><span class="pre">plot_polarisation_vectors()</span></code> for visualisation.</p>
+These can be input to <code class="docutils literal notranslate"><span class="pre">plot_polarisation_vectors()</span></code>
+for visualisation.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>lists of equal length</p>
@@ -595,9 +597,9 @@ function <code class="docutils literal notranslate"><span class="pre">construct_
 <li><p><strong>v</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a><em> or </em><em>1D NumPy array</em>) – </p></li>
 <li><p><strong>degrees</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>default False</em>) – Change between degrees and radian. Default is radian.</p></li>
 <li><p><strong>angle_offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>default None</em>) – Rotate the angles by the given amount. The function assumes that if you
-set <code class="docutils literal notranslate"><span class="pre">degrees=False</span></code> then the provided <code class="docutils literal notranslate"><span class="pre">angle_offset</span></code> is in radians, and
-if you set <code class="docutils literal notranslate"><span class="pre">degrees=True</span></code> then the provided <code class="docutils literal notranslate"><span class="pre">angle_offset</span></code> is in
-degrees.</p></li>
+set <code class="docutils literal notranslate"><span class="pre">degrees=False</span></code> then the provided <code class="docutils literal notranslate"><span class="pre">angle_offset</span></code> is in radians,
+and if you set <code class="docutils literal notranslate"><span class="pre">degrees=True</span></code> then the provided <code class="docutils literal notranslate"><span class="pre">angle_offset</span></code> is
+in degrees.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -728,8 +730,8 @@ u_new and v_new are the averaged polarisation vectors.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="temul.topotem.polarisation.get_divide_into">
 <span class="sig-prename descclassname"><span class="pre">temul.topotem.polarisation.</span></span><span class="sig-name descname"><span class="pre">get_divide_into</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sublattice</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">averaging_by</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zone_axis_index_A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zone_axis_index_B</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.topotem.polarisation.get_divide_into" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the <code class="docutils literal notranslate"><span class="pre">divide_into</span></code> required to get an averaging of <code class="docutils literal notranslate"><span class="pre">averaging_by</span></code>.
-<code class="docutils literal notranslate"><span class="pre">divide_into</span></code> can then be used in
+<dd><p>Calculate the <code class="docutils literal notranslate"><span class="pre">divide_into</span></code> required to get an averaging of
+<code class="docutils literal notranslate"><span class="pre">averaging_by</span></code>. <code class="docutils literal notranslate"><span class="pre">divide_into</span></code> can then be used in
 temul.topotem.polarisation.get_average_polarisation_in_regions.
 Also finds unit cell size and the number of unit cells in the (square)
 image along the x axis.</p>
@@ -790,8 +792,8 @@ specified zone.</p></li>
 <li><p><strong>plot</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – Set to true if the figure should be plotted.</p></li>
 <li><p><strong>filename</strong> (<em>string</em><em>, </em><em>optional</em>) – If filename is set, the strain signal and plot will be saved.
 <code class="docutils literal notranslate"><span class="pre">plot</span></code> must be set to True.</p></li>
-<li><p><strong>return_x_y_z</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>default False</em>) – If this is set to True, the <code class="docutils literal notranslate"><span class="pre">strain_signal</span></code> (map), as well as separate
-lists of the x, y, and strain values.</p></li>
+<li><p><strong>return_x_y_z</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>default False</em>) – If this is set to True, the <code class="docutils literal notranslate"><span class="pre">strain_signal</span></code> (map), as well as
+separate lists of the x, y, and strain values.</p></li>
 <li><p><strong>**kwargs</strong> (Matplotlib keyword arguments passed to <code class="docutils literal notranslate"><span class="pre">imshow()</span></code>.) – </p></li>
 </ul>
 </dd>
@@ -853,7 +855,8 @@ by sampling (nm/pix).</p></li>
 <dt class="sig sig-object py" id="temul.topotem.polarisation.get_xyuv_from_line_fit">
 <span class="sig-prename descclassname"><span class="pre">temul.topotem.polarisation.</span></span><span class="sig-name descname"><span class="pre">get_xyuv_from_line_fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second_fit_rigid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.topotem.polarisation.get_xyuv_from_line_fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fits the data in an array to two straight lines using the
-first <code class="docutils literal notranslate"><span class="pre">n</span></code> and second (last) <code class="docutils literal notranslate"><span class="pre">n</span></code> array value pairs. Computes the distance of
+first <code class="docutils literal notranslate"><span class="pre">n</span></code> and second (last) <code class="docutils literal notranslate"><span class="pre">n</span></code> array value pairs.
+Computes the distance of
 each array value pair from the line halfway between the two fitted lines.</p>
 <p>The slope of the first fitting will be used for the
 second fitting. Setting <code class="docutils literal notranslate"><span class="pre">second_fit_rigid</span></code> = False will reverse this
@@ -875,7 +878,8 @@ line constructed halfway between the two.</p></li>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>x, y, u, v</strong> – x, y are the original arr coordinates. u, v are the vector components
 pointing towards the halfway line from the arr coordinates.
-These can be input to <code class="docutils literal notranslate"><span class="pre">plot_polarisation_vectors()</span></code> for visualisation.</p>
+These can be input to <code class="docutils literal notranslate"><span class="pre">plot_polarisation_vectors()</span></code> for
+visualisation.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>lists of equal length</p>
@@ -957,23 +961,24 @@ the vector components (uv).</p></li>
 <li><p><strong>unit_vector</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>default False</em>) – Change the vectors magnitude to unit vectors for plotting purposes.
 Magnitude will still be displayed correctly for colormaps etc.</p></li>
 <li><p><strong>vector_rep</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>default &quot;magnitude&quot;</em>) – How the vectors are represented. This can be either their <code class="docutils literal notranslate"><span class="pre">magnitude</span></code>
-or <code class="docutils literal notranslate"><span class="pre">angle</span></code>. One may want to use <code class="docutils literal notranslate"><span class="pre">angle</span></code> when plotting a contour map,
-i.e., view the contours in terms of angles which can be useful for
-visualising regions of different polarisation.</p></li>
+or <code class="docutils literal notranslate"><span class="pre">angle</span></code>. One may want to use <code class="docutils literal notranslate"><span class="pre">angle</span></code> when plotting a
+contour map, i.e. view the contours in terms of angles which can be
+useful for visualising regions of different polarisation.</p></li>
 <li><p><strong>degrees</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>default False</em>) – Change between degrees and radian. Default is radian.
-If <code class="docutils literal notranslate"><span class="pre">plot_style=&quot;colorwheel&quot;</span></code>, then setting <code class="docutils literal notranslate"><span class="pre">degrees=True</span></code>   will convert
-the angle unit to degree from the default radians.</p></li>
-<li><p><strong>angle_offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>default None</em>) – If using <code class="docutils literal notranslate"><span class="pre">vector_rep=&quot;angle&quot;</span></code>   or <code class="docutils literal notranslate"><span class="pre">plot_style=&quot;contour&quot;</span></code>, this angle
-will rotate the vector angles displayed by the given amount. Useful
-when you want to offset the angle of the atom planes relative to the
-polarisation.</p></li>
+If <code class="docutils literal notranslate"><span class="pre">plot_style=&quot;colorwheel&quot;</span></code>, then setting <code class="docutils literal notranslate"><span class="pre">degrees=True</span></code>
+will convert the angle unit to degree from the default radians.</p></li>
+<li><p><strong>angle_offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>default None</em>) – If using <code class="docutils literal notranslate"><span class="pre">vector_rep=&quot;angle&quot;</span></code>   or <code class="docutils literal notranslate"><span class="pre">plot_style=&quot;contour&quot;</span></code>, this
+angle will rotate the vector angles displayed by the given amount.
+Useful when you want to offset the angle of the atom planes relative
+to the polarisation.</p></li>
 <li><p><strong>save</strong> (<em>string</em>) – If set to <code class="docutils literal notranslate"><span class="pre">save=None</span></code>, the image will not be saved.</p></li>
 <li><p><strong>title</strong> (<em>string</em><em>, </em><em>default &quot;&quot;</em>) – Title of the plot.</p></li>
 <li><p><strong>color</strong> (<em>string</em><em>, </em><em>default &quot;r&quot;</em>) – Color of the arrows when <code class="docutils literal notranslate"><span class="pre">plot_style=&quot;vector&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;contour&quot;</span></code>.</p></li>
 <li><p><strong>cmap</strong> (matplotlib colormap, default <code class="docutils literal notranslate"><span class="pre">&quot;viridis&quot;</span></code>) – Matplotlib cmap used for the vector arrows.</p></li>
-<li><p><strong>alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>default 1.0</em>) – Transparency of the matplotlib <code class="docutils literal notranslate"><span class="pre">cmap</span></code>. For <code class="docutils literal notranslate"><span class="pre">plot_style=&quot;colormap&quot;</span></code> and
-<code class="docutils literal notranslate"><span class="pre">plot_style=&quot;colorwheel&quot;</span></code>, this alpha applies to the vector arrows.
-For <code class="docutils literal notranslate"><span class="pre">plot_style=&quot;contour&quot;</span></code> this alpha applies to the tricontourf map.</p></li>
+<li><p><strong>alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>default 1.0</em>) – Transparency of the matplotlib <code class="docutils literal notranslate"><span class="pre">cmap</span></code>. For <code class="docutils literal notranslate"><span class="pre">plot_style=&quot;colormap&quot;</span></code>
+and <code class="docutils literal notranslate"><span class="pre">plot_style=&quot;colorwheel&quot;</span></code>, this alpha applies to the vector
+arrows. For <code class="docutils literal notranslate"><span class="pre">plot_style=&quot;contour&quot;</span></code> this alpha applies to the
+tricontourf map.</p></li>
 <li><p><strong>image_cmap</strong> (<em>matplotlib colormap</em><em>, </em><em>default 'gray'</em>) – Matplotlib cmap that will be used for the overlay image.</p></li>
 <li><p><strong>monitor_dpi</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>default 96</em>) – The DPI of the monitor, generally 96 pixels. Used to scale the image
 so that large images render correctly. Use a smaller value to enlarge
@@ -986,9 +991,10 @@ microscopy images.</p></li>
 <li><p><strong>ticks</strong> (<em>colorbar ticks</em><em>, </em><em>default None</em>) – None or list of ticks or Locator If None, ticks are determined
 automatically from the input.</p></li>
 <li><p><strong>scalebar</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a><em>, </em><em>default False</em>) – Add a matplotlib-scalebar to the plot. If set to True the scalebar will
-appear similar to that given by Hyperspy’s <code class="docutils literal notranslate"><span class="pre">plot()</span></code> function. A custom
-scalebar can be included as a dictionary and more custom options can be
-found in the matplotlib-scalebar package. See below for an example.</p></li>
+appear similar to that given by Hyperspy’s <code class="docutils literal notranslate"><span class="pre">plot()</span></code> function. A
+custom scalebar can be included as a dictionary and more custom
+options can be found in the matplotlib-scalebar package. See below
+for an example.</p></li>
 <li><p><strong>antialiased</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>default False</em>) – Applies only to <code class="docutils literal notranslate"><span class="pre">plot_style=&quot;contour&quot;</span></code>. Essentially removes the
 border between regions in the tricontourf map.</p></li>
 <li><p><strong>levels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>default 20</em>) – Number of Matplotlib tricontourf levels to be used.</p></li>
@@ -1350,13 +1356,13 @@ to matplotlib plotting issues.</p></li>
 <dt class="sig sig-object py" id="temul.topotem.lattice_structure_tools.calculate_atom_plane_curvature">
 <span class="sig-prename descclassname"><span class="pre">temul.topotem.lattice_structure_tools.</span></span><span class="sig-name descname"><span class="pre">calculate_atom_plane_curvature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sublattice</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zone_vector_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'strain_grad'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atom_planes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pix'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'inferno'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Curvature</span> <span class="pre">Map'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_fits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.topotem.lattice_structure_tools.calculate_atom_plane_curvature" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the curvature of the sublattice atom planes along the direction
-given by <code class="docutils literal notranslate"><span class="pre">zone_vector_index</span></code>. In the case of <a href="#id10"><span class="problematic" id="id3">[1]_</span></a>. below, the curvature is
-the inverse of the radius of curvature, and is effectively equal to the
+given by <code class="docutils literal notranslate"><span class="pre">zone_vector_index</span></code>. In the case of <a href="#id10"><span class="problematic" id="id3">[1]_</span></a>. below, the curvature
+is the inverse of the radius of curvature, and is effectively equal to the
 second derivative of the displacement direction of the atoms. Because the
 first derivative is negligible, the curvature can be calculated as the
 strain gradient <a class="footnote-reference brackets" href="#id6" id="id4">2</a>.
-With the parameter <code class="docutils literal notranslate"><span class="pre">func=&quot;strain_grad&quot;</span></code>, this function calculates the strain
-gradient of the atom planes of a Atomap Sublattice object.</p>
+With the parameter <code class="docutils literal notranslate"><span class="pre">func=&quot;strain_grad&quot;</span></code>, this function calculates the
+strain gradient of the atom planes of a Atomap Sublattice object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1656,8 +1662,8 @@ intensities from the image. Options are “average” and “local”.</p></li>
 of nearest neighbour values averaged from background_sub</p></li>
 <li><p><strong>percent_to_nn</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>default 0.40</em>) – Determines the boundary of the area surrounding each atomic
 column, as fraction of the distance to the nearest neighbour.</p></li>
-<li><p><strong>mask_radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – Radius of the atomic column in pixels. If chosen, <code class="docutils literal notranslate"><span class="pre">percent_to_nn</span></code> must
-be None.</p></li>
+<li><p><strong>mask_radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – Radius of the atomic column in pixels. If chosen, <code class="docutils literal notranslate"><span class="pre">percent_to_nn</span></code>
+must be None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1721,8 +1727,8 @@ The available methods are “max”, “mean”, “min” and “all”.</p></l
 <li><p><strong>background_sub</strong> (<em>sublattice object</em>) – The sublattice used to find the average background.</p></li>
 <li><p><strong>percent_to_nn</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>default 0.4</em>) – Determines the boundary of the area surrounding each atomic
 column, as fraction of the distance to the nearest neighbour.</p></li>
-<li><p><strong>mask_radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – Radius of the atomic column in pixels. If chosen, <code class="docutils literal notranslate"><span class="pre">percent_to_nn</span></code> must
-be None.</p></li>
+<li><p><strong>mask_radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – Radius of the atomic column in pixels. If chosen, <code class="docutils literal notranslate"><span class="pre">percent_to_nn</span></code>
+must be None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1764,8 +1770,8 @@ The available methods are “max”, “mean”, “min”, “total” and “a
 background_sub</p></li>
 <li><p><strong>percent_to_nn</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>default 0.40</em>) – Determines the boundary of the area surrounding each atomic
 column, as fraction of the distance to the nearest neighbour.</p></li>
-<li><p><strong>mask_radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – Radius of the atomic column in pixels. If chosen, <code class="docutils literal notranslate"><span class="pre">percent_to_nn</span></code> must
-be None.</p></li>
+<li><p><strong>mask_radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – Radius of the atomic column in pixels. If chosen, <code class="docutils literal notranslate"><span class="pre">percent_to_nn</span></code>
+must be None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -2281,15 +2287,15 @@ The reason it is set to False is so that one can check if new atoms
 would be added with the given parameters.</p></li>
 <li><p><strong>sublattice_name</strong> (<em>string</em><em>, </em><em>default 'sub_new'</em>) – the outputted sublattice object name and sublattice.name the new
 sublattice will be given</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>default True</em>) – If set to True, the input <code class="docutils literal notranslate"><span class="pre">sublattice</span></code> will be changed inplace and the
-sublattice returned. If set to False, these changes will be output only
-to a new sublattice.</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>default True</em>) – If set to True, the input <code class="docutils literal notranslate"><span class="pre">sublattice</span></code> will be changed inplace and
+the sublattice returned. If set to False, these changes will be output
+only to a new sublattice.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p>Atomap Sublattice object if <code class="docutils literal notranslate"><span class="pre">inplace=False</span></code>. See the <code class="docutils literal notranslate"><span class="pre">inplace</span></code> parameter</p></li>
-<li><p><em>for details.</em></p></li>
+<li><p>Atomap Sublattice object if <code class="docutils literal notranslate"><span class="pre">inplace=False</span></code>. See the <code class="docutils literal notranslate"><span class="pre">inplace</span></code></p></li>
+<li><p><em>parameter for details.</em></p></li>
 </ul>
 </p>
 </dd>
@@ -2486,8 +2492,8 @@ intensities from the image. Options are “average” and “local”.</p></li>
 of nearest neighbour values averaged from background_sublattice.</p></li>
 <li><p><strong>percent_to_nn</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>default 0.40</em>) – Determines the boundary of the area surrounding each atomic
 column, as fraction of the distance to the nearest neighbour.</p></li>
-<li><p><strong>mask_radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – Radius of the atomic column in pixels. If chosen, <code class="docutils literal notranslate"><span class="pre">percent_to_nn</span></code> must
-be None.</p></li>
+<li><p><strong>mask_radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – Radius of the atomic column in pixels. If chosen, <code class="docutils literal notranslate"><span class="pre">percent_to_nn</span></code>
+must be None.</p></li>
 <li><p><strong>split_symbol</strong> (<em>string</em><em>, </em><em>default '_'</em>) – The symbols used to split the element into its name
 and count.
 The first string ‘_’ is used to split the name and count
@@ -2621,10 +2627,11 @@ image. First point is top left of area, second point is bottom right.</p></li>
 <li><p><strong>percent_to_nn</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>default 0.4</em>) – Determines the boundary of the area surrounding each atomic
 column, as fraction of the distance to the nearest neighbour.</p></li>
 <li><p><strong>mask_radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>default None</em>) – Radius in pixels of the mask. If set, then set <code class="docutils literal notranslate"><span class="pre">percent_to_nn=None</span></code>.</p></li>
-<li><p><strong>refine</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>default False</em>) – If set to True, the <code class="docutils literal notranslate"><span class="pre">calibrate_intensity_distance_with_sublattice_roi`</span>
-<span class="pre">calibration</span> <span class="pre">will</span> <span class="pre">refine</span> <span class="pre">the</span> <span class="pre">atom</span> <span class="pre">positions</span> <span class="pre">for</span> <span class="pre">each</span> <span class="pre">calibration.</span> <span class="pre">May</span>
-<span class="pre">make</span> <span class="pre">the</span> <span class="pre">function</span> <span class="pre">very</span> <span class="pre">slow</span> <span class="pre">depending</span> <span class="pre">on</span> <span class="pre">the</span> <span class="pre">size</span> <span class="pre">of</span> <span class="pre">``image_to_filter`</span>
-<span class="pre">and</span> <span class="pre">``cropping_area</span></code>.</p></li>
+<li><p><strong>refine</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>default False</em>) – If set to True, the
+<code class="docutils literal notranslate"><span class="pre">calibrate_intensity_distance_with_sublattice_roi</span></code>
+calibration will refine the atom positions for each calibration. May
+make the function very slow depending on the size of
+<code class="docutils literal notranslate"><span class="pre">image_to_filter</span></code> and <code class="docutils literal notranslate"><span class="pre">cropping_area</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -2655,8 +2662,8 @@ separation=11, mask_radius=4, percent_to_nn=None, max_sigma=10)</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="temul.signal_processing.crop_image_hs">
 <span class="sig-prename descclassname"><span class="pre">temul.signal_processing.</span></span><span class="sig-name descname"><span class="pre">crop_image_hs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cropping_area</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scalebar_true</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#temul.signal_processing.crop_image_hs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Crop a Hyperspy Signal2D by providing the <code class="docutils literal notranslate"><span class="pre">cropping_area</span></code>. See the example
-below.</p>
+<dd><p>Crop a Hyperspy Signal2D by providing the <code class="docutils literal notranslate"><span class="pre">cropping_area</span></code>. See the
+example below.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -3365,8 +3372,8 @@ name.</p></li>
 <li><p><strong>sampling</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>default 'auto'</em>) – if set to ‘auto’ the function will attempt to find the sampling of
 image from image.axes_manager[0].scale.</p></li>
 <li><p><strong>units</strong> (<em>string</em><em>, </em><em>default 'nm'</em>) – </p></li>
-<li><p><strong>crop_offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>default 20</em>) – number of pixels away from the <code class="docutils literal notranslate"><span class="pre">line_profile_positions</span></code> coordinates the
-image crop will be taken.</p></li>
+<li><p><strong>crop_offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>default 20</em>) – number of pixels away from the <code class="docutils literal notranslate"><span class="pre">line_profile_positions</span></code>
+coordinates the image crop will be taken.</p></li>
 <li><p><strong>title</strong> (<em>string</em><em>, </em><em>default &quot;Intensity Profile&quot;</em>) – Title of the plot</p></li>
 <li><p><strong>marker_A</strong> (<em>Matplotlib marker</em>) – </p></li>
 <li><p><strong>marker_B</strong> (<em>Matplotlib marker</em>) – </p></li>
@@ -4087,7 +4094,7 @@ the colormap should be the same as the edges, such as colorcet’s CET_C4s.</p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2020, Eoghan O&#39;Connell.
+        &#169; Copyright 2021, Eoghan O&#39;Connell.
 
     </p>
   </div>
