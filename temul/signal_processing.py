@@ -631,10 +631,11 @@ def compare_two_image_and_create_filtered_image(
     mask_radius : int, default None
         Radius in pixels of the mask. If set, then set ``percent_to_nn=None``.
     refine : bool, default False
-        If set to True, the ``calibrate_intensity_distance_with_sublattice_roi`
+        If set to True, the
+        ``calibrate_intensity_distance_with_sublattice_roi``
         calibration will refine the atom positions for each calibration. May
-        make the function very slow depending on the size of ``image_to_filter`
-        and ``cropping_area``.
+        make the function very slow depending on the size of
+        ``image_to_filter`` and ``cropping_area``.
 
     Returns
     -------

@@ -7,9 +7,10 @@
 Interactive Image Filtering
 ===========================
 
-The :python:`temul.signal_processing` module allows one to filter images with a
+The :py:mod:`temul.signal_processing` module allows one to filter images with a
 double Gaussian (band-pass) filter. Apart from the base functions, it can be
-done interactively with the :python:`visualise_dg_filter` function. In this
+done interactively with the
+:py:func:`temul.signal_processing.visualise_dg_filter` function. In this
 tutorial, we will see how to use the function on experimental data.
 
 
@@ -30,8 +31,8 @@ TEMUL package.
 Interactively Filter the Experimental Image
 -------------------------------------------
 
-Run the :python:`visualise_dg_filter` function. There are lots of other parameters
-too for customisation.
+Run the :py:func:`temul.signal_processing.visualise_dg_filter` function.
+There are lots of other parameters too for customisation.
 
 .. code-block:: python
 
@@ -40,9 +41,10 @@ too for customisation.
 .. image:: tutorial_images/dg_filter_tutorial/dg_visualiser.gif
     :scale: 50 %
 
-As we can see, an interactive window appears, showing the FFT ("FFT Widget") of the image with
-the positions of the inner and outer Gaussian full width at half maximums (FWHMs).
-The inital FWHMs can be changed with the :python:`d_inner` and :python:`d_outer`
+As we can see, an interactive window appears, showing the FFT ("FFT Widget")
+of the image with the positions of the inner and outer Gaussian full width
+at half maximums (FWHMs). The inital FWHMs can be changed with the
+:python:`d_inner` and :python:`d_outer`
 parameters (limits can also be changed).
 
 To change the two FWHMs interactively
@@ -56,7 +58,8 @@ Return the Filtered Image
 -------------------------
 
 When we have suitable FWHMs for the inner and outer Gaussians, we can use
-the :python:`double_gaussian_fft_filter` function the return a filtered image.
+the :py:func:`temul.signal_processing.double_gaussian_fft_filter` function
+the return a filtered image.
 
 .. code-block:: python
 
@@ -71,6 +74,6 @@ the :python:`double_gaussian_fft_filter` function the return a filtered image.
     :scale: 50 %
 
 
-Details on the :python:`double_gaussian_fft_filter_optimised` function can be
-found in the :ref:`api_doc`.
-We hope to added some examples of this functions to this page in future.
+Details on the
+:py:func:`temul.signal_processing.double_gaussian_fft_filter_optimised`
+function can be found in the :ref:`api_doc`.

@@ -81,8 +81,8 @@ Load the line profile positions:
     >>> line_profile_positions = np.load('line_profile_positions.npy')
 
 Note: You can also choose your own line_profile_positions with
-:python:`am.add_atoms_with_gui(image)` and use the :python:`skimage.profile_line`
-for customisability.
+:py:func:`temul.topotem.fft_mapping.choose_points_on_image` and use the
+:python:`skimage.profile_line` for customisability.
 
 
 Create the Lattice Strain Map
@@ -104,7 +104,7 @@ Note that sometimes the 0 and 1 axes directions are constructed vice versa.
 .. image:: ../publication_examples/PTO_Junction_moore/data/strain_map.png
     :scale: 50 %
 
-Plot the line profiles with :python:`temul.signal_plotting` functions and a kwarg dictionary.
+Plot the line profiles with :py:mod:`temul.signal_plotting` functions and a kwarg dictionary.
 For more details on this function, see :ref:`this tutorial <line_profile_tutorial>`.
 
 .. code-block:: python
@@ -140,7 +140,7 @@ the turning of the lattice across the junction.
     :scale: 50 %
 
 
-Plot the line profiles with :python:`temul.signal_plotting` functions and a kwarg dictionary.
+Plot the line profiles with :py:mod:`temul.signal_plotting` functions and a kwarg dictionary.
 For more details on this function, see :ref:`this tutorial <line_profile_tutorial>`.
 
 .. code-block:: python

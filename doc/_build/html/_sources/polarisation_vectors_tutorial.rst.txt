@@ -14,13 +14,13 @@ of each.
 
 Current functions:
 
-1. Using Atomap's :python:`get_polarization_from_second_sublattice` Sublattice
-   method. Great for "standard" polarised structures with two sublattices.
-2. Using the TEMUL :python:`find_polarisation_vectors` function. Useful for
-   structures that Atomap's :python:`get_polarization_from_second_sublattice` can't
-   handle.
-3. Using the TEMUL :python:`atom_deviation_from_straight_line_fit` function.
-   Useful for calculating polarisation from a single sublattice, similar to and
+1. Using Atomap's `get_polarization_from_second_sublattice <https://atomap.org/api_documentation.html?highlight=get_polarization#atomap.sublattice.Sublattice.get_polarization_from_second_sublattice>`_
+   Sublattice method. Great for "standard" polarised structures with two sublattices.
+2. Using the TEMUL :py:func:`temul.topotem.polarisation.find_polarisation_vectors`
+   function. Useful for structures that Atomap's
+   :python:`get_polarization_from_second_sublattice` can't handle.
+3. Using the TEMUL :py:func:`temul.topotem.polarisation.atom_deviation_from_straight_line_fit`
+   function. Useful for calculating polarisation from a single sublattice, similar to and
    based off: J. Gonnissen *et al*, Direct Observation of Ferroelectric Domain Walls in
    LiNbO3: Wall‐Meanders, Kinks, and Local Electric Charges, 26, 42, 2016, DOI: 10.1002/adfm.201603489.
 
@@ -36,12 +36,13 @@ where you will find the python scripts and interactive python notebooks:
 
 For standard Polarised Structures (e.g., PTO)
 ---------------------------------------------
-Atomap's :python:`get_polarization_from_second_sublattice` Sublattice method will
+Atomap's `get_polarization_from_second_sublattice <https://atomap.org/api_documentation.html?highlight=get_polarization#atomap.sublattice.Sublattice.get_polarization_from_second_sublattice>`_
+Sublattice method will
 be sufficent for most users when dealing with the classic PTO-style polarisation,
 wherein the atoms in a sublattice are polarised with respect to a second sublattice.
 
 See the second section of this tutorial on how to plot this in many different ways
-using :python:`plot_polarisation_vectors`!
+using :py:func:`temul.topotem.polarisation.plot_polarisation_vectors`!
 
 .. code-block:: python
 
@@ -72,13 +73,14 @@ using :python:`plot_polarisation_vectors`!
 For nonstandard Polarised Structures (e.g., Boracites)
 ------------------------------------------------------
 When the above function can't isn't suitable, the TEMUL
-:python:`find_polarisation_vectors` function may be an option. It is useful for
-structures that Atomap's :python:`get_polarization_from_second_sublattice` can't
+:py:func:`temul.topotem.polarisation.find_polarisation_vectors` function may
+be an option. It is useful for structures that Atomap's
+:python:`get_polarization_from_second_sublattice` can't
 handle. It is a little more involved and requires some extra preparation when 
 creating the sublattices. 
 
 See the second section of this tutorial on how to plot this in many different ways
-using :python:`plot_polarisation_vectors`!
+using :py:func:`temul.topotem.polarisation.plot_polarisation_vectors`!
 
 .. code-block:: python
 
@@ -130,13 +132,13 @@ For single Polarised Sublattices (e.g., LNO)
 --------------------------------------------
 When dealing with structures in which the polarisation must be extracted from a
 single sublattice (one type of chemical atomic column, the TEMUL
-:python:`atom_deviation_from_straight_line_fit` function
+:py:func:`temul.topotem.polarisation.atom_deviation_from_straight_line_fit` function
 may be an option. It is based off the description by J. Gonnissen *et al*,
 Direct Observation of Ferroelectric Domain Walls in LiNbO3: Wall‐Meanders,
 Kinks, and Local Electric Charges, 26, 42, 2016, DOI: 10.1002/adfm.201603489.
 
 See the second section of this tutorial on how to plot this in many different ways
-using :python:`plot_polarisation_vectors`!
+using :py:func:`temul.topotem.polarisation.plot_polarisation_vectors`!
 
 .. code-block:: python
 
@@ -191,9 +193,10 @@ Let's look at some rotated data
 Plotting Polarisation and Movement Vectors
 ==========================================
 
-The :python:`temul.polarisation` module allows one to visualise the
+The :py:mod:`temul.topotem.polarisation` module allows one to visualise the
 polarisation/movement of atoms in an atomic resolution image. In this tutorial,
-we will use a dummy dataset to show the different ways the :python:`plot_polarisation_vectors`
+we will use a dummy dataset to show the different ways the
+:py:func:`temul.topotem.polarisation.plot_polarisation_vectors`
 function can display data. In future, tutorials on published experimental data
 will also be available.
 
@@ -256,7 +259,8 @@ polarisation vectors for regular structures.
     >>> x, y = [i[0] for i in vector_list], [i[1] for i in vector_list]
     >>> u, v = [i[2] for i in vector_list], [i[3] for i in vector_list]
 
-Now we can display all of the variations that :python:`plot_polarisation_vectors`
+Now we can display all of the variations that
+:py:func:`temul.topotem.polarisation.plot_polarisation_vectors`
 gives us! You can specify sampling (scale) and units, or use a calibrated image
 so that they are automatically set.
 

@@ -7,9 +7,12 @@
 Masked FFT and iFFT
 ===================
 
-The :python:`temul.signal_processing` module allows one to choose the masking coordinates with
-:python:`choose_mask_coordinates` and easily returnt the masked fast Fourier Transform (FFT) with
-:python:`get_masked_ifft`. This can useful in various scenarios, from understanding
+The :py:mod:`temul.signal_processing` module allows one to choose the
+masking coordinates with
+:py:func:`temul.topotem.fft_mapping.choose_mask_coordinates` and easily
+return the masked fast Fourier Transform (FFT) with
+:py:func:`temul.topotem.fft_mapping.get_masked_ifft`. This can useful in
+various scenarios, from understanding
 the diffraction space spots and how they relate to the real space structure,
 to `revealing domain walls <https://onlinelibrary.wiley.com/doi/abs/10.1111/jmi.12876>`_
 and finding initial atom positions for difficult images.

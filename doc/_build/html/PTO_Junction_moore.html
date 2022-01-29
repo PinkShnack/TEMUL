@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Analysis of PTO Domain Wall Junction &mdash; TEMUL Toolkit v0.1.2 documentation</title>
+  <title>Analysis of PTO Domain Wall Junction &mdash; TEMUL Toolkit v0.1.3 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                Version 0.1.2
+                Version 0.1.3
               </div>
             
           
@@ -236,8 +236,8 @@ matplotlib! <a class="reference external" href="temul-toolkit.readthedocs.io">Ch
 </pre></div>
 </div>
 <p>Note: You can also choose your own line_profile_positions with
-<code class="code python docutils literal notranslate"><span class="name"><span class="pre">am</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">add_atoms_with_gui</span></span><span class="punctuation"><span class="pre">(</span></span><span class="name"><span class="pre">image</span></span><span class="punctuation"><span class="pre">)</span></span></code> and use the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">skimage</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">profile_line</span></span></code>
-for customisability.</p>
+<a class="reference internal" href="api_doc.html#temul.topotem.fft_mapping.choose_points_on_image" title="temul.topotem.fft_mapping.choose_points_on_image"><code class="xref py py-func docutils literal notranslate"><span class="pre">temul.topotem.fft_mapping.choose_points_on_image()</span></code></a> and use the
+<code class="code python docutils literal notranslate"><span class="name"><span class="pre">skimage</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">profile_line</span></span></code> for customisability.</p>
 </div>
 <div class="section" id="create-the-lattice-strain-map">
 <h2>Create the Lattice Strain Map<a class="headerlink" href="#create-the-lattice-strain-map" title="Permalink to this headline">¶</a></h2>
@@ -253,7 +253,7 @@ Note that sometimes the 0 and 1 axes directions are constructed vice versa.</p>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/strain_map.png"><img alt="_images/strain_map.png" src="_images/strain_map.png" style="width: 320.0px; height: 290.5px;" /></a>
-<p>Plot the line profiles with <code class="code python docutils literal notranslate"><span class="name"><span class="pre">temul</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">signal_plotting</span></span></code> functions and a kwarg dictionary.
+<p>Plot the line profiles with <a class="reference internal" href="api_doc.html#module-temul.signal_plotting" title="temul.signal_plotting"><code class="xref py py-mod docutils literal notranslate"><span class="pre">temul.signal_plotting</span></code></a> functions and a kwarg dictionary.
 For more details on this function, see <a class="reference internal" href="line_profile_tutorial.html#line-profile-tutorial"><span class="std std-ref">this tutorial</span></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vmin&#39;</span><span class="p">:</span> <span class="n">vmin</span><span class="p">,</span> <span class="s1">&#39;vmax&#39;</span><span class="p">:</span> <span class="n">vmax</span><span class="p">,</span> <span class="s1">&#39;cmap&#39;</span><span class="p">:</span> <span class="n">cmap</span><span class="p">}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tml</span><span class="o">.</span><span class="n">compare_images_line_profile_one_image</span><span class="p">(</span><span class="n">strain_map</span><span class="p">,</span> <span class="n">line_profile_positions</span><span class="p">,</span>
@@ -278,7 +278,7 @@ the turning of the lattice across the junction.</p>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/rotation_map.png"><img alt="_images/rotation_map.png" src="_images/rotation_map.png" style="width: 320.0px; height: 290.5px;" /></a>
-<p>Plot the line profiles with <code class="code python docutils literal notranslate"><span class="name"><span class="pre">temul</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">signal_plotting</span></span></code> functions and a kwarg dictionary.
+<p>Plot the line profiles with <a class="reference internal" href="api_doc.html#module-temul.signal_plotting" title="temul.signal_plotting"><code class="xref py py-mod docutils literal notranslate"><span class="pre">temul.signal_plotting</span></code></a> functions and a kwarg dictionary.
 For more details on this function, see <a class="reference internal" href="line_profile_tutorial.html#line-profile-tutorial"><span class="std std-ref">this tutorial</span></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vmin&#39;</span><span class="p">:</span> <span class="n">vmin</span><span class="p">,</span> <span class="s1">&#39;vmax&#39;</span><span class="p">:</span> <span class="n">vmax</span><span class="p">,</span> <span class="s1">&#39;cmap&#39;</span><span class="p">:</span> <span class="n">cmap</span><span class="p">}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tml</span><span class="o">.</span><span class="n">compare_images_line_profile_one_image</span><span class="p">(</span>
@@ -360,7 +360,7 @@ off zone).</p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2020, Eoghan O&#39;Connell.
+        &#169; Copyright 2021, Eoghan O&#39;Connell.
 
     </p>
   </div>

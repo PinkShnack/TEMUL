@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Line Intensity Profile Comparisons &mdash; TEMUL Toolkit v0.1.2 documentation</title>
+  <title>Line Intensity Profile Comparisons &mdash; TEMUL Toolkit v0.1.3 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                Version 0.1.2
+                Version 0.1.3
               </div>
             
           
@@ -179,11 +179,13 @@
             
   <div class="section" id="line-intensity-profile-comparisons">
 <span id="line-profile-tutorial"></span><h1>Line Intensity Profile Comparisons<a class="headerlink" href="#line-intensity-profile-comparisons" title="Permalink to this headline">¶</a></h1>
-<p>The <code class="code python docutils literal notranslate"><span class="name"><span class="pre">temul</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">signal_plotting</span></span></code> module allows one to draw line intensity profiles
-over images. The <code class="code python docutils literal notranslate"><span class="name"><span class="pre">compare_images_line_profile_one_image</span></span></code> can be used to
+<p>The <a class="reference internal" href="api_doc.html#module-temul.signal_plotting" title="temul.signal_plotting"><code class="xref py py-mod docutils literal notranslate"><span class="pre">temul.signal_plotting</span></code></a> module allows one to draw line
+intensity profiles over images. The
+:py:func`temul.signal_plotting.compare_images_line_profile_one_image` can be used to
 draw two line profiles on one image for comparison. In future we hope to expand
 this function to allow for multiple line profiles on one image. The
-<code class="code python docutils literal notranslate"><span class="name"><span class="pre">compare_images_line_profile_two_images</span></span></code> function allows you to draw a line
+<a class="reference internal" href="api_doc.html#temul.signal_plotting.compare_images_line_profile_two_images" title="temul.signal_plotting.compare_images_line_profile_two_images"><code class="xref py py-func docutils literal notranslate"><span class="pre">temul.signal_plotting.compare_images_line_profile_two_images()</span></code></a>
+function allows you to draw a line
 profile on an image, and apply that same profile to another image (of the same shape).
 This can be useful for comparing subsequent images in series or comparing experimental
 and simulated images.</p>
@@ -191,7 +193,7 @@ and simulated images.</p>
 <div class="section" id="load-the-example-images">
 <h2>Load the Example Images<a class="headerlink" href="#load-the-example-images" title="Permalink to this headline">¶</a></h2>
 <p>Here we load some dummy data using a variation of Atomap’s
-<code class="code python docutils literal notranslate"><span class="name"><span class="pre">get_simple_cubic_signal</span></span></code> function.</p>
+<a class="reference internal" href="api_doc.html#temul.dummy_data.get_simple_cubic_signal" title="temul.dummy_data.get_simple_cubic_signal"><code class="xref py py-func docutils literal notranslate"><span class="pre">temul.dummy_data.get_simple_cubic_signal()</span></code></a> function.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="kn">import</span> <span class="n">get_simple_cubic_signal</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">imageA</span> <span class="o">=</span> <span class="n">get_simple_cubic_signal</span><span class="p">(</span><span class="n">image_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">amplitude</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">imageA</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
@@ -206,8 +208,10 @@ and simulated images.</p>
 <div class="section" id="compare-two-line-profiles-in-one-image">
 <h2>Compare two Line Profiles in one Image<a class="headerlink" href="#compare-two-line-profiles-in-one-image" title="Permalink to this headline">¶</a></h2>
 <p>As with the <a class="reference internal" href="masked_fft_tutorial.html#masked-fft-tutorial"><span class="std std-ref">Masked FFT and iFFT</span></a> tutorial, we can
-choose points on the image. This time we use <code class="code python docutils literal notranslate"><span class="name"><span class="pre">choose_points_on_image</span></span></code>.
-We need to choose four points for the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">compare_images_line_profile_one_image</span></span></code>
+choose points on the image. This time we use
+<a class="reference internal" href="api_doc.html#temul.topotem.fft_mapping.choose_points_on_image" title="temul.topotem.fft_mapping.choose_points_on_image"><code class="xref py py-func docutils literal notranslate"><span class="pre">temul.topotem.fft_mapping.choose_points_on_image()</span></code></a>.
+We need to choose four points for the
+<a class="reference internal" href="api_doc.html#temul.signal_plotting.compare_images_line_profile_one_image" title="temul.signal_plotting.compare_images_line_profile_one_image"><code class="xref py py-func docutils literal notranslate"><span class="pre">temul.signal_plotting.compare_images_line_profile_one_image()</span></code></a>
 function, as it draws two line profiles over one image.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.api</span> <span class="k">as</span> <span class="nn">tml</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">line_profile_positions</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">choose_points_on_image</span><span class="p">(</span><span class="n">imageA</span><span class="p">)</span>
@@ -229,7 +233,8 @@ function, as it draws two line profiles over one image.</p>
 </div>
 <div class="section" id="compare-two-images-with-line-profile">
 <h2>Compare two Images with Line Profile<a class="headerlink" href="#compare-two-images-with-line-profile" title="Permalink to this headline">¶</a></h2>
-<p>Using <code class="code python docutils literal notranslate"><span class="name"><span class="pre">choose_points_on_image</span></span></code>, we now choose two points on one image.
+<p>Using <a class="reference internal" href="api_doc.html#temul.topotem.fft_mapping.choose_points_on_image" title="temul.topotem.fft_mapping.choose_points_on_image"><code class="xref py py-func docutils literal notranslate"><span class="pre">temul.topotem.fft_mapping.choose_points_on_image()</span></code></a>,
+we now choose two points on one image.
 Then, we plot this line intensity profile over the same position in two images.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">line_profile_positions</span> <span class="o">=</span> <span class="n">tml</span><span class="o">.</span><span class="n">choose_points_on_image</span><span class="p">(</span><span class="n">imageA</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">line_profile_positions</span>
@@ -263,7 +268,7 @@ Then, we plot this line intensity profile over the same position in two images.<
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2020, Eoghan O&#39;Connell.
+        &#169; Copyright 2021, Eoghan O&#39;Connell.
 
     </p>
   </div>

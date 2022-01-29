@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Welcome to TEMUL Toolkit’s documentation! &mdash; TEMUL Toolkit v0.1.2 documentation</title>
+  <title>Welcome to TEMUL Toolkit’s documentation! &mdash; TEMUL Toolkit v0.1.3 documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                Version 0.1.2
+                Version 0.1.3
               </div>
             
           
@@ -178,20 +178,30 @@ atomic resolution images. It is mostly built upon the data structure of
 <a class="reference external" href="https://hyperspy.org/">HyperSpy</a> and <a class="reference external" href="https://atomap.org/">Atomap</a>.</p>
 <div class="section" id="interactive-examples">
 <h2>Interactive Examples<a class="headerlink" href="#interactive-examples" title="Permalink to this headline">¶</a></h2>
+<p>The easiest way to try the TEMUL Toolkit is via Binder:
+<a class="reference external" href="https://hub.gke2.mybinder.org/user/pinkshnack-temul-19r27k52/lab/tree/code_tutorials/polarisation_vectors_tutorial.ipynb">introductory Jupyter Notebook</a>.
+To install the TEMUL Toolkit on your own computer,
+see the <a class="reference internal" href="#install"><span class="std std-ref">Installation</span></a> instructions.</p>
+<p>And there are more examples with Binder, just click the below button!</p>
 <a class="reference external image-reference" href="https://mybinder.org/v2/gh/PinkShnack/TEMUL/master"><img alt="https://mybinder.org/badge_logo.svg" src="https://mybinder.org/badge_logo.svg" /></a>
-<p>Click the button above to start some data analysis (it may take a few minutes to load).
+<p>Click the button above to start some data analysis
+(it may take a few minutes to load).
 The “code_tutorials” folder contains walkthroughs of some of the documentation
 examples from this website.
-The “publication_examples” folder will allow you to analyse data from published scientific papers!
+The “publication_examples” folder will allow you to analyse data from
+published scientific papers!
 Just navigate to whichever of these folders you want click on the “.ipynb” files.</p>
 </div>
+<div class="section" id="some-published-results-using-the-temul-toolkit">
+<span id="about-temul-toolkit"></span><h2>Some published results using the TEMUL Toolkit<a class="headerlink" href="#some-published-results-using-the-temul-toolkit" title="Permalink to this headline">¶</a></h2>
+</div>
 <div class="section" id="news">
-<span id="install"></span><h2>News<a class="headerlink" href="#news" title="Permalink to this headline">¶</a></h2>
+<span id="id1"></span><h2>News<a class="headerlink" href="#news" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="version-0-1-4-released">
 <h3>16/02/2021: Version 0.1.4 released<a class="headerlink" href="#version-0-1-4-released" title="Permalink to this headline">¶</a></h3>
 <p>The polarisation, structure tools and fft mapping has now
 been refactored into the topotem module. The temul
-functionality remains the same i.e. <a href="#id1"><span class="problematic" id="id2">``</span></a>import temul.api as tml`.</p>
+functionality remains the same i.e. <a href="#id2"><span class="problematic" id="id3">``</span></a>import temul.api as tml`.</p>
 </div>
 <div class="section" id="version-0-1-3-released">
 <h3>16/02/2021: Version 0.1.3 released<a class="headerlink" href="#version-0-1-3-released" title="Permalink to this headline">¶</a></h3>
@@ -322,23 +332,38 @@ as a dependency.</p>
 </div>
 </div>
 <div class="section" id="installation">
-<span id="id5"></span><h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<p>The TEMUL Toolkit can be installed easily with PIP (those using Windows may need to download VS C++ Build Tools, see below).</p>
+<span id="install"></span><h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>The TEMUL Toolkit can be installed easily with PIP (those using Windows may
+need to download VS C++ Build Tools, see below).</p>
 <p><code class="code bash docutils literal notranslate"><span class="pre">$</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">temul-toolkit</span></code></p>
-<p>Then, it can be imported with the name “temul”. For example, to import most of the temul functionality use:</p>
+<p>Then, it can be imported with the name “temul”. For example, to import most
+of the temul functionality use:</p>
 <p><code class="code python docutils literal notranslate"><span class="keyword namespace"><span class="pre">import</span></span> <span class="name namespace"><span class="pre">temul.api</span></span> <span class="keyword"><span class="pre">as</span></span> <span class="name namespace"><span class="pre">tml</span></span></code></p>
-<p>Matplotlib 3.3 currently has compatability issues with iPython, see below for the fix.</p>
 <ul>
-<li><p>If installing on Windows, you will need Visual Studio C++ Build Tools. Download it <a class="reference external" href="https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2019">here</a>. After downloading, choose the “C++ Build Tools” Workload and click install.</p></li>
-<li><p>Matplotlib seems to have issues with iPython at the moment. Install matplotlib==3.2 until this issue is resolved by Matplotlib. See <a class="reference external" href="https://stackoverflow.com/questions/64291087/matplotlib-module-sip-has-no-attribute-setapi">here</a> for more details.</p></li>
-<li><p>If you want to use the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">io</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">write_cif_from_dataframe</span></span></code> function, you will need to install pyCifRW version 4.3. This requires Visual Studio.</p></li>
-<li><p>If you wish to use the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">simulations</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">py</span></span></code> or <code class="code python docutils literal notranslate"><span class="name"><span class="pre">model_refiner</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">py</span></span></code> modules, you will need to install PyPrismatic. This requires Visual Studio and other dependencies.</p></li>
-<li><p>If you’re using any of the functions or classes that require element quantification:</p>
+<li><p>If installing on Windows, you will need Visual Studio C++ Build Tools.
+Download it <a class="reference external" href="https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2019">here</a>.
+After downloading, choose the “C++ Build Tools” Workload and click install.</p></li>
+<li><p>If you want to use the <a class="reference internal" href="api_doc.html#temul.io.write_cif_from_dataframe" title="temul.io.write_cif_from_dataframe"><code class="xref py py-func docutils literal notranslate"><span class="pre">temul.io.write_cif_from_dataframe()</span></code></a>
+function, you will need to install pyCifRW version 4.3. This requires
+Visual Studio.</p></li>
+<li><p>If you wish to use the <code class="xref py py-mod docutils literal notranslate"><span class="pre">temul.simulations</span></code> or
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">temul.model_refiner</span></code> modules, you will need to install PyPrismatic.
+This requires Visual Studio and other dependencies.
+<strong>It is unfortunately not guaranteed to work</strong>. If you want to help develop
+the <code class="xref py py-class docutils literal notranslate"><span class="pre">temul.model_refiner.Model_Refiner</span></code>, please create an issue
+and/or a pull request on the
+<a class="reference external" href="https://github.com/PinkShnack/TEMUL">TEMUL github</a>.</p></li>
+<li><p>If you’re using any of the functions or classes that require element
+quantification:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>navigate to the “temul/external” directory, copy the “atomap_devel_012” folder and paste that in your “site-packages” directory.</p></li>
-<li><p>Then, when using atomap to create sublattices and quantify elements call atomap like this: <code class="code python docutils literal notranslate"><span class="keyword namespace"><span class="pre">import</span></span> <span class="name namespace"><span class="pre">atomap_devel_012.api</span></span> <span class="keyword"><span class="pre">as</span></span> <span class="name namespace"><span class="pre">am</span></span></code>.</p></li>
-<li><p>This development version is slowly being folded into the master branch here: <a class="reference external" href="https://gitlab.com/atomap/atomap/-/issues/93">https://gitlab.com/atomap/atomap/-/issues/93</a> and any help or tips on implementation are welcome!</p></li>
+<li><p>navigate to the “temul/external” directory, copy the “atomap_devel_012”
+folder and paste that in your “site-packages” directory.</p></li>
+<li><p>Then, when using atomap to create sublattices and quantify elements call
+atomap like this: <code class="code python docutils literal notranslate"><span class="keyword namespace"><span class="pre">import</span></span> <span class="name namespace"><span class="pre">atomap_devel_012.api</span></span> <span class="keyword"><span class="pre">as</span></span> <span class="name namespace"><span class="pre">am</span></span></code>.</p></li>
+<li><p>This development version is slowly being folded into the master branch
+here: <a class="reference external" href="https://gitlab.com/atomap/atomap/-/issues/93">https://gitlab.com/atomap/atomap/-/issues/93</a> and any help or
+tips on implementation are welcome!</p></li>
 </ul>
 </div></blockquote>
 </li>
@@ -365,7 +390,9 @@ import it from the api module:</p>
 <h2>Cite<a class="headerlink" href="#cite" title="Permalink to this headline">¶</a></h2>
 <p>To cite the latest TEMUL Toolkit version, use the following DOI:</p>
 <a class="reference external image-reference" href="https://www.zenodo.org/badge/latestdoi/203785298"><img alt="https://www.zenodo.org/badge/203785298.svg" src="https://www.zenodo.org/badge/203785298.svg" /></a>
-<p>For example: Eoghan O’Connell, Michael Hennessy, &amp; Eoin Moynihan. (2020, November 2). PinkShnack/TEMUL: Initial Temul-Toolkit Release (Version 0.1.1). Zenodo. <a class="reference external" href="http://doi.org/10.5281/zenodo.4185974">http://doi.org/10.5281/zenodo.4185974</a></p>
+<p>For example: Eoghan O’Connell, Michael Hennessy, &amp; Eoin Moynihan.
+(2021). PinkShnack/TEMUL: (Version 0.1.3).
+Zenodo. <a class="reference external" href="http://doi.org/10.5281/zenodo.4543963">http://doi.org/10.5281/zenodo.4543963</a></p>
 <p>If you wish to cite an older release of the TEMUL Toolkit, click on the above
 badge to find the relevant version.</p>
 </div>
@@ -408,7 +435,7 @@ badge to find the relevant version.</p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2020, Eoghan O&#39;Connell.
+        &#169; Copyright 2021, Eoghan O&#39;Connell.
 
     </p>
   </div>

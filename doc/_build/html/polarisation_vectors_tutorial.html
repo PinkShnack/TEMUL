@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Finding Polarisation Vectors &mdash; TEMUL Toolkit v0.1.2 documentation</title>
+  <title>Finding Polarisation Vectors &mdash; TEMUL Toolkit v0.1.3 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                Version 0.1.2
+                Version 0.1.3
               </div>
             
           
@@ -189,13 +189,13 @@ atomic resolution images. These are briefly described here, followed by a use-ca
 of each.</p>
 <p>Current functions:</p>
 <ol class="arabic simple">
-<li><p>Using Atomap’s <code class="code python docutils literal notranslate"><span class="name"><span class="pre">get_polarization_from_second_sublattice</span></span></code> Sublattice
-method. Great for “standard” polarised structures with two sublattices.</p></li>
-<li><p>Using the TEMUL <code class="code python docutils literal notranslate"><span class="name"><span class="pre">find_polarisation_vectors</span></span></code> function. Useful for
-structures that Atomap’s <code class="code python docutils literal notranslate"><span class="name"><span class="pre">get_polarization_from_second_sublattice</span></span></code> can’t
-handle.</p></li>
-<li><p>Using the TEMUL <code class="code python docutils literal notranslate"><span class="name"><span class="pre">atom_deviation_from_straight_line_fit</span></span></code> function.
-Useful for calculating polarisation from a single sublattice, similar to and
+<li><p>Using Atomap’s <a class="reference external" href="https://atomap.org/api_documentation.html?highlight=get_polarization#atomap.sublattice.Sublattice.get_polarization_from_second_sublattice">get_polarization_from_second_sublattice</a>
+Sublattice method. Great for “standard” polarised structures with two sublattices.</p></li>
+<li><p>Using the TEMUL <a class="reference internal" href="api_doc.html#temul.topotem.polarisation.find_polarisation_vectors" title="temul.topotem.polarisation.find_polarisation_vectors"><code class="xref py py-func docutils literal notranslate"><span class="pre">temul.topotem.polarisation.find_polarisation_vectors()</span></code></a>
+function. Useful for structures that Atomap’s
+<code class="code python docutils literal notranslate"><span class="name"><span class="pre">get_polarization_from_second_sublattice</span></span></code> can’t handle.</p></li>
+<li><p>Using the TEMUL <a class="reference internal" href="api_doc.html#temul.topotem.polarisation.atom_deviation_from_straight_line_fit" title="temul.topotem.polarisation.atom_deviation_from_straight_line_fit"><code class="xref py py-func docutils literal notranslate"><span class="pre">temul.topotem.polarisation.atom_deviation_from_straight_line_fit()</span></code></a>
+function. Useful for calculating polarisation from a single sublattice, similar to and
 based off: J. Gonnissen <em>et al</em>, Direct Observation of Ferroelectric Domain Walls in
 LiNbO3: Wall‐Meanders, Kinks, and Local Electric Charges, 26, 42, 2016, DOI: 10.1002/adfm.201603489.</p></li>
 </ol>
@@ -207,11 +207,12 @@ where you will find the python scripts and interactive python notebooks:</p>
 <a class="reference external image-reference" href="https://mybinder.org/v2/gh/PinkShnack/TEMUL/master"><img alt="https://mybinder.org/badge_logo.svg" src="https://mybinder.org/badge_logo.svg" /></a>
 <div class="section" id="for-standard-polarised-structures-e-g-pto">
 <h2>For standard Polarised Structures (e.g., PTO)<a class="headerlink" href="#for-standard-polarised-structures-e-g-pto" title="Permalink to this headline">¶</a></h2>
-<p>Atomap’s <code class="code python docutils literal notranslate"><span class="name"><span class="pre">get_polarization_from_second_sublattice</span></span></code> Sublattice method will
+<p>Atomap’s <a class="reference external" href="https://atomap.org/api_documentation.html?highlight=get_polarization#atomap.sublattice.Sublattice.get_polarization_from_second_sublattice">get_polarization_from_second_sublattice</a>
+Sublattice method will
 be sufficent for most users when dealing with the classic PTO-style polarisation,
 wherein the atoms in a sublattice are polarised with respect to a second sublattice.</p>
 <p>See the second section of this tutorial on how to plot this in many different ways
-using <code class="code python docutils literal notranslate"><span class="name"><span class="pre">plot_polarisation_vectors</span></span></code>!</p>
+using <a class="reference internal" href="api_doc.html#temul.topotem.polarisation.plot_polarisation_vectors" title="temul.topotem.polarisation.plot_polarisation_vectors"><code class="xref py py-func docutils literal notranslate"><span class="pre">temul.topotem.polarisation.plot_polarisation_vectors()</span></code></a>!</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.api</span> <span class="k">as</span> <span class="nn">tml</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">temul.dummy_data</span> <span class="kn">import</span> <span class="n">get_polarisation_dummy_dataset</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">atom_lattice</span> <span class="o">=</span> <span class="n">get_polarisation_dummy_dataset</span><span class="p">(</span><span class="n">image_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -237,12 +238,13 @@ using <code class="code python docutils literal notranslate"><span class="name">
 <div class="section" id="for-nonstandard-polarised-structures-e-g-boracites">
 <h2>For nonstandard Polarised Structures (e.g., Boracites)<a class="headerlink" href="#for-nonstandard-polarised-structures-e-g-boracites" title="Permalink to this headline">¶</a></h2>
 <p>When the above function can’t isn’t suitable, the TEMUL
-<code class="code python docutils literal notranslate"><span class="name"><span class="pre">find_polarisation_vectors</span></span></code> function may be an option. It is useful for
-structures that Atomap’s <code class="code python docutils literal notranslate"><span class="name"><span class="pre">get_polarization_from_second_sublattice</span></span></code> can’t
+<a class="reference internal" href="api_doc.html#temul.topotem.polarisation.find_polarisation_vectors" title="temul.topotem.polarisation.find_polarisation_vectors"><code class="xref py py-func docutils literal notranslate"><span class="pre">temul.topotem.polarisation.find_polarisation_vectors()</span></code></a> function may
+be an option. It is useful for structures that Atomap’s
+<code class="code python docutils literal notranslate"><span class="name"><span class="pre">get_polarization_from_second_sublattice</span></span></code> can’t
 handle. It is a little more involved and requires some extra preparation when
 creating the sublattices.</p>
 <p>See the second section of this tutorial on how to plot this in many different ways
-using <code class="code python docutils literal notranslate"><span class="name"><span class="pre">plot_polarisation_vectors</span></span></code>!</p>
+using <a class="reference internal" href="api_doc.html#temul.topotem.polarisation.plot_polarisation_vectors" title="temul.topotem.polarisation.plot_polarisation_vectors"><code class="xref py py-func docutils literal notranslate"><span class="pre">temul.topotem.polarisation.plot_polarisation_vectors()</span></code></a>!</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.api</span> <span class="k">as</span> <span class="nn">tml</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">atomap.api</span> <span class="k">as</span> <span class="nn">am</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -285,12 +287,12 @@ polarisation in the structure. Don’t forget to save these arrays for further u
 <h2>For single Polarised Sublattices (e.g., LNO)<a class="headerlink" href="#for-single-polarised-sublattices-e-g-lno" title="Permalink to this headline">¶</a></h2>
 <p>When dealing with structures in which the polarisation must be extracted from a
 single sublattice (one type of chemical atomic column, the TEMUL
-<code class="code python docutils literal notranslate"><span class="name"><span class="pre">atom_deviation_from_straight_line_fit</span></span></code> function
+<a class="reference internal" href="api_doc.html#temul.topotem.polarisation.atom_deviation_from_straight_line_fit" title="temul.topotem.polarisation.atom_deviation_from_straight_line_fit"><code class="xref py py-func docutils literal notranslate"><span class="pre">temul.topotem.polarisation.atom_deviation_from_straight_line_fit()</span></code></a> function
 may be an option. It is based off the description by J. Gonnissen <em>et al</em>,
 Direct Observation of Ferroelectric Domain Walls in LiNbO3: Wall‐Meanders,
 Kinks, and Local Electric Charges, 26, 42, 2016, DOI: 10.1002/adfm.201603489.</p>
 <p>See the second section of this tutorial on how to plot this in many different ways
-using <code class="code python docutils literal notranslate"><span class="name"><span class="pre">plot_polarisation_vectors</span></span></code>!</p>
+using <a class="reference internal" href="api_doc.html#temul.topotem.polarisation.plot_polarisation_vectors" title="temul.topotem.polarisation.plot_polarisation_vectors"><code class="xref py py-func docutils literal notranslate"><span class="pre">temul.topotem.polarisation.plot_polarisation_vectors()</span></code></a>!</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.api</span> <span class="k">as</span> <span class="nn">tml</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">temul.dummy_data</span> <span class="k">as</span> <span class="nn">dd</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sublattice</span> <span class="o">=</span> <span class="n">dd</span><span class="o">.</span><span class="n">get_polarised_single_sublattice</span><span class="p">()</span>
@@ -332,9 +334,10 @@ using <code class="code python docutils literal notranslate"><span class="name">
 </div>
 <div class="section" id="plotting-polarisation-and-movement-vectors">
 <h1>Plotting Polarisation and Movement Vectors<a class="headerlink" href="#plotting-polarisation-and-movement-vectors" title="Permalink to this headline">¶</a></h1>
-<p>The <code class="code python docutils literal notranslate"><span class="name"><span class="pre">temul</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">polarisation</span></span></code> module allows one to visualise the
+<p>The <a class="reference internal" href="api_doc.html#module-temul.topotem.polarisation" title="temul.topotem.polarisation"><code class="xref py py-mod docutils literal notranslate"><span class="pre">temul.topotem.polarisation</span></code></a> module allows one to visualise the
 polarisation/movement of atoms in an atomic resolution image. In this tutorial,
-we will use a dummy dataset to show the different ways the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">plot_polarisation_vectors</span></span></code>
+we will use a dummy dataset to show the different ways the
+<a class="reference internal" href="api_doc.html#temul.topotem.polarisation.plot_polarisation_vectors" title="temul.topotem.polarisation.plot_polarisation_vectors"><code class="xref py py-func docutils literal notranslate"><span class="pre">temul.topotem.polarisation.plot_polarisation_vectors()</span></code></a>
 function can display data. In future, tutorials on published experimental data
 will also be available.</p>
 <p>To go through the below examples in a live Jupyter Notebook session, click the button below
@@ -380,7 +383,8 @@ polarisation vectors for regular structures.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">vector_list</span><span class="p">],</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">vector_list</span><span class="p">]</span>
 </pre></div>
 </div>
-<p>Now we can display all of the variations that <code class="code python docutils literal notranslate"><span class="name"><span class="pre">plot_polarisation_vectors</span></span></code>
+<p>Now we can display all of the variations that
+<a class="reference internal" href="api_doc.html#temul.topotem.polarisation.plot_polarisation_vectors" title="temul.topotem.polarisation.plot_polarisation_vectors"><code class="xref py py-func docutils literal notranslate"><span class="pre">temul.topotem.polarisation.plot_polarisation_vectors()</span></code></a>
 gives us! You can specify sampling (scale) and units, or use a calibrated image
 so that they are automatically set.</p>
 <p>Vector magnitude plot with red arrows:</p>
@@ -545,7 +549,7 @@ matplotlib-scalebar for more custom features.</p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2020, Eoghan O&#39;Connell.
+        &#169; Copyright 2021, Eoghan O&#39;Connell.
 
     </p>
   </div>
