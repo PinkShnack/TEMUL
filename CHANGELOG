@@ -1,4 +1,5 @@
 0.1.4
+ - ci: add auto pypi push actions
  - ref, doc: fix api doc link references
  - add initial (useable) tests in test directory
  - add CHANGELOG
