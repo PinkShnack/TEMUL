@@ -1,4 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+from os.path import dirname, realpath
 from setuptools import setup
+import sys
+
+sys.path.insert(0, realpath(dirname(__file__))+"/"+name)
+from _version import version  # noqa: E402
+
 
 with open('README.md') as f:
     long_description = f.read()
@@ -15,7 +23,7 @@ setup(
         'temul.external.atomap_devel_012.external',
         'temul.external.skimage_devel_0162',
     ],
-    version='0.1.3',
+    version=version,
     description='Functions for analysis of high resolution electron microscopy and spectroscopy data.',
     long_description=long_description,
     long_description_content_type='text/markdown',
