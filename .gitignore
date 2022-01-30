@@ -125,3 +125,6 @@ settings.json
 
 # code_tutorials atom positions
 atom_positions*.npy
+
+# ci build
+_version_save.py

@@ -4,7 +4,9 @@ from os.path import dirname, realpath
 from setuptools import setup
 import sys
 
-sys.path.insert(0, realpath(dirname(__file__))+"/"+name)
+main_module_name = 'temul'
+
+sys.path.insert(0, realpath(dirname(__file__))+"/"+main_module_name)
 from _version import version  # noqa: E402
 
 
