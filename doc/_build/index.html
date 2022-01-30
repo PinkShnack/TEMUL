@@ -1,0 +1,468 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Welcome to TEMUL Toolkit’s documentation! &mdash; TEMUL Toolkit  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="install.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="#" class="icon icon-home"> TEMUL Toolkit
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_temul.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflows.html">Analysis Workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Finding Polarisation Vectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html#plotting-polarisation-and-movement-vectors">Plotting Polarisation and Movement Vectors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structure_map_tutorial.html">Plot Lattice Structure Maps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PTO_supercrystal_hadjimichael.html">Calculation of Atom Plane Curvature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PTO_Junction_moore.html">Analysis of PTO Domain Wall Junction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="masked_fft_tutorial.html">Masked FFT and iFFT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="line_profile_tutorial.html">Line Intensity Profile Comparisons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dg_visualiser_tutorial.html">Interactive Image Filtering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_doc.html">API documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">TEMUL Toolkit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Welcome to TEMUL Toolkit’s documentation!</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="welcome-to-temul-toolkit-s-documentation">
+<h1>Welcome to TEMUL Toolkit’s documentation!<a class="headerlink" href="#welcome-to-temul-toolkit-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>The TEMUL Toolkit is a suit of functions and classes for analysis and visualisation of
+atomic resolution images. It is mostly built upon the data structure of
+<a class="reference external" href="https://hyperspy.org/">HyperSpy</a> and <a class="reference external" href="https://atomap.org/">Atomap</a>.</p>
+<div class="section" id="interactive-examples">
+<h2>Interactive Examples<a class="headerlink" href="#interactive-examples" title="Permalink to this headline">¶</a></h2>
+<p>The easiest way to try the TEMUL Toolkit is via Binder:
+<a class="reference external" href="https://hub.gke2.mybinder.org/user/pinkshnack-temul-19r27k52/lab/tree/code_tutorials/polarisation_vectors_tutorial.ipynb">introductory Jupyter Notebook</a>.
+To install the TEMUL Toolkit on your own computer,
+see the <a class="reference internal" href="install.html#install"><span class="std std-ref">Installation</span></a> instructions.</p>
+<p>And there are more examples with Binder, just click the below button!</p>
+<a class="reference external image-reference" href="https://mybinder.org/v2/gh/PinkShnack/TEMUL/master"><img alt="https://mybinder.org/badge_logo.svg" src="https://mybinder.org/badge_logo.svg" /></a>
+<p>Click the button above to start some data analysis
+(it may take a few minutes to load).
+The “code_tutorials” folder contains walkthroughs of some of the documentation
+examples from this website.
+The “publication_examples” folder will allow you to analyse data from
+published scientific papers!
+Just navigate to whichever of these folders you want click on the “.ipynb” files.</p>
+</div>
+<div class="section" id="some-published-results-using-the-temul-toolkit">
+<span id="about-temul-toolkit"></span><h2>Some published results using the TEMUL Toolkit<a class="headerlink" href="#some-published-results-using-the-temul-toolkit" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="news">
+<span id="id1"></span><h2>News<a class="headerlink" href="#news" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="version-0-1-4-released">
+<h3>16/02/2021: Version 0.1.4 released<a class="headerlink" href="#version-0-1-4-released" title="Permalink to this headline">¶</a></h3>
+<p>The polarisation, structure tools and fft mapping has now
+been refactored into the topotem module. The temul
+functionality remains the same i.e. <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">temul.api</span> <span class="pre">as</span> <span class="pre">tml</span></code>.</p>
+</div>
+<div class="section" id="version-0-1-3-released">
+<h3>16/02/2021: Version 0.1.3 released<a class="headerlink" href="#version-0-1-3-released" title="Permalink to this headline">¶</a></h3>
+<p>First articles uses and citations for the TEMUL Toolkit!
+This version updated the Publication Examples folder with two newly published
+articles. The folder contains interactive and raw code on how to reproduce the
+data in the publications. Congrats to those involved!</p>
+<blockquote>
+<div><ul class="simple">
+<li><ol class="upperalpha simple" start="13">
+<li><p>Hadjimichael, Y. Li <em>et al</em>, <a class="reference external" href="https://www.nature.com/articles/s41563-020-00864-6">Metal-ferroelectric supercrystals with periodically curved metallic layers, Nature Materials 2020</a></p></li>
+</ol>
+</li>
+<li><ol class="upperalpha simple" start="11">
+<li><p>Moore <em>et al</em> <a class="reference external" href="https://www.nature.com/articles/s42005-020-00488-x">Highly charged 180 degree head-to-head domain walls in lead titanate, Nature Communications Physics 2020</a></p></li>
+</ol>
+</li>
+</ul>
+</div></blockquote>
+<p>If you have a question or issue with using the publication examples, please make
+an issue on <a class="reference external" href="https://github.com/PinkShnack/TEMUL/issues">GitHub</a>.</p>
+<dl class="simple">
+<dt>Code changes in this version:</dt><dd><ul class="simple">
+<li><p>The <code class="code python docutils literal notranslate"><span class="name"><span class="pre">atom_deviation_from_straight_line_fit</span></span></code> function has been <strong>corrected</strong> and expanded. For a use case, see <a class="reference internal" href="polarisation_vectors_tutorial.html#polarisation-vectors-tutorial"><span class="std std-ref">Finding Polarisation Vectors</span></a></p></li>
+<li><p>Corrected the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">plot_polarisation_vectors</span></span></code> function’s vector quiver key.</p></li>
+<li><p>Created the “polar_colorwheel” <code class="code python docutils literal notranslate"><span class="name"><span class="pre">plot_style</span></span></code> for <code class="code python docutils literal notranslate"><span class="name"><span class="pre">plot_polarisation_vectors</span></span></code> by using a HSV to RGB 2D colorwheel and mapping the angles and magnitudes to these values. Used code from <a class="reference external" href="https://pixstem.org/">PixStem</a> for colorwheel visualisation.</p></li>
+<li><p>Fixed <code class="code python docutils literal notranslate"><span class="name"><span class="pre">norm</span></span></code> and <code class="code python docutils literal notranslate"><span class="name"><span class="pre">cmap</span></span></code> scaling for the colorbar for the “contour”, “colorwheel” and “colormap” <code class="code python docutils literal notranslate"><span class="name"><span class="pre">plot_styles</span></span></code>. Now each of these <code class="code python docutils literal notranslate"><span class="name"><span class="pre">plot_styles</span></span></code> scale nicely, and colorbar <code class="code python docutils literal notranslate"><span class="name"><span class="pre">ticks</span></span></code> may be specified.</p></li>
+<li><p>Added invert_y_axis param for plot_polarisation_vectors function, useful for testing if angles are displaying correctly.</p></li>
+<li><p><code class="code python docutils literal notranslate"><span class="name"><span class="pre">plot_polarisation_vectors</span></span></code> function now returns a Matplotlib <code class="code python docutils literal notranslate"><span class="name"><span class="pre">Axes</span></span></code> object, which can be used to further edit the layout/presentation of the plotted map.</p></li>
+<li><p>Added functions to correct for possible off-zone tilt in the atomic columns. Use with caution.</p></li>
+</ul>
+</dd>
+<dt>Documentation changes in this version:</dt><dd><ul class="simple">
+<li><p>Added documentation for <a class="reference internal" href="polarisation_vectors_tutorial.html#polarisation-vectors-tutorial"><span class="std std-ref">how to find the polarisation vectors</span></a>.</p></li>
+<li><p>Added “code_tutorials” ipynb (interactive Jupyter Notebook) examples. See the <a class="reference external" href="https://github.com/PinkShnack/TEMUL">GitHub repository</a> for downloads.</p></li>
+<li><p>The <a class="reference internal" href="workflows.html#workflows"><span class="std std-ref">workflows</span></a> folder in “code_tutorials/workflows” also contains starting workflows for analysis of different materials. See the <a class="reference external" href="https://github.com/PinkShnack/TEMUL">GitHub repository</a> for downloads.</p></li>
+<li><p>Added “publication_examples” tutorial ipynb (interactive Jupyter Notebook) examples. See the <a class="reference external" href="https://github.com/PinkShnack/TEMUL">GitHub repository</a> for downloads.</p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="version-0-1-2-released">
+<h3>03/11/2020: Version 0.1.2 released<a class="headerlink" href="#version-0-1-2-released" title="Permalink to this headline">¶</a></h3>
+<p>This version contains minor changes from the 0.1.1 release. It removes pyCifRW
+as a dependency.</p>
+</div>
+<div class="section" id="version-0-1-1-released">
+<h3>02/11/2020: Version 0.1.1 released<a class="headerlink" href="#version-0-1-1-released" title="Permalink to this headline">¶</a></h3>
+<p>This version contains many changes to the TEMUL Toolkit.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>More parameters have been added to the polarisation module’s <code class="code python docutils literal notranslate"><span class="name"><span class="pre">plot_polarisation_vectors</span></span></code> function. Check out the walkthrough <a class="reference internal" href="polarisation_vectors_tutorial.html#polarisation-vectors-tutorial"><span class="std std-ref">here</span></a> for more info!</p></li>
+<li><p><a class="reference internal" href="dg_visualiser_tutorial.html#dg-visualiser-tutorial"><span class="std std-ref">Interactive double Gaussian filtering</span></a> with the <code class="code python docutils literal notranslate"><span class="name"><span class="pre">visualise_dg_filter</span></span></code> function in the signal_processing module. Thanks to <a class="reference external" href="https://github.com/michaelhennessyjr">Michael Hennessy</a> for the help!</p></li>
+<li><p>The <code class="code python docutils literal notranslate"><span class="name"><span class="pre">calculate_atom_plane_curvature</span></span></code> function has been added, creating the lattice_structure_tools module.</p></li>
+<li><p>Strain, rotation, and c/a mapping can now be done <a class="reference internal" href="structure_map_tutorial.html#structure-map-tutorial"><span class="std std-ref">here</span></a>.</p></li>
+<li><p>Masked FFT filtering to obtain iFFTs. See <a class="reference internal" href="masked_fft_tutorial.html#masked-fft-tutorial"><span class="std std-ref">this guide</span></a> to see some code!</p></li>
+<li><p>Example walk-throughs for many features of the TEMUL Toolkit are now on this website! Check out the menu on the left to get started!</p></li>
+</ul>
+</div></blockquote>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#installation-problems-notes">Installation Problems &amp; Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="using_temul.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflows.html">Analysis Workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html">Finding Polarisation Vectors</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="polarisation_vectors_tutorial.html#for-standard-polarised-structures-e-g-pto">For standard Polarised Structures (e.g., PTO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="polarisation_vectors_tutorial.html#for-nonstandard-polarised-structures-e-g-boracites">For nonstandard Polarised Structures (e.g., Boracites)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="polarisation_vectors_tutorial.html#for-single-polarised-sublattices-e-g-lno">For single Polarised Sublattices (e.g., LNO)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="polarisation_vectors_tutorial.html#plotting-polarisation-and-movement-vectors">Plotting Polarisation and Movement Vectors</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="polarisation_vectors_tutorial.html#prepare-and-plot-the-dummy-dataset">Prepare and Plot the dummy dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="polarisation_vectors_tutorial.html#find-the-vector-coordinates-using-atomap">Find the Vector Coordinates using Atomap</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="structure_map_tutorial.html">Plot Lattice Structure Maps</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="structure_map_tutorial.html#prepare-and-plot-the-dummy-dataset">Prepare and Plot the dummy dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_map_tutorial.html#plot-the-lattice-strain-map">Plot the Lattice Strain Map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_map_tutorial.html#plot-the-lattice-atom-rotation-map">Plot the Lattice Atom Rotation Map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure_map_tutorial.html#plot-the-c-a-ratio">Plot the <em>c</em>/<em>a</em> Ratio</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="PTO_supercrystal_hadjimichael.html">Calculation of Atom Plane Curvature</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="PTO_supercrystal_hadjimichael.html#import-the-modules-and-load-the-data">Import the Modules and Load the Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PTO_supercrystal_hadjimichael.html#set-up-the-parameters">Set up the Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PTO_supercrystal_hadjimichael.html#calculate-the-curvature-of-atom-planes">Calculate the Curvature of Atom Planes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="PTO_Junction_moore.html">Analysis of PTO Domain Wall Junction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="PTO_Junction_moore.html#import-the-modules-and-load-the-data">Import the Modules and Load the Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PTO_Junction_moore.html#set-up-the-parameters">Set up the Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PTO_Junction_moore.html#create-the-lattice-strain-map">Create the Lattice Strain Map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PTO_Junction_moore.html#create-the-lattice-rotation-map">Create the Lattice Rotation Map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PTO_Junction_moore.html#create-the-lattice-c-a-ratio-map">Create the Lattice c/a Ratio Map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PTO_Junction_moore.html#map-the-polarisation">Map the Polarisation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="masked_fft_tutorial.html">Masked FFT and iFFT</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="masked_fft_tutorial.html#load-the-example-image">Load the Example Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="masked_fft_tutorial.html#choose-the-mask-coordinates">Choose the Mask Coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="masked_fft_tutorial.html#plot-the-masked-ifft">Plot the Masked iFFT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="masked_fft_tutorial.html#run-fft-masking-for-multiple-images">Run FFT masking for Multiple Images</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="line_profile_tutorial.html">Line Intensity Profile Comparisons</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="line_profile_tutorial.html#load-the-example-images">Load the Example Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="line_profile_tutorial.html#compare-two-line-profiles-in-one-image">Compare two Line Profiles in one Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="line_profile_tutorial.html#compare-two-images-with-line-profile">Compare two Images with Line Profile</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dg_visualiser_tutorial.html">Interactive Image Filtering</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dg_visualiser_tutorial.html#load-the-experimental-image">Load the Experimental Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dg_visualiser_tutorial.html#interactively-filter-the-experimental-image">Interactively Filter the Experimental Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dg_visualiser_tutorial.html#return-the-filtered-image">Return the Filtered Image</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api_doc.html">API documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_doc.html#classes">Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_doc.html#modules">Modules</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="installation">
+<span id="install"></span><h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>The TEMUL Toolkit can be installed easily with PIP (those using Windows may
+need to download VS C++ Build Tools, see below).</p>
+<p><code class="code bash docutils literal notranslate"><span class="pre">$</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">temul-toolkit</span></code></p>
+<p>Then, it can be imported with the name “temul”. For example, to import most
+of the temul functionality use:</p>
+<p><code class="code python docutils literal notranslate"><span class="keyword namespace"><span class="pre">import</span></span> <span class="name namespace"><span class="pre">temul.api</span></span> <span class="keyword"><span class="pre">as</span></span> <span class="name namespace"><span class="pre">tml</span></span></code></p>
+<ul>
+<li><p>If installing on Windows, you will need Visual Studio C++ Build Tools.
+Download it <a class="reference external" href="https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2019">here</a>.
+After downloading, choose the “C++ Build Tools” Workload and click install.</p></li>
+<li><p>If you want to use the <a class="reference internal" href="api_doc.html#temul.io.write_cif_from_dataframe" title="temul.io.write_cif_from_dataframe"><code class="xref py py-func docutils literal notranslate"><span class="pre">temul.io.write_cif_from_dataframe()</span></code></a>
+function, you will need to install pyCifRW version 4.3. This requires
+Visual Studio.</p></li>
+<li><p>If you wish to use the <code class="xref py py-mod docutils literal notranslate"><span class="pre">temul.simulations</span></code> or
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">temul.model_refiner</span></code> modules, you will need to install PyPrismatic.
+This requires Visual Studio and other dependencies.
+<strong>It is unfortunately not guaranteed to work</strong>. If you want to help develop
+the <code class="xref py py-class docutils literal notranslate"><span class="pre">temul.model_refiner.Model_Refiner</span></code>, please create an issue
+and/or a pull request on the
+<a class="reference external" href="https://github.com/PinkShnack/TEMUL">TEMUL github</a>.</p></li>
+<li><p>If you’re using any of the functions or classes that require element
+quantification:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>navigate to the “temul/external” directory, copy the “atomap_devel_012”
+folder and paste that in your “site-packages” directory.</p></li>
+<li><p>Then, when using atomap to create sublattices and quantify elements call
+atomap like this: <code class="code python docutils literal notranslate"><span class="keyword namespace"><span class="pre">import</span></span> <span class="name namespace"><span class="pre">atomap_devel_012.api</span></span> <span class="keyword"><span class="pre">as</span></span> <span class="name namespace"><span class="pre">am</span></span></code>.</p></li>
+<li><p>This development version is slowly being folded into the master branch
+here: <a class="reference external" href="https://gitlab.com/atomap/atomap/-/issues/93">https://gitlab.com/atomap/atomap/-/issues/93</a> and any help or
+tips on implementation are welcome!</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div>
+<div class="section" id="getting-started">
+<span id="using-temul"></span><h2>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
+<p>There are many aspects to the TEMUL Toolkit, such as polarisation analysis,
+element quantification, and automatic image simulation (through pyprismatic).</p>
+<p>Checkout the tutorials in the table of contents above or on the left of the page.
+One can also view the extensive <a class="reference internal" href="api_doc.html#api-doc"><span class="std std-ref">documentation</span></a>, where each function
+is described and examples of their use given.</p>
+<p>To use the vast majority of the temul functionality,
+import it from the api module:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">temul.api</span> <span class="k">as</span> <span class="nn">tml</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="code-documentation">
+<h2>Code Documentation<a class="headerlink" href="#code-documentation" title="Permalink to this headline">¶</a></h2>
+<p>See the <a class="reference internal" href="api_doc.html#api-doc"><span class="std std-ref">API documentation</span></a> for examples and a full list of modules and functions.</p>
+</div>
+<div class="section" id="cite">
+<h2>Cite<a class="headerlink" href="#cite" title="Permalink to this headline">¶</a></h2>
+<p>To cite the latest TEMUL Toolkit version, use the following DOI:</p>
+<a class="reference external image-reference" href="https://www.zenodo.org/badge/latestdoi/203785298"><img alt="https://www.zenodo.org/badge/203785298.svg" src="https://www.zenodo.org/badge/203785298.svg" /></a>
+<p>For example: Eoghan O’Connell, Michael Hennessy, &amp; Eoin Moynihan.
+(2021). PinkShnack/TEMUL: (Version 0.1.3).
+Zenodo. <a class="reference external" href="http://doi.org/10.5281/zenodo.4543963">http://doi.org/10.5281/zenodo.4543963</a></p>
+<p>If you wish to cite an older release of the TEMUL Toolkit, click on the above
+badge to find the relevant version.</p>
+</div>
+<div class="section" id="contribute">
+<h2>Contribute<a class="headerlink" href="#contribute" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/PinkShnack/TEMUL/issues">Issue Tracker</a></p></li>
+<li><p><a class="reference external" href="https://github.com/PinkShnack/TEMUL">Source Code</a></p></li>
+</ul>
+</div>
+<div class="section" id="support">
+<h2>Support<a class="headerlink" href="#support" title="Permalink to this headline">¶</a></h2>
+<p>If you are having issues, please let us know in the issue tracker on
+<a class="reference external" href="https://github.com/PinkShnack/TEMUL/issues">GitHub</a>.</p>
+</div>
+<div class="section" id="license">
+<h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
+<p>The project is licensed under the <a class="reference external" href="https://github.com/PinkShnack/TEMUL/blob/master/LICENSE">GPL-3.0 License</a>.</p>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="install.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Eoghan O&#39;Connell.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

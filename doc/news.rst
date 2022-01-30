@@ -13,7 +13,7 @@ News
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The polarisation, structure tools and fft mapping has now
 been refactored into the topotem module. The temul
-functionality remains the same i.e. ``import temul.api as tml`.
+functionality remains the same i.e. ``import temul.api as tml``.
 
 
 16/02/2021: Version 0.1.3 released

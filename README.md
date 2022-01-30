@@ -46,5 +46,30 @@ To build the docs, do the following::
 
 ```bash
 cd doc
-make html
+pip install -r requirements.txt
+sphinx-build . _build  # open "index.html" in the "_build" directory
 ```
+
+### PEP8
+We use flake8 to enforce coding style:
+
+```bash
+pip install flake8
+flake8 dclab
+flake8 docs
+flake8 examples
+flake8 tests
+```
+
+### Incrementing version
+Dclab gets its version from the latest git tag. If you think that a
+new version should be published, create a tag on the master branch
+(if you have the necessary permissions to do so):
+
+```bash
+git tag -a '0.1.5' -m 'new tag'
+git push --tags origin
+```
+
+GitHub Actions will then automatically build source package and wheels and
+publish them on PyPI.
