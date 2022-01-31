@@ -62,7 +62,7 @@ flake8 tests
 ```
 
 ### Incrementing version
-Dclab gets its version from the latest git tag. If you think that a
+temul gets its version from the latest git tag. If you think that a
 new version should be published, create a tag on the master branch
 (if you have the necessary permissions to do so):
 
