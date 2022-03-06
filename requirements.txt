@@ -8,9 +8,10 @@ matplotlib-scalebar
 pandas
 periodictable
 PyCifRW==4.3
-scikit-image==0.16.2
+scikit-image
 scipy
 tifffile
 
 sphinx_rtd_theme
 numpydoc
+docutils<0.18

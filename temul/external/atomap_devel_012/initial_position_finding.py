@@ -170,10 +170,10 @@ def make_atom_lattice_dumbbell_structure(
     return(atom_lattice)
 
 
-'''
+"""
 The log and norm functionality has been added to the atomap 
 upstream master
-'''
+"""
 
 
 class AtomAdderRemover:

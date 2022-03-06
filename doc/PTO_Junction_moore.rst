@@ -27,8 +27,7 @@ Import the Modules and Load the Data
 
 .. code-block:: python
 
-    >>> import temul.polarisation as tmlp
-    >>> import temul.signal_plotting as tmlplt
+    >>> import temul.api as tml
     >>> import atomap.api as am
     >>> import hyperspy.api as hs
     >>> import numpy as np
@@ -82,8 +81,8 @@ Load the line profile positions:
     >>> line_profile_positions = np.load('line_profile_positions.npy')
 
 Note: You can also choose your own line_profile_positions with
-:python:`am.add_atoms_with_gui(image)` and use the :python:`skimage.profile_line`
-for customisability.
+:py:func:`temul.topotem.fft_mapping.choose_points_on_image` and use the
+:python:`skimage.profile_line` for customisability.
 
 
 Create the Lattice Strain Map
@@ -98,20 +97,20 @@ Note that sometimes the 0 and 1 axes directions are constructed vice versa.
     >>> vmax = 30
     >>> cmap = 'inferno'
     >>> theoretical_value = round(3.929/10, 3)  # units of nm
-    >>> strain_map = tmlp.get_strain_map(sublattice1, zone_vector_index_B,
+    >>> strain_map = tml.get_strain_map(sublattice1, zone_vector_index_B,
     ...                          theoretical_value, sampling=sampling,
     ...                          units=units, vmin=vmin, vmax=vmax, cmap=cmap)
 
 .. image:: ../publication_examples/PTO_Junction_moore/data/strain_map.png
     :scale: 50 %
 
-Plot the line profiles with :python:`temul.signal_plotting` functions and a kwarg dictionary.
+Plot the line profiles with :py:mod:`temul.signal_plotting` functions and a kwarg dictionary.
 For more details on this function, see :ref:`this tutorial <line_profile_tutorial>`.
 
 .. code-block:: python
 
     >>> kwargs = {'vmin': vmin, 'vmax': vmax, 'cmap': cmap}
-    >>> tmlplt.compare_images_line_profile_one_image(strain_map, line_profile_positions,
+    >>> tml.compare_images_line_profile_one_image(strain_map, line_profile_positions,
     ...                               linewidth=100, arrow='h', linetrace=0.05,
     ...                               **kwargs)
 
@@ -132,7 +131,7 @@ the turning of the lattice across the junction.
     >>> vmax = 15
     >>> cmap = 'inferno'
     >>> angle_offset = -2  # degrees
-    >>> rotation_map = tmlp.rotation_of_atom_planes(
+    >>> rotation_map = tml.rotation_of_atom_planes(
     ...                     sublattice1, zone_vector_index_A, units=units,
     ...                     angle_offset, degrees=True, sampling=sampling,
     ...                     vmin=vmin, vmax=vmax, cmap=cmap)
@@ -141,13 +140,13 @@ the turning of the lattice across the junction.
     :scale: 50 %
 
 
-Plot the line profiles with :python:`temul.signal_plotting` functions and a kwarg dictionary.
+Plot the line profiles with :py:mod:`temul.signal_plotting` functions and a kwarg dictionary.
 For more details on this function, see :ref:`this tutorial <line_profile_tutorial>`.
 
 .. code-block:: python
 
     >>> kwargs = {'vmin': vmin, 'vmax': vmax, 'cmap': cmap}
-    >>> tmlplt.compare_images_line_profile_one_image(
+    >>> tml.compare_images_line_profile_one_image(
     ...     rotation_map, line_profile_positions, linewidth=100, arrow='h',
     ...     linetrace=0.05, **kwargs)
 
@@ -167,7 +166,7 @@ Now plot the c/a ratio map of the Pb Sublattice
     >>> vmax = 1.15
     >>> cmap = 'inferno'
     >>> ideal_ratio_one = True  # values under 1 will be divided by themselves
-    >>> ca_ratio_map = tmlp.ratio_of_lattice_spacings(
+    >>> ca_ratio_map = tml.ratio_of_lattice_spacings(
     ...                    sublattice1, zone_vector_index_B,
     ...                    zone_vector_index_A, ideal_ratio_one, sampling=sampling,
     ...                    units=units, vmin=vmin, vmax=vmax, cmap=cmap)
@@ -178,7 +177,7 @@ Now plot the c/a ratio map of the Pb Sublattice
 .. code-block:: python
 
     >>> kwargs = {'vmin': vmin, 'vmax': vmax, 'cmap': cmap}
-    >>> tmlplt.compare_images_line_profile_one_image(
+    >>> tml.compare_images_line_profile_one_image(
     ...     ca_ratio_map, line_profile_positions, linewidth=100, arrow='h',
     ...     linetrace=0.05, **kwargs)
 
@@ -199,7 +198,7 @@ get_polarization_from_second_sublattice function.
     >>> atom_positions_actual = np.array(
     ...     [sublattice2.x_position, sublattice2.y_position]).T
     >>> atom_positions_ideal = np.load('atom_positions_orig_2.npy')
-    >>> u, v = tmlp.find_polarisation_vectors(
+    >>> u, v = tml.find_polarisation_vectors(
     ...     atom_positions_actual, atom_positions_ideal)
     >>> x, y = atom_positions_actual.T.tolist()
 
@@ -209,7 +208,7 @@ off zone).
 
 .. code-block:: python
 
-    >>> tmlp.plot_polarisation_vectors(
+    >>> tml.plot_polarisation_vectors(
     ...     x=x, y=y, u=u, v=v, image=image.data,
     ...     sampling=sampling, units=units, unit_vector=False, overlay=True,
     ...     color='yellow', plot_style='vector', title='Polarisation',
@@ -224,7 +223,7 @@ Plot the angle information as a colorwheel
 .. code-block:: python
 
     >>> plt.style.use("grayscale")
-    >>> tmlp.plot_polarisation_vectors(
+    >>> tml.plot_polarisation_vectors(
     ...     x=x, y=y, u=u, v=v, image=image.data, save=None,
     ...     sampling=sampling, units=units, unit_vector=True, overlay=True,
     ...     color='yellow', plot_style='colorwheel', title='Polarisation',

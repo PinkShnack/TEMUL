@@ -9,14 +9,13 @@ import matplotlib.pyplot as plt
 import scipy
 import numpy as np
 from numpy import log
-import hyperspy.api as hs
 from hyperspy._signals.signal2d import Signal2D
 import pandas as pd
 from collections import Counter
 
 
 def count_element_in_pandas_df(element, dataframe):
-    '''
+    """
     Count the number of a single element in a dataframe
 
     Parameters
@@ -42,7 +41,7 @@ def count_element_in_pandas_df(element, dataframe):
     >>> Se_count
     Counter({0: 9, 1: 8})
 
-    '''
+    """
     count_of_element = Counter()
 
     for element_config in dataframe.columns:
@@ -62,7 +61,7 @@ def count_element_in_pandas_df(element, dataframe):
 
 
 def count_all_individual_elements(individual_element_list, dataframe):
-    '''
+    """
     Perform count_element_in_pandas_df() for all elements in a dataframe.
     Specify the elements you wish to count in the individual_element_list.
 
@@ -88,7 +87,7 @@ def count_all_individual_elements(individual_element_list, dataframe):
     >>> element_count = count_all_individual_elements(
     ...     individual_element_list, dataframe=df)
 
-    '''
+    """
 
     element_count_dict = {}
 
@@ -103,7 +102,7 @@ def count_all_individual_elements(individual_element_list, dataframe):
 
 
 def count_atoms_in_sublattice_list(sublattice_list, filename=None):
-    '''
+    """
     Count the elements in a list of Atomap sublattices
 
     Parameters
@@ -138,7 +137,7 @@ def count_atoms_in_sublattice_list(sublattice_list, filename=None):
     >>> no_added_atoms = count_atoms_in_sublattice_list(
     ...    sublattice_list=at_lat_before.sublattice_list)
 
-    '''
+    """
     count_of_sublattice = Counter()
     for sublattice in sublattice_list:
 
@@ -172,7 +171,7 @@ def count_atoms_in_sublattice_list(sublattice_list, filename=None):
 
 
 def compare_count_atoms_in_sublattice_list(counter_list):
-    '''
+    """
     Compare the count of atomap elements in two counter_lists gotten by
     count_atoms_in_sublattice_list()
 
@@ -186,7 +185,7 @@ def compare_count_atoms_in_sublattice_list(counter_list):
 
     Returns
     -------
-    Boolean True if the counters are equal,
+    boolean True if the counters are equal,
     boolean False is the counters are not equal.
 
     Examples
@@ -219,7 +218,7 @@ def compare_count_atoms_in_sublattice_list(counter_list):
     if break loop:
     # >>> if compare_count_atoms_in_sublattice_list(counter_list) is True:
     # >>>    break
-    '''
+    """
     if len(counter_list) == 2:
 
         counter0 = counter_list[0]
@@ -231,7 +230,7 @@ def compare_count_atoms_in_sublattice_list(counter_list):
 
 
 def get_most_common_sublattice_element(sublattice, info='element'):
-    '''
+    """
     Find the most common element configuration in a sublattice.
 
     Parameters
@@ -261,7 +260,7 @@ def get_most_common_sublattice_element(sublattice, info='element'):
     >>> get_most_common_sublattice_element(sublattice, info='z_height')
     '0.3, 0.6'
 
-    '''
+    """
 
     element_info = print_sublattice_elements(sublattice)
 
@@ -284,7 +283,7 @@ def change_sublattice_atoms_via_intensity(
         element_list,
         verbose=False):
 
-    '''
+    """
     Change the elements in a sublattice object to a higher or lower combined
     atomic (Z) number.
     The aim is to change the sublattice elements so that the experimental image
@@ -316,7 +315,7 @@ def change_sublattice_atoms_via_intensity(
         respectively.
     element_list : list
         list of element configurations
-    verbose : Bool, default False
+    verbose : bool, default False
         If set to True then atom warnings will be printed as output.
 
     Examples
@@ -339,7 +338,7 @@ def change_sublattice_atoms_via_intensity(
     Changing some atoms
 
 
-    '''
+    """
     for atom in sublattice.atom_list:
         if atom.elements == '':
             # raise warning instead of error
@@ -424,7 +423,7 @@ def image_difference_intensity(sublattice,
                                mask_radius=None,
                                change_sublattice=False,
                                verbose=False):
-    '''
+    """
     Find the differences in a sublattice's atom_position intensities.
     Change the elements of these atom_positions depending on this difference of
     intensities.
@@ -449,13 +448,13 @@ def image_difference_intensity(sublattice,
     mask_radius : float, default None
         Radius of the mask around each atom. If this is not set,
         the radius will be the distance to the nearest atom in the
-        same sublattice times the `percent_to_nn` value.
-        Note: if `mask_radius` is not specified, the Atom_Position objects
+        same sublattice times the ``percent_to_nn`` value.
+        Note: if ``mask_radius`` is not specified, the Atom_Position objects
         must have a populated nearest_neighbor_list.
     change_sublattice : bool, default False
         If change_sublattice is set to True, all incorrect element assignments
         will be corrected inplace.
-    verbose : Bool, default False
+    verbose : bool, default False
         If set to True then atom warnings will be printed as output.
 
     Example
@@ -485,7 +484,7 @@ def image_difference_intensity(sublattice,
     ...                            sim_image=sim_image,
     ...                            element_list=element_list)
 
-    '''
+    """
 
     # np.array().T needs to be taken away for newer atomap versions
     sublattice_atom_positions = np.array(sublattice.atom_positions).T
@@ -606,7 +605,7 @@ def image_difference_position_new_sub(sublattice_list,
                                       num_peaks=5,
                                       add_sublattice=False,
                                       sublattice_name='sub_new'):
-    '''
+    """
     Find new atomic coordinates by comparing experimental to simulated image.
     Create a new sublattice to store the new atomic coordinates.
 
@@ -630,8 +629,8 @@ def image_difference_position_new_sub(sublattice_list,
     mask_radius : float, default None
         Radius of the mask around each atom. If this is not set,
         the radius will be the distance to the nearest atom in the
-        same sublattice times the `percent_to_nn` value.
-        Note: if `mask_radius` is not specified, the Atom_Position objects
+        same sublattice times the ``percent_to_nn`` value.
+        Note: if ``mask_radius`` is not specified, the Atom_Position objects
         must have a populated nearest_neighbor_list.
     num_peaks : int, default 5
         number of new atoms to add
@@ -676,7 +675,7 @@ def image_difference_position_new_sub(sublattice_list,
     ...                                   num_peaks=5,
     ...                                   add_sublattice=True)
     New Atoms Found! Adding to a new sublattice
-    '''
+    """
 
     image_for_sublattice = sublattice_list[0]
     diff_image = Signal2D(
@@ -785,12 +784,12 @@ def image_difference_position_new_sub(sublattice_list,
         sub_new_exists = True
 
     if filename is not None:
-        '''
+        """
         diff_image.plot()
         diff_image_sub.plot()
         diff_image_inverse.plot()
         diff_image_sub_inverse.plot()
-        '''
+        """
 
         plt.figure()
         plt.suptitle('Image Difference Position' + filename)
@@ -835,27 +834,23 @@ def scaling_z_contrast(numerator_sublattice, numerator_element,
     #   make this more flexible, so that 'all' could be calculated in one go
     #   simple loop should do that.
 
-    '''
+    """
     Find new atomic coordinates by comparing experimental to simulated image.
     Create a new sublattice to store the new atomic coordinates.
 
     The aim is to change the sublattice elements so that the experimental image
-    agrees with the simulated image in a realistic manner.
+    agrees with the simulated image in a realistic manner. See [1]_.
 
     Parameters
     ----------
     numerator_sublattice : Sublattice object
-        Sublattice from which the numerator intensity will be calculated
-        according to Reference [1].
+        Sublattice from which the numerator intensity will be calculated.
     numerator_element : string
-        Element from which the numerator atomic number will be taken
-        according to Reference [1].
+        Element from which the numerator atomic number will be taken.
     denominator_sublattice : Sublattice object
-        Sublattice from which the denominator intensity will be calculated
-        according to Reference [1].
+        Sublattice from which the denominator intensity will be calculated.
     denominator_element : string
-        Element from which the denominator atomic number will be taken
-        according to Reference [1].
+        Element from which the denominator atomic number will be taken.
     intensity_type : string
         Determines the method used to find the sublattice intensities.
         The available methods are "max", "mean", "min", "total" and
@@ -875,8 +870,8 @@ def scaling_z_contrast(numerator_sublattice, numerator_element,
         Determines the boundary of the area surrounding each atomic
         column, as fraction of the distance to the nearest neighbour.
     mask_radius : float
-        Radius of the atomic column in pixels. If chosen, `percent_to_nn` must
-        be None.
+        Radius of the atomic column in pixels. If chosen, ``percent_to_nn``
+        must be None.
     split_symbol : string, default '_'
         The symbols used to split the element into its name
         and count.
@@ -892,7 +887,7 @@ def scaling_z_contrast(numerator_sublattice, numerator_element,
 
     References
     ----------
-    .. [1] Reference: Krivanek et al. Nature 464, 10.1038/nature08879, (2010)
+    .. [1] Krivanek et al. Nature 464, 10.1038/nature08879, (2010)
 
     Examples
     --------
@@ -925,7 +920,7 @@ def scaling_z_contrast(numerator_sublattice, numerator_element,
     ...                                   add_sublattice=True)
     New Atoms Found! Adding to a new sublattice
 
-    '''
+    """
     if intensity_type == 'all':
         TypeError
         print('intensity_type must be "max", "mean", or "min"')
@@ -1539,7 +1534,7 @@ def return_z_coordinates(z_thickness,
                          max_number_atoms_z=None,
                          fractional_coordinates=True,
                          atom_layout='bot'):
-    '''
+    """
     Produce fractional z-dimension coordinates for a given thickness and bond
     length.
 
@@ -1553,7 +1548,7 @@ def return_z_coordinates(z_thickness,
     number_atoms_z : integer, default None
         number of atoms in the z-dimension. If this is set to an interger
         value, it will override the use of z_thickness.
-    centered_atoms : Bool, default True
+    centered_atoms : bool, default True
         If set to True, the z_coordinates will be centered about 0.5.
         If set to False, the z_coordinate will start at 0.0.
 
@@ -1567,7 +1562,7 @@ def return_z_coordinates(z_thickness,
     # >>> Au_NP_z_coord = return_z_coordinates(z_thickness=20,
     #       z_bond_length=1.5)
 
-    '''
+    """
 
     if max_number_atoms_z is not None:
         # print("number_atoms_z has been specified, using
@@ -1604,10 +1599,10 @@ def return_z_coordinates(z_thickness,
     return(z_coords)
 
 
-'''
+"""
 add intensity used for getting number, and index for later reference with
 sublattice
-'''
+"""
 
 
 def return_xyz_coordinates(x, y,
@@ -1615,7 +1610,7 @@ def return_xyz_coordinates(x, y,
                            number_atoms_z=None,
                            fractional_coordinates=True,
                            atom_layout='bot'):
-    '''
+    """
     Produce xyz coordinates for an xy coordinate given the z-dimension
     information.
 
@@ -1640,7 +1635,7 @@ def return_xyz_coordinates(x, y,
     # ...                         z_bond_length=1.5,
     # ...                         number_atoms_z=5)
 
-    '''
+    """
 
     z_coords = return_z_coordinates(
         number_atoms_z=number_atoms_z,
@@ -1705,7 +1700,7 @@ def assign_z_height_to_sublattice(sublattice,
                                   material=None,
                                   fractional_coordinates=True,
                                   atom_layout='bot'):
-    '''
+    """
     Set the z_heights for each atom position in a sublattice.
 
     Parameters
@@ -1716,7 +1711,7 @@ def assign_z_height_to_sublattice(sublattice,
     --------
     See example_scripts : Model Creation Example
 
-    '''
+    """
 
     # if material == 'Au_NP_'
     # z_bond_length = function_to_get_material_info
@@ -1839,7 +1834,7 @@ def create_dataframe_for_cif(sublattice_list, element_list):
 
 
 def change_sublattice_pseudo_inplace(new_atom_positions, old_sublattice):
-    '''
+    """
     Create and return a new Sublattice object which is a copy of
     old_sublattice except with extra atom positions set with
     new_atom_positions.
@@ -1879,7 +1874,7 @@ def change_sublattice_pseudo_inplace(new_atom_positions, old_sublattice):
     -------
     An Atomap Sublattice object that combines the new_atom_positions with
     the information from the old_sublattice.
-    '''
+    """
 
     atom_position_list = np.array(old_sublattice.atom_positions).T.tolist()
     image = old_sublattice.image
@@ -1921,7 +1916,7 @@ def image_difference_position(sublattice,
                               mask_radius=None,
                               num_peaks=5,
                               inplace=True):
-    '''
+    """
     Find new atomic coordinates by comparing experimental to simulated image.
     Changes the sublattice inplace using change_sublattice_pseudo_inplace.
 
@@ -1946,8 +1941,8 @@ def image_difference_position(sublattice,
     mask_radius : float, default None
         Radius of the mask around each atom. If this is not set,
         the radius will be the distance to the nearest atom in the
-        same sublattice times the `percent_to_nn` value.
-        Note: if `mask_radius` is not specified, the Atom_Position objects
+        same sublattice times the ``percent_to_nn`` value.
+        Note: if ``mask_radius`` is not specified, the Atom_Position objects
         must have a populated nearest_neighbor_list.
     num_peaks : int, default 5
         number of new atoms to add
@@ -1958,15 +1953,15 @@ def image_difference_position(sublattice,
     sublattice_name : string, default 'sub_new'
         the outputted sublattice object name and sublattice.name the new
         sublattice will be given
-    inplace : Bool, default True
-        If set to True, the input `sublattice` will be changed inplace and the
-        sublattice returned. If set to False, these changes will be output only
-        to a new sublattice.
+    inplace : bool, default True
+        If set to True, the input ``sublattice`` will be changed inplace and
+        the sublattice returned. If set to False, these changes will be output
+        only to a new sublattice.
 
     Returns
     -------
-    Atomap Sublattice object if `inplace=False`. See the `inplace` parameter
-    for details.
+    Atomap Sublattice object if ``inplace=False``. See the ``inplace``
+    parameter for details.
 
     Examples
     --------
@@ -1995,7 +1990,7 @@ def image_difference_position(sublattice,
     400
 
     One can now sort these atom positions into elements.
-    '''
+    """
 
     image_for_sublattice = sublattice.signal
     diff_image = Signal2D(
@@ -2110,12 +2105,12 @@ def image_difference_position(sublattice,
     #     sub_new_exists = True
 
     if filename is not None:
-        '''
+        """
         diff_image.plot()
         diff_image_sub.plot()
         diff_image_inverse.plot()
         diff_image_sub_inverse.plot()
-        '''
+        """
 
         plt.figure()
         plt.suptitle('Image Difference Position' + filename)

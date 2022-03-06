@@ -68,7 +68,7 @@ instance/
 .scrapy
 
 # Sphinx documentation
-docs/_build/
+doc/_build/
 
 # PyBuilder
 target/
@@ -122,3 +122,9 @@ settings.json
 *.pkl
 *.csv
 *.png
+
+# code_tutorials atom positions
+atom_positions*.npy
+
+# ci build
+_version_save.py

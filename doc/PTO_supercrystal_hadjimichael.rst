@@ -17,14 +17,16 @@ where you will find the python scripts and interactive python notebooks:
 .. image:: https://mybinder.org/badge_logo.svg
     :target: https://mybinder.org/v2/gh/PinkShnack/TEMUL/master
 
-The :python:`calculate_atom_plane_curvature` function has been adapted from the
+The :py:func:`temul.topotem.lattice_structure_tools.calculate_atom_plane_curvature`
+function has been adapted from the
 MATLAB script written by Dr. Marios Hadjimichael for the publication
 M. Hadjimichael, Y. Li *et al*, `Metal-ferroelectric supercrystals with periodically
 curved metallic layers, Nature Materials 2020 <https://www.nature.com/articles/s41563-020-00864-6>`_.
 This MATLAB script can also be found in the same folder.
 
-The :python:`calculate_atom_plane_curvature` function in the
-:python:`temul.lattice_structure_tools` module can be used to find the curvature of the
+The :py:func:`temul.topotem.lattice_structure_tools.calculate_atom_plane_curvature`
+function in the
+:py:mod:`temul.topotem.lattice_structure_tools` module can be used to find the curvature of the
 displacement of atoms along an atom plane in a sublattice. Using the default
 parameter :python:`func='strain_grad'`, the function will approximate the
 curvature as the strain gradient, as in cases where the first derivative is

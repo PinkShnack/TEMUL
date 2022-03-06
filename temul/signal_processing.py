@@ -1,10 +1,8 @@
 
 from temul.element_tools import split_and_sort_element
-from temul.signal_plotting import choose_points_on_image
-
 from temul.external.atomap_devel_012.sublattice import Sublattice
 from temul.external.atomap_devel_012.atom_finding_refining import (
-    get_atom_positions, _make_circular_mask)
+    get_atom_positions)
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -19,7 +17,6 @@ import numpy as np
 from numpy import mean
 import hyperspy.api as hs
 from hyperspy.roi import RectangularROI
-from hyperspy._signals.complex_signal2d import ComplexSignal2D
 from hyperspy._signals.signal2d import Signal2D
 import pandas as pd
 import copy
@@ -33,7 +30,7 @@ warnings.simplefilter("error", OptimizeWarning)
 def get_xydata_from_list_of_intensities(
         sublattice_intensity_list,
         hist_bins=100):
-    '''
+    """
     Output x and y data for a histogram of intensities
 
     Parameters
@@ -57,7 +54,7 @@ def get_xydata_from_list_of_intensities(
     >>> sub1_inten = np.random.normal(mu, sigma, 1000)
     >>> xdata, ydata = get_xydata_from_list_of_intensities(sub1_inten,
     ...     hist_bins=50)
-    '''
+    """
 
     hist_bins = hist_bins
     y_array, x_array = np.histogram(sublattice_intensity_list,
@@ -75,7 +72,7 @@ def get_xydata_from_list_of_intensities(
 
 
 def fit_1D_gaussian_to_data(xdata, amp, mu, sigma):
-    '''
+    """
     Fitting function for a single 1D gaussian distribution
 
     Parameters
@@ -106,7 +103,7 @@ def fit_1D_gaussian_to_data(xdata, amp, mu, sigma):
     ...     hist_bins=50)
     >>> gauss_fit_01 = fit_1D_gaussian_to_data(xdata, amp, mu, sigma)
 
-    '''
+    """
 
     return(amp * (1 / (sigma * (np.sqrt(2 * np.pi)))) * (
         np.exp(-((xdata - mu)**2) / ((2 * sigma)**2))))
@@ -118,7 +115,7 @@ def return_fitting_of_1D_gaussian(
         xdata,
         ydata,
         amp, mu, sigma):
-    '''
+    """
     Use the initially found centre (mean/mode) value of a sublattice
     histogram (e.g., Mo_1 in an Mo sublattice) as an input mean for a
     gaussian fit of the data.
@@ -135,7 +132,6 @@ def return_fitting_of_1D_gaussian(
 
     Examples
     --------
-
     >>> from temul.signal_processing import (
     ...     get_xydata_from_list_of_intensities,
     ...     return_fitting_of_1D_gaussian,
@@ -149,10 +145,7 @@ def return_fitting_of_1D_gaussian(
     ...                     xdata, ydata,
     ...                     amp, mu, sigma)
 
-    # print("Calculated Mean: " + str(round(np.mean(xdata),3))
-    # + "\n Fitted Mean: " + str(round(popt_gauss[1],3)))
-    '''
-
+    """
     popt_gauss, pcov_gauss = scipy.optimize.curve_fit(
         f=function,
         xdata=xdata,
@@ -172,7 +165,7 @@ def plot_gaussian_fit(xdata, ydata, function, amp, mu, sigma,
                       plot_fill=False,
                       facecolor='r', alpha=0.5):
     # save_image/filename maybe?
-    '''
+    """
     >>> from temul.signal_processing import (fit_1D_gaussian_to_data,
     ...                                 plot_gaussian_fit,
     ...                                 return_fitting_of_1D_gaussian)
@@ -189,7 +182,7 @@ def plot_gaussian_fit(xdata, ydata, function, amp, mu, sigma,
     ...           plot_data=True, data_art='ko', data_label='Data Points',
     ...           plot_fill=True, facecolor='r', alpha=0.5)
 
-    '''
+    """
 
     _gaussian_fit = function(xdata=xdata, amp=amp, mu=mu, sigma=sigma)
 
@@ -221,10 +214,10 @@ def get_scaled_middle_limit_intensity_list(sublattice,
                                            middle_intensity_list,
                                            limit_intensity_list,
                                            sublattice_scalar):
-    '''
+    """
     Returns the middle and limit lists scaled to the actual intensities in the
     sublattice. Useful for get_fitting_tools_for_plotting_gaussians().
-    '''
+    """
     middle_intensity_list_real = []
     limit_intensity_list_real = []
 
@@ -244,10 +237,10 @@ def get_fitting_tools_for_plotting_gaussians(element_list,
                                              fit_bright_first=True,
                                              gaussian_amp=5,
                                              gauss_sigma_division=100):
-    '''
+    """
     Creates a list of parameters and details for fitting the intensities of a
     sublattice with multiple Gaussians.
-    '''
+    """
 
     if len(scaled_middle_intensity_list) + 1 != len(
             scaled_limit_intensity_list):
@@ -284,7 +277,7 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
                                             plotting_style='hist',
                                             filename='Fit of Intensities',
                                             mpl_cmaps_list=['viridis']):
-    '''
+    """
     plots Gaussian distributions for intensities of a sublattice, over the
     given parameters (fitting tools).
 
@@ -332,7 +325,7 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
                                     hist_bins=500,
                                     filename='Fit of Intensities900')
 
-    '''
+    """
     # set up cyclers for plotting gaussian fits
 
     # need to set up a loop here to create as many cyclers as sublattices
@@ -477,14 +470,14 @@ def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
                     pad_inches=None, dpi=900, labels=False)
 
 
-'''
+"""
 Image Comparison
 # https://www.pyimagesearch.com/2014/09/15/python-compare-two-images/
-'''
+"""
 
 
 def mse(imageA, imageB):
-    '''
+    """
     Measure the mean squared error between two images of the same shape.
 
     Parameters
@@ -496,14 +489,14 @@ def mse(imageA, imageB):
     -------
     Mean squared error
 
-    '''
+    """
     err = np.sum((imageA.astype("float") - imageB.astype("float")) ** 2)
     err /= float(imageA.shape[0] * imageA.shape[1])
     return err
 
 
 def measure_image_errors(imageA, imageB, filename=None):
-    '''
+    """
     Measure the Mean Squared Error (mse) and Structural Similarity Index (ssm)
     between two images.
 
@@ -532,7 +525,7 @@ def measure_image_errors(imageA, imageB, filename=None):
     >>> print("MSE: {} and SSM: {}".format(mse_number, ssm_number))
     MSE: 0.0 and SSM: 1.0
 
-    '''
+    """
     if imageA.dtype is not imageB.dtype:
         imageA = imageA.astype('float64')
         imageB = imageB.astype('float64')
@@ -577,7 +570,7 @@ def measure_image_errors(imageA, imageB, filename=None):
 
 
 def load_and_compare_images(imageA, imageB, filename=None):
-    '''
+    """
     Load two images with hyperspy and compare their mean square error and
     structural simularity index.
 
@@ -592,7 +585,7 @@ def load_and_compare_images(imageA, imageB, filename=None):
     -------
     Two floats (mean standard error and structural simularity index)
 
-    '''
+    """
     imageA = hs.load(imageA)
     imageB = hs.load(imageB)
 
@@ -608,7 +601,7 @@ def compare_two_image_and_create_filtered_image(
         image_to_filter, reference_image, delta_image_filter, max_sigma=6,
         cropping_area=[[0, 0], [50, 50]], separation=8, filename=None,
         percent_to_nn=0.4, mask_radius=None, refine=False):
-    '''
+    """
     Gaussian blur an image for comparison with a reference image.
     Good for finding the best gaussian blur for a simulation by
     comparing to an experimental image.
@@ -619,7 +612,7 @@ def compare_two_image_and_create_filtered_image(
     image_to_filter : Hyperspy Signal2D
         Image you wish to automatically filter.
     reference_image : Hyperspy Signal2D
-        Image with which `image_to_filter` is compared.
+        Image with which ``image_to_filter`` is compared.
     delta_image_filter : float
         The increment of the Gaussian sigma used.
     max_sigma : float, default 6
@@ -636,12 +629,13 @@ def compare_two_image_and_create_filtered_image(
         Determines the boundary of the area surrounding each atomic
         column, as fraction of the distance to the nearest neighbour.
     mask_radius : int, default None
-        Radius in pixels of the mask. If set, then set `percent_to_nn=None`.
-    refine : Bool, default False
-        If set to True, the `calibrate_intensity_distance_with_sublattice_roi`
+        Radius in pixels of the mask. If set, then set ``percent_to_nn=None``.
+    refine : bool, default False
+        If set to True, the
+        ``calibrate_intensity_distance_with_sublattice_roi``
         calibration will refine the atom positions for each calibration. May
-        make the function very slow depending on the size of `image_to_filter`
-        and `cropping_area`.
+        make the function very slow depending on the size of
+        ``image_to_filter`` and ``cropping_area``.
 
     Returns
     -------
@@ -662,7 +656,7 @@ def compare_two_image_and_create_filtered_image(
          simulation, experiment, 0.25, cropping_area=[[5,5], [200, 200]],
          separation=11, mask_radius=4, percent_to_nn=None, max_sigma=10)
 
-    '''
+    """
 
     image_to_filter_data = image_to_filter.data
     reference_image_data = reference_image.data
@@ -789,7 +783,7 @@ def make_gaussian(size, fwhm, center=None):
 
 
 def make_gaussian_pos_neg(size, fwhm_neg, fwhm_pos, neg_min=0.9, center=None):
-    ''' See double_gaussian_fft_filter for details '''
+    """ See double_gaussian_fft_filter for details """
     arr_pos = make_gaussian(size, fwhm=fwhm_pos, center=center)
     nD_Gaussian_pos = Signal2D(arr_pos)
 
@@ -800,7 +794,7 @@ def make_gaussian_pos_neg(size, fwhm_neg, fwhm_pos, neg_min=0.9, center=None):
 
 
 def double_gaussian_fft_filter(image, fwhm_neg, fwhm_pos, neg_min=0.9):
-    '''
+    """
     Filter an image with a bandpass-like filter.
 
     Parameters
@@ -830,7 +824,7 @@ def double_gaussian_fft_filter(image, fwhm_neg, fwhm_pos, neg_min=0.9):
     >>> image.plot()
     >>> filtered_image.plot()
 
-    '''
+    """
     image_fft = image.fft(shift=True)
     fft_data = image_fft.amplitude.data
 
@@ -848,7 +842,7 @@ def double_gaussian_fft_filter(image, fwhm_neg, fwhm_pos, neg_min=0.9):
 def double_gaussian_fft_filter_optimised(image, d_inner, d_outer, delta=0.05,
                                          sampling=None, units=None,
                                          filename=None):
-    '''
+    """
     Filter an image with an double Gaussian (band-pass) filter. The function
     will automatically find the optimum magnitude of the negative inner
     Gaussian.
@@ -871,7 +865,7 @@ def double_gaussian_fft_filter_optimised(image, d_inner, d_outer, delta=0.05,
         image sampling in units/pixel. If set to None, the image.axes_manager
         will be used.
     units : str
-        Real space units. `sampling` should then be the value of
+        Real space units. ``sampling`` should then be the value of
         these units/pixel. If set to None, the image.axes_manager
         will be used.
     filename : str, default None
@@ -893,7 +887,7 @@ def double_gaussian_fft_filter_optimised(image, d_inner, d_outer, delta=0.05,
     >>> filtered_image = tml.double_gaussian_fft_filter(image, 7.48, 14.96)
     >>> filtered_image.plot()
 
-    '''
+    """
 
     # Folder: G:/SuperStem visit/Feb 2019 data/2019_02_18_QMR_S1574_MoS2-
     # Se-15eV
@@ -979,7 +973,7 @@ def double_gaussian_fft_filter_optimised(image, d_inner, d_outer, delta=0.05,
     idx = np.argwhere(np.diff(np.sign(zero_line - y_axis))).flatten()
     neg_gauss_amplitude_calculated = x_axis[idx][0]
 
-    ''' Filtering the Image with the Chosen Negative Amplitude '''
+    """ Filtering the Image with the Chosen Negative Amplitude """
     # positive gauss
     nD_Gaussian.axes_manager[0].scale = reciprocal_sampling
     nD_Gaussian.axes_manager[1].scale = reciprocal_sampling
@@ -1089,7 +1083,7 @@ def double_gaussian_fft_filter_optimised(image, d_inner, d_outer, delta=0.05,
                     pad_inches=None, dpi=600, labels=False)
         plt.close()
 
-        ''' Saving the Variables for the image and filtered Image '''
+        """ Saving the Variables for the image and filtered Image """
         Filtering_Variables = collections.OrderedDict()
         Filtering_Variables['filename'] = [filename]
         Filtering_Variables['Image Size (nm)'] = [physical_image_size]
@@ -1130,7 +1124,7 @@ def double_gaussian_fft_filter_optimised(image, d_inner, d_outer, delta=0.05,
 def visualise_dg_filter(image, d_inner=7.7, d_outer=21, slider_min=0.1,
                         slider_max=300, slider_step=0.1, plot_lims=(0, 1),
                         figsize=(15, 7)):
-    '''
+    """
 
     Parameters
     ----------
@@ -1162,7 +1156,7 @@ def visualise_dg_filter(image, d_inner=7.7, d_outer=21, slider_min=0.1,
     >>> image = load_Se_implanted_MoS2_data()
     >>> tml.visualise_dg_filter(image)
 
-    '''
+    """
 
     # Get FFT of the image
     image_fft = image.fft(shift=True)
@@ -1278,18 +1272,18 @@ def visualise_dg_filter(image, d_inner=7.7, d_outer=21, slider_min=0.1,
     filterax._button = filter_button
 
 
-'''
+"""
 Cropping and Calibrating
-'''
+"""
 
 # cropping done in the scale, so nm, pixel, or whatever you have
 # cropping_area = choose_points_on_image(image.data)
 
 
 def crop_image_hs(image, cropping_area, scalebar_true=True, filename=None):
-    '''
-    Crop a Hyperspy Signal2D by providing the `cropping_area`. See the example
-    below.
+    """
+    Crop a Hyperspy Signal2D by providing the ``cropping_area``. See the
+    example below.
 
     Parameters
     ----------
@@ -1299,8 +1293,8 @@ def crop_image_hs(image, cropping_area, scalebar_true=True, filename=None):
         The best method of choosing the area is by using the function
         "choose_points_on_image(image.data)". Choose two points on the
         image. First point is top left of area, second point is bottom right.
-    scalebar_true : Bool, default True
-        If set to True, the function assumes that `image.axes_manager` is
+    scalebar_true : bool, default True
+        If set to True, the function assumes that ``image.axes_manager`` is
         calibrated to a unit other than pixel.
     filename : str, default None
         If set to a string, the images and cropping variables will be saved.
@@ -1324,7 +1318,7 @@ def crop_image_hs(image, cropping_area, scalebar_true=True, filename=None):
     >>> # image_cropped = tml.crop_image_hs(image, cropping_area, False)
     >>> # image_cropped.plot()
 
-    '''
+    """
 
     llim, tlim = cropping_area[0]
     rlim, blim = cropping_area[1]
@@ -1370,7 +1364,7 @@ def crop_image_hs(image, cropping_area, scalebar_true=True, filename=None):
         physical_image_crop_size_y = image_crop.axes_manager[1].scale * \
             image_crop.axes_manager[1].size
 
-        ''' Saving the Variables for the image and filtered Image '''
+        """ Saving the Variables for the image and filtered Image """
         Cropping_Variables = collections.OrderedDict()
         # Cropping_Variables['Image Name'] = [image_name]
         Cropping_Variables['left (%s)' % unit] = [llim]
@@ -1401,7 +1395,7 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
                                                      refine=True,
                                                      filename=None):
     # add max mean min etc.
-    '''
+    """
     Calibrates the intensity of an image by using the brightest sublattice.
     The mean intensity of that sublattice is set to 1.
 
@@ -1416,16 +1410,16 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
     separation : int, default 8
         Pixel separation between atoms as used by Atomap.
     reference_image : Hyperspy Signal2D
-        Image with which `image` is compared.
-    scalebar_true : Bool, default True
-        If set to True, the function assumes that `image.axes_manager` is
+        Image with which ``image`` is compared.
+    scalebar_true : bool, default True
+        If set to True, the function assumes that ``image.axes_manager`` is
         calibrated to a unit other than pixel.
     mask_radius : int, default None
         Radius in pixels of the mask.
     percent_to_nn : float, default 0.2
         Determines the boundary of the area surrounding each atomic
         column, as fraction of the distance to the nearest neighbour.
-    refine : Bool, default False
+    refine : bool, default False
         If set to True, the atom positions found for the calibration will be
         refined.
     filename : str, default None
@@ -1444,10 +1438,11 @@ def calibrate_intensity_distance_with_sublattice_roi(image,
     >>> image.plot()
     >>> crop_a = tml.choose_points_on_image(image.data) #  manually
     >>> crop_a = [[10,10],[100,100]] #  use above line if trying yourself!
-    >>> # tml.calibrate_intensity_distance_with_sublattice_roi(image, crop_a, 10)
-    >>> # image.plot()
 
-    '''
+    # tml.calibrate_intensity_distance_with_sublattice_roi(
+    #    image, crop_a, 10)
+
+    """
     llim, tlim = cropping_area[0]
     rlim, blim = cropping_area[1]
 
@@ -1507,7 +1502,7 @@ def toggle_atom_refine_position_automatically(sublattice,
                                               percent_to_nn=0.05,
                                               mask_radius=None,
                                               filename=None):
-    '''
+    """
     Sets the 'refine_position' attribute of each Atom Position in a
     sublattice using a range of intensities.
 
@@ -1516,21 +1511,21 @@ def toggle_atom_refine_position_automatically(sublattice,
     sublattice : Atomap Sublattice object
     min_cut_off_percent : float, default None
         The lower end of the intensity range is defined as
-        `min_cut_off_percent` * `method` value of max intensity list of
-        `sublattice`.
+        ``min_cut_off_percent`` * ``method`` value of max intensity list of
+        ``sublattice``.
     max_cut_off_percent : float, default None
         The upper end of the intensity range is defined as
-        `max_cut_off_percent` * `method` value of max intensity list of
-        `sublattice`.
+        ``max_cut_off_percent`` * ``method`` value of max intensity list of
+        ``sublattice``.
     range_type : str, default 'internal'
-        "internal" provides the `refine_position` attribute for each
-        `Atom Position` as True if the intensity of that Atom Position
+        "internal" provides the ``refine_position`` attribute for each
+        ``Atom Position`` as True if the intensity of that Atom Position
         lies between the lower and upper limits defined by
-        `min_cut_off_percent` and `max_cut_off_percent`.
-        "external" provides the `refine_position` attribute for each
-        `Atom Position` as True if the intensity of that Atom Position
+        ``min_cut_off_percent`` and ``max_cut_off_percent``.
+        "external" provides the ``refine_position`` attribute for each
+        ``Atom Position`` as True if the intensity of that Atom Position
         lies outside the lower and upper limits defined by
-        `min_cut_off_percent` and `max_cut_off_percent`.
+        ``min_cut_off_percent`` and ``max_cut_off_percent``.
     method : str, default 'mode'
         The method used to aggregate the intensity of the sublattice positions
         max intensity list. Options are "mode" and "mean"
@@ -1540,11 +1535,11 @@ def toggle_atom_refine_position_automatically(sublattice,
     mask_radius : int, default None
         Radius in pixels of the mask.
     filename : str, default None
-        If set to a string, the Atomap `refine_position` image will be saved.
+        If set to a string, the Atomap ``refine_position`` image will be saved.
 
     Returns
     -------
-    list of the `AtomPosition.refine_position=False` attribute.
+    list of the ``AtomPosition.refine_position=False`` attribute.
 
     Examples
     -------
@@ -1566,7 +1561,7 @@ def toggle_atom_refine_position_automatically(sublattice,
 
     >>> sublattice.toggle_atom_refine_position_with_gui()
 
-    '''
+    """
 
     sublattice.get_atom_column_amplitude_max_intensity(
         percent_to_nn=percent_to_nn, mask_radius=mask_radius)
@@ -1692,7 +1687,7 @@ def _remove_image_slice_around_atom(
 def get_cell_image(s, points_x, points_y, method='Voronoi',
                    max_radius='Auto', reduce_func=np.min,
                    show_progressbar=True):
-    '''
+    """
     The same as atomap's integrate, except instead of summing the
     region around an atom, it removes the value from all pixels in
     that region.
@@ -1704,7 +1699,7 @@ def get_cell_image(s, points_x, points_y, method='Voronoi',
     reduce_func : ufunc, default np.min
         function used to reduce the pixel values around each atom
         to a float.
-    For the other parameters see Atomap's `integrate` function.
+    For the other parameters see Atomap's ``integrate`` function.
 
     Returns
     -------
@@ -1719,7 +1714,7 @@ def get_cell_image(s, points_x, points_y, method='Voronoi',
     >>> cell_image = get_cell_image(sublattice.image, sublattice.x_position,
     ...     sublattice.y_position)
 
-    Plot the `cell_image` which shows, in this case, the background intensity
+    Plot the ``cell_image`` which shows, in this case, the background intensity
 
     >>> import matplotlib.pyplot as plt
     >>> im = plt.imshow(cell_image)
@@ -1730,7 +1725,7 @@ def get_cell_image(s, points_x, points_y, method='Voronoi',
     >>> cell_image = hs.signals.Signal2D(cell_image)
     >>> cell_image.plot()
 
-    '''
+    """
 
     image = s.__array__()
     if len(image.shape) < 2:
@@ -1801,7 +1796,7 @@ def distance_vector(x1, y1, x2, y2):
 def mean_and_std_nearest_neighbour_distances(sublattice,
                                              nearest_neighbours=5,
                                              sampling=None):
-    '''
+    """
     Calculates mean and standard deviation of the distance from each atom to
     its nearest neighbours.
 
@@ -1832,7 +1827,7 @@ def mean_and_std_nearest_neighbour_distances(sublattice,
     >>> mean_scaled, _ = mean_and_std_nearest_neighbour_distances(sublattice,
     ...     sampling=0.0123)
 
-    '''
+    """
     # 5 will get the nearest 4 atoms
     sublattice.find_nearest_neighbors(
         nearest_neighbors=nearest_neighbours)
@@ -1865,138 +1860,3 @@ def mean_and_std_nearest_neighbour_distances(sublattice,
         std_dev_list = [k * sampling for k in std_dev_list]
 
     return(mean_list, std_dev_list)
-
-
-def choose_mask_coordinates(image, norm="log"):
-    '''
-    Pick the mask locations for an FFT. See get_masked_ifft() for examples and
-    commit 5ba307b5af0b598bedc0284aa989d44e23fdde4d on Atomap for more details.
-
-    Parameters
-    ----------
-    image : Hyperspy 2D Signal
-    norm : str, default "log"
-        How to scale the intensity value for the displayed image.
-        Options are "linear" and "log".
-
-    Returns
-    -------
-    list of pixel coordinates
-
-    '''
-
-    fft = image.fft(shift=True)
-    fft_amp = fft.amplitude
-
-    mask_coords = choose_points_on_image(
-        fft_amp.data, norm=norm)
-
-    return(mask_coords)
-
-
-def get_masked_ifft(image, mask_coords, mask_radius=10, image_space="real",
-                    keep_masked_area=True, plot_masked_fft=False):
-    '''
-    Creates an inverse fast Fourier transform (iFFT) from an image and mask
-    coordinates. Use `choose_mask_coordinates` to manually choose mask
-    coordinates in the FFT.
-
-    Parameters
-    ----------
-    image : Hyperspy 2D Signal
-    mask_coords : list of pixel coordinates
-        Pixel coordinates of the masking locations. See the example below for
-        two simple coordinates found using `choose_mask_coordinates`.
-    mask_radius : int, default 10
-        Radius in pixels of the mask.
-    image_space : str, default "real"
-        If the input image is in Fourier/diffraction/reciprocal space already,
-        set space="fourier".
-    keep_masked_area : Bool, default True
-        If True, this will set the mask at the mask_coords.
-        If False, this will set the mask as everything other than the
-        mask_coords. Can be thought of as inversing the mask.
-    plot_masked_fft : Bool, default False
-        If True, the mask used to filter the FFT will be plotted. Good for
-        checking that the mask is doing what you want. Can fail sometimes due
-        to matplotlib plotting issues.
-
-    Returns
-    -------
-    Inverse FFT as a Hyperspy 2D Signal
-
-    Examples
-    --------
-    >>> from temul.dummy_data import get_simple_cubic_signal
-    >>> import temul.api as tml
-    >>> image = get_simple_cubic_signal()
-    >>> mask_coords = tml.choose_mask_coordinates(image) #  manually
-    >>> mask_coords = [[170.2, 170.8],[129.8, 130]]
-    >>> image_ifft = tml.get_masked_ifft(image, mask_coords)
-    >>> image_ifft.plot()
-
-    Plot the masked fft:
-
-    >>> image_ifft = tml.get_masked_ifft(image, mask_coords,
-    ...                                  plot_masked_fft=True)
-
-    Use unmasked fft area and plot the masked fft:
-
-    >>> image_ifft = tml.get_masked_ifft(
-    ...     image, mask_coords, plot_masked_fft=True, keep_masked_area=False)
-    >>> image_ifft.plot()
-
-    If the input image is already a Fourier transform:
-
-    >>> fft_image = image.fft(shift=True)
-    >>> image_ifft = tml.get_masked_ifft(fft_image, mask_coords,
-    ...     image_space='fourier')
-    >>> image_ifft.plot()
-
-    '''
-    if image_space.lower() == 'real':
-        fft = image.fft(shift=True)
-    elif image_space.lower() == 'fourier':
-        fft = image
-
-    if len(mask_coords) == 0:
-        raise ValueError("`mask_coords` has not been set.")
-    for mask_coord in mask_coords:
-
-        x_pix = mask_coord[0]
-        y_pix = mask_coord[1]
-
-        # Create a mask over that location and transpose the axes
-        mask = _make_circular_mask(centerX=x_pix, centerY=y_pix,
-                                   imageSizeX=image.data.shape[1],
-                                   imageSizeY=image.data.shape[0],
-                                   radius=mask_radius).T
-
-        # check if the combined masked_fft exists
-        try:
-            mask_combined
-        except NameError:
-            mask_combined = mask
-        else:
-            mask_combined += mask
-
-    # the tilda ~ inverses the mask
-    # fill in nothings with 0
-    if keep_masked_area:
-        masked_fft = np.ma.array(fft.data, mask=~mask_combined).filled(0)
-    elif not keep_masked_area:
-        masked_fft = np.ma.array(fft.data, mask=mask_combined).filled(0)
-
-    masked_fft_image = ComplexSignal2D(masked_fft)
-    if plot_masked_fft:
-        masked_fft_image.amplitude.plot(norm="log")
-    # sort out units here
-    image_ifft = masked_fft_image.ifft()
-    image_ifft = np.absolute(image_ifft)
-    image_ifft.axes_manager = image.axes_manager
-
-    return(image_ifft)
-
-
-def sine_wave_function_strain_gradient(x, a, b, c, d):
-    return a * np.sin((2 * np.pi * (x + b)) / c) + d

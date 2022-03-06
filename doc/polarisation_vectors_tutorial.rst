@@ -14,13 +14,13 @@ of each.
 
 Current functions:
 
-1. Using Atomap's :python:`get_polarization_from_second_sublattice` Sublattice
-   method. Great for "standard" polarised structures with two sublattices.
-2. Using the TEMUL :python:`find_polarisation_vectors` function. Useful for
-   structures that Atomap's :python:`get_polarization_from_second_sublattice` can't
-   handle.
-3. Using the TEMUL :python:`atom_deviation_from_straight_line_fit` function.
-   Useful for calculating polarisation from a single sublattice, similar to and
+1. Using Atomap's `get_polarization_from_second_sublattice <https://atomap.org/api_documentation.html?highlight=get_polarization#atomap.sublattice.Sublattice.get_polarization_from_second_sublattice>`_
+   Sublattice method. Great for "standard" polarised structures with two sublattices.
+2. Using the TEMUL :py:func:`temul.topotem.polarisation.find_polarisation_vectors`
+   function. Useful for structures that Atomap's
+   :python:`get_polarization_from_second_sublattice` can't handle.
+3. Using the TEMUL :py:func:`temul.topotem.polarisation.atom_deviation_from_straight_line_fit`
+   function. Useful for calculating polarisation from a single sublattice, similar to and
    based off: J. Gonnissen *et al*, Direct Observation of Ferroelectric Domain Walls in
    LiNbO3: Wall‐Meanders, Kinks, and Local Electric Charges, 26, 42, 2016, DOI: 10.1002/adfm.201603489.
 
@@ -36,12 +36,13 @@ where you will find the python scripts and interactive python notebooks:
 
 For standard Polarised Structures (e.g., PTO)
 ---------------------------------------------
-Atomap's :python:`get_polarization_from_second_sublattice` Sublattice method will
+Atomap's `get_polarization_from_second_sublattice <https://atomap.org/api_documentation.html?highlight=get_polarization#atomap.sublattice.Sublattice.get_polarization_from_second_sublattice>`_
+Sublattice method will
 be sufficent for most users when dealing with the classic PTO-style polarisation,
 wherein the atoms in a sublattice are polarised with respect to a second sublattice.
 
 See the second section of this tutorial on how to plot this in many different ways
-using :python:`plot_polarisation_vectors`!
+using :py:func:`temul.topotem.polarisation.plot_polarisation_vectors`!
 
 .. code-block:: python
 
@@ -72,13 +73,14 @@ using :python:`plot_polarisation_vectors`!
 For nonstandard Polarised Structures (e.g., Boracites)
 ------------------------------------------------------
 When the above function can't isn't suitable, the TEMUL
-:python:`find_polarisation_vectors` function may be an option. It is useful for
-structures that Atomap's :python:`get_polarization_from_second_sublattice` can't
+:py:func:`temul.topotem.polarisation.find_polarisation_vectors` function may
+be an option. It is useful for structures that Atomap's
+:python:`get_polarization_from_second_sublattice` can't
 handle. It is a little more involved and requires some extra preparation when 
 creating the sublattices. 
 
 See the second section of this tutorial on how to plot this in many different ways
-using :python:`plot_polarisation_vectors`!
+using :py:func:`temul.topotem.polarisation.plot_polarisation_vectors`!
 
 .. code-block:: python
 
@@ -130,13 +132,13 @@ For single Polarised Sublattices (e.g., LNO)
 --------------------------------------------
 When dealing with structures in which the polarisation must be extracted from a
 single sublattice (one type of chemical atomic column, the TEMUL
-:python:`atom_deviation_from_straight_line_fit` function
+:py:func:`temul.topotem.polarisation.atom_deviation_from_straight_line_fit` function
 may be an option. It is based off the description by J. Gonnissen *et al*,
 Direct Observation of Ferroelectric Domain Walls in LiNbO3: Wall‐Meanders,
 Kinks, and Local Electric Charges, 26, 42, 2016, DOI: 10.1002/adfm.201603489.
 
 See the second section of this tutorial on how to plot this in many different ways
-using :python:`plot_polarisation_vectors`!
+using :py:func:`temul.topotem.polarisation.plot_polarisation_vectors`!
 
 .. code-block:: python
 
@@ -191,9 +193,10 @@ Let's look at some rotated data
 Plotting Polarisation and Movement Vectors
 ==========================================
 
-The :python:`temul.polarisation` module allows one to visualise the
+The :py:mod:`temul.topotem.polarisation` module allows one to visualise the
 polarisation/movement of atoms in an atomic resolution image. In this tutorial,
-we will use a dummy dataset to show the different ways the :python:`plot_polarisation_vectors`
+we will use a dummy dataset to show the different ways the
+:py:func:`temul.topotem.polarisation.plot_polarisation_vectors`
 function can display data. In future, tutorials on published experimental data
 will also be available.
 
@@ -210,7 +213,7 @@ Prepare and Plot the dummy dataset
 
 .. code-block:: python
 
-    >>> from temul.polarisation import plot_polarisation_vectors
+    >>> import temul.api as tml
     >>> from temul.dummy_data import get_polarisation_dummy_dataset
     >>> atom_lattice = get_polarisation_dummy_dataset(image_noise=True)
     >>> sublatticeA = atom_lattice.sublattice_list[0]
@@ -256,7 +259,8 @@ polarisation vectors for regular structures.
     >>> x, y = [i[0] for i in vector_list], [i[1] for i in vector_list]
     >>> u, v = [i[2] for i in vector_list], [i[3] for i in vector_list]
 
-Now we can display all of the variations that :python:`plot_polarisation_vectors`
+Now we can display all of the variations that
+:py:func:`temul.topotem.polarisation.plot_polarisation_vectors`
 gives us! You can specify sampling (scale) and units, or use a calibrated image
 so that they are automatically set.
 
@@ -264,7 +268,7 @@ Vector magnitude plot with red arrows:
 
 .. code-block:: python
 
-    >>> plot_polarisation_vectors(x, y, u, v, image=image,
+    >>> tml.plot_polarisation_vectors(x, y, u, v, image=image,
     ...                           unit_vector=False, save=None,
     ...                           plot_style='vector', color='r',
     ...                           overlay=False, title='Vector Arrows',
@@ -277,7 +281,7 @@ Vector magnitude plot with red arrows overlaid on the image, no title:
 
 .. code-block:: python
 
-    >>> plot_polarisation_vectors(x, y, u, v, image=image,
+    >>> tml.plot_polarisation_vectors(x, y, u, v, image=image,
     ...                           unit_vector=False, save=None,
     ...                           plot_style='vector', color='r',
     ...                           overlay=True, monitor_dpi=50)
@@ -290,7 +294,7 @@ Vector magnitude plot with colormap viridis:
 
 .. code-block:: python
 
-    >>> plot_polarisation_vectors(x, y, u, v, image=image,
+    >>> tml.plot_polarisation_vectors(x, y, u, v, image=image,
     ...                           unit_vector=False, save=None,
     ...                           plot_style='colormap', monitor_dpi=50,
     ...                           overlay=False, cmap='viridis')
@@ -304,7 +308,7 @@ Vector angle plot with colormap viridis (:python:`vector_rep='angle'`):
 
 .. code-block:: python
 
-    >>> plot_polarisation_vectors(x, y, u, v, image=image,
+    >>> tml.plot_polarisation_vectors(x, y, u, v, image=image,
     ...                           unit_vector=False, save=None,
     ...                           plot_style='colormap', monitor_dpi=50,
     ...                           overlay=False, cmap='cet_colorwheel',
@@ -318,7 +322,7 @@ Colormap arrows with sampling specified in the parameters and with scalebar:
 
 .. code-block:: python
 
-    >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    >>> tml.plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           sampling=3.0321, units='pm', monitor_dpi=50,
     ...                           unit_vector=False, plot_style='colormap',
     ...                           overlay=True, save=None, cmap='viridis',
@@ -332,7 +336,7 @@ Vector plot with colormap viridis and unit vectors:
 
 .. code-block:: python
 
-    >>> plot_polarisation_vectors(x, y, u, v, image=image,
+    >>> tml.plot_polarisation_vectors(x, y, u, v, image=image,
     ...                           unit_vector=True, save=None, monitor_dpi=50,
     ...                           plot_style='colormap', color='r',
     ...                           overlay=False, cmap='viridis')
@@ -345,7 +349,7 @@ Change the vectors to unit vectors on a Matplotlib tricontourf map:
 
 .. code-block:: python
 
-    >>> plot_polarisation_vectors(x, y, u, v, image=image, unit_vector=True,
+    >>> tml.plot_polarisation_vectors(x, y, u, v, image=image, unit_vector=True,
     ...                           plot_style='contour', overlay=False,
     ...                           pivot='middle', save=None, monitor_dpi=50,
     ...                           color='darkgray', cmap='viridis')
@@ -359,7 +363,7 @@ and vector arrows:
 
 .. code-block:: python
 
-    >>> plot_polarisation_vectors(x, y, u, v, image=image,
+    >>> tml.plot_polarisation_vectors(x, y, u, v, image=image,
     ...                           unit_vector=False, plot_style='contour',
     ...                           overlay=True, pivot='middle', save=None,
     ...                           color='red', cmap='cet_colorwheel',
@@ -376,7 +380,7 @@ Plot a partly transparent angle tricontourf map with no vector arrows:
 
 .. code-block:: python
 
-    >>> plot_polarisation_vectors(x, y, u, v, image=image, remove_vectors=True,
+    >>> tml.plot_polarisation_vectors(x, y, u, v, image=image, remove_vectors=True,
     ...                           unit_vector=True, plot_style='contour',
     ...                           overlay=True, pivot='middle', save=None,
     ...                           cmap='cet_colorwheel', alpha=0.5,
@@ -392,7 +396,7 @@ Plot a partly transparent angle tricontourf map with no vector arrows:
 .. code-block:: python
 
     >>> import colorcet as cc  # can also just use cmap="cet_colorwheel"
-    >>> plot_polarisation_vectors(x, y, u, v, image=image,
+    >>> tml.plot_polarisation_vectors(x, y, u, v, image=image,
     ...                           unit_vector=True, plot_style="colorwheel",
     ...                           vector_rep="angle",
     ...                           overlay=False, cmap=cc.cm.colorwheel,
@@ -406,7 +410,7 @@ Plot a partly transparent angle tricontourf map with no vector arrows:
 
 .. code-block:: python
 
-    >>> plot_polarisation_vectors(x, y, u, v, image=image,
+    >>> tml.plot_polarisation_vectors(x, y, u, v, image=image,
     ...                           plot_style="polar_colorwheel",
     ...                           unit_vector=False, overlay=False,
     ...                           save=None, monitor_dpi=50)
@@ -419,7 +423,7 @@ Plot a partly transparent angle tricontourf map with no vector arrows:
     >>> U = np.reshape(np.cos(X), 1024)
     >>> V = np.reshape(np.sin(Y), 1024)
     >>> X, Y = np.reshape(X, 1024), np.reshape(Y, 1024)
-    >>> ax = plot_polarisation_vectors(X, Y, U, -V, image=image_temp,
+    >>> ax = tml.plot_polarisation_vectors(X, Y, U, -V, image=image_temp,
     ...                           plot_style="polar_colorwheel",
     ...                           overlay=False, invert_y_axis=False,
     ...                           save=None, monitor_dpi=None)
@@ -439,7 +443,7 @@ matplotlib-scalebar for more custom features.
 
     >>> scbar_dict = {"dx": 3.0321, "units": "pm", "location": "lower left",
     ...               "box_alpha":0.0, "color": "black", "scale_loc": "top"}
-    >>> plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
+    >>> tml.plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           sampling=3.0321, units='pm', monitor_dpi=50,
     ...                           unit_vector=False, plot_style='colormap',
     ...                           overlay=False, save=None, cmap='viridis',
@@ -453,14 +457,14 @@ Plot a tricontourf for quadrant visualisation using a custom matplotlib cmap:
 
 .. code-block:: python
 
-    >>> import temul.signal_plotting as tmlplot
+    >>> import temul.api as tml
     >>> from matplotlib.colors import from_levels_and_colors
-    >>> zest = tmlplot.hex_to_rgb(tmlplot.color_palettes('zesty'))
+    >>> zest = tml.hex_to_rgb(tml.color_palettes('zesty'))
     >>> zest.append(zest[0])  # make the -180 and 180 degree colour the same
-    >>> expanded_zest = tmlplot.expand_palette(zest, [1,2,2,2,1])
+    >>> expanded_zest = tml.expand_palette(zest, [1,2,2,2,1])
     >>> custom_cmap, _ = from_levels_and_colors(
-    ...     levels=range(9), colors=tmlplot.rgb_to_dec(expanded_zest))
-    >>> plot_polarisation_vectors(x, y, u, v, image=image,
+    ...     levels=range(9), colors=tml.rgb_to_dec(expanded_zest))
+    >>> tml.plot_polarisation_vectors(x, y, u, v, image=image,
     ...                           unit_vector=False, plot_style='contour',
     ...                           overlay=False, pivot='middle', save=None,
     ...                           cmap=custom_cmap, levels=9, monitor_dpi=50,

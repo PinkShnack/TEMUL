@@ -7,7 +7,7 @@
 Plot Lattice Structure Maps
 ===========================
 
-The :python:`temul.polarisation` module allows one to easily visualise various
+The :py:mod:`temul.topotem.polarisation` module allows one to easily visualise various
 lattice structure characteristics, such as strain, rotation of atoms along atom
 planes, and the *c*/*a* ratio in an atomic resolution image. In this tutorial,
 we will use a dummy dataset to show the different ways each map can be created.
@@ -38,7 +38,8 @@ Plot the Lattice Strain Map
 ---------------------------
 
 By inputting the calculated or theoretical atom plane separation distance as the
-:python:`theoretical_value` parameter in :python:`tml.get_strain_map` below,
+:python:`theoretical_value` parameter in
+:py:func:`temul.topotem.polarisation.get_strain_map` below,
 we can plot a strain map. The distance *l* is calculated as the distance between
 each atom plane in the given zone axis. More details on this can be found on the
 `Atomap <https://atomap.org/analysing_atom_lattices.html#distance-between-monolayers>`_
@@ -70,7 +71,8 @@ applies to all structure maps discussed in this tutorial.
 Plot the Lattice Atom Rotation Map
 ----------------------------------
 
-The :python:`rotation_of_atom_planes` function calculates the angle between
+The :py:func:`temul.topotem.polarisation.rotation_of_atom_planes` function
+calculates the angle between
 successive atoms and the horizontal for all atoms in the given zone axis. See
 `Atomap <https://atomap.org/analysing_atom_lattices.html#angle-between-atoms>`_
 for other options.
@@ -103,7 +105,8 @@ for other options.
 Plot the *c*/*a* Ratio
 ----------------------
 
-Using the :python:`ratio_of_lattice_spacings` function, we can visualise the ratio of
+Using the :py:func:`temul.topotem.polarisation.ratio_of_lattice_spacings`
+function, we can visualise the ratio of
 two sublattice zone axes. Useful for plotting the *c*/*a* Ratio.
 
 .. code-block:: python

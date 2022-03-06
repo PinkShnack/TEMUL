@@ -17,14 +17,14 @@ def _make_simple_cubic_testdata(image_noise=False, amplitude=1,
     """
     Parameters
     ----------
-    image_noise : Bool, default False
+    image_noise : bool, default False
         If set to True, will add Gaussian noise to the image.
     amplitude : int, list of ints, default 1
         If amplitude is set to an int, that int will be applied to all atoms in
         the sublattice.
         If amplitude is set to a list, the atoms will be a distribution set by
         np.random.randint between the min and max int.
-    with_vacancies : Bool, default False
+    with_vacancies : bool, default False
         If set to True, the returned signal or sublattice will have some
         vacancies.
     """
@@ -53,14 +53,14 @@ def get_simple_cubic_signal(image_noise=False, amplitude=1,
 
     Parameters
     ----------
-    image_noise : Bool, default False
+    image_noise : bool, default False
         If set to True, will add Gaussian noise to the image.
     amplitude : int, list of ints, default 1
         If amplitude is set to an int, that int will be applied to all atoms in
         the sublattice.
         If amplitude is set to a list, the atoms will be a distribution set by
         np.random.randint between the min and max int.
-    with_vacancies : Bool, default False
+    with_vacancies : bool, default False
         If set to True, the returned signal or sublattice will have some
         vacancies.
 
@@ -87,14 +87,14 @@ def get_simple_cubic_sublattice(image_noise=False, amplitude=1,
 
     Parameters
     ----------
-    image_noise : Bool, default False
+    image_noise : bool, default False
         If set to True, will add Gaussian noise to the image.
     amplitude : int, list of ints, default 1
         If amplitude is set to an int, that int will be applied to all atoms in
         the sublattice.
         If amplitude is set to a list, the atoms will be a distribution set by
         np.random.randint between the min and max int.
-    with_vacancies : Bool, default False
+    with_vacancies : bool, default False
         If set to True, the returned signal or sublattice will have some
         vacancies.
 
@@ -108,12 +108,12 @@ def get_simple_cubic_sublattice(image_noise=False, amplitude=1,
     >>> sublattice = get_simple_cubic_sublattice()
     >>> sublattice.plot()
 
-    If you want different atom amplitudes, use `amplitude`
+    If you want different atom amplitudes, use ``amplitude``
 
     >>> sublattice = get_simple_cubic_sublattice(
     ...     amplitude=[1, 5])
 
-    Do not set `amplitude` to two consecutive numbers, as only amplitudes of
+    Do not set ``amplitude`` to two consecutive numbers, as only amplitudes of
     the lower number (2 below) will be set, see numpy.random.randint for info.
 
     >>> sublattice = get_simple_cubic_sublattice(
@@ -128,10 +128,10 @@ def get_simple_cubic_sublattice(image_noise=False, amplitude=1,
 
 
 def get_simple_cubic_sublattice_positions_on_vac(image_noise=False):
-    '''
-    Create a simple cubic structure similar to `get_simple_cubic_sublattice`
+    """
+    Create a simple cubic structure similar to ``get_simple_cubic_sublattice``
     above but the atom positions are also overlaid on the vacancy positions.
-    '''
+    """
 
     temp_sub = _make_simple_cubic_testdata(image_noise=image_noise,
                                            with_vacancies=False).sublattice
@@ -374,7 +374,7 @@ def get_polarisation_dummy_dataset(image_noise=False):
 
     You can they use the plot_polarisation_vectors function to visualise:
 
-    >>> from temul.polarisation import plot_polarisation_vectors
+    >>> import temul.api as tml
     >>> ax = plot_polarisation_vectors(x, y, u, v, image=sublatticeA.image,
     ...                           unit_vector=False, plot_style="vector",
     ...                           overlay=True, color='yellow',
