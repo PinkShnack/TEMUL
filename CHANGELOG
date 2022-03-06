@@ -1,4 +1,4 @@
-0.0.7
+0.1.7
  - test: added more unit tests and made sure notebooks run via binder
 0.1.4
  - ci: add auto pypi push actions
