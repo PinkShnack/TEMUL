@@ -73,11 +73,11 @@ def get_sublattice_intensity(sublattice,
     Return the max intensity around the atom with local background
     subtraction:
 
-    >>> intensities_total_local = get_sublattice_intensity(
-    ...     sublattice=sublattice,
-    ...     intensity_type="max",
-    ...     remove_background_method="local",
-    ...     background_sub=sublattice)
+    # >>> intensities_total_local = get_sublattice_intensity(
+    # ...     sublattice=sublattice,
+    # ...     intensity_type="max",
+    # ...     remove_background_method="local",
+    # ...     background_sub=sublattice)
 
     Return the maximum intensity around the atom with average background
     subtraction:

@@ -1094,7 +1094,7 @@ def full_atom_plane_deviation_from_straight_line_fit(sublattice,
     >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
     >>> sublatticeA = atom_lattice.sublattice_list[0]
     >>> sublatticeA.find_nearest_neighbors()
-    >>> sublatticeA.refine_atom_positions_using_center_of_mass()
+    >>> _ = sublatticeA.refine_atom_positions_using_center_of_mass()
     >>> sublatticeA.construct_zone_axes()
     >>> x,y,u,v = full_atom_plane_deviation_from_straight_line_fit(
     ...     sublatticeA, save=None)
@@ -1212,7 +1212,7 @@ def plot_atom_deviation_from_all_zone_axes(
     >>> atom_lattice = dd.get_polarization_film_atom_lattice()
     >>> sublatticeA = atom_lattice.sublattice_list[0]
     >>> sublatticeA.find_nearest_neighbors()
-    >>> sublatticeA.refine_atom_positions_using_center_of_mass()
+    >>> _ = sublatticeA.refine_atom_positions_using_center_of_mass()
     >>> sublatticeA.construct_zone_axes()
     >>> tml.plot_atom_deviation_from_all_zone_axes(
     ...     sublatticeA, save=None)
@@ -1278,7 +1278,7 @@ def combine_atom_deviations_from_zone_axes(
     >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
     >>> sublatticeA = atom_lattice.sublattice_list[0]
     >>> sublatticeA.find_nearest_neighbors()
-    >>> sublatticeA.refine_atom_positions_using_center_of_mass()
+    >>> _ = sublatticeA.refine_atom_positions_using_center_of_mass()
     >>> sublatticeA.construct_zone_axes()
     >>> x,y,u,v = combine_atom_deviations_from_zone_axes(
     ...     sublatticeA, save=None)
@@ -1482,7 +1482,7 @@ def get_average_polarisation_in_regions(x, y, u, v, image, divide_into=8):
     >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
     >>> sublatticeA = atom_lattice.sublattice_list[0]
     >>> sublatticeA.find_nearest_neighbors()
-    >>> sublatticeA.refine_atom_positions_using_center_of_mass()
+    >>> _ = sublatticeA.refine_atom_positions_using_center_of_mass()
     >>> sublatticeA.construct_zone_axes()
 
     Get and plot the original polarisation vectors:
@@ -1582,7 +1582,7 @@ def get_average_polarisation_in_regions_square(x, y, u, v, image,
     >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
     >>> sublatticeA = atom_lattice.sublattice_list[0]
     >>> sublatticeA.find_nearest_neighbors()
-    >>> sublatticeA.refine_atom_positions_using_center_of_mass()
+    >>> _ = sublatticeA.refine_atom_positions_using_center_of_mass()
     >>> sublatticeA.construct_zone_axes()
 
     Get and plot the original polarisation vectors of a non-square image
@@ -1697,7 +1697,7 @@ def get_strain_map(sublattice, zone_axis_index, theoretical_value,
     >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
     >>> sublatticeA = atom_lattice.sublattice_list[0]
     >>> sublatticeA.find_nearest_neighbors()
-    >>> sublatticeA.refine_atom_positions_using_center_of_mass()
+    >>> _ = sublatticeA.refine_atom_positions_using_center_of_mass()
     >>> sublatticeA.construct_zone_axes()
     >>> strain_map = get_strain_map(sublatticeA, zone_axis_index=0, units='nm',
     ...                             theoretical_value=1.9, sampling=0.1)
@@ -1806,7 +1806,7 @@ def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
     >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
     >>> sublatticeA = atom_lattice.sublattice_list[1]
     >>> sublatticeA.find_nearest_neighbors()
-    >>> sublatticeA.refine_atom_positions_using_center_of_mass()
+    >>> _ = sublatticeA.refine_atom_positions_using_center_of_mass()
     >>> sublatticeA.construct_zone_axes()
     >>> rotation_map = rotation_of_atom_planes(sublatticeA, 3, degrees=True)
 
@@ -1939,7 +1939,7 @@ def ratio_of_lattice_spacings(sublattice, zone_axis_index_A, zone_axis_index_B,
     >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
     >>> sublatticeA = atom_lattice.sublattice_list[0]
     >>> sublatticeA.find_nearest_neighbors()
-    >>> sublatticeA.refine_atom_positions_using_center_of_mass()
+    >>> _ = sublatticeA.refine_atom_positions_using_center_of_mass()
     >>> sublatticeA.construct_zone_axes()
     >>> ratio_map = ratio_of_lattice_spacings(sublatticeA, 0, 1)
 
