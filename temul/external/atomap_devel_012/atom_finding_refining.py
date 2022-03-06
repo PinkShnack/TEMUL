@@ -1,5 +1,6 @@
+
 from tqdm import tqdm, trange
-from scipy.ndimage.filters import gaussian_filter
+from scipy.ndimage import gaussian_filter
 from hyperspy.signals import Signal2D
 import hyperspy.api as hs
 import numpy as np

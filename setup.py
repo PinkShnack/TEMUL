@@ -54,6 +54,7 @@ setup(
         'scikit-image',
         'scipy',
         'tifffile',
+        'tqdm',
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',

@@ -9,7 +9,7 @@ pip install temul-toolkit
 
 For full installation instructions and documentation, go to [temul-toolkit.readthedocs.io](https://temul-toolkit.readthedocs.io/en/latest/).
 
-To use the vast majority of the temul functionality,
+To use the vast majority of the `temul` functionality,
 import it from the api module::
 
     import temul.api as tml
@@ -42,33 +42,45 @@ If the button does not work, try [this link instead](https://mybinder.org/v2/gh/
 
 ## Information for developers
 
-To build the docs, do the following::
+### Linting (PEP8)
 
-```bash
-cd doc
-pip install -r requirements.txt
-sphinx-build . _build  # open "index.html" in the "_build" directory
-```
-
-### PEP8
 We use flake8 to enforce coding style:
 
 ```bash
-pip install flake8
-flake8 dclab
+pip install -r tests/requirements.txt
+flake8 temul
+flake8 tests
 flake8 docs
 flake8 examples
-flake8 tests
+```
+
+### Testing
+
+Tests are carried out with `pytest`:
+
+```bash
+pip install -r tests/requirements.txt
+pytest tests
+```
+
+### Documentation (docs)
+
+To build the docs, do the following::
+
+```bash
+pip install -r docs/requirements.txt
+sphinx-build docs _build  # open "index.html" in the "_build" directory
 ```
 
 ### Incrementing version
-temul gets its version from the latest git tag. If you think that a
+
+`temul` gets its version from the latest git tag. If you think that a
 new version should be published, create a tag on the master branch
 (if you have the necessary permissions to do so):
 
 ```bash
-git tag -a '0.1.5' -m 'new tag'
-git push --tags origin
+git tag -a 'x.y.z' -m 'new tag'
+git push --tags <remote>
 ```
 
 GitHub Actions will then automatically build source package and wheels and

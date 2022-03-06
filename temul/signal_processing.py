@@ -10,7 +10,7 @@ from matplotlib import gridspec
 
 from skimage.metrics import structural_similarity as ssm
 import scipy
-from scipy.ndimage.filters import gaussian_filter
+from scipy.ndimage import gaussian_filter
 from scipy.optimize import OptimizeWarning
 from math import sqrt
 import numpy as np

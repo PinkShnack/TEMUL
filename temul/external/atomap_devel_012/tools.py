@@ -8,7 +8,7 @@ from scipy.spatial import cKDTree
 import matplotlib.pyplot as plt
 import hyperspy.api as hs
 from hyperspy.signals import Signal1D, Signal2D
-from skimage.morphology import watershed
+from skimage.segmentation import watershed
 
 from temul.external.atomap_devel_012.atom_finding_refining import (
     _fit_atom_positions_with_gaussian_model)
