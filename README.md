@@ -51,7 +51,6 @@ pip install -r tests/requirements.txt
 flake8 temul
 flake8 tests
 flake8 docs
-flake8 examples
 ```
 
 ### Testing
