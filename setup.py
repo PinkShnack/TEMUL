@@ -26,7 +26,8 @@ setup(
         'temul.external.skimage_devel_0162',
     ],
     version=version,
-    description='Functions for analysis of high resolution electron microscopy and spectroscopy data.',
+    description='Functions for analysis of high resolution electron '
+                'microscopy and spectroscopy data.',
     long_description=long_description,
     long_description_content_type='text/markdown',
     author="Eoghan N O'Connell",
@@ -54,6 +55,7 @@ setup(
         'scikit-image',
         'scipy',
         'tifffile',
+        'tqdm',
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',

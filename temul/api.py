@@ -1,7 +1,4 @@
 
-# flake8: noqa
-
-
 from temul.signal_processing import (
     measure_image_errors, load_and_compare_images,
     compare_two_image_and_create_filtered_image,
@@ -35,6 +32,7 @@ from temul.intensity_tools import (
 )
 
 from temul.topotem import (
+    # polarisation
     find_polarisation_vectors, correct_off_tilt_vectors,
     plot_polarisation_vectors, atom_deviation_from_straight_line_fit,
     get_divide_into, get_average_polarisation_in_regions,
@@ -45,9 +43,11 @@ from temul.topotem import (
     get_polar_2d_colorwheel_color_list,
     combine_atom_deviations_from_zone_axes,
 
+    # fft_mapping
     choose_mask_coordinates, get_masked_ifft,
     choose_points_on_image,
 
+    # lattice_structure_tools
     calculate_atom_plane_curvature,
 )
 

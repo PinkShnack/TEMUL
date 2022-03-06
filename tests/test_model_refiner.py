@@ -1,4 +1,4 @@
-'''
+"""
 import atomap_devel_012.api as am
 import model_refiner as mr
 import numpy as np
@@ -16,16 +16,16 @@ for i in range(0, len(sub2.atom_list)):
     sub2.atom_list[i].elements = 'Cl_1'
 sub1_element_list = ['Ti_0', 'Ti_1', 'Ti_2', 'Ti_3']
 sub2_element_list = ['Cl_0', 'Cl_1', 'Cl_2', 'Cl_3']
-
 sub1.atom_list[2].elements = 'Ti_1'
 sub1.atom_list[5].elements = 'Ti_1'
-
 refiner_dict = {sub1: sub1_element_list,
                 sub2: sub2_element_list}
 
+import pytest
 
+
+@pytest.mark.skip
 def test_comparison_image():
-
     blurred_image = hyperspy._signals.signal2d.Signal2D(
         gaussian_filter(atom_lattice.image, 3))
     atom_lattice_refiner = Model_Refiner(refiner_dict, blurred_image)
@@ -34,6 +34,7 @@ def test_comparison_image():
                       hyperspy._signals.signal2d.Signal2D)
 
 
+@pytest.mark.skip
 def test_repeating_intensity_refinement_no_change():
     atom_lattice = am.dummy_data.get_simple_atom_lattice_two_sublattices(
         image_noise=True
@@ -74,6 +75,7 @@ def test_repeating_intensity_refinement_no_change():
         dataframe_before[0:], ignore_index=True))
 
 
+@pytest.mark.skip
 def test_image_difference_intensity_model_refiner():
     # create a fake simulated image
     sim_sublattice = am.dummy_data.get_simple_cubic_sublattice()
@@ -110,4 +112,4 @@ def test_image_difference_intensity_model_refiner():
 
     assert dataframe_after.equals(dataframe_before.append(
         Counter({'Mo_1': 397, 'Mo_0': 3}), ignore_index=True).fillna(0))
-'''
+"""

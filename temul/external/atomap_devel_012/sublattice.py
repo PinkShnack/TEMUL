@@ -1003,7 +1003,7 @@ class Sublattice():
         >>> import temul.external.atomap_devel_012.api as am
         >>> sublattice = am.dummy_data.get_simple_cubic_sublattice()
         >>> sublattice.find_nearest_neighbors()
-        >>> sublattice.refine_atom_positions_using_center_of_mass()
+        >>> _ = sublattice.refine_atom_positions_using_center_of_mass()
 
         See Also
         --------

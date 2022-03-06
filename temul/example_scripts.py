@@ -457,7 +457,7 @@ simulation.plot()
 
 
 """
-Thesis example for monolayer Se implanted MoS2
+# Thesis example for monolayer Se implanted MoS2
 """
 
 import hyperspy.api as hs
