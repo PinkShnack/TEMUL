@@ -1,4 +1,3 @@
-
 import numpy as np
 from atomap.atom_finding_refining import _make_circular_mask
 
@@ -66,18 +65,18 @@ def get_sublattice_intensity(sublattice,
 
     Return the summed intensity around the atom:
 
-    >>> intensities_total = get_sublattice_intensity(
-    ...     sublattice=sublattice,
-    ...     intensity_type="total",
-    ...     remove_background_method=None,
-    ...     background_sub=None)
+    # >>> intensities_total = get_sublattice_intensity(
+    # ...     sublattice=sublattice,
+    # ...     intensity_type="total",
+    # ...     remove_background_method=None,
+    # ...     background_sub=None)
 
-    Return the summed intensity around the atom with local background
+    Return the max intensity around the atom with local background
     subtraction:
 
     >>> intensities_total_local = get_sublattice_intensity(
     ...     sublattice=sublattice,
-    ...     intensity_type="total",
+    ...     intensity_type="max",
     ...     remove_background_method="local",
     ...     background_sub=sublattice)
 
@@ -91,106 +90,116 @@ def get_sublattice_intensity(sublattice,
     ...     background_sub=sublattice)
 
     """
+    if remove_background_method == 'local':
+        raise ValueError(
+            "'remove_background_method'='local' is currently "
+            "broken. Go to 'https://github.com/PinkShnack/TEMUL/issues' "
+            "to raise an issue if you need it fixed.")
+
     if percent_to_nn is not None:
         sublattice.find_nearest_neighbors()
     else:
         pass
 
+    if intensity_type == 'min' and remove_background_method is not None:
+        raise ValueError(
+            f"You have set intensity_type={intensity_type} and "
+            f"remove_background_method={remove_background_method}. "
+            f"This is not allowed. Please use intensity_type of 'max' if "
+            f"remove_background_method is not None.")
+
     if remove_background_method is None or background_sub is None:
         if intensity_type == "all":
             sublattice.get_atom_column_amplitude_max_intensity(
-                percent_to_nn=percent_to_nn, mask_radius=mask_radius)
+                percent_to_nn=percent_to_nn)  # , mask_radius=mask_radius)
             sublattice_max_intensity_list = []
             sublattice_max_intensity_list.append(
                 sublattice.atom_amplitude_max_intensity)
             sublattice_max_intensity_list = sublattice_max_intensity_list[0]
             max_intensities = np.array(sublattice_max_intensity_list)
 
-            sublattice.get_atom_column_amplitude_mean_intensity(
-                percent_to_nn=percent_to_nn, mask_radius=mask_radius)
-            sublattice_mean_intensity_list = []
-            sublattice_mean_intensity_list.append(
-                sublattice.atom_amplitude_mean_intensity)
-            sublattice_mean_intensity_list = sublattice_mean_intensity_list[0]
-            mean_intensities = np.array(sublattice_mean_intensity_list)
+            # sublattice.get_atom_column_amplitude_mean_intensity(
+            #     percent_to_nn=percent_to_nn, mask_radius=mask_radius)
+            # sublattice_mean_intensity_list = []
+            # sublattice_mean_intensity_list.append(
+            #     sublattice.atom_amplitude_mean_intensity)
+            # sublattice_mean_intensity_list = sublattice_mean_intensity_list[0]
+            # mean_intensities = np.array(sublattice_mean_intensity_list)
 
             sublattice.get_atom_column_amplitude_min_intensity(
-                percent_to_nn=percent_to_nn, mask_radius=mask_radius)
+                percent_to_nn=percent_to_nn)  # , mask_radius=mask_radius)
             sublattice_min_intensity_list = []
             sublattice_min_intensity_list.append(
                 sublattice.atom_amplitude_min_intensity)
             sublattice_min_intensity_list = sublattice_min_intensity_list[0]
             min_intensities = np.array(sublattice_min_intensity_list)
 
-            sublattice.get_atom_column_amplitude_total_intensity(
-                percent_to_nn=percent_to_nn, mask_radius=mask_radius)
-            sublattice_total_intensity_list = []
-            sublattice_total_intensity_list.append(
-                sublattice.atom_amplitude_total_intensity)
-            sublattice_total_intensity_list = sublattice_total_intensity_list[
-                0]
-            total_intensities = np.array(sublattice_total_intensity_list)
+            # sublattice.get_atom_column_amplitude_total_intensity(
+            #     percent_to_nn=percent_to_nn, mask_radius=mask_radius)
+            # sublattice_total_intensity_list = []
+            # sublattice_total_intensity_list.append(
+            #     sublattice.atom_amplitude_total_intensity)
+            # sublattice_total_intensity_list = sublattice_total_intensity_list[
+            #     0]
+            # total_intensities = np.array(sublattice_total_intensity_list)
 
-    # sublattice_total_intensity_list, _, _ =
-    # sublattice.integrate_column_intensity()
-    # # maxradius should be changed to percent_to_nn!
-    # total_intensities = np.array(sublattice_total_intensity_list)
+            # sublattice_total_intensity_list, _, _ =
+            # sublattice.integrate_column_intensity()
+            # # maxradius should be changed to percent_to_nn!
+            # total_intensities = np.array(sublattice_total_intensity_list)
 
             sublattice_intensities = np.column_stack(
-                (max_intensities, mean_intensities,
-                 min_intensities, total_intensities))
-            return(sublattice_intensities)
+                (max_intensities, min_intensities,))
+            # mean_intensities, total_intensities))
+            return sublattice_intensities
 
-    # return max_intensities, mean_intensities, min_intensities,
-    # total_intensities
+        # return max_intensities, mean_intensities, min_intensities,
+        # total_intensities
 
         elif intensity_type == "max":
             sublattice.get_atom_column_amplitude_max_intensity(
-                percent_to_nn=percent_to_nn, mask_radius=mask_radius)
+                percent_to_nn=percent_to_nn)  # , mask_radius=mask_radius)
             sublattice_max_intensity_list = []
             sublattice_max_intensity_list.append(
                 sublattice.atom_amplitude_max_intensity)
             sublattice_max_intensity_list = sublattice_max_intensity_list[0]
             max_intensities = np.array(sublattice_max_intensity_list)
 
-            return(max_intensities)
+            return max_intensities
 
-        elif intensity_type == "mean":
-            sublattice.get_atom_column_amplitude_mean_intensity(
-                percent_to_nn=percent_to_nn, mask_radius=mask_radius)
-            sublattice_mean_intensity_list = []
-            sublattice_mean_intensity_list.append(
-                sublattice.atom_amplitude_mean_intensity)
-            sublattice_mean_intensity_list = sublattice_mean_intensity_list[0]
-            mean_intensities = np.array(sublattice_mean_intensity_list)
-
-            return(mean_intensities)
+        # elif intensity_type == "mean":
+        #     sublattice.get_atom_column_amplitude_mean_intensity(
+        #         percent_to_nn=percent_to_nn, mask_radius=mask_radius)
+        #     sublattice_mean_intensity_list = []
+        #     sublattice_mean_intensity_list.append(
+        #         sublattice.atom_amplitude_mean_intensity)
+        #     sublattice_mean_intensity_list = sublattice_mean_intensity_list[0]
+        #     mean_intensities = np.array(sublattice_mean_intensity_list)
+        #     return(mean_intensities)
 
         elif intensity_type == "min":
             sublattice.get_atom_column_amplitude_min_intensity(
-                percent_to_nn=percent_to_nn, mask_radius=mask_radius)
+                percent_to_nn=percent_to_nn)  # , mask_radius=mask_radius)
             sublattice_min_intensity_list = []
             sublattice_min_intensity_list.append(
                 sublattice.atom_amplitude_min_intensity)
             sublattice_min_intensity_list = sublattice_min_intensity_list[0]
             min_intensities = np.array(sublattice_min_intensity_list)
+            return min_intensities
 
-            return(min_intensities)
-
-        elif intensity_type == "total":
-            sublattice.get_atom_column_amplitude_total_intensity(
-                percent_to_nn=percent_to_nn, mask_radius=mask_radius)
-            sublattice_total_intensity_list = []
-            sublattice_total_intensity_list.append(
-                sublattice.atom_amplitude_total_intensity)
-            sublattice_total_intensity_list = sublattice_total_intensity_list[
-                0]
-            total_intensities = np.array(sublattice_total_intensity_list)
-
-    # sublattice_total_intensity_list, _, _ =
-    # sublattice.integrate_column_intensity()
-    # total_intensities = np.array(sublattice_total_intensity_list)
-            return(total_intensities)
+        # elif intensity_type == "total":
+        #     sublattice.get_atom_column_amplitude_total_intensity(
+        #         percent_to_nn=percent_to_nn, mask_radius=mask_radius)
+        #     sublattice_total_intensity_list = []
+        #     sublattice_total_intensity_list.append(
+        #         sublattice.atom_amplitude_total_intensity)
+        #     sublattice_total_intensity_list = sublattice_total_intensity_list[
+        #         0]
+        #     total_intensities = np.array(sublattice_total_intensity_list)
+        # # sublattice_total_intensity_list, _, _ =
+        # # sublattice.integrate_column_intensity()
+        # # total_intensities = np.array(sublattice_total_intensity_list)
+        #     return(total_intensities)
 
         else:
             raise ValueError("You must choose an intensity_type")
@@ -201,9 +210,8 @@ def get_sublattice_intensity(sublattice,
             sublattice=sublattice,
             background_sub=background_sub,
             intensity_type=intensity_type,
-            percent_to_nn=percent_to_nn,
-            mask_radius=mask_radius)
-        return(sub_intensity_list_average_bksubtracted)
+            percent_to_nn=percent_to_nn)  # ,mask_radius=mask_radius)
+        return sub_intensity_list_average_bksubtracted
 
     elif remove_background_method == "local":
 
@@ -212,9 +220,8 @@ def get_sublattice_intensity(sublattice,
             background_sub=background_sub,
             intensity_type=intensity_type,
             num_points=num_points,
-            percent_to_nn=percent_to_nn,
-            mask_radius=mask_radius)
-        return(sub_intensity_list_local_bksubtracted)
+            percent_to_nn=percent_to_nn)  # ,mask_radius=mask_radius)
+        return sub_intensity_list_local_bksubtracted
 
     else:
         raise ValueError("This will return nothing. "
@@ -267,7 +274,7 @@ def remove_average_background(sublattice, intensity_type,
     """
     background_sub.find_nearest_neighbors()
     background_sub.get_atom_column_amplitude_min_intensity(
-        percent_to_nn=percent_to_nn, mask_radius=mask_radius)
+        percent_to_nn=percent_to_nn)  # , mask_radius=mask_radius)
     background_sub_min = []
     background_sub_min.append(
         background_sub.atom_amplitude_min_intensity)
@@ -283,14 +290,14 @@ def remove_average_background(sublattice, intensity_type,
         max_intensities = np.array(
             sublattice_max_intensity_list) - background_sub_mean_of_min
 
-        sublattice.get_atom_column_amplitude_mean_intensity(
-            percent_to_nn=percent_to_nn, mask_radius=mask_radius)
-        sublattice_mean_intensity_list = []
-        sublattice_mean_intensity_list.append(
-            sublattice.atom_amplitude_mean_intensity)
-        sublattice_mean_intensity_list = sublattice_mean_intensity_list[0]
-        mean_intensities = np.array(
-            sublattice_mean_intensity_list) - background_sub_mean_of_min
+        # sublattice.get_atom_column_amplitude_mean_intensity(
+        #     percent_to_nn=percent_to_nn, mask_radius=mask_radius)
+        # sublattice_mean_intensity_list = []
+        # sublattice_mean_intensity_list.append(
+        #     sublattice.atom_amplitude_mean_intensity)
+        # sublattice_mean_intensity_list = sublattice_mean_intensity_list[0]
+        # mean_intensities = np.array(
+        #     sublattice_mean_intensity_list) - background_sub_mean_of_min
 
         sublattice.get_atom_column_amplitude_min_intensity(
             percent_to_nn=percent_to_nn, mask_radius=mask_radius)
@@ -301,22 +308,22 @@ def remove_average_background(sublattice, intensity_type,
         min_intensities = np.array(
             sublattice_min_intensity_list) - background_sub_mean_of_min
 
-    # sublattice.get_atom_column_amplitude_total_intensity(
-    #   percent_to_nn=percent_to_nn)
-    # sublattice_total_intensity_list = []
-    # sublattice_total_intensity_list.append(
-    #   sublattice.atom_amplitude_total_intensity)
-    # sublattice_total_intensity_list = sublattice_total_intensity_list[0]
-    # total_intensities = np.array(
-    #   sublattice_total_intensity_list) - background_sub_mean_of_min
+        # sublattice.get_atom_column_amplitude_total_intensity(
+        #   percent_to_nn=percent_to_nn)
+        # sublattice_total_intensity_list = []
+        # sublattice_total_intensity_list.append(
+        #   sublattice.atom_amplitude_total_intensity)
+        # sublattice_total_intensity_list = sublattice_total_intensity_list[0]
+        # total_intensities = np.array(
+        #   sublattice_total_intensity_list) - background_sub_mean_of_min
 
         sublattice_intensities = np.column_stack(
-            (max_intensities, mean_intensities, min_intensities))
+            (max_intensities, min_intensities))
         return sublattice_intensities
 
     elif intensity_type == "max":
         sublattice.get_atom_column_amplitude_max_intensity(
-            percent_to_nn=percent_to_nn, mask_radius=mask_radius)
+            percent_to_nn=percent_to_nn)  # , mask_radius=mask_radius)
         sublattice_max_intensity_list = []
         sublattice_max_intensity_list.append(
             sublattice.atom_amplitude_max_intensity)
@@ -328,7 +335,7 @@ def remove_average_background(sublattice, intensity_type,
 
     elif intensity_type == "mean":
         sublattice.get_atom_column_amplitude_mean_intensity(
-            percent_to_nn=percent_to_nn, mask_radius=mask_radius)
+            percent_to_nn=percent_to_nn)  # , mask_radius=mask_radius)
         sublattice_mean_intensity_list = []
         sublattice_mean_intensity_list.append(
             sublattice.atom_amplitude_mean_intensity)
@@ -340,7 +347,7 @@ def remove_average_background(sublattice, intensity_type,
 
     elif intensity_type == "min":
         sublattice.get_atom_column_amplitude_min_intensity(
-            percent_to_nn=percent_to_nn, mask_radius=mask_radius)
+            percent_to_nn=percent_to_nn)  # , mask_radius=mask_radius)
         sublattice_min_intensity_list = []
         sublattice_min_intensity_list.append(
             sublattice.atom_amplitude_min_intensity)
@@ -420,9 +427,6 @@ def remove_local_background(sublattice, background_sub, intensity_type,
     >>> import temul.external.atomap_devel_012.dummy_data as dummy_data
     >>> sublattice = dummy_data.get_simple_cubic_sublattice()
     >>> sublattice.find_nearest_neighbors()
-    >>> intensities_total = remove_local_background(
-    ...     sublattice, intensity_type="total",
-    ...     background_sub=sublattice)
     >>> intensities_max = remove_local_background(
     ...     sublattice, intensity_type="max",
     ...     background_sub=sublattice)
@@ -437,7 +441,7 @@ def remove_local_background(sublattice, background_sub, intensity_type,
         pass
 
     background_sub.get_atom_column_amplitude_min_intensity(
-        percent_to_nn=percent_to_nn, mask_radius=mask_radius)
+        percent_to_nn=percent_to_nn)  # , mask_radius=mask_radius)
     background_sub_min_intensity_list = []
     background_sub_min_intensity_list.append(
         background_sub.atom_amplitude_min_intensity)
@@ -462,7 +466,7 @@ def remove_local_background(sublattice, background_sub, intensity_type,
         # get sublattice intensity list
         # could change to my function, which allows choice of intensity type
         sublattice.get_atom_column_amplitude_max_intensity(
-            percent_to_nn=percent_to_nn, mask_radius=mask_radius)
+            percent_to_nn=percent_to_nn)  # , mask_radius=mask_radius)
         sublattice_max_intensity_list = []
         sublattice_max_intensity_list.append(
             sublattice.atom_amplitude_max_intensity)
@@ -477,7 +481,7 @@ def remove_local_background(sublattice, background_sub, intensity_type,
         for p in range(0, len(sublattice_atom_pos)):
 
             xy_distances = background_sub_atom_pos - \
-                sublattice_atom_pos[p]
+                           sublattice_atom_pos[p]
 
             # put all distances in this array with this loop
             vector_array = []
@@ -485,7 +489,7 @@ def remove_local_background(sublattice, background_sub, intensity_type,
                 # get distance from sublattice position to every
                 # background_sub position
                 vector = np.sqrt(
-                    (xy_distances[i][0]**2) + (xy_distances[i][1]**2))
+                    (xy_distances[i][0] ** 2) + (xy_distances[i][1] ** 2))
                 vector_array.append(vector)
             # convert to numpy array
             vector_array = np.array(vector_array)
@@ -511,7 +515,7 @@ def remove_local_background(sublattice, background_sub, intensity_type,
             # indexing here is the loop digit p
             sublattice_bksubtracted_atom = np.array(
                 sublattice.atom_amplitude_max_intensity[p]) - \
-                np.array(local_background_mean)
+                                           np.array(local_background_mean)
 
             sublattice_max_intensity_list_bksubtracted.append(
                 [sublattice_bksubtracted_atom])
@@ -519,170 +523,171 @@ def remove_local_background(sublattice, background_sub, intensity_type,
         sublattice_max_intensity_list_bksubtracted = np.array(
             sublattice_max_intensity_list_bksubtracted)
 
-        return(sublattice_max_intensity_list_bksubtracted[:, 0])
+        return (sublattice_max_intensity_list_bksubtracted[:, 0])
 
-    elif intensity_type == "mean":
-        # get list of sublattice and background_sub atom positions
-        # np.array().T will not be needed in newer versions of atomap
-        sublattice_atom_pos = np.array(sublattice.atom_positions).T
-        background_sub_atom_pos = np.array(
-            background_sub.atom_positions).T
+    # elif intensity_type == "mean":
+    #     # get list of sublattice and background_sub atom positions
+    #     # np.array().T will not be needed in newer versions of atomap
+    #     sublattice_atom_pos = np.array(sublattice.atom_positions).T
+    #     background_sub_atom_pos = np.array(
+    #         background_sub.atom_positions).T
+    #
+    #     # get sublattice intensity list
+    #     # could change to my function, which allows choice of intensity type
+    #     sublattice.get_atom_column_amplitude_mean_intensity(
+    #         percent_to_nn=percent_to_nn)#, mask_radius=mask_radius)
+    #     sublattice_mean_intensity_list = []
+    #     sublattice_mean_intensity_list.append(
+    #         sublattice.atom_amplitude_mean_intensity)
+    #     sublattice_mean_intensity_list = sublattice_mean_intensity_list[0]
+    #
+    #     # create list which will be output
+    #     # therefore the original data is not changed!
+    #     sublattice_mean_intensity_list_bksubtracted = []
+    #
+    #     # for each sublattice atom position, calculate the nearest
+    #     #   background_sub atom positions.
+    #     for p in range(0, len(sublattice_atom_pos)):
+    #
+    #         xy_distances = background_sub_atom_pos - \
+    #                        sublattice_atom_pos[p]
+    #
+    #         # put all distances in this array with this loop
+    #         vector_array = []
+    #         for i in range(0, len(xy_distances)):
+    #             # get distance from sublattice position to every
+    #             # background_sub position
+    #             vector = np.sqrt(
+    #                 (xy_distances[i][0] ** 2) + (xy_distances[i][1] ** 2))
+    #             vector_array.append(vector)
+    #         # convert to numpy array
+    #         vector_array = np.array(vector_array)
+    #
+    #         # sort through the vector_array and find the 1st to kth smallest
+    #         # distance and find the
+    #         #   corressponding index
+    #         # num_points is the number of nearest points from which the
+    #         # background will be averaged
+    #         k = num_points
+    #         min_indices = list(np.argpartition(vector_array, k)[:k])
+    #         # sum the chosen intensities and find the mean
+    #         # (or median - add this)
+    #         local_bkgnd = 0
+    #         for index in min_indices:
+    #             local_bkgnd += background_sub.atom_amplitude_min_intensity[
+    #                 index]
+    #
+    #         local_background_mean = local_bkgnd / k
+    #
+    #         # subtract this mean local background intensity from the sublattice
+    #         #   atom position intensity
+    #         # indexing here is the loop digit p
+    #         sublattice_bksubtracted_atom = np.array(
+    #             sublattice.atom_amplitude_mean_intensity[p]) - \
+    #                                        local_background_mean
+    #
+    #         sublattice_mean_intensity_list_bksubtracted.append(
+    #             [sublattice_bksubtracted_atom])
 
-        # get sublattice intensity list
-        # could change to my function, which allows choice of intensity type
-        sublattice.get_atom_column_amplitude_mean_intensity(
-            percent_to_nn=percent_to_nn, mask_radius=mask_radius)
-        sublattice_mean_intensity_list = []
-        sublattice_mean_intensity_list.append(
-            sublattice.atom_amplitude_mean_intensity)
-        sublattice_mean_intensity_list = sublattice_mean_intensity_list[0]
+    # sublattice_mean_intensity_list_bksubtracted = np.array(
+    #     sublattice_mean_intensity_list_bksubtracted)
+    #
+    # return (sublattice_mean_intensity_list_bksubtracted[:, 0])
 
-        # create list which will be output
-        # therefore the original data is not changed!
-        sublattice_mean_intensity_list_bksubtracted = []
-
-        # for each sublattice atom position, calculate the nearest
-        #   background_sub atom positions.
-        for p in range(0, len(sublattice_atom_pos)):
-
-            xy_distances = background_sub_atom_pos - \
-                sublattice_atom_pos[p]
-
-            # put all distances in this array with this loop
-            vector_array = []
-            for i in range(0, len(xy_distances)):
-                # get distance from sublattice position to every
-                # background_sub position
-                vector = np.sqrt(
-                    (xy_distances[i][0]**2) + (xy_distances[i][1]**2))
-                vector_array.append(vector)
-            # convert to numpy array
-            vector_array = np.array(vector_array)
-
-            # sort through the vector_array and find the 1st to kth smallest
-            # distance and find the
-            #   corressponding index
-            # num_points is the number of nearest points from which the
-            # background will be averaged
-            k = num_points
-            min_indices = list(np.argpartition(vector_array, k)[:k])
-            # sum the chosen intensities and find the mean
-            # (or median - add this)
-            local_bkgnd = 0
-            for index in min_indices:
-                local_bkgnd += background_sub.atom_amplitude_min_intensity[
-                    index]
-
-            local_background_mean = local_bkgnd / k
-
-            # subtract this mean local background intensity from the sublattice
-            #   atom position intensity
-            # indexing here is the loop digit p
-            sublattice_bksubtracted_atom = np.array(
-                sublattice.atom_amplitude_mean_intensity[p]) - \
-                local_background_mean
-
-            sublattice_mean_intensity_list_bksubtracted.append(
-                [sublattice_bksubtracted_atom])
-
-        sublattice_mean_intensity_list_bksubtracted = np.array(
-            sublattice_mean_intensity_list_bksubtracted)
-
-        return(sublattice_mean_intensity_list_bksubtracted[:, 0])
-
-    elif intensity_type == "total":
-        # get list of sublattice and background_sub atom positions
-        # np.array().T will not be needed in newer versions of atomap
-        sublattice_atom_pos = np.array(sublattice.atom_positions).T
-        background_sub_atom_pos = np.array(
-            background_sub.atom_positions).T
-
-        # get sublattice intensity list
-        # could change to my function, which allows choice of intensity type
-        sublattice.get_atom_column_amplitude_total_intensity(
-            percent_to_nn=percent_to_nn, mask_radius=mask_radius)
-        sublattice_total_intensity_list = []
-        sublattice_total_intensity_list.append(
-            sublattice.atom_amplitude_total_intensity)
-        sublattice_total_intensity_list = sublattice_total_intensity_list[0]
-
-        # create list which will be output
-        # therefore the original data is not changed!
-        sublattice_total_intensity_list_bksubtracted = []
-
-        # for each sublattice atom position, calculate the nearest
-        #   background_sub atom positions.
-        for p in range(0, len(sublattice_atom_pos)):
-
-            xy_distances = background_sub_atom_pos - \
-                sublattice_atom_pos[p]
-
-            # put all distances in this array with this loop
-            vector_array = []
-            for i in range(0, len(xy_distances)):
-                # get distance from sublattice position to every
-                # background_sub position
-                vector = np.sqrt(
-                    (xy_distances[i][0]**2) + (xy_distances[i][1]**2))
-                vector_array.append(vector)
-            # convert to numpy array
-            vector_array = np.array(vector_array)
-
-            # sort through the vector_array and find the 1st to
-            # kth smallest distance and find the
-            #   corressponding index
-            # num_points is the number of nearest points from which
-            # the background will be averaged
-            k = num_points
-            min_indices = list(np.argpartition(vector_array, range(k))[:k])
-            # if you want the values rather than the indices, use:
-            # vector_array[np.argpartition(vector_array, range(k))[:k]]
-            # sum the chosen intensities and find the total
-            # (or median - add this)
-            local_bkgnd = 0
-            for index in min_indices:
-                local_bkgnd += background_sub.atom_amplitude_min_intensity[
-                    index]
-
-            local_background_mean = local_bkgnd / k
-
-            # for summing pixels around atom
-            if mask_radius is None:
-                pixel_count_in_region = get_pixel_count_from_image_slice(
-                    sublattice.atom_list[p],
-                    sublattice.image,
-                    percent_to_nn)
-            elif mask_radius is not None:
-                mask = _make_circular_mask(
-                    centerX=sublattice.atom_list[p].pixel_x,
-                    centerY=sublattice.atom_list[p].pixel_y,
-                    imageSizeX=sublattice.image.shape[0],
-                    imageSizeY=sublattice.image.shape[1],
-                    radius=mask_radius)
-
-                pixel_count_in_region = len(sublattice.image[mask])
-
-            local_background_mean_summed = pixel_count_in_region * \
-                local_background_mean
-
-            # subtract this mean local background intensity from the sublattice
-            #   atom position intensity
-            # indexing here is the loop digit p
-            sublattice_bksubtracted_atom = np.array(
-                sublattice.atom_amplitude_total_intensity[p]) - \
-                local_background_mean_summed
-
-            sublattice_total_intensity_list_bksubtracted.append(
-                [sublattice_bksubtracted_atom])
-
-        sublattice_total_intensity_list_bksubtracted = np.array(
-            sublattice_total_intensity_list_bksubtracted)
-
-        return(sublattice_total_intensity_list_bksubtracted[:, 0])
+    # elif intensity_type == "total":
+    #     # get list of sublattice and background_sub atom positions
+    #     # np.array().T will not be needed in newer versions of atomap
+    #     sublattice_atom_pos = np.array(sublattice.atom_positions).T
+    #     background_sub_atom_pos = np.array(
+    #         background_sub.atom_positions).T
+    #
+    #     # get sublattice intensity list
+    #     # could change to my function, which allows choice of intensity type
+    #     sublattice.get_atom_column_amplitude_total_intensity(
+    #         percent_to_nn=percent_to_nn)#, mask_radius=mask_radius)
+    #     sublattice_total_intensity_list = []
+    #     sublattice_total_intensity_list.append(
+    #         sublattice.atom_amplitude_total_intensity)
+    #     sublattice_total_intensity_list = sublattice_total_intensity_list[0]
+    #
+    #     # create list which will be output
+    #     # therefore the original data is not changed!
+    #     sublattice_total_intensity_list_bksubtracted = []
+    #
+    #     # for each sublattice atom position, calculate the nearest
+    #     #   background_sub atom positions.
+    #     for p in range(0, len(sublattice_atom_pos)):
+    #
+    #         xy_distances = background_sub_atom_pos - \
+    #                        sublattice_atom_pos[p]
+    #
+    #         # put all distances in this array with this loop
+    #         vector_array = []
+    #         for i in range(0, len(xy_distances)):
+    #             # get distance from sublattice position to every
+    #             # background_sub position
+    #             vector = np.sqrt(
+    #                 (xy_distances[i][0] ** 2) + (xy_distances[i][1] ** 2))
+    #             vector_array.append(vector)
+    #         # convert to numpy array
+    #         vector_array = np.array(vector_array)
+    #
+    #         # sort through the vector_array and find the 1st to
+    #         # kth smallest distance and find the
+    #         #   corressponding index
+    #         # num_points is the number of nearest points from which
+    #         # the background will be averaged
+    #         k = num_points
+    #         min_indices = list(np.argpartition(vector_array, range(k))[:k])
+    #         # if you want the values rather than the indices, use:
+    #         # vector_array[np.argpartition(vector_array, range(k))[:k]]
+    #         # sum the chosen intensities and find the total
+    #         # (or median - add this)
+    #         local_bkgnd = 0
+    #         for index in min_indices:
+    #             local_bkgnd += background_sub.atom_amplitude_min_intensity[
+    #                 index]
+    #
+    #         local_background_mean = local_bkgnd / k
+    #
+    #         # for summing pixels around atom
+    #         if mask_radius is None:
+    #             pixel_count_in_region = get_pixel_count_from_image_slice(
+    #                 sublattice.atom_list[p],
+    #                 sublattice.image,
+    #                 percent_to_nn)
+    #         elif mask_radius is not None:
+    #             mask = _make_circular_mask(
+    #                 centerX=sublattice.atom_list[p].pixel_x,
+    #                 centerY=sublattice.atom_list[p].pixel_y,
+    #                 imageSizeX=sublattice.image.shape[0],
+    #                 imageSizeY=sublattice.image.shape[1],
+    #                 radius=mask_radius)
+    #
+    #             pixel_count_in_region = len(sublattice.image[mask])
+    #
+    #         local_background_mean_summed = pixel_count_in_region * \
+    #                                        local_background_mean
+    #
+    #         # subtract this mean local background intensity from the sublattice
+    #         #   atom position intensity
+    #         # indexing here is the loop digit p
+    #         sublattice_bksubtracted_atom = np.array(
+    #             sublattice.atom_amplitude_total_intensity[p]) - \
+    #                                        local_background_mean_summed
+    #
+    #         sublattice_total_intensity_list_bksubtracted.append(
+    #             [sublattice_bksubtracted_atom])
+    #
+    #     sublattice_total_intensity_list_bksubtracted = np.array(
+    #         sublattice_total_intensity_list_bksubtracted)
+    #
+    #     return (sublattice_total_intensity_list_bksubtracted[:, 0])
 
     else:
         raise ValueError(
-            "You must choose a valid intensity_type. Use max, mean or total")
+            "You must choose a valid intensity_type, "
+            f"not {intensity_type}. Use max, mean or total")
 
 
 # need to add "radius" for where to get intensity from. Do we though?
@@ -694,9 +699,7 @@ def remove_local_background(sublattice, background_sub, intensity_type,
 
 
 def get_pixel_count_from_image_slice(
-        self,
-        image_data,
-        percent_to_nn=0.40):
+        atom, image_data, percent_to_nn=0.40):
     """
     Fid the number of pixels in an area when calling
     _get_image_slice_around_atom()
@@ -704,6 +707,7 @@ def get_pixel_count_from_image_slice(
     Parameters
     ----------
 
+    atom : atomap.AtomPosition
     image_data : Numpy 2D array
     percent_to_nn : float, default 0.40
         Determines the boundary of the area surrounding each atomic
@@ -724,13 +728,13 @@ def get_pixel_count_from_image_slice(
     >>> pixel_count = get_pixel_count_from_image_slice(atom0, sublattice.image)
 
     """
-    closest_neighbor = self.get_closest_neighbor()
+    closest_neighbor = atom.get_closest_neighbor()
 
     slice_size = closest_neighbor * percent_to_nn * 2
     # data_slice, x0, y0 - see atomap documentation
-    data_slice, _, _ = self._get_image_slice_around_atom(
+    data_slice, _, _ = atom._get_image_slice_around_atom(
         image_data, slice_size)
 
     pixel_count = len(data_slice[0]) * len(data_slice[0])
 
-    return(pixel_count)
+    return pixel_count
