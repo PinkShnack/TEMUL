@@ -1,5 +1,4 @@
 import numpy as np
-from atomap.atom_finding_refining import _make_circular_mask
 
 
 def get_sublattice_intensity(sublattice,
@@ -514,8 +513,8 @@ def remove_local_background(sublattice, background_sub, intensity_type,
             #   atom position intensity
             # indexing here is the loop digit p
             sublattice_bksubtracted_atom = np.array(
-                sublattice.atom_amplitude_max_intensity[p]) - \
-                                           np.array(local_background_mean)
+                (sublattice.atom_amplitude_max_intensity[p]) -
+                np.array(local_background_mean))
 
             sublattice_max_intensity_list_bksubtracted.append(
                 [sublattice_bksubtracted_atom])
@@ -523,7 +522,7 @@ def remove_local_background(sublattice, background_sub, intensity_type,
         sublattice_max_intensity_list_bksubtracted = np.array(
             sublattice_max_intensity_list_bksubtracted)
 
-        return (sublattice_max_intensity_list_bksubtracted[:, 0])
+        return sublattice_max_intensity_list_bksubtracted[:, 0]
 
     # elif intensity_type == "mean":
     #     # get list of sublattice and background_sub atom positions
@@ -579,7 +578,8 @@ def remove_local_background(sublattice, background_sub, intensity_type,
     #
     #         local_background_mean = local_bkgnd / k
     #
-    #         # subtract this mean local background intensity from the sublattice
+    #         # subtract this mean local background intensity from the
+    #         # sublattice
     #         #   atom position intensity
     #         # indexing here is the loop digit p
     #         sublattice_bksubtracted_atom = np.array(
@@ -669,7 +669,8 @@ def remove_local_background(sublattice, background_sub, intensity_type,
     #         local_background_mean_summed = pixel_count_in_region * \
     #                                        local_background_mean
     #
-    #         # subtract this mean local background intensity from the sublattice
+    #         # subtract this mean local background intensity from the
+    #         # sublattice
     #         #   atom position intensity
     #         # indexing here is the loop digit p
     #         sublattice_bksubtracted_atom = np.array(
