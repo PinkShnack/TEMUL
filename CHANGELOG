@@ -1,5 +1,8 @@
 0.1.7
  - test: added more unit tests and made sure notebooks run via binder
+0.1.6
+ - ref: place temul polarisation into topotem module (#51)
+ - ci: auto git tagging added (#56)
 0.1.4
  - ci: add auto pypi push actions
  - ref, doc: fix api doc link references

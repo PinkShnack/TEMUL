@@ -25,9 +25,9 @@ To cite the TEMUL toolkit, use the following DOI:
 
 Jupyter Notebooks and MyBinder allow us to analyse data in the browser without needing any downloads using the below "launch binder" button.
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/PinkShnack/TEMUL/master)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/PinkShnack/TEMUL/0.1.6)
 
-If the button does not work, try [this link instead](https://mybinder.org/v2/gh/PinkShnack/TEMUL/master). You also share this link with others for quick access.
+If the button does not work, try [this link instead](https://mybinder.org/v2/gh/PinkShnack/TEMUL/0.1.6). You also share this link with others for quick access.
 
 - To run through some code documentation tutorials, go to the "code_tutorials" folder after clicking the above button.
 
