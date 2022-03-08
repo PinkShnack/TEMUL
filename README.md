@@ -14,12 +14,6 @@ import it from the api module::
 
     import temul.api as tml
 
-## Cite
-
-To cite the TEMUL toolkit, use the following DOI:
-
-[![DOI](https://www.zenodo.org/badge/203785298.svg)](https://www.zenodo.org/badge/latestdoi/203785298)
-
 
 ## Interactive Notebooks in the Browser
 
@@ -33,11 +27,24 @@ If the button does not work, try [this link instead](https://mybinder.org/v2/gh/
 
 - To analyse data published in the listed scientific papers, go to the "publication_examples" folder after clicking the above button.
 
-
+ ### Example Publications that have used the TEMUL Toolkit
+ 
 | Publication Details   | Folder Location in TEMUL  |
 | :------------------   | :-----------------------  |
 | M. Hadjimichael, Y. Li *et al*, [Metal-ferroelectric supercrystals with periodically curved metallic layers](https://www.nature.com/articles/s41563-020-00864-6), Nature Materials 2021        | publication_examples/PTO_supercrystal_hadjimichael              |
 | K. Moore *et al* [Highly charged 180 degree head-to-head domain walls in lead titanate](https://www.nature.com/articles/s42005-020-00488-x), Nature Communications Physics 2020          | publication_examples/PTO_Junction_moore                         |
+| K. Moore *et al* [Charged Domain Wall and Polar Vortex Topologies in a Room-Temperature Magnetoelectric Multiferroic Thin Film](https://pubs.acs.org/doi/abs/10.1021/acsami.1c17383), ACS Appl. Mater. Interfaces 2022, 14, 4      |                          |
+
+
+
+## Cite TEMUL Toolkit/TopoTEM
+
+To cite the TEMUL toolkit in general, use the following DOI:
+- [![DOI](https://www.zenodo.org/badge/203785298.svg)](https://www.zenodo.org/badge/latestdoi/203785298)
+
+You can also cite the TopoTEM publication if you only worked with polarisation-type analysis.
+- See the [TopopTEM publication here on ArXiv (soon to be released in peer-reviewed journal)](https://arxiv.org/abs/2110.00112).
+
 
 
 ## Information for developers
