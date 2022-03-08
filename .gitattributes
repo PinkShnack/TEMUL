@@ -1,2 +1,3 @@
 publication_examples/* linguist-vendored
 code_tutorials/* linguist-vendored
+*.ipynb linguist-documentation
