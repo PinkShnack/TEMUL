@@ -78,6 +78,8 @@ pip install -r docs/requirements.txt
 sphinx-build docs _build  # open "index.html" in the "_build" directory
 ```
 
+Make sure that the docs build locally and online (if you have the rights to check that).
+
 ### Incrementing version
 
 `temul` gets its version from the latest git tag. If you think that a
