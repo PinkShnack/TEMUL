@@ -145,6 +145,31 @@ def correct_off_tilt_vectors(u, v, method="com"):
     return (u_corr, v_corr)
 
 
+def plot_polarization_vectors(x, y, u, v, image, sampling=None, units='pix',
+        plot_style='vector', overlay=True, unit_vector=False,
+        vector_rep='magnitude', degrees=False, angle_offset=None,
+        save='polarisation_image', title="", color='yellow',
+        cmap=None, alpha=1.0, image_cmap='gray', monitor_dpi=96,
+        no_axis_info=True, invert_y_axis=True, ticks=None, scalebar=False,
+        antialiased=False, levels=20, remove_vectors=False,
+        quiver_units='width', pivot='middle', angles='xy',
+        scale_units='xy', scale=None, headwidth=3.0, headlength=5.0,
+        headaxislength=4.5, width=None, minshaft=1, minlength=1):
+    """Alias function name for `plot_polarisation_vectors`."""
+
+    ax = plot_polarisation_vectors(
+        x, y, u, v, image, sampling, units,
+        plot_style, overlay, unit_vector,
+        vector_rep, degrees, angle_offset,
+        save, title, color,
+        cmap, alpha, image_cmap, monitor_dpi,
+        no_axis_info, invert_y_axis, ticks, scalebar,
+        antialiased, levels, remove_vectors,
+        quiver_units, pivot, angles,
+        scale_units, scale, headwidth, headlength,
+        headaxislength, width, minshaft, minlength)
+    return ax
+
 def plot_polarisation_vectors(
         x, y, u, v, image, sampling=None, units='pix',
         plot_style='vector', overlay=True, unit_vector=False,
