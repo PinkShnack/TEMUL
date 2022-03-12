@@ -596,7 +596,7 @@ def plot_polarisation_vectors(
         ax2.set_axis_off()
 
     # plt.tight_layout()
-    if isinstance(save, str):
+    if save is not None:
         plt.savefig(fname=save + '_' + plot_style + '.png',
                     transparent=True, frameon=False, bbox_inches='tight',
                     pad_inches=None, dpi=300, labels=False)
