@@ -3,7 +3,6 @@
 import temul.topotem.polarisation as pol
 
 
-
 def test_find_polarisation_vectors(get_dummy_xyuv):
     """find_polarisation_vectors check"""
     pass

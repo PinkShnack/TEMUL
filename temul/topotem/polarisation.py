@@ -145,7 +145,8 @@ def correct_off_tilt_vectors(u, v, method="com"):
     return (u_corr, v_corr)
 
 
-def plot_polarization_vectors(x, y, u, v, image, sampling=None, units='pix',
+def plot_polarization_vectors(
+        x, y, u, v, image, sampling=None, units='pix',
         plot_style='vector', overlay=True, unit_vector=False,
         vector_rep='magnitude', degrees=False, angle_offset=None,
         save='polarisation_image', title="", color='yellow',
@@ -169,6 +170,7 @@ def plot_polarization_vectors(x, y, u, v, image, sampling=None, units='pix',
         scale_units, scale, headwidth, headlength,
         headaxislength, width, minshaft, minlength)
     return ax
+
 
 def plot_polarisation_vectors(
         x, y, u, v, image, sampling=None, units='pix',
