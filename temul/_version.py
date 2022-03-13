@@ -99,7 +99,7 @@ if True:  # pragma: no cover
                                     __file__])
             # If it is under version control, it should be located
             # one hierarchy down from the repository root (either
-            # __file__ is "docs/conf.py" or "package_name/_version.py".
+            # __file__ is "docs/conftest.py" or "package_name/_version.py".
             if len(split(loc)) == 2:
                 try:
                     git_revision = _minimal_ext_cmd(['git', 'describe',
@@ -149,8 +149,8 @@ if True:  # pragma: no cover
                 warnings.warn(msg)
 
     hdir = dirname(abspath(__file__))
-    if basename(__file__) == "conf.py" and "name" in locals():
-        # This script is executed in conf.py from the docs directory
+    if basename(__file__) == "conftest.py" and "name" in locals():
+        # This script is executed in conftest.py from the docs directory
         versionfile = join(join(join(hdir, ".."),
                                 name),  # noqa: F821
                            "_version_save.py")

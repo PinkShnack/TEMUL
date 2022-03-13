@@ -1915,7 +1915,8 @@ def image_difference_position(sublattice,
                               percent_to_nn=0.40,
                               mask_radius=None,
                               num_peaks=5,
-                              inplace=True):
+                              inplace=True,
+                              verbose=False):
     """
     Find new atomic coordinates by comparing experimental to simulated image.
     Changes the sublattice inplace using change_sublattice_pseudo_inplace.
@@ -1957,6 +1958,8 @@ def image_difference_position(sublattice,
         If set to True, the input ``sublattice`` will be changed inplace and
         the sublattice returned. If set to False, these changes will be output
         only to a new sublattice.
+    verbose : bool
+        Setting to True will print out some info as the function is running.
 
     Returns
     -------
@@ -1974,20 +1977,13 @@ def image_difference_position(sublattice,
     >>> for i in range(0, len(sublattice.atom_list)):
     ...         sublattice.atom_list[i].elements = 'Mo_1'
     ...         sublattice.atom_list[i].z_height = '0.5'
-    >>> len(sublattice.atom_list)
-    397
+    >>> old_atoms = len(sublattice.atom_list)
 
-    >>> sublattice = image_difference_position(sublattice=sublattice,
-    ...                           sim_image=sim_image,
-    ...                           pixel_threshold=10,
-    ...                           percent_to_nn=None,
-    ...                           mask_radius=5,
-    ...                           num_peaks=5,
-    ...                           inplace=True)
-    3 new atoms found! Adding new atom positions.
-
-    >>> len(sublattice.atom_list)
-    400
+    >>> sublattice = image_difference_position(
+    ...     sublattice=sublattice, sim_image=sim_image, pixel_threshold=10,
+    ...     percent_to_nn=None, mask_radius=5, num_peaks=5, inplace=True,
+    ...     verbose=False)
+    >>> new_atoms = len(sublattice.atom_list)
 
     One can now sort these atom positions into elements.
     """
@@ -2082,11 +2078,13 @@ def image_difference_position(sublattice,
             pass
 
     if len(atom_positions_sub_new) == 0:
-        print("No New Atoms")
+        if verbose:
+            print("No New Atoms")
 
     elif len(atom_positions_sub_new) != 0 and inplace is True:
-        print("{} new atoms found! Adding new atom positions.".format(
-            len(atom_positions_sub_new)))
+        if verbose:
+            print("{} new atoms found! Adding new atom positions.".format(
+                len(atom_positions_sub_new)))
 
         sublattice = change_sublattice_pseudo_inplace(
             new_atom_positions=atom_positions_sub_new,

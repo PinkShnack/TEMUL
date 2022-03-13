@@ -23,7 +23,7 @@ see the :ref:`install` instructions.
 And there are more examples with Binder, just click the below button!
 
 .. image:: https://mybinder.org/badge_logo.svg
-   :target: https://mybinder.org/v2/gh/PinkShnack/TEMUL/master
+   :target: https://mybinder.org/v2/gh/PinkShnack/TEMUL/0.1.7
 
 Click the button above to start some data analysis
 (it may take a few minutes to load).

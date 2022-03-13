@@ -33,14 +33,20 @@ If the button does not work, try [this link instead](https://mybinder.org/v2/gh/
 | :------------------   | :-----------------------  |
 | M. Hadjimichael, Y. Li *et al*, [Metal-ferroelectric supercrystals with periodically curved metallic layers](https://www.nature.com/articles/s41563-020-00864-6), Nature Materials 2021        | publication_examples/PTO_supercrystal_hadjimichael              |
 | K. Moore *et al* [Highly charged 180 degree head-to-head domain walls in lead titanate](https://www.nature.com/articles/s42005-020-00488-x), Nature Communications Physics 2020          | publication_examples/PTO_Junction_moore                         |
-| K. Moore *et al* [Charged Domain Wall and Polar Vortex Topologies in a Room-Temperature Magnetoelectric Multiferroic Thin Film](https://pubs.acs.org/doi/abs/10.1021/acsami.1c17383), ACS Appl. Mater. Interfaces 2022, 14, 4      |                          |
+| K. Moore *et al* [Charged Domain Wall and Polar Vortex Topologies in a Room-Temperature Magnetoelectric Multiferroic Thin Film](https://pubs.acs.org/doi/abs/10.1021/acsami.1c17383), ACS Appl. Mater. Interfaces 2022, 14, 4      | [Coming soon](https://github.com/PinkShnack/TEMUL/issues/67)  |
 
+<!-- | E.N. O'Connell *et al* TopoTEM: A Python Package for Quantifying and
+Visualizing Scanning Transmission Electron Microscopy Data of Polar Topologies, Microsc Microanal. 2022 doi:10.1017/S1431927622000435      |                          |
+-->
 
 
 ## Cite TEMUL Toolkit/TopoTEM
 
-To cite the TEMUL toolkit in general, use the following DOI:
+To cite the latest TEMUL toolkit, use the following DOI:
 - [![DOI](https://www.zenodo.org/badge/203785298.svg)](https://www.zenodo.org/badge/latestdoi/203785298)
+
+To cite all TEMUL Toolkit versions, use this DOI:
+- [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3832142.svg)](https://doi.org/10.5281/zenodo.3832142)
 
 You can also cite the TopoTEM publication if you only worked with polarisation-type analysis.
 - See the [TopopTEM publication here on ArXiv (soon to be released in peer-reviewed journal)](https://arxiv.org/abs/2110.00112).
