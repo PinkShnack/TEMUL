@@ -9,4 +9,4 @@ This solves issue # ...
 - [ ] update CHANGELOG
 
 If pushing a new tag
-- [ ] update binder links with newest tag version
+- [ ] update binder links with newest tag version (`docs/index.rst`, `README.md`)
