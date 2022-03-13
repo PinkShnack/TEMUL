@@ -72,7 +72,7 @@ def find_polarisation_vectors(atom_positions_A, atom_positions_B,
     if save is not None:
         np.save(save + '.npy', u_v_component_list)
 
-    return (u, v)
+    return u, v
 
 
 def corrected_vectors_via_average(u, v):
@@ -143,33 +143,6 @@ def correct_off_tilt_vectors(u, v, method="com"):
     if "av" in method.lower():
         u_corr, v_corr = corrected_vectors_via_average(u, v)
     return (u_corr, v_corr)
-
-
-def plot_polarization_vectors(
-        x, y, u, v, image, sampling=None, units='pix',
-        plot_style='vector', overlay=True, unit_vector=False,
-        vector_rep='magnitude', degrees=False, angle_offset=None,
-        save='polarisation_image', title="", color='yellow',
-        cmap=None, alpha=1.0, image_cmap='gray', monitor_dpi=96,
-        no_axis_info=True, invert_y_axis=True, ticks=None, scalebar=False,
-        antialiased=False, levels=20, remove_vectors=False,
-        quiver_units='width', pivot='middle', angles='xy',
-        scale_units='xy', scale=None, headwidth=3.0, headlength=5.0,
-        headaxislength=4.5, width=None, minshaft=1, minlength=1):
-    """Alias function name for `plot_polarisation_vectors`."""
-
-    ax = plot_polarisation_vectors(
-        x, y, u, v, image, sampling, units,
-        plot_style, overlay, unit_vector,
-        vector_rep, degrees, angle_offset,
-        save, title, color,
-        cmap, alpha, image_cmap, monitor_dpi,
-        no_axis_info, invert_y_axis, ticks, scalebar,
-        antialiased, levels, remove_vectors,
-        quiver_units, pivot, angles,
-        scale_units, scale, headwidth, headlength,
-        headaxislength, width, minshaft, minlength)
-    return ax
 
 
 def plot_polarisation_vectors(
@@ -2157,3 +2130,54 @@ def atom_to_atom_distance_grouped_mean(sublattice, zone_axis_index,
         grouped_means.append(np.mean(grouped_region))
 
     return (groupings, grouped_means)
+
+
+def find_polarization_vectors(
+        atom_positions_A, atom_positions_B, save=None):
+    """Alias function for find_polarisation_vectors."""
+    u, v = find_polarisation_vectors(
+        atom_positions_A, atom_positions_B, save)
+    return u, v
+
+
+def plot_polarization_vectors(
+        x, y, u, v, image, sampling=None, units='pix',
+        plot_style='vector', overlay=True, unit_vector=False,
+        vector_rep='magnitude', degrees=False, angle_offset=None,
+        save='polarisation_image', title="", color='yellow',
+        cmap=None, alpha=1.0, image_cmap='gray', monitor_dpi=96,
+        no_axis_info=True, invert_y_axis=True, ticks=None, scalebar=False,
+        antialiased=False, levels=20, remove_vectors=False,
+        quiver_units='width', pivot='middle', angles='xy',
+        scale_units='xy', scale=None, headwidth=3.0, headlength=5.0,
+        headaxislength=4.5, width=None, minshaft=1, minlength=1):
+    """Alias function name for `plot_polarisation_vectors`."""
+
+    ax = plot_polarisation_vectors(
+        x, y, u, v, image, sampling, units,
+        plot_style, overlay, unit_vector,
+        vector_rep, degrees, angle_offset,
+        save, title, color,
+        cmap, alpha, image_cmap, monitor_dpi,
+        no_axis_info, invert_y_axis, ticks, scalebar,
+        antialiased, levels, remove_vectors,
+        quiver_units, pivot, angles,
+        scale_units, scale, headwidth, headlength,
+        headaxislength, width, minshaft, minlength)
+    return ax
+
+
+def get_average_polarization_in_regions(
+        x, y, u, v, image, divide_into=8):
+    """Alias function for get_average_polarisation_in_regions"""
+    x_new, y_new, u_new, v_new = get_average_polarisation_in_regions(
+        x, y, u, v, image, divide_into)
+    return x_new, y_new, u_new, v_new
+
+
+def get_average_polarization_in_regions_square(
+        x, y, u, v, image, divide_into=4):
+    """Alias function for get_average_polarization_in_regions_square"""
+    x_new, y_new, u_new, v_new = get_average_polarisation_in_regions_square(
+        x, y, u, v, image, divide_into)
+    return x_new, y_new, u_new, v_new
