@@ -1,4 +1,5 @@
 0.1.8
+ - test: add plot polarisation plotting tests (#47, #68)
  - enh: add and test polaris(z)ation aliases (#64)
  - enh: add latest and all versions for citing in README
  - enh: add PR and issue templates
