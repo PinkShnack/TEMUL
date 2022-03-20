@@ -24,10 +24,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install flake8 pytest
           pip install -e .
-#      - name: Lint with flake8
-#        run: |
-#          flake8 temul tests docs
+      - name: Lint with flake8
+        run: |
+          flake8 temul tests docs
       - name: Test with pytest
         run: |
-          pytest -v tests/test_topotem_polarisation.py
-          # pytest --doctest-modules temul/topotem temul/element_tools.py temul/intensity_tools.py temul/io.py temul/model_creation.py temul/signal_plotting.py temul/signal_processing.py
+          pytest -v tests
+          pytest --doctest-modules temul/topotem temul/element_tools.py temul/intensity_tools.py temul/io.py temul/model_creation.py temul/signal_plotting.py temul/signal_processing.py
