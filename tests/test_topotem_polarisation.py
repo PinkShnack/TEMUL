@@ -1,4 +1,4 @@
-
+import pytest
 import numpy as np
 
 import temul.topotem.polarisation as pol
@@ -61,3 +61,40 @@ def test_get_angles_from_uv_radian():
 
     angles = pol.get_angles_from_uv(u, v, degrees=False)
     assert np.allclose(angles, angles_expt)
+
+
+@pytest.mark.parametrize(
+    "plot_style, vector_rep",
+    [
+        ("vector", "magnitude"), ("vector", "angle"),
+        ("colormap", "magnitude"), ("colormap", "angle"),
+        ("contour", "magnitude"), ("contour", "angle"),
+        ("colorwheel", "angle"),  # magnitude not allowed for colorwheel
+        ("polar_colorwheel", "magnitude"), ("polar_colorwheel", "angle"),
+    ]
+)
+def test_plot_polarisation_vectors_plot_style_vector_rep(
+        plot_style, vector_rep, get_dummy_xyuv, handle_plots):
+    """Check the available plot_style."""
+    sublatticeA, sublatticeB, x, y, u, v = get_dummy_xyuv
+    _ = pol.plot_polarisation_vectors(
+        x, y, u, v, image=sublatticeA.image, save=None,
+        plot_style=plot_style, vector_rep=vector_rep)
+
+
+@pytest.mark.parametrize(
+    "overlay, unit_vector",
+    [
+        (True, True),
+        (True, False),
+        (False, True),
+        (False, False),
+    ]
+)
+def test_plot_polarisation_vectors_overlay_unit_vector(
+        overlay, unit_vector, get_dummy_xyuv, handle_plots):
+    """Check the available plot_style."""
+    sublatticeA, sublatticeB, x, y, u, v = get_dummy_xyuv
+    _ = pol.plot_polarisation_vectors(
+        x, y, u, v, image=sublatticeA.image, save=None,
+        overlay=overlay, unit_vector=unit_vector)
