@@ -142,7 +142,6 @@ def test_atom_deviation_from_straight_line_fit_01_basic():
     """Simple check to make sure outputted data types are correct."""
     sublattice = dd.get_polarised_single_sublattice()
     sublattice.construct_zone_axes(atom_plane_tolerance=1)
-    n = 5
 
     x, y, u, v = pol.atom_deviation_from_straight_line_fit(
         sublattice, axis_number=0, n=5, second_fit_rigid=True, plot=False,
@@ -161,7 +160,6 @@ def test_atom_deviation_from_straight_line_fit_02_basic():
     when ``return_individual_atom_planes=True``."""
     sublattice = dd.get_polarised_single_sublattice()
     sublattice.construct_zone_axes(atom_plane_tolerance=1)
-    n = 5
     return_individual_atom_planes = True
 
     x, y, u, v = pol.atom_deviation_from_straight_line_fit(
@@ -193,7 +191,6 @@ def test_atom_deviation_from_straight_line_fit_plot_rumpling(
     when ``return_individual_atom_planes=True``."""
     sublattice = dd.get_polarised_single_sublattice()
     sublattice.construct_zone_axes(atom_plane_tolerance=1)
-    n = 5
     return_individual_atom_planes = True
 
     x, y, u, v = pol.atom_deviation_from_straight_line_fit(
