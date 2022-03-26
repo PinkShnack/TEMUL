@@ -1,7 +1,9 @@
 import pytest
 import numpy as np
+import matplotlib.pyplot as plt
 
 import temul.topotem.polarisation as pol
+import temul.dummy_data as dd
 
 
 def test_find_polarisation_vectors_basic_01():
@@ -134,3 +136,74 @@ def test_plot_polarisation_vectors_degrees_angle_offset(
     _ = pol.plot_polarisation_vectors(
         x, y, u, v, image=sublatticeA.image, save=None,
         vector_rep=vector_rep, degrees=degrees, angle_offset=angle_offset)
+
+
+def test_atom_deviation_from_straight_line_fit_01_basic():
+    """Simple check to make sure outputted data types are correct."""
+    sublattice = dd.get_polarised_single_sublattice()
+    sublattice.construct_zone_axes(atom_plane_tolerance=1)
+    n = 5
+
+    x, y, u, v = pol.atom_deviation_from_straight_line_fit(
+        sublattice, axis_number=0, n=5, second_fit_rigid=True, plot=False,
+        return_individual_atom_planes=False)
+
+    assert isinstance(x, list)
+    assert isinstance(x[0], float)
+    assert all([len(i) == 256 for i in [x, y, u, v]])
+
+    assert all([isinstance(i, list) for i in [x, y, u, v]])
+    assert all([isinstance(i[0], float) for i in [x, y, u, v]])
+
+
+def test_atom_deviation_from_straight_line_fit_02_basic():
+    """Simple check to make sure outputted data types are correct for
+    when ``return_individual_atom_planes=True``."""
+    sublattice = dd.get_polarised_single_sublattice()
+    sublattice.construct_zone_axes(atom_plane_tolerance=1)
+    n = 5
+    return_individual_atom_planes = True
+
+    x, y, u, v = pol.atom_deviation_from_straight_line_fit(
+        sublattice, axis_number=0, n=5, second_fit_rigid=True, plot=False,
+        return_individual_atom_planes=return_individual_atom_planes)
+
+    assert isinstance(x, list)
+    assert isinstance(x[0], list)  # it is now a list of lists!
+    assert len(x) == 16  # 16 atomic columns
+
+    # look in each sublist
+    x_first_atomic_column = x[0]
+    assert isinstance(x_first_atomic_column, list)
+    assert isinstance(x_first_atomic_column[0], float)
+    # just so happens to be 16x16 in our test example!
+    assert len(x_first_atomic_column) == 16  # 16 atoms in this atomic column
+    assert isinstance(x_first_atomic_column[0], float)
+    assert x_first_atomic_column[0] == 5.0
+
+    # look at each sublist
+    assert all([len(i) == 16 for i in [x, y, u, v]])
+    assert all([isinstance(i, list) for i in [x, y, u, v]])
+    assert all([isinstance(i[0], list) for i in [x, y, u, v]])
+
+
+def test_atom_deviation_from_straight_line_fit_plot_rumpling(
+        handle_plots):
+    """Simple check to make sure outputted data types are correct for
+    when ``return_individual_atom_planes=True``."""
+    sublattice = dd.get_polarised_single_sublattice()
+    sublattice.construct_zone_axes(atom_plane_tolerance=1)
+    n = 5
+    return_individual_atom_planes = True
+
+    x, y, u, v = pol.atom_deviation_from_straight_line_fit(
+        sublattice, axis_number=0, n=5, second_fit_rigid=True, plot=False,
+        return_individual_atom_planes=return_individual_atom_planes)
+
+    # look at first atomic plane rumpling
+    plt.figure()
+    plt.plot(range(len(v[0])), v[0], 'ro')
+    plt.title("First atomic plane v (vertical) rumpling.")
+    plt.xlabel("Atomic plane #")
+    plt.ylabel("Vertical deviation (rumpling) (a.u.)")
+    plt.show()

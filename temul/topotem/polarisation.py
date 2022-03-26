@@ -928,13 +928,11 @@ def get_xyuv_from_line_fit(arr, n, second_fit_rigid=True, plot=False):
 
 
 def atom_deviation_from_straight_line_fit(
-        sublattice, axis_number, n, second_fit_rigid=True, plot=False):
+        sublattice, axis_number, n, second_fit_rigid=True, plot=False,
+        return_individual_atom_planes=False):
     """
     Fits the atomic columns in an atom plane to two straight lines using the
-    first ``n`` and second (last) ``n`` atomic columns. Computes the distance
-    of each atomic column from the line halfway between the two fitted lines,
-    as described in [1]_. This is done for every sublattice atom plane along
-    the chosen ``axis_number``.
+    first ``n`` and second (last) ``n`` atomic columns. See Notes.
 
     The slope of the first fitting will be used for the
     second fitting. Setting ``second_fit_rigid`` = False will reverse this
@@ -959,6 +957,12 @@ def atom_deviation_from_straight_line_fit(
     plot : bool, default False
         Whether to plot the atom plane data, first and second fitting, and the
         line constructed halfway between the two.
+    return_individual_atom_planes : bool
+        If set to True, the returned lists will be lists of sublists.
+        These sublists have information from each atom plane. For example,
+        the returned `x_list` will have sublists which contain the `x` values
+        from each atom plane.
+        If set to False (default), the list of sublists is flattened.
 
     Returns
     -------
@@ -966,14 +970,25 @@ def atom_deviation_from_straight_line_fit(
         x, y are the original atom position coordinates
         ``sublattice.x_position`` and ``sublattice.y_position`` for
         the coordinates included in the chosen
-        ``axis_number``. u, v are the polarisation vector components pointing
+        ``axis_number``.
+        u, v are the polarisation vector components pointing
         towards the halfway line from the atom position coordinates.
         These can be input to ``plot_polarisation_vectors()``
         for visualisation.
+        If ``return_individual_atom_planes`` is True, then the four lists
+        will be made up of a sublists. See ``return_individual_atom_planes``
+        for more information.
 
     See Also
     --------
     get_xyuv_from_line_fit : uses ``_fit_line_clusters`` to get xyuv from arr
+
+    Notes
+    -----
+    Computes the distance
+    of each atomic column from the line halfway between the two fitted lines,
+    as described in [1]_. This is done for every sublattice atom plane along
+    the chosen ``axis_number``.
 
     References
     ----------
@@ -1009,6 +1024,26 @@ def atom_deviation_from_straight_line_fit(
     ...                       vector_rep='angle', save=None, degrees=True,
     ...                       plot_style='colormap', cmap='cet_coolwarm',
     ...                       overlay=True, monitor_dpi=50)
+
+    Get each atomic column in a list of sublists
+
+    >>> return_individual_atom_planes = True
+    >>> x, y, u, v = tml.atom_deviation_from_straight_line_fit(
+    ...     sublattice, axis_number=0, n=5, second_fit_rigid=True, plot=False,
+    ...     return_individual_atom_planes=return_individual_atom_planes)
+
+    look at first atomic plane rumpling
+
+    >>> _ = plt.figure()
+    >>> _ = plt.plot(range(len(v[0])), v[0], 'ro')
+    >>> _ = plt.title("First atomic plane v (vertical) rumpling.")
+    >>> _ = plt.xlabel("Atomic plane #")
+    >>> _ = plt.ylabel("Vertical deviation (rumpling) (a.u.)")
+    >>> _ = plt.close()
+
+    # could also use numpy array to handle the data
+
+    >>> arr = np.array([x, y, u, v]).T
 
     Let's look at some rotated data
 
@@ -1046,12 +1081,19 @@ def atom_deviation_from_straight_line_fit(
 
             x, y, u, v = get_xyuv_from_line_fit(
                 arr=arr, n=n, second_fit_rigid=second_fit_rigid, plot=plot)
-            x_list.extend(x)
-            y_list.extend(y)
-            u_list.extend(u)
-            v_list.extend(v)
+            x_list.append(x)
+            y_list.append(y)
+            u_list.append(u)
+            v_list.append(v)
 
-    return (x_list, y_list, u_list, v_list)
+    if return_individual_atom_planes:
+        return x_list, y_list, u_list, v_list
+    else:
+        x_list = [i for sublist in x_list for i in sublist]
+        y_list = [i for sublist in y_list for i in sublist]
+        u_list = [i for sublist in u_list for i in sublist]
+        v_list = [i for sublist in v_list for i in sublist]
+        return x_list, y_list, u_list, v_list
 
 
 def _truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):

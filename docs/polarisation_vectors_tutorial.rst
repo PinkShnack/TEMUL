@@ -166,6 +166,33 @@ using :py:func:`temul.topotem.polarisation.plot_polarisation_vectors`!
     :scale: 70 %
 
 
+We can look at individual atomic column information by using
+``return_individual_atom_planes = True``.
+
+.. code-block:: python
+
+    >>> return_individual_atom_planes = True
+    >>> x, y, u, v = tml.atom_deviation_from_straight_line_fit(
+    ...     sublattice, axis_number=0, n=5, second_fit_rigid=True, plot=False,
+    ...     return_individual_atom_planes=return_individual_atom_planes)
+
+    To look at first atomic plane rumpling
+
+    >>> plt.figure()
+    >>> plt.plot(range(len(v[0])), v[0], 'ro')
+    >>> plt.title("First atomic plane v (vertical) rumpling.")
+    >>> plt.xlabel("Atomic plane #")
+    >>> plt.ylabel("Vertical deviation (rumpling) (a.u.)")
+    >>> plt.show()
+
+    We could also of course use a numpy array to handle the data.
+
+    >>> arr = np.array([x, y, u, v]).T
+
+.. image:: tutorial_images/polarisation_vectors_tutorial/atomic_plane_rumpling.png
+    :scale: 70 %
+
+
 Let's look at some rotated data
 
 .. code-block:: python
@@ -186,7 +213,6 @@ Let's look at some rotated data
     :scale: 45 %
 .. image:: tutorial_images/polarisation_vectors_tutorial/deviation_vectors_polar_dd_rot.png
     :scale: 45 %
-
 
 
 ==========================================
@@ -462,7 +488,7 @@ Plot a tricontourf for quadrant visualisation using a custom matplotlib cmap:
     >>> zest = tml.hex_to_rgb(tml.color_palettes('zesty'))
     >>> zest.append(zest[0])  # make the -180 and 180 degree colour the same
     >>> expanded_zest = tml.expand_palette(zest, [1,2,2,2,1])
-    >>> custom_cmap, _ = from_levels_and_colors(
+    >>> custom_cmap, from_levels_and_colors(
     ...     levels=range(9), colors=tml.rgb_to_dec(expanded_zest))
     >>> tml.plot_polarisation_vectors(x, y, u, v, image=image,
     ...                           unit_vector=False, plot_style='contour',
