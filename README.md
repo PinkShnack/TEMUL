@@ -36,7 +36,7 @@ If the button does not work, try [this link instead](https://mybinder.org/v2/gh/
 | K. Moore *et al* [Charged Domain Wall and Polar Vortex Topologies in a Room-Temperature Magnetoelectric Multiferroic Thin Film](https://pubs.acs.org/doi/abs/10.1021/acsami.1c17383), ACS Appl. Mater. Interfaces 2022, 14, 4      | [Coming soon](https://github.com/PinkShnack/TEMUL/issues/67)  |
 
 <!-- | E.N. O'Connell *et al* TopoTEM: A Python Package for Quantifying and
-Visualizing Scanning Transmission Electron Microscopy Data of Polar Topologies, Microsc Microanal. 2022 doi:10.1017/S1431927622000435      |                          |
+Visualizing Scanning Transmission Electron Microscopy Data of Polar Topologies, Microsc Microanal. 2022 doi:10.1017/S1431927622000435    https://www.cambridge.org/core/journals/microscopy-and-microanalysis/article/abs/topotem-a-python-package-for-quantifying-and-visualizing-scanning-transmission-electron-microscopy-data-of-polar-topologies/FA1373E8FD5A0F07CB93D9423FF290CC  |                          |
 -->
 
 
