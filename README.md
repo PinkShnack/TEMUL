@@ -34,10 +34,8 @@ If the button does not work, try [this link instead](https://mybinder.org/v2/gh/
 | M. Hadjimichael, Y. Li *et al*, [Metal-ferroelectric supercrystals with periodically curved metallic layers](https://www.nature.com/articles/s41563-020-00864-6), Nature Materials 2021        | publication_examples/PTO_supercrystal_hadjimichael              |
 | K. Moore *et al* [Highly charged 180 degree head-to-head domain walls in lead titanate](https://www.nature.com/articles/s42005-020-00488-x), Nature Communications Physics 2020          | publication_examples/PTO_Junction_moore                         |
 | K. Moore *et al* [Charged Domain Wall and Polar Vortex Topologies in a Room-Temperature Magnetoelectric Multiferroic Thin Film](https://pubs.acs.org/doi/abs/10.1021/acsami.1c17383), ACS Appl. Mater. Interfaces 2022, 14, 4      | [Coming soon](https://github.com/PinkShnack/TEMUL/issues/67)  |
+| E.N. O'Connell *et al* TopoTEM: A Python Package for Quantifying and Visualizing Scanning Transmission Electron Microscopy Data of Polar Topologies, Microsc Microanal. 2022 doi:10.1017/S1431927622000435 [URL](https://www.cambridge.org/core/journals/microscopy-and-microanalysis/article/abs/topotem-a-python-package-for-quantifying-and-visualizing-scanning-transmission-electron-microscopy-data-of-polar-topologies/FA1373E8FD5A0F07CB93D9423FF290CC)  [Arxiv Version](https://arxiv.org/abs/2110.00112) (to be updated while M&M version is not open access (it will be soon!)  | [See the Docs](https://temul-toolkit.readthedocs.io/en/latest/) |
 
-<!-- | E.N. O'Connell *et al* TopoTEM: A Python Package for Quantifying and
-Visualizing Scanning Transmission Electron Microscopy Data of Polar Topologies, Microsc Microanal. 2022 doi:10.1017/S1431927622000435    https://www.cambridge.org/core/journals/microscopy-and-microanalysis/article/abs/topotem-a-python-package-for-quantifying-and-visualizing-scanning-transmission-electron-microscopy-data-of-polar-topologies/FA1373E8FD5A0F07CB93D9423FF290CC  |                          |
--->
 
 
 ## Cite TEMUL Toolkit/TopoTEM
