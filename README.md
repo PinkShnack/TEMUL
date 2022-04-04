@@ -47,7 +47,7 @@ To cite all TEMUL Toolkit versions, use this DOI:
 - [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3832142.svg)](https://doi.org/10.5281/zenodo.3832142)
 
 You can also cite the TopoTEM publication if you only worked with polarisation-type analysis.
-- See the [TopopTEM publication here on ArXiv (soon to be released in peer-reviewed journal)](https://arxiv.org/abs/2110.00112).
+- See the [TopopTEM publication here](https://www.cambridge.org/core/journals/microscopy-and-microanalysis/article/abs/topotem-a-python-package-for-quantifying-and-visualizing-scanning-transmission-electron-microscopy-data-of-polar-topologies/FA1373E8FD5A0F07CB93D9423FF290CC). It is annoyingly still not open access. Until that point, see the ArXiv link about in the table, or contact me via the Discussion tab above.
 
 
 
