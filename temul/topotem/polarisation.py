@@ -440,6 +440,10 @@ def plot_polarisation_vectors(
         v = v_norm
 
     # setting up norm and cmap for colorbar scalar mappable
+    # if isinstance(cbar_norm, colors.Normalize):
+    #     norm = cbar_norm
+    # else:
+
     if vector_rep == "angle":
         if cbar_vmin is not None or cbar_vmax is not None:
             raise ValueError(f"{vector_rep=} cannot currently be used with "

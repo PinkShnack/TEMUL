@@ -139,22 +139,23 @@ def test_plot_polarisation_vectors_degrees_angle_offset(
 
 
 @pytest.mark.parametrize(
-    "vector_rep, cbar_min, cbar_max",
+    "vector_rep, cbar_vmin, cbar_vmax",
     [
         ("magnitude", None, None),
-        ("magnitude", 0.1, 0.5),
-        ("magnitude", None, 0.6),
-        ("magnitude", 0.2, None),
+        ("magnitude", 2.0, 4.0),
+        ("magnitude", None, 3.0),
+        ("magnitude", 3.0, None),
     ]
 )
 def test_plot_polarisation_vectors_plot_style_cbar_limits(
-        vector_rep, cbar_min, cbar_max, get_dummy_xyuv, handle_plots):
+        vector_rep, cbar_vmin, cbar_vmax, get_dummy_xyuv, handle_plots):
     """Check the available plot_style."""
     sublatticeA, sublatticeB, x, y, u, v = get_dummy_xyuv
     _ = pol.plot_polarisation_vectors(
         x, y, u, v, image=sublatticeA.image, save=None,
         plot_style='colormap', vector_rep=vector_rep,
-        cbar_min=cbar_min, cbar_max=cbar_max)
+        cbar_vmin=cbar_vmin, cbar_vmax=cbar_vmax)
+    plt.show()
 
 
 def test_atom_deviation_from_straight_line_fit_01_basic():
