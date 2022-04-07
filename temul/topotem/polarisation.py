@@ -150,7 +150,8 @@ def plot_polarisation_vectors(
         plot_style='vector', overlay=True, unit_vector=False,
         vector_rep='magnitude', degrees=False, angle_offset=None,
         save='polarisation_image', title="", color='yellow',
-        cmap=None, alpha=1.0, image_cmap='gray', monitor_dpi=96,
+        cmap=None, cbar_vmin=None, cbar_vmax=None,
+        alpha=1.0, image_cmap='gray', monitor_dpi=96,
         no_axis_info=True, invert_y_axis=True, ticks=None, scalebar=False,
         antialiased=False, levels=20, remove_vectors=False,
         quiver_units='width', pivot='middle', angles='xy',
@@ -209,6 +210,14 @@ def plot_polarisation_vectors(
         Color of the arrows when ``plot_style="vector"`` or ``"contour"``.
     cmap : matplotlib colormap, default ``"viridis"``
         Matplotlib cmap used for the vector arrows.
+    cbar_vmin, cbar_vmax : int or float
+        Minimum and maximum value to be shown on the colorbar via the
+        ``matplotlib.colors.colors.Normalize`` class.
+        Seeting these can help to compare across images.
+        You do not have to use both together. For example,
+        if you want to only set the minimum colorbar value, just use
+        `cbar_vmin`, and the maximum value will automatically be set to
+        the largest vector value.
     alpha : float, default 1.0
         Transparency of the matplotlib ``cmap``. For ``plot_style="colormap"``
         and ``plot_style="colorwheel"``, this alpha applies to the vector
@@ -413,6 +422,9 @@ def plot_polarisation_vectors(
         # -v because in STEM the origin is top left
         vector_rep_val = get_angles_from_uv(u, -v, degrees=degrees,
                                             angle_offset=angle_offset)
+    else:
+        raise ValueError(f"{vector_rep=} must be either 'angle' or "
+                         f"'magnitude'.")
 
     vector_label = angle_label(
         vector_rep=vector_rep, units=units, degrees=degrees)
@@ -429,13 +441,22 @@ def plot_polarisation_vectors(
 
     # setting up norm and cmap for colorbar scalar mappable
     if vector_rep == "angle":
+        if cbar_vmin is not None or cbar_vmax is not None:
+            raise ValueError(f"{vector_rep=} cannot currently be used with "
+                             f"{cbar_vmin=} or {cbar_vmax=} set.")
         if degrees:
             min_val, max_val = -180, 180 + 0.0001  # fix display issues
         elif not degrees:
             min_val, max_val = -np.pi, np.pi
     elif vector_rep == "magnitude":
-        min_val = np.min(vector_rep_val)
-        max_val = np.max(vector_rep_val) + 0.00000001
+        if cbar_vmin is not None:
+            min_val = cbar_vmin
+        else:
+            min_val = np.min(vector_rep_val)
+        if cbar_vmax is not None:
+            max_val = cbar_vmax
+        else:
+            max_val = np.max(vector_rep_val) + 0.00000001
     norm = colors.Normalize(vmin=min_val, vmax=max_val)
 
     if monitor_dpi is not None:
