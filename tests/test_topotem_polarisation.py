@@ -155,7 +155,6 @@ def test_plot_polarisation_vectors_plot_style_cbar_limits(
         x, y, u, v, image=sublatticeA.image, save=None,
         plot_style='colormap', vector_rep=vector_rep,
         cbar_vmin=cbar_vmin, cbar_vmax=cbar_vmax)
-    plt.show()
 
 
 def test_atom_deviation_from_straight_line_fit_01_basic():
