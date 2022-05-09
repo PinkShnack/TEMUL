@@ -1,3 +1,4 @@
+# flake8: noqa: E999
 import pytest
 import numpy as np
 import matplotlib.pyplot as plt
