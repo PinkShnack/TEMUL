@@ -24,6 +24,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install flake8 pytest
           pip install -e .
+          pip freeze
       - name: Lint with flake8
         run: |
           flake8 temul tests docs
