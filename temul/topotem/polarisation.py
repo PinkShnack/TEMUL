@@ -1185,9 +1185,9 @@ def full_atom_plane_deviation_from_straight_line_fit(sublattice,
             x2 = atom_plane.end_atom.pixel_x
             y2 = slope * x2 + intercept
 
-            p1 = np.array((x1, y1), ndmin=2)
+            p1 = np.array((x1, y1), dtype=float)
             # end xy coord for straight line fit
-            p2 = np.array((x2, y2), ndmin=2)
+            p2 = np.array((x2, y2), dtype=float)
 
             atoms_on_plane_list = []
             atom_dist_diff_list = []
@@ -1195,9 +1195,10 @@ def full_atom_plane_deviation_from_straight_line_fit(sublattice,
             # original_atom_pos_array and new_atom_diff_array,
             # or away using new_atom_pos_array and -new_atom_diff_array
             for original_atom in original_atoms_array:
-                distance = np.cross(p2 - p1, original_atom -
-                                    p1) / np.linalg.norm(p2 - p1)
-                distance = float(distance)
+                original_atom = np.asarray(original_atom, dtype=float)
+                distance = np.cross(p2 - p1, original_atom - p1)
+                distance = distance / np.linalg.norm(p2 - p1)
+                distance = float(np.asarray(distance).item())
                 x_diff = distance * np.cos(angle)
                 y_diff = distance * np.sin(angle)
 

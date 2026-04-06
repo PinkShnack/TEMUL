@@ -204,6 +204,7 @@ def convert_vesta_xyz_to_prismatic_xyz(vesta_xyz_filename,
                     '_atom_site_fract_x',
                     '_atom_site_fract_y',
                     '_atom_site_fract_z']
+    file['_atom_site_Z_number'] = file['_atom_site_Z_number'].astype(object)
 
     # change all elements to atomic number
     for i, element_symbol in enumerate(file.loc[:, '_atom_site_Z_number']):
