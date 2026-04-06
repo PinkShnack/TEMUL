@@ -185,7 +185,7 @@ def compare_images_line_profile_two_images(imageA, imageB,
 
     Examples
     --------
-    >>> import atomap.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> import temul.api as tml
     >>> imageA = am.dummy_data.get_simple_cubic_signal(image_noise=True)
     >>> imageB = am.dummy_data.get_simple_cubic_signal()

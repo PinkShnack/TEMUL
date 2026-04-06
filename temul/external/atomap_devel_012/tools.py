@@ -348,7 +348,7 @@ def _get_interpolated2d_from_unregular_data(
         z,
         (new_x, new_y),
         method='cubic',
-        fill_value=np.NaN).astype('float32')
+        fill_value=np.nan).astype('float32')
     return(new_x, new_y, new_z)
 
 

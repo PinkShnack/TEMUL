@@ -161,8 +161,8 @@ def count_atoms_in_sublattice_list(sublattice_list, filename=None):
         plt.ylabel('Count of Elements', fontsize=16)
         plt.tight_layout()
         plt.savefig(fname='element_count_' + filename + '.png',
-                    transparent=True, frameon=False, bbox_inches='tight',
-                    pad_inches=None, dpi=300, labels=False)
+                    transparent=True, bbox_inches='tight',
+                    pad_inches=None, dpi=300)
         plt.close()
     else:
         pass
@@ -1857,10 +1857,12 @@ def change_sublattice_pseudo_inplace(new_atom_positions, old_sublattice):
     >>> sublattice_B = change_sublattice_pseudo_inplace(
     ...     new_atom_positions, sublattice_A)
     >>> sublattice_B.atom_positions
-    [[1, 2, 4, 6], [5, 4, 3, 6]]
+    array([[1, 2, 4, 6],
+           [5, 4, 3, 6]])
 
     >>> sublattice_A.atom_positions
-    [[1, 2], [5, 4]]
+    array([[1, 2],
+           [5, 4]])
 
     It also copies information such as elements
 

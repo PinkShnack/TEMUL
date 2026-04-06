@@ -531,7 +531,11 @@ def measure_image_errors(imageA, imageB, filename=None):
         imageB = imageB.astype('float64')
 
     mse_number = mse(imageA, imageB)
-    ssm_number = ssm(imageA, imageB)
+    data_range = max(imageA.max(), imageB.max()) - min(imageA.min(),
+                                                       imageB.min())
+    if data_range == 0:
+        data_range = 1.0
+    ssm_number = ssm(imageA, imageB, data_range=data_range)
 
     if filename is not None:
         plt.figure()
@@ -1548,7 +1552,7 @@ def toggle_atom_refine_position_automatically(sublattice,
     >>> import temul.api as tml
     >>> sublattice = get_simple_cubic_sublattice_positions_on_vac()
     >>> sublattice.find_nearest_neighbors()
-    >>> sublattice.plot()
+    >>> sublattice.plot()  # doctest: +SKIP
     >>> min_cut_off_percent = 0.75
     >>> max_cut_off_percent = 1.25
     >>> false_list_sublattice =  tml.toggle_atom_refine_position_automatically(
@@ -1559,7 +1563,7 @@ def toggle_atom_refine_position_automatically(sublattice,
 
     Visually check which atoms will not be refined (red dots)
 
-    >>> sublattice.toggle_atom_refine_position_with_gui()
+    >>> sublattice.toggle_atom_refine_position_with_gui()  # doctest: +SKIP
 
     """
 
@@ -1733,10 +1737,7 @@ def get_cell_image(s, points_x, points_y, method='Voronoi',
     intensity_record = np.zeros_like(image, dtype=float)
     currentFeature = np.zeros_like(image.T, dtype=float)
     point_record = np.zeros(image.shape[0:2][::-1], dtype=int)
-    integrated_intensity = np.zeros_like(sum(sum(currentFeature.T)))
-    integrated_intensity = np.dstack(
-        integrated_intensity for i in range(len(points_x)))
-    integrated_intensity = np.squeeze(integrated_intensity.T)
+    integrated_intensity = np.zeros(len(points_x), dtype=float)
     points = np.array((points_y, points_x))
     # Setting max_radius to the width of the image, if none is set.
     if method == 'Voronoi':

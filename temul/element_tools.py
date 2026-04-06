@@ -58,7 +58,7 @@ def atomic_radii_in_pixels(sampling, element_symbol):
 
     Examples
     --------
-    >>> import atomap.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> from temul.element_tools import atomic_radii_in_pixels
     >>> image = am.dummy_data.get_simple_cubic_signal()
 

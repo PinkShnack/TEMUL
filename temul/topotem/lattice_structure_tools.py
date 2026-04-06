@@ -66,7 +66,7 @@ def calculate_atom_plane_curvature(sublattice, zone_vector_index,
     >>> import temul.api as tml
     >>> sublattice = sine_wave_sublattice()
     >>> sublattice.construct_zone_axes(atom_plane_tolerance=1)
-    >>> sublattice.plot()
+    >>> sublattice.plot()  # doctest: +SKIP
     >>> sampling = 0.05 #  nm/pix
     >>> cmap='bwr'
     >>> curvature_map = tml.calculate_atom_plane_curvature(sublattice,
