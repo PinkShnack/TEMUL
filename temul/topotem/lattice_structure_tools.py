@@ -1,8 +1,16 @@
 import numpy as np
 from scipy.optimize import curve_fit
-from scipy.misc import derivative
 import matplotlib.pyplot as plt
 from matplotlib.cm import ScalarMappable
+
+
+def _second_derivative(func, x_values, params, dx=1e-6):
+    x_values = np.asarray(x_values, dtype=float)
+    return (
+        func(x_values + dx, *params)
+        - 2 * func(x_values, *params)
+        + func(x_values - dx, *params)
+    ) / (dx ** 2)
 
 
 def calculate_atom_plane_curvature(sublattice, zone_vector_index,
@@ -118,9 +126,8 @@ def calculate_atom_plane_curvature(sublattice, zone_vector_index,
 
         # calculate the second derivative of the sine wave
         #   with respect to x analytically (to extract the strain gradient)
-        second_der = derivative(func,
-                                np.asarray(atom_plane.x_position),
-                                dx=1e-6, n=2, args=(params))
+        second_der = _second_derivative(
+            func, atom_plane.x_position, params, dx=1e-6)
 
         if return_fits:
             fittings_list.append(params)

@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from scipy.spatial import cKDTree
 import hyperspy.api as hs
 from hyperspy.signals import Signal2D
-from hyperspy.drawing._markers.point import Point
+from temul.external.atomap_devel_012._hs_marker_compat import Point
 
 import temul.external.atomap_devel_012.tools as at
 import temul.external.atomap_devel_012.analysis_tools as an
@@ -148,7 +148,7 @@ class Sublattice():
 
     @property
     def atom_positions(self):
-        return([self.x_position, self.y_position])
+        return np.array([self.x_position, self.y_position])
 
     @property
     def x_position(self):
@@ -2211,7 +2211,7 @@ class Sublattice():
         for zone_index, zone_vector in zone_vector_index_list:
             data_list = self.get_atom_distance_difference_from_zone_vector(
                 zone_vector)
-            if len(data_list[2]) is not 0:
+            if len(data_list[2]) != 0:
                 signal = self.get_property_map(
                     data_list[0],
                     data_list[1],

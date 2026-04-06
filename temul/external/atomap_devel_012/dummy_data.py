@@ -1,9 +1,13 @@
 import numpy as np
 import hyperspy.api as hs
 from hyperspy import components1d
-from hyperspy.signals import EELSSpectrum
 from temul.external.atomap_devel_012.testing_tools import MakeTestData
 from temul.external.atomap_devel_012.atom_lattice import Atom_Lattice
+
+try:
+    from hyperspy.signals import EELSSpectrum
+except ImportError:
+    EELSSpectrum = hs.signals.Signal1D
 
 
 def _make_hexagonal_two_sublattice_testdata(image_noise=False):

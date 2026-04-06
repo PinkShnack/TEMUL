@@ -560,9 +560,10 @@ def plot_polarisation_vectors(
 
         sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
         sm.set_array([])
-        cbar = plt.colorbar(mappable=sm, fraction=0.046, pad=0.04,
-                            drawedges=False)
-        cbar.set_ticks(ticks)
+        cbar = plt.colorbar(
+            mappable=sm, ax=ax, fraction=0.046, pad=0.04, drawedges=False)
+        if ticks is not None:
+            cbar.set_ticks(ticks)
         cbar.ax.set_ylabel(vector_label)
 
     elif plot_style == "polar_colorwheel":
@@ -913,10 +914,14 @@ def get_xyuv_from_line_fit(arr, n, second_fit_rigid=True, plot=False):
     y_list = []
     u_list = []
     v_list = []
+    line_vector = p2[0] - p1[0]
+    line_norm = np.linalg.norm(line_vector)
     for original_pos in arr:
-        distance = np.cross(p2 - p1, original_pos -
-                            p1) / np.linalg.norm(p2 - p1)
-        distance = float(distance)
+        relative_pos = np.asarray(original_pos) - p1[0]
+        distance = (
+            line_vector[0] * relative_pos[1] -
+            line_vector[1] * relative_pos[0]
+        ) / line_norm
         u = distance * np.cos(angle)
         v = distance * np.sin(angle)
         x_list.append(original_pos[0])
