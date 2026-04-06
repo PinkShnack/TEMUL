@@ -55,7 +55,7 @@ def batch_convert_emd_to_image(extension_to_save,
             s = hs.load(filename)
             print('Processing image: ' + filename)
 
-            if type(s) == list:
+            if isinstance(s, list):
                 aligned_image = s[0].inav[-3:-2]
                 s = aligned_image.sum('Time')
 
@@ -502,7 +502,7 @@ def create_dataframe_for_xyz(sublattice_list,
     if filename is not None:
         df_xyz.to_csv(filename + '.xyz', sep=' ', header=False, index=False)
 
-    return(df_xyz)
+    return df_xyz
 
 
 def dm3_stack_to_tiff_stack(loading_file,

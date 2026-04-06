@@ -328,7 +328,7 @@ def get_cropping_area(line_profile_positions, crop_offset=20):
     crop_left, crop_right = x0 - crop_offset, x1 + crop_offset
     crop_top, crop_bot = y0 - crop_offset, y1 + crop_offset
 
-    return(crop_left, crop_right, crop_top, crop_bot)
+    return crop_left, crop_right, crop_top, crop_bot
 
 
 def plot_atom_energies(sublattice_list, image=None, vac_or_implants=None,
@@ -445,7 +445,7 @@ def plot_atom_energies(sublattice_list, image=None, vac_or_implants=None,
                     transparent=True, frameon=False, bbox_inches='tight',
                     pad_inches=None, dpi=100, labels=False)
 
-    return(x, y, energy)
+    return x, y, energy
 
 
 class Sublattice_Hover_Intensity(object):
@@ -601,7 +601,7 @@ def color_palettes(pallette):
     elif pallette == 'r_safe':
         return r_safe
     else:
-        return('This option is not allowed.')
+        return 'This option is not allowed.'
 
 
 def rgb_to_dec(rgb_values):
@@ -621,7 +621,7 @@ def rgb_to_dec(rgb_values):
     dec_values = []
     for rgb_value in rgb_values:
         dec_values.append(tuple([i/256 for i in rgb_value]))
-    return(dec_values)
+    return dec_values
 
 
 def hex_to_rgb(hex_values):

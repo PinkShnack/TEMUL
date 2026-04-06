@@ -30,7 +30,7 @@ def _make_simple_cubic_testdata(image_noise=False, amplitude=1,
     """
     simple_cubic = MakeTestData(300, 300)
     x, y = np.mgrid[10:290:20j, 10:290:20j]
-    if type(amplitude) == list:
+    if isinstance(amplitude, list):
         amplitude = np.random.randint(
             np.min(amplitude), np.max(amplitude),
             size=(len(x), len(y))).flatten()
@@ -296,7 +296,7 @@ def sine_wave_sublattice():
     # plt.scatter(atom_positions.T[0], atom_positions.T[1])
     sublattice = Sublattice(atom_positions, image_data)
     # sublattice.plot()
-    return(sublattice)
+    return sublattice
 # adapted/copied from atomap
 
 

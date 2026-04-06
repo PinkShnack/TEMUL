@@ -65,7 +65,7 @@ def get_xydata_from_list_of_intensities(
     x_separation = (x_array.max() - x_array.min()) / hist_bins
     x_array = x_array - (x_separation / 2)
 
-    return(x_array, y_array)
+    return x_array, y_array
 
 # 1D single Gaussian
 # test
@@ -105,8 +105,8 @@ def fit_1D_gaussian_to_data(xdata, amp, mu, sigma):
 
     """
 
-    return(amp * (1 / (sigma * (np.sqrt(2 * np.pi)))) * (
-        np.exp(-((xdata - mu)**2) / ((2 * sigma)**2))))
+    return amp * (1 / (sigma * (np.sqrt(2 * np.pi)))) * (
+        np.exp(-((xdata - mu)**2) / ((2 * sigma)**2)))
 
 
 # Fit gaussian to element
@@ -153,7 +153,7 @@ def return_fitting_of_1D_gaussian(
         p0=[amp, mu, sigma])
     # p0 = [amp, mu, sigma]
 
-    return(popt_gauss, pcov_gauss)
+    return popt_gauss, pcov_gauss
 
 
 # plot single gauss fit
@@ -228,7 +228,7 @@ def get_scaled_middle_limit_intensity_list(sublattice,
         limit_real = limit * sublattice_scalar
         limit_intensity_list_real.append(limit_real)
 
-    return(middle_intensity_list_real, limit_intensity_list_real)
+    return middle_intensity_list_real, limit_intensity_list_real
 
 
 def get_fitting_tools_for_plotting_gaussians(element_list,
@@ -266,7 +266,7 @@ def get_fitting_tools_for_plotting_gaussians(element_list,
 
     if fit_bright_first:
         fitting_tools.sort(reverse=True)
-    return(fitting_tools)
+    return fitting_tools
 
 
 def plot_gaussian_fitting_for_multiple_fits(sub_ints_all,
@@ -566,7 +566,7 @@ def measure_image_errors(imageA, imageB, filename=None):
                     transparent=True, frameon=False, bbox_inches='tight',
                     pad_inches=None, dpi=300, labels=False)
 
-    return(mse_number, ssm_number)
+    return mse_number, ssm_number
 
 
 def load_and_compare_images(imageA, imageB, filename=None):
@@ -594,7 +594,7 @@ def load_and_compare_images(imageA, imageB, filename=None):
         imageB,
         filename=filename)
 
-    return(mse_number, ssm_number)
+    return mse_number, ssm_number
 
 
 def compare_two_image_and_create_filtered_image(
@@ -737,7 +737,7 @@ def compare_two_image_and_create_filtered_image(
                     transparent=True, frameon=False, bbox_inches='tight',
                     pad_inches=None, dpi=300, labels=False)
 
-    return(image_filtered, ideal_sigma)
+    return image_filtered, ideal_sigma
 
 
 def make_gaussian(size, fwhm, center=None):
@@ -779,7 +779,7 @@ def make_gaussian(size, fwhm, center=None):
     arr = np.array((np.exp(-4 * np.log(2) * ((x - x0)**2 +
                                              (y - y0)**2) / fwhm**2)))
 
-    return(arr)
+    return arr
 
 
 def make_gaussian_pos_neg(size, fwhm_neg, fwhm_pos, neg_min=0.9, center=None):
@@ -790,7 +790,7 @@ def make_gaussian_pos_neg(size, fwhm_neg, fwhm_pos, neg_min=0.9, center=None):
     arr_neg = make_gaussian(size, fwhm=fwhm_neg, center=center)
     nD_Gaussian_neg = Signal2D(arr_neg) * -1 * neg_min
 
-    return(nD_Gaussian_pos, nD_Gaussian_neg)
+    return nD_Gaussian_pos, nD_Gaussian_neg
 
 
 def double_gaussian_fft_filter(image, fwhm_neg, fwhm_pos, neg_min=0.9):
@@ -1118,7 +1118,7 @@ def double_gaussian_fft_filter_optimised(image, d_inner, d_outer, delta=0.05,
         Filtering_Variables_Table.to_csv('Filtering_Variables_Table.csv',
                                          sep=',', index=False)
 
-    return(image_filtered)
+    return image_filtered
 
 
 def visualise_dg_filter(image, d_inner=7.7, d_outer=21, slider_min=0.1,
@@ -1623,7 +1623,7 @@ def toggle_atom_refine_position_automatically(sublattice,
             pad_inches=None, dpi=300, labels=False)
         plt.close()
 
-    return(false_list_sublattice)
+    return false_list_sublattice
 
 
 # atomap adaption
@@ -1785,12 +1785,12 @@ def get_cell_image(s, points_x, points_y, method='Voronoi',
                     intensity_record[i][j] = integrated_intensity[point]
 
     # return (integrated_intensity, s_intensity_record, point_record.T)
-    return(intensity_record)
+    return intensity_record
 
 
 def distance_vector(x1, y1, x2, y2):
     distance_vector = sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2))
-    return(distance_vector)
+    return distance_vector
 
 
 def mean_and_std_nearest_neighbour_distances(sublattice,
@@ -1859,4 +1859,4 @@ def mean_and_std_nearest_neighbour_distances(sublattice,
         mean_list = [k * sampling for k in mean_list]
         std_dev_list = [k * sampling for k in std_dev_list]
 
-    return(mean_list, std_dev_list)
+    return mean_list, std_dev_list
