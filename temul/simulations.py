@@ -124,7 +124,7 @@ def simulate_and_filter_and_calibrate_with_prismatic(
         mask_radius=mask_radius,
         refine=False)
 
-    return(simulation)
+    return simulation
 
 
 def simulate_and_calibrate_with_prismatic(
@@ -225,7 +225,7 @@ def simulate_and_calibrate_with_prismatic(
         refine=refine,
         scalebar_true=scalebar_true)
 
-    return(simulation)
+    return simulation
 
 
 def simulate_with_prismatic(xyz_filename,

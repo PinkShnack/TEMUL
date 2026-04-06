@@ -55,7 +55,7 @@ def batch_convert_emd_to_image(extension_to_save,
             s = hs.load(filename)
             print('Processing image: ' + filename)
 
-            if type(s) == list:
+            if isinstance(s, list):
                 aligned_image = s[0].inav[-3:-2]
                 s = aligned_image.sum('Time')
 
@@ -204,6 +204,7 @@ def convert_vesta_xyz_to_prismatic_xyz(vesta_xyz_filename,
                     '_atom_site_fract_x',
                     '_atom_site_fract_y',
                     '_atom_site_fract_z']
+    file['_atom_site_Z_number'] = file['_atom_site_Z_number'].astype(object)
 
     # change all elements to atomic number
     for i, element_symbol in enumerate(file.loc[:, '_atom_site_Z_number']):
@@ -405,30 +406,26 @@ def create_dataframe_for_xyz(sublattice_list,
     ...                          header_comment='Here is an Example')
 
     """
-    df_xyz = pd.DataFrame(columns=['_atom_site_Z_number',
-                                   '_atom_site_fract_x',
-                                   '_atom_site_fract_y',
-                                   '_atom_site_fract_z',
-                                   '_atom_site_occupancy',
-                                   '_atom_site_RMS_thermal_vib'])
-
-    # add header sentence
-    df_xyz = df_xyz.append({'_atom_site_Z_number': header_comment,
-                            '_atom_site_fract_x': '',
-                            '_atom_site_fract_y': '',
-                            '_atom_site_fract_z': '',
-                            '_atom_site_occupancy': '',
-                            '_atom_site_RMS_thermal_vib': ''},
-                           ignore_index=True)
-
-    # add unit cell dimensions
-    df_xyz = df_xyz.append({'_atom_site_Z_number': '',
-                            '_atom_site_fract_x': format(x_size, '.6f'),
-                            '_atom_site_fract_y': format(y_size, '.6f'),
-                            '_atom_site_fract_z': format(z_size, '.6f'),
-                            '_atom_site_occupancy': '',
-                            '_atom_site_RMS_thermal_vib': ''},
-                           ignore_index=True)
+    columns = ['_atom_site_Z_number',
+               '_atom_site_fract_x',
+               '_atom_site_fract_y',
+               '_atom_site_fract_z',
+               '_atom_site_occupancy',
+               '_atom_site_RMS_thermal_vib']
+    rows = [
+        {'_atom_site_Z_number': header_comment,
+         '_atom_site_fract_x': '',
+         '_atom_site_fract_y': '',
+         '_atom_site_fract_z': '',
+         '_atom_site_occupancy': '',
+         '_atom_site_RMS_thermal_vib': ''},
+        {'_atom_site_Z_number': '',
+         '_atom_site_fract_x': format(x_size, '.6f'),
+         '_atom_site_fract_y': format(y_size, '.6f'),
+         '_atom_site_fract_z': format(z_size, '.6f'),
+         '_atom_site_occupancy': '',
+         '_atom_site_RMS_thermal_vib': ''},
+    ]
 
     for sublattice in sublattice_list:
         # denomiator could also be: sublattice.signal.axes_manager[0].size
@@ -473,7 +470,7 @@ def create_dataframe_for_xyz(sublattice_list,
                             else:
                                 pass
 
-                            df_xyz = df_xyz.append(
+                            rows.append(
                                 {'_atom_site_Z_number': atomic_number,
                                  '_atom_site_fract_x': format(
                                      sublattice.atom_list[i].pixel_x * (
@@ -488,21 +485,20 @@ def create_dataframe_for_xyz(sublattice_list,
                                  '_atom_site_fract_z': format(
                                      atom_z_height * z_size, '.6f'),
                                  '_atom_site_occupancy': 1.0,
-                                 '_atom_site_RMS_thermal_vib': 0.1},
-                                ignore_index=True)  # insert row
+                                 '_atom_site_RMS_thermal_vib': 0.1})
 
-    df_xyz = df_xyz.append({'_atom_site_Z_number': int(-1),
-                            '_atom_site_fract_x': '',
-                            '_atom_site_fract_y': '',
-                            '_atom_site_fract_z': '',
-                            '_atom_site_occupancy': '',
-                            '_atom_site_RMS_thermal_vib': ''},
-                           ignore_index=True)
+    rows.append({'_atom_site_Z_number': int(-1),
+                 '_atom_site_fract_x': '',
+                 '_atom_site_fract_y': '',
+                 '_atom_site_fract_z': '',
+                 '_atom_site_occupancy': '',
+                 '_atom_site_RMS_thermal_vib': ''})
+    df_xyz = pd.DataFrame(rows, columns=columns)
 
     if filename is not None:
         df_xyz.to_csv(filename + '.xyz', sep=' ', header=False, index=False)
 
-    return(df_xyz)
+    return df_xyz
 
 
 def dm3_stack_to_tiff_stack(loading_file,
@@ -611,8 +607,9 @@ def load_prismatic_mrc_with_hyperspy(
     #     prismatic_mrc_filename = 'prism_2Doutput' + prismatic_mrc_filename
 
     simulation = hs.load(prismatic_mrc_filename)
-    simulation.axes_manager[0].name = 'extra_dimension'
-    simulation = simulation.sum('extra_dimension')
+    if simulation.data.ndim > 2:
+        simulation.axes_manager[0].name = 'extra_dimension'
+        simulation = simulation.sum('extra_dimension')
 
     if save_name is not None:
         simulation.save(save_name, overwrite=True)
@@ -622,8 +619,8 @@ def load_prismatic_mrc_with_hyperspy(
         plt.gca().axes.get_yaxis().set_visible(False)
         plt.tight_layout()
         plt.savefig(fname=save_name + '.png',
-                    transparent=True, frameon=False, bbox_inches='tight',
-                    pad_inches=None, dpi=300, labels=False)
+                    transparent=True, bbox_inches='tight',
+                    pad_inches=None, dpi=300)
         # plt.close()
 
     return simulation

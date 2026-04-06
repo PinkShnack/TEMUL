@@ -76,7 +76,6 @@ def get_atom_positions_in_difference_image(
         image=image_data,
         min_distance=int(separation),
         threshold_rel=threshold_rel,
-        indices=True,
         num_peaks=num_peaks)
 
     # The X- and Y-axes are switched in HyperSpy compared to NumPy
@@ -152,8 +151,7 @@ def get_atom_positions(
     temp_positions = peak_local_max(
         image=image_data,
         min_distance=int(separation),
-        threshold_rel=threshold_rel,
-        indices=True)
+        threshold_rel=threshold_rel)
 
     # The X- and Y-axes are switched in HyperSpy compared to NumPy
     # so we need to flip them here

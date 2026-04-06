@@ -38,7 +38,7 @@ def get_and_return_element(element_symbol):
         if pt_element.symbol == element_symbol:
             chosen_element = pt_element
 
-    return(chosen_element)
+    return chosen_element
 
 
 def atomic_radii_in_pixels(sampling, element_symbol):
@@ -58,7 +58,7 @@ def atomic_radii_in_pixels(sampling, element_symbol):
 
     Examples
     --------
-    >>> import atomap.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> from temul.element_tools import atomic_radii_in_pixels
     >>> image = am.dummy_data.get_simple_cubic_signal()
 
@@ -83,7 +83,7 @@ def atomic_radii_in_pixels(sampling, element_symbol):
 
     radius_pix = radius_nm / sampling
 
-    return(radius_pix)
+    return radius_pix
 
 
 def split_and_sort_element(element, split_symbol=['_', '.']):
@@ -164,7 +164,7 @@ def split_and_sort_element(element, split_symbol=['_', '.']):
             "You must include a split_symbol. Use '_' to separate element "
             "and count. Use '.' to separate elements in the same xy position")
 
-    return(splitting_info)
+    return splitting_info
 
 
 def get_individual_elements_from_element_list(

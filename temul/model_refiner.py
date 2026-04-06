@@ -268,8 +268,8 @@ class Model_Refiner():
             # raise ValueError("element_count_history must have at least two "
             #                  "element_counts for comparison")
         else:
-            return(compare_count_atoms_in_sublattice_list(
-                self.element_count_history_list[-2:]))
+            return compare_count_atoms_in_sublattice_list(
+                self.element_count_history_list[-2:])
 
     def get_element_count_as_dataframe(self):
         """

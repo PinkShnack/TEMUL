@@ -1,6 +1,5 @@
 import hyperspy
 import numpy as np
-import scipy
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 from matplotlib.cm import ScalarMappable
@@ -560,9 +559,10 @@ def plot_polarisation_vectors(
 
         sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
         sm.set_array([])
-        cbar = plt.colorbar(mappable=sm, fraction=0.046, pad=0.04,
-                            drawedges=False)
-        cbar.set_ticks(ticks)
+        cbar = plt.colorbar(
+            mappable=sm, ax=ax, fraction=0.046, pad=0.04, drawedges=False)
+        if ticks is not None:
+            cbar.set_ticks(ticks)
         cbar.ax.set_ylabel(vector_label)
 
     elif plot_style == "polar_colorwheel":
@@ -699,7 +699,7 @@ def delete_atom_planes_from_sublattice(sublattice,
     --------
     >>> from temul.topotem.polarisation import (
     ...     delete_atom_planes_from_sublattice)
-    >>> import atomap.dummy_data as dd
+    >>> import temul.external.atomap_devel_012.dummy_data as dd
     >>> atom_lattice = dd.get_polarization_film_atom_lattice()
     >>> sublatticeA = atom_lattice.sublattice_list[0]
     >>> sublatticeA.construct_zone_axes()
@@ -913,10 +913,14 @@ def get_xyuv_from_line_fit(arr, n, second_fit_rigid=True, plot=False):
     y_list = []
     u_list = []
     v_list = []
+    line_vector = p2[0] - p1[0]
+    line_norm = np.linalg.norm(line_vector)
     for original_pos in arr:
-        distance = np.cross(p2 - p1, original_pos -
-                            p1) / np.linalg.norm(p2 - p1)
-        distance = float(distance)
+        relative_pos = np.asarray(original_pos) - p1[0]
+        distance = (
+            line_vector[0] * relative_pos[1] -
+            line_vector[1] * relative_pos[0]
+        ) / line_norm
         u = distance * np.cos(angle)
         v = distance * np.sin(angle)
         x_list.append(original_pos[0])
@@ -1129,7 +1133,7 @@ def full_atom_plane_deviation_from_straight_line_fit(sublattice,
 
     Examples
     --------
-    >>> import atomap.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> from temul.topotem.polarisation import (
     ...     full_atom_plane_deviation_from_straight_line_fit,
     ...     plot_polarisation_vectors)
@@ -1170,7 +1174,7 @@ def full_atom_plane_deviation_from_straight_line_fit(sublattice,
 
             original_atoms_array = np.array(original_atoms_list)
 
-            slope, intercept = scipy.polyfit(
+            slope, intercept = np.polyfit(
                 original_atoms_array[:, 0], original_atoms_array[:, 1], 1)
 
             slope_neg_inv = -(1 / slope)
@@ -1181,9 +1185,9 @@ def full_atom_plane_deviation_from_straight_line_fit(sublattice,
             x2 = atom_plane.end_atom.pixel_x
             y2 = slope * x2 + intercept
 
-            p1 = np.array((x1, y1), ndmin=2)
+            p1 = np.array((x1, y1), dtype=float)
             # end xy coord for straight line fit
-            p2 = np.array((x2, y2), ndmin=2)
+            p2 = np.array((x2, y2), dtype=float)
 
             atoms_on_plane_list = []
             atom_dist_diff_list = []
@@ -1191,9 +1195,10 @@ def full_atom_plane_deviation_from_straight_line_fit(sublattice,
             # original_atom_pos_array and new_atom_diff_array,
             # or away using new_atom_pos_array and -new_atom_diff_array
             for original_atom in original_atoms_array:
-                distance = np.cross(p2 - p1, original_atom -
-                                    p1) / np.linalg.norm(p2 - p1)
-                distance = float(distance)
+                original_atom = np.asarray(original_atom, dtype=float)
+                distance = np.cross(p2 - p1, original_atom - p1)
+                distance = distance / np.linalg.norm(p2 - p1)
+                distance = float(np.asarray(distance).item())
                 x_diff = distance * np.cos(angle)
                 y_diff = distance * np.sin(angle)
 
@@ -1249,7 +1254,7 @@ def plot_atom_deviation_from_all_zone_axes(
 
     Examples
     --------
-    >>> import atomap.dummy_data as dd
+    >>> import temul.external.atomap_devel_012.dummy_data as dd
     >>> import temul.api as tml
     >>> atom_lattice = dd.get_polarization_film_atom_lattice()
     >>> sublatticeA = atom_lattice.sublattice_list[0]
@@ -1314,7 +1319,7 @@ def combine_atom_deviations_from_zone_axes(
     Examples
     --------
 
-    >>> import atomap.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> from temul.topotem.polarisation import (plot_polarisation_vectors,
     ...     combine_atom_deviations_from_zone_axes)
     >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
@@ -1447,7 +1452,8 @@ def get_divide_into(sublattice, averaging_by, sampling,
     --------
 
     >>> from temul.topotem.polarisation import get_divide_into
-    >>> from atomap.dummy_data import get_simple_cubic_sublattice
+    >>> from temul.external.atomap_devel_012.dummy_data import (
+    ...     get_simple_cubic_sublattice)
     >>> sublattice = get_simple_cubic_sublattice()
     >>> sublattice.construct_zone_axes()
     >>> cell_info = get_divide_into(sublattice, averaging_by=2, sampling=0.1,
@@ -1455,7 +1461,7 @@ def get_divide_into(sublattice, averaging_by, sampling,
     >>> divide_into = cell_info[0]
     >>> unit_cell_size = cell_info[1]
     >>> num_unit_cells = cell_info[2]
-    >>> sublattice.plot()  # You can count the unit cells to check
+    >>> sublattice.plot()  # doctest: +SKIP
 
     """
 
@@ -1517,7 +1523,7 @@ def get_average_polarisation_in_regions(x, y, u, v, image, divide_into=8):
     --------
     >>> import matplotlib.pyplot as plt
     >>> import numpy as np
-    >>> import atomap.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> from temul.topotem.polarisation import (
     ...    combine_atom_deviations_from_zone_axes,
     ...    plot_polarisation_vectors, get_average_polarisation_in_regions)
@@ -1617,7 +1623,7 @@ def get_average_polarisation_in_regions_square(x, y, u, v, image,
 
     Examples
     --------
-    >>> import atomap.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> from temul.topotem.polarisation import (
     ...     combine_atom_deviations_from_zone_axes, plot_polarisation_vectors,
     ...     get_average_polarisation_in_regions_square)
@@ -1734,7 +1740,7 @@ def get_strain_map(sublattice, zone_axis_index, theoretical_value,
 
     Examples
     --------
-    >>> import atomap.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> from temul.topotem.polarisation import get_strain_map
     >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
     >>> sublatticeA = atom_lattice.sublattice_list[0]
@@ -1843,7 +1849,7 @@ def rotation_of_atom_planes(sublattice, zone_axis_index, angle_offset=None,
 
     Examples
     --------
-    >>> import atomap.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> from temul.topotem.polarisation import rotation_of_atom_planes
     >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
     >>> sublatticeA = atom_lattice.sublattice_list[1]
@@ -1976,7 +1982,7 @@ def ratio_of_lattice_spacings(sublattice, zone_axis_index_A, zone_axis_index_B,
 
     Examples
     --------
-    >>> import atomap.api as am
+    >>> import temul.external.atomap_devel_012.api as am
     >>> from temul.topotem.polarisation import ratio_of_lattice_spacings
     >>> atom_lattice = am.dummy_data.get_polarization_film_atom_lattice()
     >>> sublatticeA = atom_lattice.sublattice_list[0]
@@ -2010,13 +2016,14 @@ def ratio_of_lattice_spacings(sublattice, zone_axis_index_A, zone_axis_index_B,
 
     signal_spacing_A.plot(vmin=vmin, vmax=vmax, cmap=cmap,
                           colorbar=False, **kwargs)
-    plt.gca().axes.get_xaxis().set_visible(False)
-    plt.gca().axes.get_yaxis().set_visible(False)
+    ax = plt.gca()
+    ax.axes.get_xaxis().set_visible(False)
+    ax.axes.get_yaxis().set_visible(False)
     plt.title("{}_{}".format(title, zone_index_A))
     cbar = ScalarMappable(cmap=cmap)
     cbar.set_array(xy_dist_A)
     cbar.set_clim(vmin, vmax)
-    plt.colorbar(cbar, fraction=0.046, pad=0.04,
+    plt.colorbar(cbar, ax=ax, fraction=0.046, pad=0.04,
                  label="Spacing of Atoms (pix)")
     plt.tight_layout()
 
@@ -2035,13 +2042,14 @@ def ratio_of_lattice_spacings(sublattice, zone_axis_index_A, zone_axis_index_B,
 
     signal_spacing_B.plot(vmin=vmin, vmax=vmax, cmap=cmap,
                           colorbar=False, **kwargs)
-    plt.gca().axes.get_xaxis().set_visible(False)
-    plt.gca().axes.get_yaxis().set_visible(False)
+    ax = plt.gca()
+    ax.axes.get_xaxis().set_visible(False)
+    ax.axes.get_yaxis().set_visible(False)
     plt.title("{}_{}".format(title, zone_index_B))
     cbar = ScalarMappable(cmap=cmap)
     cbar.set_array(xy_dist_B)
     cbar.set_clim(vmin, vmax)
-    plt.colorbar(cbar, fraction=0.046, pad=0.04,
+    plt.colorbar(cbar, ax=ax, fraction=0.046, pad=0.04,
                  label="Spacing of Atoms (pix)")
     plt.tight_layout()
 
@@ -2062,8 +2070,8 @@ def ratio_of_lattice_spacings(sublattice, zone_axis_index_A, zone_axis_index_B,
     if filename is not None:
         plt.savefig(fname="{}_{}_{}{}.png".format(
             filename, title, zone_axis_index_A, zone_axis_index_B),
-            transparent=True, frameon=False, bbox_inches='tight',
-            pad_inches=None, dpi=300, labels=False)
+            transparent=True, bbox_inches='tight',
+            pad_inches=None, dpi=300)
         ratio_signal.save("{}_{}_{}{}.hspy".format(
             filename, title, zone_axis_index_A, zone_axis_index_B))
 
@@ -2115,13 +2123,14 @@ def atom_to_atom_distance_grouped_mean(sublattice, zone_axis_index,
     -------
 
     >>> import numpy as np
-    >>> from atomap.dummy_data import get_distorted_cubic_sublattice
+    >>> from temul.external.atomap_devel_012.dummy_data import (
+    ...     get_distorted_cubic_sublattice)
     >>> import matplotlib.pyplot as plt
     >>> from temul.topotem.polarisation import (
     ...     atom_to_atom_distance_grouped_mean)
     >>> sublatticeA = get_distorted_cubic_sublattice()
     >>> sublatticeA.construct_zone_axes(atom_plane_tolerance=1)
-    >>> sublatticeA.plot()
+    >>> sublatticeA.plot()  # doctest: +SKIP
     >>> groupings, grouped_means = atom_to_atom_distance_grouped_mean(
     ...     sublatticeA, 0, 'y', 40)
 

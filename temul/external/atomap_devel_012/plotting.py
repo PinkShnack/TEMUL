@@ -5,9 +5,11 @@ from matplotlib.figure import Figure
 from matplotlib.gridspec import GridSpec, GridSpecFromSubplotSpec
 from matplotlib.colors import hsv_to_rgb
 import copy
-from hyperspy.drawing._markers.line_segment import LineSegment
-from hyperspy.drawing._markers.point import Point
-from hyperspy.drawing._markers.text import Text
+from temul.external.atomap_devel_012._hs_marker_compat import (
+    LineSegment,
+    Point,
+    Text,
+)
 
 from temul.external.atomap_devel_012.tools import\
     _get_clim_from_data,\

@@ -57,7 +57,7 @@ def count_element_in_pandas_df(element, dataframe):
                     count_of_element += split[2] * \
                         dataframe.loc[:, element_config]
 
-    return(count_of_element)
+    return count_of_element
 
 
 def count_all_individual_elements(individual_element_list, dataframe):
@@ -98,7 +98,7 @@ def count_all_individual_elements(individual_element_list, dataframe):
 
         element_count_dict[element] = element_count
 
-    return(element_count_dict)
+    return element_count_dict
 
 
 def count_atoms_in_sublattice_list(sublattice_list, filename=None):
@@ -161,13 +161,13 @@ def count_atoms_in_sublattice_list(sublattice_list, filename=None):
         plt.ylabel('Count of Elements', fontsize=16)
         plt.tight_layout()
         plt.savefig(fname='element_count_' + filename + '.png',
-                    transparent=True, frameon=False, bbox_inches='tight',
-                    pad_inches=None, dpi=300, labels=False)
+                    transparent=True, bbox_inches='tight',
+                    pad_inches=None, dpi=300)
         plt.close()
     else:
         pass
 
-    return(count_of_sublattice)
+    return count_of_sublattice
 
 
 def compare_count_atoms_in_sublattice_list(counter_list):
@@ -985,8 +985,8 @@ def scaling_z_contrast(numerator_sublattice, numerator_element,
     # need to include more complicated equation to deal with
     # multiple elements as the e.g., numerator
 
-    return(scaling_ratio, scaling_exponent, sublattice0_intensity_method,
-           sublattice1_intensity_method)
+    return (scaling_ratio, scaling_exponent, sublattice0_intensity_method,
+            sublattice1_intensity_method)
 
 
 def auto_generate_sublattice_element_list(material_type,
@@ -1018,7 +1018,7 @@ def auto_generate_sublattice_element_list(material_type,
         elif isinstance(elements, list):
             pass
 
-    return(element_list)
+    return element_list
 
 
 # manipulating the adatoms. Issue here is that if we just look for
@@ -1279,7 +1279,7 @@ def sort_sublattice_intensities(sublattice,
             else:
                 pass
 
-    return(elements_of_sublattice)
+    return elements_of_sublattice
 
 
 # sublattice=sub2
@@ -1596,7 +1596,7 @@ def return_z_coordinates(z_thickness,
         # to each atom coordinate.
         z_coords = z_coords + (1 - z_coords.max()) / 2
 
-    return(z_coords)
+    return z_coords
 
 
 """
@@ -1649,7 +1649,7 @@ def return_xyz_coordinates(x, y,
     for z in z_coords:
         atom_coords.append([x, y, z])
 
-    return(np.array(atom_coords))
+    return np.array(atom_coords)
 
 
 def convert_numpy_z_coords_to_z_height_string(z_coords):
@@ -1678,7 +1678,7 @@ def convert_numpy_z_coords_to_z_height_string(z_coords):
             z_string = z_string + "," + "{0:.{1}f}".format(coord, 6)
         # str(coord).format('.6f')
 
-    return(z_string)
+    return z_string
 
 
 def get_max_number_atoms_z(sublattice):
@@ -1692,7 +1692,7 @@ def get_max_number_atoms_z(sublattice):
 
     max_number_atoms_z = max(max_number_atoms_z_list)
 
-    return(max_number_atoms_z)
+    return max_number_atoms_z
 
 
 def assign_z_height_to_sublattice(sublattice,
@@ -1857,10 +1857,12 @@ def change_sublattice_pseudo_inplace(new_atom_positions, old_sublattice):
     >>> sublattice_B = change_sublattice_pseudo_inplace(
     ...     new_atom_positions, sublattice_A)
     >>> sublattice_B.atom_positions
-    [[1, 2, 4, 6], [5, 4, 3, 6]]
+    array([[1, 2, 4, 6],
+           [5, 4, 3, 6]])
 
     >>> sublattice_A.atom_positions
-    [[1, 2], [5, 4]]
+    array([[1, 2],
+           [5, 4]])
 
     It also copies information such as elements
 
@@ -2137,7 +2139,7 @@ def image_difference_position(sublattice,
                     transparent=True, frameon=False, bbox_inches='tight',
                     pad_inches=None, dpi=300, labels=False)
 
-    return(sublattice)
+    return sublattice
 
 
 def get_positions_from_sublattices(sublattice_list):

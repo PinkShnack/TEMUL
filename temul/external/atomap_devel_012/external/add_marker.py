@@ -87,7 +87,12 @@ def add_marker(
         name_list = self.metadata.Markers.keys()
     marker_name_suffix = 1
     for m in marker_list:
-        marker_data_shape = m._get_data_shape()
+        if hasattr(m, '_get_data_shape'):
+            marker_data_shape = m._get_data_shape()
+        else:
+            # HyperSpy's newer marker objects no longer expose
+            # ``_get_data_shape`` for static markers.
+            marker_data_shape = ()
         if (not (len(marker_data_shape) == 0)) and (
                 marker_data_shape != self.axes_manager.navigation_shape):
             raise ValueError(
