@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 
 import temul.topotem.polarisation as pol
 import temul.dummy_data as dd
+import temul.external.atomap_devel_012.dummy_data as atomap_dd
 
 
 def test_find_polarisation_vectors_basic_01():
@@ -204,3 +205,92 @@ def test_atom_deviation_from_straight_line_fit_plot_rumpling(
     plt.xlabel("Atomic plane #")
     plt.ylabel("Vertical deviation (rumpling) (a.u.)")
     plt.show()
+
+
+@pytest.fixture
+def refined_polarisation_sublattice():
+    atom_lattice = atomap_dd.get_polarization_film_atom_lattice()
+    sublattice = atom_lattice.sublattice_list[0]
+    sublattice.find_nearest_neighbors()
+    _ = sublattice.refine_atom_positions_using_center_of_mass()
+    sublattice.construct_zone_axes()
+    return sublattice
+
+
+def test_full_atom_plane_deviation_from_straight_line_fit_returns_vectors(
+        refined_polarisation_sublattice):
+    x, y, u, v = pol.full_atom_plane_deviation_from_straight_line_fit(
+        refined_polarisation_sublattice, save=None)
+
+    assert len(x) == len(y) == len(u) == len(v)
+    assert len(x) > 0
+    assert all(isinstance(values, list) for values in (x, y, u, v))
+    assert np.isfinite(np.asarray(x)).all()
+    assert np.isfinite(np.asarray(y)).all()
+    assert np.isfinite(np.asarray(u)).all()
+    assert np.isfinite(np.asarray(v)).all()
+
+
+def test_combine_atom_deviations_from_zone_axes_matches_atom_count(
+        refined_polarisation_sublattice):
+    x, y, u, v = pol.combine_atom_deviations_from_zone_axes(
+        refined_polarisation_sublattice, axes=[0, 1], save=None)
+
+    assert len(x) == len(y) == len(u) == len(v)
+    assert len(x) == len(refined_polarisation_sublattice.atom_list)
+    assert np.isfinite(np.asarray(u)).all()
+    assert np.isfinite(np.asarray(v)).all()
+    assert np.any(np.abs(np.asarray(u)) > 0)
+    assert np.any(np.abs(np.asarray(v)) > 0)
+
+
+def test_get_average_polarisation_in_regions_reduces_vector_count(
+        refined_polarisation_sublattice):
+    x, y, u, v = pol.combine_atom_deviations_from_zone_axes(
+        refined_polarisation_sublattice, save=None)
+
+    x_new, y_new, u_new, v_new = pol.get_average_polarisation_in_regions(
+        x, y, u, v, image=refined_polarisation_sublattice.image, divide_into=8)
+
+    assert len(x_new) == len(y_new) == len(u_new) == len(v_new) == 64
+    assert len(x_new) < len(x)
+    assert np.isfinite(np.asarray(u_new)).all()
+    assert np.isfinite(np.asarray(v_new)).all()
+
+
+def test_get_average_polarisation_in_regions_square_handles_rectangular_image(
+        refined_polarisation_sublattice):
+    image = refined_polarisation_sublattice.image[0:200]
+    x, y, u, v = pol.combine_atom_deviations_from_zone_axes(
+        refined_polarisation_sublattice, save=None)
+
+    x_new, y_new, u_new, v_new = pol.get_average_polarisation_in_regions_square(
+        x, y, u, v, image=image, divide_into=8)
+
+    region_length = image.shape[-1] // 8
+    divide_other_into = image.shape[-2] // region_length
+    expected_length = 8 * divide_other_into
+
+    assert len(x_new) == len(y_new) == len(u_new) == len(v_new)
+    assert len(x_new) == expected_length
+    assert np.isfinite(np.asarray(u_new)).all()
+    assert np.isfinite(np.asarray(v_new)).all()
+
+
+def test_plot_atom_deviation_from_all_zone_axes_calls_plotter(
+        refined_polarisation_sublattice, monkeypatch):
+    calls = []
+
+    def fake_plot_polarisation_vectors(**kwargs):
+        calls.append(kwargs)
+        return None
+
+    monkeypatch.setattr(pol, "plot_polarisation_vectors",
+                        fake_plot_polarisation_vectors)
+
+    pol.plot_atom_deviation_from_all_zone_axes(
+        refined_polarisation_sublattice, save=None)
+
+    assert len(calls) == len(
+        refined_polarisation_sublattice.zones_axis_average_distances)
+    assert all(len(call["x"]) == len(call["u"]) for call in calls)
