@@ -285,9 +285,8 @@ class Model_Refiner():
         elements_ = list(set(elements_))
         elements_.sort()
 
-        df = pd.DataFrame(columns=elements_)
-        for element_in_history in self.element_count_history_list:
-            df = df.append(element_in_history, ignore_index=True).fillna(0)
+        df = pd.DataFrame(self.element_count_history_list, columns=elements_)
+        df = df.fillna(0)
         for i, refinement_name in enumerate(self.refinement_history):
             df.rename(index={i: str(i) + " " + refinement_name}, inplace=True)
 

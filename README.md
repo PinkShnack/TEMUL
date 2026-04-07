@@ -1,6 +1,6 @@
 # TEMUL
 [![TopoTEM coverage](https://img.shields.io/badge/topotem%20coverage-62%25-yellowgreen)](#information-for-developers)
-[![TEMUL coverage excl. external](https://img.shields.io/badge/temul%20coverage%20(excl.%20external)-30%25-orange)](#information-for-developers)
+[![TEMUL coverage excl. external](https://img.shields.io/badge/temul%20coverage%20(excl.%20external)-35%25-yellow)](#information-for-developers)
 
 Functions for image and signal processing, based on the packages Scikit-image, Hyperspy, Atomap, PyPrismatic, ASE, periodictable etc. Written by members of the TEMUL group from the University of Limerick, Ireland (though we welco`me all help, hints and contributions!)
 

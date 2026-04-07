@@ -3,6 +3,7 @@ import pytest
 import numpy as np
 
 import temul.api as tml
+import temul.intensity_tools as it
 from temul.dummy_data import get_simple_cubic_sublattice
 
 sub1 = get_simple_cubic_sublattice()
@@ -80,3 +81,33 @@ def test_get_sublattice_intensity_rmbkgnd_type():
         _ = tml.get_sublattice_intensity(
             sub1, intensity_type='min',
             remove_background_method='local')
+
+
+def test_get_sublattice_intensity_all_returns_two_columns():
+    intensities = tml.get_sublattice_intensity(sub1, intensity_type='all')
+
+    assert intensities.shape == (len(sub1.atom_list), 2)
+    assert np.isfinite(intensities).all()
+
+
+def test_remove_average_background_matches_manual_difference():
+    sub1.find_nearest_neighbors()
+    raw = tml.get_sublattice_intensity(sub1, intensity_type='max')
+    background = tml.get_sublattice_intensity(sub1, intensity_type='min')
+
+    corrected = it.remove_average_background(
+        sublattice=sub1,
+        background_sub=sub1,
+        intensity_type='max')
+
+    assert np.allclose(corrected, raw - np.mean(background))
+
+
+def test_get_pixel_count_from_image_slice_returns_positive_count():
+    sub1.find_nearest_neighbors()
+    atom0 = sub1.atom_list[0]
+
+    count = it.get_pixel_count_from_image_slice(atom0, sub1.image)
+
+    assert isinstance(count, int)
+    assert count > 0
