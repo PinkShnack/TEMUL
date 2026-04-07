@@ -32,7 +32,8 @@ def test_convert_vesta_xyz_to_prismatic_xyz_returns_expected_dataframe(
     atom_rows = dataframe.iloc[2:-1]
     assert atom_rows["_atom_site_Z_number"].map(
         lambda value: isinstance(value, (int, np.integer))).all()
-    assert np.isclose(atom_rows["_atom_site_occupancy"].astype(float), 1.0).all()
+    assert np.isclose(
+        atom_rows["_atom_site_occupancy"].astype(float), 1.0).all()
     assert np.isclose(
         atom_rows["_atom_site_RMS_thermal_vib"].astype(float), 0.05).all()
 
