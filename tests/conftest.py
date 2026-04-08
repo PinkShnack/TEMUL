@@ -1,5 +1,7 @@
 
 import pytest
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 from temul.dummy_data import get_polarisation_dummy_dataset
