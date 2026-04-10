@@ -103,6 +103,35 @@ def test_remove_average_background_matches_manual_difference():
     assert np.allclose(corrected, raw - np.mean(background))
 
 
+def test_remove_average_background_mean_matches_manual_difference():
+    sub1.find_nearest_neighbors()
+    sub1.get_atom_column_amplitude_mean_intensity(percent_to_nn=0.4)
+    raw_mean = np.array(sub1.atom_amplitude_mean_intensity)
+    background = tml.get_sublattice_intensity(sub1, intensity_type='min')
+
+    corrected = it.remove_average_background(
+        sublattice=sub1,
+        background_sub=sub1,
+        intensity_type='mean',
+    )
+
+    assert np.allclose(corrected, raw_mean - np.mean(background))
+
+
+def test_remove_average_background_rejects_total_intensity():
+    with pytest.raises(ValueError, match="doesn't work with total intensity"):
+        it.remove_average_background(
+            sublattice=sub1,
+            background_sub=sub1,
+            intensity_type='total',
+        )
+
+
+def test_get_sublattice_intensity_rejects_unknown_type():
+    with pytest.raises(ValueError, match="choose an intensity_type"):
+        tml.get_sublattice_intensity(sub1, intensity_type='median')
+
+
 def test_get_pixel_count_from_image_slice_returns_positive_count():
     sub1.find_nearest_neighbors()
     atom0 = sub1.atom_list[0]

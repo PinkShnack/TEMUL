@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import numpy as np
 
 import temul.signal_plotting as sp
@@ -42,3 +43,43 @@ def test_get_polar_2d_colorwheel_color_list_length_and_range():
     assert len(colors) == len(u)
     assert all(len(color) == 3 for color in colors)
     assert np.all((np.asarray(colors) >= 0) & (np.asarray(colors) <= 1))
+
+
+def test_create_rgb_array_shape_and_range():
+    rgb_array = sp.create_rgb_array()
+
+    assert rgb_array.shape == (360, 100, 3)
+    assert np.all((rgb_array >= 0) & (rgb_array <= 1))
+
+
+def test_make_color_wheel_adds_image_to_axis(handle_plots):
+    fig, ax = plt.subplots()
+
+    sp._make_color_wheel(ax, rotation=45)
+
+    assert len(ax.images) == 1
+
+
+def test_find_phase_wraps_values_and_applies_rotation():
+    phase = np.array([-np.pi / 2, 0.0, 3 * np.pi])
+
+    wrapped = sp._find_phase(phase)
+    rotated = sp._find_phase(phase, rotation=90)
+
+    assert np.all((wrapped >= 0) & (wrapped < 2 * np.pi))
+    assert np.all((rotated >= 0) & (rotated < 2 * np.pi))
+    assert not np.allclose(wrapped, rotated)
+
+
+def test_get_rgb_phase_magnitude_array_zero_magnitude_and_limits():
+    phase = np.array([[0.0, np.pi / 2], [np.pi, 3 * np.pi / 2]])
+    magnitude = np.zeros((2, 2), dtype=float)
+
+    rgb = sp._get_rgb_phase_magnitude_array(
+        phase,
+        magnitude,
+        magnitude_limits=(0.0, 0.5),
+    )
+
+    assert rgb.shape == (2, 2, 3)
+    assert np.all((rgb >= 0) & (rgb <= 1))

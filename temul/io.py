@@ -565,7 +565,8 @@ def save_individual_images_from_image_stack(
     """
     # Save each image as a 32 bit tiff )cqn be displayed in DM
     image_stack_32bit = np.float32(image_stack)
-    folder = os.mkdir(output_folder)
+    os.mkdir(output_folder)
+    folder = output_folder
     # Find the number of images, change to an integer for the loop.
     for i in range(int(image_stack_32bit[0, 0, :].shape[0])):
         im = image_stack_32bit[:, :, i]
