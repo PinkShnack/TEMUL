@@ -7,6 +7,8 @@ on: [push]
 
 jobs:
   build:
+    env:
+      MPLBACKEND: Aggs
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
