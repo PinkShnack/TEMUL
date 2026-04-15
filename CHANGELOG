@@ -1,3 +1,5 @@
+0.1.9
+ - tests: add more tests (#81, #82)
 0.1.8
  - fix: package build and compatibility issues fixed (#80)
  - enh: add ability to get atomic column info from atom_deviation function

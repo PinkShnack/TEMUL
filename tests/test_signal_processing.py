@@ -89,3 +89,21 @@ def test_get_cell_image_returns_image_and_validates_inputs():
             sublattice.y_position,
             method='invalid',
             show_progressbar=False)
+
+
+def test_distance_vector_returns_euclidean_distance():
+    assert sp.distance_vector(0, 0, 3, 4) == pytest.approx(5.0)
+
+
+def test_mean_and_std_nearest_neighbour_distances_scaling():
+    sublattice = get_simple_cubic_sublattice_positions_on_vac()
+
+    mean_list, std_list = sp.mean_and_std_nearest_neighbour_distances(
+        sublattice, nearest_neighbours=5)
+    mean_scaled, std_scaled = sp.mean_and_std_nearest_neighbour_distances(
+        sublattice, nearest_neighbours=5, sampling=0.5)
+
+    assert len(mean_list) == len(std_list) == len(sublattice.atom_list)
+    assert len(mean_scaled) == len(std_scaled) == len(sublattice.atom_list)
+    assert np.allclose(mean_scaled, np.asarray(mean_list) * 0.5)
+    assert np.allclose(std_scaled, np.asarray(std_list) * 0.5)
