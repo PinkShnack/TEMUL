@@ -183,3 +183,133 @@ def test_model_refiner_calibrate_comparison_image_uses_auto_mask_radius(
         np.mean(refiner.auto_mask_radius)
     )
     assert calls['refine'] is False
+
+
+def test_model_refiner_plotting_and_error_history(handle_plots, monkeypatch):
+    refiner = _build_refiner()
+
+    monkeypatch.setattr(
+        'temul.model_refiner.measure_image_errors',
+        lambda imageA, imageB, filename=None: (0.25, 0.75),
+    )
+
+    refiner.update_error_between_comparison_and_reference_image()
+    assert refiner.error_between_comparison_and_reference_image == [0.25, 0.75]
+    assert refiner.error_between_images_history[-1] == [0.25, 0.75]
+
+    refiner.plot_error_between_comparison_and_reference_image(style='plot')
+    refiner.plot_error_between_comparison_and_reference_image(style='scatter')
+    refiner.plot_reference_and_comparison_images('Ref', 'Cmp')
+
+
+def test_model_refiner_setters_and_save_previous_instance(capsys):
+    refiner = _build_refiner()
+    original_name = refiner.name
+
+    refiner.set_thickness(25)
+    refiner.set_image_xyz_sizes([1, 2, 3])
+    refiner._save_refiner_instance()
+
+    assert refiner.thickness == 25
+    assert refiner.image_xyz_sizes == [1, 2, 3]
+    assert refiner.previous_refiner_instance is not None
+    assert refiner.previous_refiner_instance.name == original_name
+
+    refiner.revert_to_previous_refiner_instance()
+    captured = capsys.readouterr()
+    assert "doesn't seem to work as intended" in captured.out
+
+
+def test_model_refiner_plot_element_count_and_invalid_option(handle_plots):
+    refiner = _build_refiner()
+
+    refiner.plot_element_count_as_bar_chart(element_configs=0)
+    refiner.plot_element_count_as_bar_chart(element_configs=1)
+    refiner.plot_element_count_as_bar_chart(element_configs=2)
+
+    with pytest.raises(ValueError, match='can only be 0, 1, or 2'):
+        refiner.plot_element_count_as_bar_chart(element_configs=99)
+
+
+def test_model_refiner_image_difference_intensity_calls_expected_args(
+        monkeypatch):
+    refiner = _build_refiner()
+    calls = []
+
+    monkeypatch.setattr(
+        'temul.model_refiner.image_difference_intensity',
+        lambda **kwargs: calls.append(kwargs),
+    )
+
+    refiner.image_difference_intensity_model_refiner(
+        sublattices=[1],
+        comparison_image='default',
+        change_sublattice=False,
+        filename='example',
+        verbose=True,
+        refinement_method='UnitIntensity',
+    )
+
+    assert len(calls) == 1
+    assert calls[0]['sublattice'] is refiner.sublattice_list[1]
+    assert calls[0]['sim_image'] is refiner.comparison_image
+    assert calls[0]['change_sublattice'] is False
+    assert calls[0]['filename'] == 'example'
+    assert refiner.refinement_history[-1] == 'UnitIntensity'
+
+
+def test_model_refiner_repeating_intensity_refinement_stops_on_repeat(
+        monkeypatch):
+    refiner = _build_refiner()
+    calls = []
+
+    monkeypatch.setattr(
+        refiner,
+        'image_difference_intensity_model_refiner',
+        lambda **kwargs: calls.append(kwargs),
+    )
+
+    compare_results = iter([False, True])
+    monkeypatch.setattr(
+        refiner,
+        'compare_latest_element_counts',
+        lambda: next(compare_results),
+    )
+
+    refiner.repeating_intensity_refinement(n=5)
+
+    assert len(calls) == 2
+
+
+def test_model_refiner_image_difference_position_updates_selected_sublattice(
+        monkeypatch, capsys):
+    refiner = _build_refiner()
+    replacement = atomap_dd.get_simple_cubic_sublattice()
+    for atom in replacement.atom_list:
+        atom.elements = 'Cl_1'
+    calls = []
+
+    def fake_image_difference_position(**kwargs):
+        calls.append(kwargs)
+        return replacement
+
+    monkeypatch.setattr(
+        'temul.model_refiner.image_difference_position',
+        fake_image_difference_position,
+    )
+
+    refiner.image_difference_position_model_refiner(
+        chosen_sublattice=refiner.sublattice_list[1],
+        sublattices=[1],
+        comparison_sublattice_list='each',
+        filename='pos',
+        refinement_method='UnitPosition',
+    )
+
+    captured = capsys.readouterr()
+    assert 'overwrite errors' in captured.out
+    assert len(calls) == 1
+    assert len(calls[0]['comparison_sublattice_list']) == 1
+    assert hasattr(calls[0]['comparison_sublattice_list'][0], 'atom_list')
+    assert refiner.sublattice_list[0] is replacement
+    assert refiner.refinement_history[-1] == 'UnitPosition'

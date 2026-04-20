@@ -112,6 +112,29 @@ def test_simulate_with_prismatic_uses_reference_image_sampling(
     assert metadata.probeStepY == pytest.approx(5.000005)
 
 
+def test_simulate_with_prismatic_sets_cell_and_tile_dimensions(
+        monkeypatch, tmp_path):
+    simulations = _load_simulations_module(monkeypatch)
+    xyz_file = tmp_path / 'model.xyz'
+    xyz_file.write_text('placeholder', encoding='utf-8')
+
+    simulations.simulate_with_prismatic(
+        xyz_filename=str(xyz_file),
+        filename='simulated_output',
+        probeStep=1.0,
+        cellDimXYZ=(4.0, 5.0, 6.0),
+        tileXYZ=(2, 3, 4),
+    )
+
+    metadata = FakeMetadata.instances[-1]
+    assert metadata.cellDimX == 4.0
+    assert metadata.cellDimY == 5.0
+    assert metadata.cellDimZ == 6.0
+    assert metadata.tileX == 2
+    assert metadata.tileY == 3
+    assert metadata.tileZ == 4
+
+
 def test_simulate_and_calibrate_with_prismatic_calls_pipeline(monkeypatch):
     simulations = _load_simulations_module(monkeypatch)
     calls = {}
