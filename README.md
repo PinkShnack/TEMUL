@@ -12,6 +12,32 @@ pip install temul-toolkit
 
 For full installation instructions and documentation, go to [temul-toolkit.readthedocs.io](https://temul-toolkit.readthedocs.io/en/latest/).
 
+### Optional PyPrismatic Environment
+
+`temul.model_refiner` and `temul.simulations` use `pyprismatic` for STEM
+simulation workflows. We do not install `pyprismatic` from PyPI by default in
+`pyproject.toml`, because the current PyPI project only exposes an old source
+distribution rather than maintained platform wheels.
+
+For simulation work, create the conda environment in
+[environment-pyprismatic.yml](/home/eoghan/Documents/python/repos/TEMUL/environment-pyprismatic.yml):
+
+```bash
+conda env create -f environment-pyprismatic.yml
+conda activate temul-pyprismatic
+```
+
+This environment installs:
+- `pyprismatic`
+- `prismatic_cli`
+- TEMUL in editable mode via `pip install -e .`
+
+After activation, you can run the simulation-oriented tests with:
+
+```bash
+pytest tests/test_simulations.py tests/test_model_refiner_active.py
+```
+
 To use the vast majority of the `temul` functionality,
 import it from the api module::
 
