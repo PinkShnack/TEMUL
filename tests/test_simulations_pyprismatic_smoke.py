@@ -29,7 +29,7 @@ def test_pyprismatic_import_and_temul_simulations_module_load():
 def test_pyprismatic_metadata_can_be_instantiated_with_filename(tmp_path):
     pyprismatic = pytest.importorskip('pyprismatic')
     xyz_file = tmp_path / 'smoke.xyz'
-    xyz_file.write_text('placeholder', encoding='utf-8')
+    _write_minimal_prismatic_xyz(xyz_file)
 
     metadata = pyprismatic.Metadata(filenameAtoms=str(xyz_file))
 
