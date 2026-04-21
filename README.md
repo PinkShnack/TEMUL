@@ -30,6 +30,8 @@ conda activate temul-pyprismatic
 This environment installs:
 - `pyprismatic`
 - `prismatic_cli`
+- `pytest`
+- `flake8`
 - TEMUL in editable mode via `pip install -e .`
 
 After activation, you can run the simulation-oriented tests with:
@@ -37,6 +39,10 @@ After activation, you can run the simulation-oriented tests with:
 ```bash
 pytest tests/test_simulations.py tests/test_model_refiner_active.py
 ```
+
+The GitHub Actions CI also has a dedicated conda job that builds this
+environment and runs the `pyprismatic`-related tests separately from the
+standard pip-based matrix.
 
 To use the vast majority of the `temul` functionality,
 import it from the api module::
