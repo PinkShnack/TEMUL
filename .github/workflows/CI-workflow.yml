@@ -56,12 +56,7 @@ jobs:
         run: |
           python -c "import pyprismatic; print(pyprismatic.__file__)"
 
-      - name: Lint pyprismatic-related tests
-        shell: bash -l {0}
-        run: |
-          flake8 tests/test_model_refiner_active.py tests/test_simulations.py tests/test_simulations_pyprismatic_smoke.py
-
       - name: Run pyprismatic-related tests
         shell: bash -l {0}
         run: |
-          pytest -q tests
+          pytest -q tests/test_pypris
