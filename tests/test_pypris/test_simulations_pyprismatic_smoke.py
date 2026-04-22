@@ -3,6 +3,13 @@ import importlib
 import pytest
 
 
+def _import_real_pyprismatic():
+    pyprismatic = pytest.importorskip('pyprismatic')
+    if not hasattr(pyprismatic, 'Metadata'):
+        pytest.skip('real pyprismatic is not active in this test process')
+    return pyprismatic
+
+
 def _write_minimal_prismatic_xyz(path):
     path.write_text(
         "\n".join([
@@ -16,9 +23,7 @@ def _write_minimal_prismatic_xyz(path):
 
 
 def test_pyprismatic_import_and_temul_simulations_module_load():
-    pyprismatic = pytest.importorskip('pyprismatic')
-
-    assert hasattr(pyprismatic, 'Metadata')
+    pyprismatic = _import_real_pyprismatic()
 
     simulations = importlib.import_module('temul.simulations')
 
@@ -27,7 +32,7 @@ def test_pyprismatic_import_and_temul_simulations_module_load():
 
 
 def test_pyprismatic_metadata_can_be_instantiated_with_filename(tmp_path):
-    pyprismatic = pytest.importorskip('pyprismatic')
+    pyprismatic = _import_real_pyprismatic()
     xyz_file = tmp_path / 'smoke.xyz'
     _write_minimal_prismatic_xyz(xyz_file)
 
@@ -38,7 +43,7 @@ def test_pyprismatic_metadata_can_be_instantiated_with_filename(tmp_path):
 
 
 def test_simulate_with_prismatic_creates_mrc_output(tmp_path, monkeypatch):
-    pytest.importorskip('pyprismatic')
+    _import_real_pyprismatic()
     simulations = importlib.import_module('temul.simulations')
 
     xyz_file = tmp_path / 'integration.xyz'

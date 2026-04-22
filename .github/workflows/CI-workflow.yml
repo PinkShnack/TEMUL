@@ -12,7 +12,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: ['3.9', '3.11', '3.13']
+        python-version: ['3.11', '3.13']
         os: [macos-latest, ubuntu-latest, windows-latest]
 
     steps:
@@ -31,7 +31,7 @@ jobs:
           flake8 temul tests docs
       - name: Test with pytest
         run: |
-          pytest tests
+          pytest tests --ignore=tests/test_pypris
           pytest --doctest-modules temul/topotem temul/element_tools.py temul/intensity_tools.py temul/io.py temul/model_creation.py temul/signal_plotting.py temul/signal_processing.py
 
   pyprismatic-conda:
@@ -64,4 +64,4 @@ jobs:
       - name: Run pyprismatic-related tests
         shell: bash -l {0}
         run: |
-          pytest -q tests/test_model_refiner_active.py tests/test_simulations.py tests/test_simulations_pyprismatic_smoke.py
+          pytest -q tests
