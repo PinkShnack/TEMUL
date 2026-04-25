@@ -1,4 +1,5 @@
 0.1.9
+ - tests: add prismatic and refiner tests (#81, #83)
  - tests: add more tests (#81, #82)
 0.1.8
  - fix: package build and compatibility issues fixed (#80)
