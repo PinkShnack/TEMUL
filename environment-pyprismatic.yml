@@ -1,0 +1,12 @@
+name: temul-pyprismatic
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pip
+  - pytest
+  - flake8
+  - pyprismatic
+  - prismatic_cli
+  - pip:
+      - -e .

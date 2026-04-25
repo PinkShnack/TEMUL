@@ -346,7 +346,7 @@ def simulate_with_prismatic(xyz_filename,
 
     # if you specify cellDimXYZ, you overwrite the values from the xyz file
     if cellDimXYZ is not None:
-        pr_sim.cellDimX, pr_sim.cellDimX, pr_sim.cellDimX = cellDimXYZ
+        pr_sim.cellDimX, pr_sim.cellDimY, pr_sim.cellDimZ = cellDimXYZ
     if tileXYZ is not None:
         pr_sim.tileX, pr_sim.tileY, pr_sim.tileZ = tileXYZ
 

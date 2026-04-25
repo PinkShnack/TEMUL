@@ -1,5 +1,6 @@
 import numpy as np
 import pytest
+from hyperspy.signals import Signal2D
 
 from temul.dummy_data import (
     get_simple_cubic_signal,
@@ -107,3 +108,135 @@ def test_mean_and_std_nearest_neighbour_distances_scaling():
     assert len(mean_scaled) == len(std_scaled) == len(sublattice.atom_list)
     assert np.allclose(mean_scaled, np.asarray(mean_list) * 0.5)
     assert np.allclose(std_scaled, np.asarray(std_list) * 0.5)
+
+
+def test_get_scaled_middle_limit_intensity_list():
+    middle, limits = sp.get_scaled_middle_limit_intensity_list(
+        sublattice=None,
+        middle_intensity_list=[0.5, 1.0],
+        limit_intensity_list=[0.0, 0.75, 1.25],
+        sublattice_scalar=2.0,
+    )
+
+    assert middle == [1.0, 2.0]
+    assert limits == [0.0, 1.5, 2.5]
+
+
+def test_get_fitting_tools_for_plotting_gaussians_and_validation():
+    fitting_tools = sp.get_fitting_tools_for_plotting_gaussians(
+        element_list=['Mo_1', 'Mo_2'],
+        scaled_middle_intensity_list=[1.0, 2.0],
+        scaled_limit_intensity_list=[0.0, 1.5, 3.0],
+    )
+
+    assert fitting_tools[0][0] == 'Mo_2'
+    assert fitting_tools[1][0] == 'Mo_1'
+
+    with pytest.raises(ValueError, match='length one greater'):
+        sp.get_fitting_tools_for_plotting_gaussians(
+            ['Mo_1'], [1.0], [0.0, 1.0, 2.0]
+        )
+
+    with pytest.raises(ValueError, match='same length as middle list'):
+        sp.get_fitting_tools_for_plotting_gaussians(
+            ['Mo_1', 'Mo_2'], [1.0], [0.0, 2.0]
+        )
+
+
+def test_mse_and_measure_image_errors_with_filename(tmp_path):
+    import os
+
+    image_a = np.zeros((8, 8), dtype=np.uint8)
+    image_b = np.ones((8, 8), dtype=np.float64)
+
+    assert sp.mse(image_a, image_b) == pytest.approx(1.0)
+
+    cwd = tmp_path.cwd()
+    try:
+        os.chdir(tmp_path)
+        mse_number, ssm_number = sp.measure_image_errors(
+            image_a,
+            image_b,
+            filename='unit',
+        )
+    finally:
+        os.chdir(cwd)
+
+    assert mse_number == pytest.approx(1.0)
+    assert ssm_number < 1.0
+    assert (tmp_path / 'MSE_SSM_single_image_unit.png').exists()
+
+
+def test_compare_two_image_and_create_filtered_image_selects_sigma(
+        monkeypatch, handle_plots):
+    image_to_filter = Signal2D(np.ones((5, 5), dtype=float))
+    reference_image = Signal2D(np.ones((5, 5), dtype=float))
+    calls = {'sigmas': []}
+
+    monkeypatch.setattr(
+        sp,
+        'calibrate_intensity_distance_with_sublattice_roi',
+        lambda **kwargs: None,
+    )
+
+    def fake_measure_image_errors(imageA, imageB, filename=None):
+        sigma_estimate = float(np.mean(imageB) - 1.0)
+        calls['sigmas'].append(round(sigma_estimate, 2))
+        return abs(sigma_estimate - 1.0), 1.0 - abs(sigma_estimate)
+
+    monkeypatch.setattr(sp, 'measure_image_errors', fake_measure_image_errors)
+    monkeypatch.setattr(
+        sp,
+        'gaussian_filter',
+        lambda data, sigma: data + sigma,
+    )
+
+    filtered, ideal_sigma = sp.compare_two_image_and_create_filtered_image(
+        image_to_filter=image_to_filter,
+        reference_image=reference_image,
+        delta_image_filter=0.5,
+        max_sigma=1.0,
+        refine=False,
+    )
+
+    assert calls['sigmas'] == [0.0, 0.5, 1.0]
+    assert ideal_sigma == pytest.approx(0.5)
+    assert np.allclose(filtered.data, np.ones((5, 5)) + 0.5)
+
+
+def test_toggle_atom_refine_position_automatically_and_invalid_range_type():
+    sublattice = get_simple_cubic_sublattice_positions_on_vac()
+    sublattice.find_nearest_neighbors()
+    false_list = sp.toggle_atom_refine_position_automatically(
+        sublattice,
+        min_cut_off_percent=0.75,
+        max_cut_off_percent=1.25,
+        range_type='internal',
+        method='mean',
+        percent_to_nn=0.05,
+    )
+
+    assert len(false_list) > 0
+    assert any(atom.refine_position is False for atom in sublattice.atom_list)
+
+    with pytest.raises(TypeError, match='only options for range_type'):
+        sp.toggle_atom_refine_position_automatically(
+            sublattice,
+            min_cut_off_percent=0.75,
+            max_cut_off_percent=1.25,
+            range_type='invalid',
+            method='mean',
+            percent_to_nn=0.05,
+        )
+
+
+def test_remove_image_intensity_in_data_slice_reduces_local_maximum():
+    sublattice = get_simple_cubic_sublattice_positions_on_vac()
+    sublattice.find_nearest_neighbors()
+    atom = sublattice.atom_list[0]
+    image = sublattice.image.copy()
+    before = image.max()
+
+    sp.remove_image_intensity_in_data_slice(atom, image, percent_to_nn=0.4)
+
+    assert image.max() <= before

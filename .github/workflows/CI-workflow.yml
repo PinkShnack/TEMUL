@@ -12,7 +12,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: ['3.9', '3.11', '3.13']
+        python-version: ['3.11', '3.13']
         os: [macos-latest, ubuntu-latest, windows-latest]
 
     steps:
@@ -31,5 +31,32 @@ jobs:
           flake8 temul tests docs
       - name: Test with pytest
         run: |
-          pytest tests
+          pytest tests --ignore=tests/test_pypris
           pytest --doctest-modules temul/topotem temul/element_tools.py temul/intensity_tools.py temul/io.py temul/model_creation.py temul/signal_plotting.py temul/signal_processing.py
+
+  pyprismatic-conda:
+    env:
+      MPLBACKEND: Agg
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Miniconda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          activate-environment: temul-pyprismatic
+          environment-file: environment-pyprismatic.yml
+          auto-activate-base: false
+          miniforge-variant: Miniforge3
+          use-mamba: true
+
+      - name: Verify pyprismatic install
+        shell: bash -l {0}
+        run: |
+          python -c "import pyprismatic; print(pyprismatic.__file__)"
+
+      - name: Run pyprismatic-related tests
+        shell: bash -l {0}
+        run: |
+          pytest -q tests/test_pypris

@@ -567,8 +567,8 @@ def measure_image_errors(imageA, imageB, filename=None):
         plt.show()
 
         plt.savefig(fname='MSE_SSM_single_image_' + filename + '.png',
-                    transparent=True, frameon=False, bbox_inches='tight',
-                    pad_inches=None, dpi=300, labels=False)
+                    transparent=True, bbox_inches='tight',
+                    pad_inches=None, dpi=300)
 
     return mse_number, ssm_number
 

@@ -1564,6 +1564,9 @@ def return_z_coordinates(z_thickness,
 
     """
 
+    if max_number_atoms_z is None:
+        max_number_atoms_z = number_atoms_z
+
     if max_number_atoms_z is not None:
         # print("number_atoms_z has been specified, using
         # number_atoms_z instead\
@@ -1751,14 +1754,15 @@ def create_dataframe_for_cif(sublattice_list, element_list):
     element_list : list of strings
         Each string must be an element symbol from the periodic table.
     """
-    dfObj = pd.DataFrame(columns=['_atom_site_label',
-                                  '_atom_site_occupancy',
-                                  '_atom_site_fract_x',
-                                  '_atom_site_fract_y',
-                                  '_atom_site_fract_z',
-                                  '_atom_site_adp_type',
-                                  '_atom_site_B_iso_or_equiv',
-                                  '_atom_site_type_symbol'])
+    columns = ['_atom_site_label',
+               '_atom_site_occupancy',
+               '_atom_site_fract_x',
+               '_atom_site_fract_y',
+               '_atom_site_fract_z',
+               '_atom_site_adp_type',
+               '_atom_site_B_iso_or_equiv',
+               '_atom_site_type_symbol']
+    rows = []
 
     # Start with the first sublattice in the list of sublattices given
     for sublattice in sublattice_list:
@@ -1799,7 +1803,7 @@ def create_dataframe_for_cif(sublattice_list, element_list):
                             else:
                                 pass
 
-                            dfObj = dfObj.append(
+                            rows.append(
                                 {'_atom_site_label': atom_label,
                                  '_atom_site_occupancy': 1.0,
                                  '_atom_site_fract_x': format(
@@ -1809,21 +1813,19 @@ def create_dataframe_for_cif(sublattice_list, element_list):
                                      (len(sublattice.image[:, 0]) -
                                       sublattice.atom_list[i].pixel_y) /
                                      len(sublattice.image[:, 0]), '.6f'),
-                                 # great touch
                                  '_atom_site_fract_z': format(
                                      atom_z_height, '.6f'),
                                  '_atom_site_adp_type': 'Biso',
                                  '_atom_site_B_iso_or_equiv': format(
                                      1.0, '.6f'),
-                                 '_atom_site_type_symbol': atom_label},
-                                ignore_index=True)  # insert row
+                                 '_atom_site_type_symbol': atom_label})
 
     # value += split_and_sort_element(sublattice.atom_list[i].elements)[k][2]
     # need an option to save to the cuurent directory should be easy
     #        dfObj.to_pickle('atom_lattice_atom_position_table.pkl')
     #        dfObj.to_csv('atom_lattice_atom_position_table.csv', sep=',',
     # index=False)
-    return dfObj
+    return pd.DataFrame(rows, columns=columns)
 
     # element_list = [
     # 'S_0', 'S_1', 'S_2', 'S_2.C_1', 'S_2.C_2', 'Mo_1', 'Mo_0']
