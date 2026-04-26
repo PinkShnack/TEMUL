@@ -103,6 +103,18 @@ def test_plot_polarisation_vectors_overlay_unit_vector(
         overlay=overlay, unit_vector=unit_vector)
 
 
+def test_plot_polarisation_vectors_simple(
+        get_dummy_xyuv, handle_plots):
+    """Check the available overlay, unit_vector."""
+    sublatticeA, sublatticeB, x, y, u, v = get_dummy_xyuv
+    _ = pol.plot_polarisation_vectors(
+        x, y, u, v, image=sublatticeA.image, save="cool_name",
+        overlay=False, plot_style='colormap',
+        title='Vector Arrows', cmap='viridis',
+        monitor_dpi=50, unit_vector=False
+    )
+
+
 @pytest.mark.parametrize(
     "sampling, units",
     [
