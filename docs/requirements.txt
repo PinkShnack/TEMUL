@@ -1,8 +1,8 @@
 # requirement on rtd
-sphinx==4.2.0
-sphinx_rtd_theme==1.0
-numpydoc
-docutils<0.18
+sphinx==8.2.3
+sphinx_rtd_theme==3.0.2
+numpydoc==1.10.0
+docutils>=0.20,<0.22
 
 # other requirements
 atomap
